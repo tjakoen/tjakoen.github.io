@@ -27,8 +27,8 @@
     <button type="button" data-window-forward title="Forward"><svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#chevron-right"></use></svg></button>
   </span>
   <!-- CENTER: the search field -->
-  <button class="window-bar__search" type="button" data-cmdk-open title="Search the site (⌘K)">
-    <svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#search"></use></svg>portfolio.tjakoen.com
+  <button class="window-bar__search" type="button" data-cmdk-open aria-label="Search the site" title="Search the site (⌘K)">
+    <svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#search"></use></svg><span class="window-bar__search-label">portfolio.tjakoen.com</span>
   </button>
   <!-- RIGHT: theme + view controls -->
   <span class="window-bar__ctl">
@@ -271,19 +271,18 @@
        data-mode/hidden/aria-selected; SSR ships the initial state, so with no JS the chat
        shows and the catalog stays hidden. -->
   <div class="assistant" data-mode="chat">
-    <div class="assistant__head">
+    <div class="assistant__head" data-surface="desk-tabs">
       <!-- No standalone title: the mode tabs below already name the active view (Chat/Catalog/Notepad),
            so a separate label was redundant AND its width pushed the header into a horizontal scroll in
            the narrow panel. The tabs are the label. -->
       <div class="assistant__modes" role="tablist" aria-label="Panel mode">
-        <button type="button" role="tab" data-shell-mode="chat" aria-selected="true">Chat</button>
+        <button type="button" role="tab" data-shell-mode="chat" aria-selected="true" aria-controls="desk-chat">Chat</button>
+        <button type="button" role="tab" data-shell-mode="browse" aria-selected="false" aria-controls="desk-browse" hidden>Browse</button>
         <button type="button" role="tab" data-shell-mode="catalog" aria-selected="false">Catalog</button>
         <button type="button" role="tab" data-shell-mode="notepad" aria-selected="false">Notepad</button>
       </div>
-      <!-- New chat: clears the persisted conversation + the desk's memory and re-greets (site.js). -->
-      <button type="button" class="assistant__newchat" data-desk-newchat title="Start a new conversation">New chat</button>
     </div>
-    <div class="assistant__pane" data-pane="chat">
+    <div class="assistant__pane" data-pane="chat" id="desk-chat">
       <!-- the desk appends here over SSE (chat.send → your bubble + the streamed reply). Site-wide.
            Empty-state text shows until the first message lands (CSS :has). -->
       <div class="assistant__log" data-surface="chat-log" tabindex="0" role="region" aria-label="Conversation">
@@ -313,21 +312,41 @@
           <button type="button" class="suggest-chip" data-suggest-ask>Summarize this page</button>
         </div>
       </div>
+      <p class="assistant__model-note" data-desk-download data-surface="desk-choice" hidden></p>
       <div class="assistant__composer">
+        <!-- New chat: clears the persisted conversation + the desk's memory and re-greets (site.js). -->
+        <button type="button" class="icon-btn assistant__newchat" data-size="sm" data-variant="ghost" data-desk-newchat title="New chat" aria-label="New chat">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="/assets/sprite.svg#plus"></use></svg>
+        </button>
+
         <input class="field__input" type="text" placeholder="Ask the desk…" aria-label="Ask the desk"
                data-action="chat.send" data-target="chat-log" data-surface="chat-input">
         <button class="icon-btn" data-variant="ghost" data-action="chat.send" data-target="chat-log" data-from="chat-input" aria-label="Send">
           <svg class="icon" aria-hidden="true" focusable="false"><use href="/assets/sprite.svg#send"></use></svg>
         </button>
       </div>
-      <!-- Desk Offline: shown only when the local model can't run (body[data-desk="offline"], set by
-           the desk door on a WebGPU/load failure). The composer + suggest chips hide; the chat LOG
-           stays, so a stub-driven digest (notes "see what's new") still lands somewhere visible. -->
-      <p class="assistant__offline" data-desk-offline>
-        <b-icon sym="/assets/sprite.svg#spark"></b-icon>
-        <span>The desk is offline. It runs a small AI model in your browser, and this browser can't run it. The rest of the site works as usual.</span>
-      </p>
+      <p class="assistant__offline">The desk did not load. You can still open <a href="/notes">Notes</a> or <a href="/projects">Projects</a>.</p>
     </div>
+    <section class="assistant__pane assistant__browse" data-pane="browse" id="desk-browse" data-surface="desk-browse" aria-label="Browse the portfolio" hidden>
+      <h2>Explore the portfolio</h2>
+      <p data-browse-intro>Open a recent update or jump to a section.</p>
+      <nav class="assistant__shortcuts" aria-label="Portfolio shortcuts">
+        <a class="suggest-chip" href="/projects">Projects</a>
+        <a class="suggest-chip" href="/resume">Résumé</a>
+        <a class="suggest-chip" href="/notes">Notes</a>
+        <a class="suggest-chip" href="/bread">BREAD stack</a>
+        <a class="suggest-chip" href="/about">About TJ</a>
+      </nav>
+      <section class="assistant__recent" aria-labelledby="desk-recent-title">
+        <div class="assistant__recent-head">
+          <h3 id="desk-recent-title">Recent updates</h3>
+          <a class="assistant__recent-more" href="/calendar">All updates <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="recent" data-desk-recent>
+          <welcome-recent each="recentNotes"></welcome-recent>
+        </div>
+      </section>
+    </section>
     <!-- Catalog pane — the peek as a sidebar-panel mode: embeds /catalog lazily; on /grain,
          hovering a component reveals its entry (grain/scripts/catalog-peek.js). -->
     <div class="assistant__pane catalog-pane" data-pane="catalog" hidden>
@@ -390,9 +409,12 @@
   (function () {
     try {
       var pairs = [["chat-log", "tj.chat"], ["console", "tj.terminal"]];
+      var remembers = sessionStorage.getItem("desk-history-scope") === "device" &&
+        document.cookie.split(";").some(function (cookie) { return cookie.trim().startsWith("desk_session="); });
+      var storage = remembers ? localStorage : sessionStorage;
       for (var i = 0; i < pairs.length; i++) {
         var el = document.querySelector('[data-surface="' + pairs[i][0] + '"]');
-        var saved = localStorage.getItem(pairs[i][1]);
+        var saved = storage.getItem(pairs[i][1]);
         if (el && saved != null) { el.innerHTML = saved; el.setAttribute("data-restored", ""); el.scrollTop = el.scrollHeight; }
       }
     } catch (e) { /* private mode: site.js falls back to its own restore */ }
@@ -406,6 +428,7 @@
     <span class="presence__wait">desk waking…</span>
     <span class="presence__on">desk online</span>
     <span class="presence__off">desk offline</span>
+    <span class="presence__browse">browse</span>
   </span>
   <span class="status-bar__crumb" data-breadcrumb>portfolio.tjakoen.com</span>
   <span class="status-bar__spacer"></span>

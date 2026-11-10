@@ -253,52 +253,56 @@
 @keyframes desk-blink { 0%, 65%, 100% { opacity: 0.25; } 32% { opacity: 0.9; } }
 @media (prefers-reduced-motion: reduce) { .desk-typing i { animation: none; opacity: 0.55; } }
 
-/* New chat: a quiet reset in the assistant head. Left-group the title + modes (override grain's
-   space-between) and push this to the far right; hidden with the composer when the desk is offline
-   (there's no conversation to reset then). */
-/* flex-wrap so the header (mode tabs + New chat) can never force a horizontal scroll in the narrow
-   panel — if it can't fit on one row it drops to a second instead of overflowing sideways. */
-.assistant__head { justify-content: flex-start; gap: var(--space-2); flex-wrap: wrap; }
-.assistant__newchat { margin-left: auto; font: inherit; font-size: var(--text-xs);
-  font-family: var(--font-mono); color: var(--color-muted); background: none;
-  border: 1px solid var(--color-line); border-radius: 999px; padding: var(--space-1) var(--space-3);
-  cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease, color 0.15s ease; }
-.assistant__newchat:hover { color: var(--color-fg); border-color: var(--ink); }
-.assistant__newchat:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+/* The Desk header fits alongside the editor tabs even when the rail is open. */
+.assistant__head { justify-content: flex-start; gap: var(--space-2); flex-wrap: wrap;
+  padding-block: var(--space-1); }
+.assistant__modes { align-items: center; }
+.assistant__modes [data-shell-mode] { padding: var(--space-1); white-space: nowrap; }
+.assistant__composer .field__input { min-width: 0; }
+.assistant__composer .assistant__newchat { align-self: center; }
 body[data-desk="offline"] .assistant__newchat { display: none; }
-/* on mobile the head IS the grab bar (grain adds a tap-to-open + a chevron) — a button there would
-   fight the tap and crowd the narrow bar, so drop it (the sheet has its own affordances). */
+/* Leave the composer room for the input and Send on narrow screens. */
 @media (max-width: 768px) { .assistant__newchat { display: none; } }
 
-/* Desk Offline (body[data-desk="offline"], set by the desk door when the local browser model can't
-   run — no WebGPU, or a load/generation failure). This is a portfolio-owned, CHAT-SPECIFIC marker,
-   deliberately NOT the global presence flag (data-ai-online): the door + stub demos stay ONLINE, so
-   "See what's new" and the /grain demo keep working; only the ways to TALK to the local model hide.
-   Offline hides the WHOLE chat surface — greeting, log, thinking preview, composer, chips — and
-   centers a single honest notice in the pane. Nothing to talk to, so nothing chat-shaped should
-   linger (the old "keep the log for a stub digest" behavior left the greeting bubble visible). */
 .assistant__offline { display: none; }
-body[data-desk="offline"] .assistant__composer,
-body[data-desk="offline"] .assistant__suggest,
-body[data-desk="offline"] .assistant__empty,
-body[data-desk="offline"] .assistant__log,
-body[data-desk="offline"] .chat-thinking { display: none; }
-body[data-desk="offline"] .assistant__offline {
-  display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center;
-  gap: var(--space-2); text-align: center; padding: var(--space-6) var(--space-4);
-  color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-relaxed); margin: 0; }
-body[data-desk="offline"] .assistant__offline b-icon { color: var(--ink-faint); flex: none; }
+body[data-desk="offline"]:not([data-desk-mode]) .assistant__offline {
+  display: block; margin: auto; padding: var(--space-4); color: var(--color-muted);
+}
+body[data-desk="offline"]:not([data-desk-mode]) :is(.assistant__composer, .assistant__suggest, .assistant__log, .chat-thinking, .assistant__newchat),
+body[data-desk-mode="browse"] .walk[data-run-showcase] { display: none; }
 
-/* The status-bar presence tracks the DOOR (grain's data-ai-online), which stays online when the
-   client loopback comes up — so it reads "desk online" even while the CHAT model can't run. That
-   misleads: the visitor can't actually talk to the desk. When the desk chat is offline, force the
-   offline label + faint star here, whatever the transport presence says. The `.presence` in the
-   chain lifts specificity above grain's ai.css `body[data-ai-online=...] .presence__*` rules so this
-   wins regardless of bundle order. */
-body[data-desk="offline"] .presence .presence__on,
-body[data-desk="offline"] .presence .presence__wait { display: none; }
-body[data-desk="offline"] .presence .presence__off { display: inline; }
-body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
+.assistant__model-note { margin: 0; padding: 0 var(--space-4) var(--space-2);
+  font-size: var(--text-xs); color: var(--color-muted); }
+.assistant__browse:not([hidden]) {
+  display: grid; align-content: start; gap: var(--space-3); min-height: 0; flex: 1; overflow-y: auto;
+  overscroll-behavior: contain; padding: var(--space-4);
+}
+.assistant__browse h2 { font-size: var(--text-lg); margin: 0; }
+.assistant__browse p { margin: 0; color: var(--color-muted); font-size: var(--text-sm); }
+.assistant__shortcuts { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.assistant__shortcuts a { display: inline-flex; align-items: center; min-height: 2.25rem; text-decoration: none; }
+.assistant__recent { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+.assistant__recent-head { display: flex; justify-content: space-between; align-items: baseline;
+  flex-wrap: wrap; gap: var(--space-2); }
+.assistant__recent h3 { margin: 0; font-size: var(--text-base); }
+.assistant__recent-more { font-size: var(--text-sm); white-space: nowrap; }
+.assistant__recent .recent { gap: var(--space-2); }
+.assistant__recent .recent__item { display: flex; flex-direction: column; align-items: start;
+  gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--color-line);
+  border-radius: var(--radius-md); background: var(--color-bg); }
+.assistant__recent .recent__item:hover { border-color: var(--color-muted); }
+.assistant__recent .recent__name { overflow-wrap: anywhere; }
+.assistant__recent .recent__type { display: inline-block; padding: 0 var(--space-2);
+  border: 1px solid var(--color-line); border-radius: var(--radius-sm);
+  color: var(--color-muted); font: var(--text-xs)/1.5 var(--font-mono); }
+.assistant__recent .recent__path { display: none; }
+
+.presence__browse { display: none; }
+body[data-desk-mode="browse"] .presence .presence__on,
+body[data-desk-mode="browse"] .presence .presence__wait,
+body[data-desk-mode="browse"] .presence .presence__off { display: none; }
+body[data-desk-mode="browse"] .presence .presence__browse { display: inline; }
+body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint); }
 
 /* Catalog pane: the embedded /catalog fills the pane; the footer sits where the chat composer
    sits (the hover hint + the full-page way out). Scroll stays contained to the pane. */
@@ -348,6 +352,14 @@ body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
     transform: translateY(calc(100% - var(--sheet-peek))); transition: transform 0.3s ease;
   }
   .app-shell.app-window[data-aside-open] .app-shell__aside { transform: none; }
+  .app-shell.app-window[data-aside-open] .app-shell__aside:has(.assistant[data-mode="browse"]) {
+    height: calc(100dvh - max(var(--space-3), env(safe-area-inset-top, 0px)));
+    max-height: none;
+  }
+  .assistant__browse:not([hidden]) {
+    padding-bottom: max(var(--space-4), env(safe-area-inset-bottom, 0px));
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .app-shell.app-window .app-shell__aside { transition: none; }
   }
@@ -378,17 +390,20 @@ body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
   .app-shell.app-window .app-dock { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
 
-/* ═══ MOBILE TITLE BAR: keep theme + the viewport toggle reachable ══════════════════════════════
+/* ═══ MOBILE TITLE BAR: keep search, theme and the viewport toggle reachable ══════════════════════════════
    grain hides the WHOLE window-bar when the shell is narrow (`@container shell-frame` in app-window.css)
    — which also removes the theme (◆) + light/dark (◐) controls AND the viewport toggle (⬚), the only
    way back OUT of the desktop mobile-width PREVIEW (toggle in, the button vanishes, you're stuck).
-   Keep a COMPACT bar with just those. Must be a @container query, not @media, so it also covers the
+   Keep a compact bar with those controls and a search icon. Must be a @container query, not @media, so it also covers the
    preview (which clamps the container, not the real viewport). Higher specificity than grain's
    `.window-bar { display:none }`, so it wins in the same container regardless of bundle order. */
 @container shell-frame (max-width: 768px) {
   .app-shell.app-window .window-bar { display: flex; justify-content: flex-end; }
   .app-shell.app-window .window-bar__nav,
-  .app-shell.app-window .window-bar__search { display: none; }
+  .app-shell.app-window .window-bar__search-label { display: none; }
+  .app-shell.app-window .window-bar__search {
+    flex: none; margin-inline: 0 auto; width: 2.25rem; min-height: 2rem; padding: 0;
+  }
   .app-shell.app-window .window-bar__ctl [data-shell="aside-toggle"],
   .app-shell.app-window .window-bar__ctl [data-shell="console-toggle"],
   .app-shell.app-window .window-bar__ctl [data-xray-toggle] { display: none; }
