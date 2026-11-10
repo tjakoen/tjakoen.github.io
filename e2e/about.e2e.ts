@@ -273,7 +273,7 @@ test.describe("the /about Profile philosophy", () => {
     await page.goto("/about");
     const philosophy = page.locator("#profile .quotes-hero");
     await expect(philosophy.locator(".quote")).toHaveCount(3);
-    await expect(philosophy).toContainText("How I try to do the work");
+    await expect(philosophy).toContainText("How I do the work");
     await expect(philosophy).toContainText("As a teacher");
     await expect(philosophy).toContainText("As an engineer");
     await expect(philosophy).toContainText("As a manager");
