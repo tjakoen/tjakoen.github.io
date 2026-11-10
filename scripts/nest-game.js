@@ -50,10 +50,18 @@ import {
     gap: TRAIL_FOLLOW_GAP, // spacing between ants walking the same way
     nestSpeed: 0.18,      // nest units per second
     trailTtl: 90,         // seconds before a trail wears out even with letters left
+    trailIdle: 24,        // seconds a main trail may sit empty before it fades
+    rivalTrailIdle: 18,   // seconds a rival trail may sit empty before it fades
     trailFade: 1600,      // ms a spent trail takes to leave the page
+    staff: 12,            // guards and flyers the mini hills may keep, on top of the colony
     party: [20, 50, 90, 140, 200, 280, 380], // letters stolen at each colony dance
+    rivalWorshipEvery: 5, // after the first four, a rival returns every fifth worship
   };
   const LINE = TUNING.line, MAX_ANTS = TUNING.maxAnts, SPEED = TUNING.speed;
+  const MAX_STAFF = TUNING.staff;
+  // The first four rivals answer worships two, three, four and five. After that the page sends
+  // one every fifth worship, so the schedule never runs out.
+  const isRivalWorship = (n) => n === 2 || n === 3 || n === 4 || n === 5 || (n > 5 && n % TUNING.rivalWorshipEvery === 0);
   const GAP = TUNING.gap, NEST_SPEED = TUNING.nestSpeed;
 
   const style = document.createElement("style");
@@ -238,6 +246,9 @@ import {
     @keyframes nest-queen-dance { to { transform: translateY(-3px) rotate(-4deg); } }
     .nest-ant.dancing { pointer-events: none; }
     .nest-ant.dancing svg { animation: nest-dance .55s ease-in-out infinite alternate; }
+    .nest-mound-dancer, .nest-page-dancer { pointer-events: none; z-index: 6; }
+    .nest-mound-dancer { opacity: .95; }
+    .nest-page-dancer { opacity: .8; }
     @keyframes nest-dance { to { transform: translateY(-2px) rotate(6deg); } }
     #nest-mock.celebrating .well { animation: nest-party-glow 1.4s ease-in-out infinite alternate; }
     #nest-mock.celebrating .nest-pre { animation: nest-party-sway 1.4s ease-in-out infinite alternate; }
@@ -252,10 +263,12 @@ import {
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; font: var(--text-3xs)/1.2 var(--font-mono); letter-spacing: .04em; white-space: nowrap; overflow: hidden; }
     #nest-mock .nest-meter__bar .fill { color: var(--color-accent); }
     #nest-mock .nest-meter__bar .rest { color: var(--ink-faint); opacity: .7; }
-    #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px 10px; margin: 0; align-items: baseline; }
-    #nest-mock .stat-grid div { display: flex; justify-content: flex-start; gap: 4px; min-width: 0; overflow: hidden; }
+    #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px 12px; margin: 0; align-items: baseline; }
+    #nest-mock .stat-grid div { display: flex; justify-content: space-between; gap: 6px; min-width: 0; }
     #nest-mock .stat-grid dt { margin: 0; font-size: var(--text-3xs); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); white-space: nowrap; }
-    #nest-mock .stat-grid dd { margin: 0; font-size: var(--text-2xs); font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #nest-mock .stat-grid dd { margin: 0; font-size: var(--text-2xs); font-variant-numeric: tabular-nums; flex: 0 0 auto; white-space: nowrap; }
+    #nest-mock .stat-grid div.wide { grid-column: 1 / -1; justify-content: flex-start; gap: 8px; }
+    #nest-mock .stat-grid div.wide dd { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .tools button { min-width: 0; }
     #nest-mock .tools button.wide { flex: 1.8; }
     #nest-mock .head .lbl { font-size: var(--text-3xs); }
@@ -436,7 +449,9 @@ import {
   // no saved colony, just the launcher. The one thing that survives is the tab's stray flag.
   try { localStorage.removeItem("nest-colony"); } catch { /* private mode */ }
   try { if (localStorage.getItem("portfolio:aside-mode") === "nest") localStorage.removeItem("portfolio:aside-mode"); } catch { /* private mode */ }
-  const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; antBtn.focus(); scheduleStray(); });
+  // A close is a clean slate: stop the colony, then reload so the page is restored exactly from
+  // its own source instead of from a pile of split text nodes and restored spans.
+  const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; location.reload(); });
   const openNest = () => {
     if (!nestDesktop.matches) return;
     if (noteFiguresOnPage) { location.assign("/?nest=play"); return; }
@@ -531,7 +546,7 @@ import {
       <div title="Living rival ants"><dt>rival</dt><dd class="rival" data-k="rivals">0</dd></div>
       <div title="Scent trails in use"><dt>trails</dt><dd data-k="trails">0</dd></div>
       <div title="Ants squashed"><dt>squashed</dt><dd data-k="squashed">0</dd></div>
-      <div title="Letters stolen" style="grid-column: 1 / -1"><dt>larder</dt><dd class="accent" data-k="larder" style="text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">empty</dd></div>
+      <div class="wide" title="Letters stolen"><dt>larder</dt><dd class="accent" data-k="larder" style="text-align: left">empty</dd></div>
     </dl>
     <div class="row tools" role="group" aria-label="Colony tools">
       ${tool("squash", "Squash", "1")}${tool("wipe", "Wipe", "2")}${gameAction("bait", "bait", "Bait", "Drop bait", "Place a crumb to lure nearby ants away.")}${gameAction("seal", "seal", "Seal", "Seal hills", "Seal every anthill for a few seconds.")}
@@ -614,10 +629,15 @@ import {
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
     over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
     cache: null, cacheLetters: [], cacheTrail: null, hiddenLetters: new Set(), scoutQueue: [],
-    queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
-  const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(mainAnts().length / 3)));
-  const rival = { active: false, mound: null, founding: null, trails: [], minis: [], sites: [], exits: [], nextExit: 0, stolen: new Set(), returnAt: 0, hp: RIVAL_MOUND_HEALTH, war: false, lastMilestone: 0, lastBase: null, tier: 0 };
+    queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0,
+    lastForageAt: performance.now(), finale: false };
+  const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(colonyAnts().length / 3)));
+  const rival = { active: false, mound: null, founding: null, trails: [], minis: [], sites: [], exits: [], nextExit: 0, stolen: new Set(), returnAt: 0, hp: RIVAL_MOUND_HEALTH, war: false, lastMilestone: 0, lastBase: null, tier: 0, raidAt: 0, nextMiniAt: 0 };
   const mainAnts = () => state.ants.filter((a) => a.side !== "rival");
+  // Guards and flyers live on the mini hills. They are kept on a separate roster so a busy mound
+  // can never eat the colony's whole population and leave no workers to forage.
+  const staffAnts = () => mainAnts().filter((a) => a.role === "guard" || a.role === "flyer");
+  const colonyAnts = () => mainAnts().filter((a) => a.role !== "guard" && a.role !== "flyer");
   Object.defineProperty(rival, "ants", { get: () => state.ants.filter((a) => a.side === "rival") });
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
@@ -665,7 +685,15 @@ import {
   };
   const rectOf = (n, i) => { const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 1); return r.getBoundingClientRect(); };
   const onScreen = (r, m = pageRect()) => r.width > 0 && r.top > m.top + 10 && r.bottom < m.bottom - 10;
-  const pageLetters = textNodes(main).reduce((s, n) => s + (n.data.match(/\S/g) || []).length, 0);
+  // The page-left score counts only text the colony can actually reach and read: a letter with no
+  // box, or one inside aria-hidden decoration, is not food and must not inflate the denominator.
+  const reachableChar = (n, i, r = rectOf(n, i)) => /\S/.test(n.data[i]) && r.width >= 2 && r.height >= 2 &&
+    !n.parentElement.closest('[aria-hidden="true"], [hidden]');
+  const pageLetters = (() => {
+    let count = 0;
+    for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i++) if (reachableChar(n, i)) count++;
+    return count;
+  })();
   // A taken letter is hidden where it stands, never removed, so the words around it do not move.
   // Its character is split into its own span; letters after it in the same text node move to the
   // new node, and their records move with them.
@@ -781,15 +809,25 @@ import {
   const PATCH = 70;
   // A bigger colony can keep a longer, wider patch alive. This is what lets a busy trail at
   // the far end of the page keep finding letters instead of dying at its first small clump.
-  const patchRadius = () => Math.min(170, PATCH + Math.max(0, mainAnts().length - 8) * 6);
+  const patchRadius = () => Math.min(170, PATCH + Math.max(0, colonyAnts().length - 8) * 6);
   const inPatch = (r, c) => { const m = pageRect(); return Math.hypot(r.left + r.width / 2 - (c[0] - main.scrollLeft + m.left), r.top + r.height / 2 - (c[1] - main.scrollTop + m.top)) <= patchRadius(); };
+  const anyFreeLetter = () => {
+    for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i++) {
+      if (letterOf(n, i).state !== "free") continue;
+      const r = rectOf(n, i);
+      if (reachableChar(n, i, r)) return true;
+    }
+    return false;
+  };
   const freeIn = (block, center) => {
     const found = [];
     for (const n of textNodes(block)) for (let i = 0; i < n.data.length; i++) {
       if (!/\S/.test(n.data[i])) continue;
+      const r = rectOf(n, i);
+      if (!reachableChar(n, i, r)) continue;
       const L = letterOf(n, i); L.ch = n.data[i];
       if (L.state === "free" || (L.state === "gather" && L.crew.length < L.need)) {
-        const r = rectOf(n, i); if (center && !inPatch(r, center)) continue;
+        if (center && !inPatch(r, center)) continue;
         const [x, y] = local(r); found.push({ L, x: x + r.width / 2, y: y + r.height, r });
       }
     }
@@ -844,10 +882,12 @@ import {
     ant.trail = t;
     ant.lane = 5;
     t.ants.add(ant);
+    t.lastUse = performance.now() / 1000;
   };
   const leaveTrail = (ant) => {
     const t = ant.trail; if (!t) return;
     t.ants.delete(ant); ant.trail = null;
+    t.lastUse = performance.now() / 1000;
     if (!t.ants.size && !remaining(t)) retire(t);
   };
   // A spent trail leaves slowly and sends somebody out to find the next patch, so the colony
@@ -982,7 +1022,7 @@ import {
     ant.el.inert = state.tool === "wipe";
     const classes = antClasses(ant.role, ant.side).split(" ");
     ["scout", "soldier", "flyer", "builder", "rival"].forEach((name) => ant.el.classList.toggle(name, classes.includes(name)));
-    const rivalNames = { "rival-build": "Rival builder", "rival-guard": "Rival guard", "rival-defend": "Rival guard", "rival-flyer": "Rival flyer" };
+    const rivalNames = { "rival-build": "Rival builder", "rival-guard": "Rival guard", "rival-defend": "Rival guard", "rival-flyer": "Rival flyer", "rival-flyer-home": "Rival flyer" };
     const name = rivalNames[ant.job] || { scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival", "rival-worker": "Rival worker" }[ant.role];
     ant.el.setAttribute("aria-label", `${name} ant. Press to squash.`);
   };
@@ -998,8 +1038,10 @@ import {
     t.remainAt = now;
     for (const n of textNodes(t.block)) for (let i = 0; i < n.data.length; i++) {
       if (!/\S/.test(n.data[i])) continue;
-      const L = letterOf(n, i); if (L.state === "stolen") continue;
-      if (inPatch(rectOf(n, i), t.end)) { t.remainValue = true; return true; }
+      const r = rectOf(n, i);
+      if (!reachableChar(n, i, r)) continue;
+      const L = letterOf(n, i); if (L.state === "stolen" || L.state === "spent") continue;
+      if (inPatch(r, t.end)) { t.remainValue = true; return true; }
     }
     t.remainValue = false;
     return false;
@@ -1017,8 +1059,9 @@ import {
     ]);
     const options = [];
     for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 3) {
-      if (!/\S/.test(n.data[i]) || letterOf(n, i).state !== "free") continue;
-      const r = rectOf(n, i); if (!r.width) continue;
+      if (letterOf(n, i).state !== "free") continue;
+      const r = rectOf(n, i);
+      if (!reachableChar(n, i, r)) continue;
       if (busyBlocks.has(blockOf(n))) continue;
       const [x, y] = local(r);
       if (opening && !onScreen(r)) continue;
@@ -1030,8 +1073,9 @@ import {
       // block before turning the scout around, or the colony can loop forever.
       const free = [];
       for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 3) {
-        if (!/\S/.test(n.data[i]) || letterOf(n, i).state !== "free") continue;
-        const r = rectOf(n, i); if (!r.width) continue;
+        if (letterOf(n, i).state !== "free") continue;
+        const r = rectOf(n, i);
+        if (!reachableChar(n, i, r)) continue;
         const [x, y] = local(r);
         free.push([n, x + r.width / 2, y + r.height]);
       }
@@ -1190,7 +1234,7 @@ import {
     line.setAttribute("points", points);
     const born = performance.now() / 1000;
     const t = { pts: merged, block: route.block, end: route.end, ants: new Set(), line, halo, ready: true, hill: route.hill,
-      state: "ready", born, ttl: born + TUNING.trailTtl };
+      state: "ready", born, lastUse: born, ttl: born + TUNING.trailTtl };
     scent.append(halo, line);
     line.style.opacity = "0"; halo.style.opacity = "0";
     requestAnimationFrame(() => { line.style.opacity = ""; halo.style.opacity = ""; });
@@ -1223,6 +1267,7 @@ import {
     // A heavy letter cannot, and that is the case that used to stall: the scout stood at the
     // letter waiting for a crew that had no trail to follow. Only the heavy pickup opens the
     // trail early, and the call for help goes out with it.
+    state.lastForageAt = performance.now();
     if (light && ant.scoutRoute && needOf(L.n) > 1) {
       const t = layTrail(ant, "the scout calls for help; a trail is laid");
       if (t) join(ant, t);
@@ -1237,6 +1282,7 @@ import {
     glyph.style.cssText += lookOf(L.n.parentElement); glyph.style.left = x + "px"; glyph.style.top = y + "px";
     layer.append(glyph);
     L.home = [x, y]; L.glyph = glyph; L.state = "carried";
+    state.lastForageAt = performance.now();
     hideChar(L);
     blip(520, 0.05, "sine", 0.03);
     const leader = L.crew[0];
@@ -1301,6 +1347,9 @@ import {
   };
 
   const enterNest = (ant, carrying, meal = 1) => {
+    // An ant inside the hill is no longer walking the trail. Without this the scent looks busy
+    // forever and never earns its idle fade.
+    leaveTrail(ant);
     ant.el?.remove(); ant.el = null; ant.where = "nest"; ant.route = "down"; ant.d = 0; ant.food = carrying || null; ant.meal = meal; ant.letter = null;
   };
 
@@ -1336,7 +1385,7 @@ import {
     if (ant.side === "rival") { ant.px = ant.x; ant.py = ant.y; return stepRival(ant, dt); }
     if (ant.tongue || ant.job === "scout-pending") return;
     ant.px = ant.x; ant.py = ant.y;
-    if (ant.job === "dance") return; // the party moves its own dancers
+    if (ant.job === "dance" || ant.job === "finale-wander") return; // the party moves its own dancers
     if (ant.job === "wait") {
       if (!ant.letter || ant.letter.state !== "gather") { ant.el?.classList.remove("wait"); goHome(ant); return; }
       if (!ant.trail || ant.trail.state === "gone" || !state.trails.includes(ant.trail)) { abandonGather(ant); return; }
@@ -1519,7 +1568,7 @@ import {
   // There is no win and no reserve. If the last ant is gone the queen sends one scout back out
   // and the colony carries on. The only ending left is the page itself running out.
   const checkWipe = () => {
-    if (state.over || mainAnts().length || state.eggs.length || minis.length || state.builder) return;
+    if (state.over || colonyAnts().length || state.eggs.length) return;
     newAnt("scout", "hatch", 0);
     newAnt("soldier", "hatch", 0);
     newAnt("worker", "up", LEN.up - 0.06);
@@ -1529,19 +1578,41 @@ import {
   // A missing scout is a gap, not an ending. The queen sends one whenever nobody is scouting, so
   // a killed scout cannot leave the colony with no way to find a new trail.
   const enforceMainCap = () => {
-    while (mainAnts().length > MAX_ANTS) {
-      const victim = mainAnts().find((a) => a.role === "worker" && !a.letter) || mainAnts().find((a) => a.role !== "scout");
+    while (colonyAnts().length > MAX_ANTS) {
+      const victim = colonyAnts().find((a) => a.role === "worker" && !a.letter) || colonyAnts().find((a) => a.role !== "scout");
       if (!victim) break;
       squashQuiet(victim);
     }
   };
 
   const ensureScout = () => {
-    if (state.over || state.overrun || state.queenDead || state.party || mainAnts().length >= MAX_ANTS) return;
+    if (state.over || state.overrun || state.queenDead || state.party || colonyAnts().length >= MAX_ANTS) return;
     if (mainAnts().some((a) => a.role === "scout" || a.job === "scout")) return;
     if (state.builder) return;
     newAnt("scout", "hatch", 0);
     log("the queen sends out a scout");
+  };
+  // If food is still on the page but nothing has been picked up for a while, the colony has
+  // stalled: a scout was eaten, a trail aged out, or every ant went home. Nudge one back out
+  // instead of leaving the page frozen with visible letters nobody will take.
+  const watchForaging = (now) => {
+    if (state.over || state.party || now - state.lastForageAt < 12000) return;
+    if (now - (state.lastForageCheck || 0) < 3000) return;
+    state.lastForageCheck = now;
+    const working = state.trails.some((t) => !t.side && t.state !== "gone" && remaining(t));
+    if (working || !anyFreeLetter()) return;
+    const idleScout = colonyAnts().find((a) => a.role === "scout" && a.where === "page" && a.job !== "scout" && a.job !== "scout-pending");
+    if (idleScout) {
+      state.scoutQueue = state.scoutQueue.filter((a) => a !== idleScout);
+      idleScout.el?.classList.remove("wait");
+      scout(idleScout);
+      log("a scout is sent back out for the letters still on the page");
+      return;
+    }
+    if (colonyAnts().some((a) => a.role === "scout" || a.job === "scout" || a.job === "scout-pending")) return;
+    ensureScout();
+    state.lastForageAt = now;
+    log("a scout is sent back out for the letters still on the page");
   };
   // ================================ the dance ================================
   // The colony does not wait for the page to empty. Every few letters it stops, the queen comes
@@ -1576,6 +1647,7 @@ import {
   const startParty = (final = false) => {
     if (state.party || state.queenDead) return;
     const now = performance.now();
+    if (final && rival.active) retreatRival();
     const mound = home;
     const stage = stageSpot();
     const queen = document.createElement("div"); queen.className = "nest-queen crawling";
@@ -1585,24 +1657,61 @@ import {
     panel.classList.add("celebrating");
     scent.style.opacity = "0";
     hills.forEach((h) => { h.el.style.pointerEvents = "none"; });
-    const dancers = mainAnts().filter((a) => a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder");
-    const pausedScouts = state.scoutQueue.filter((a) => dancers.includes(a));
-    state.scoutQueue = state.scoutQueue.filter((a) => !dancers.includes(a));
+    const eligible = mainAnts().filter((a) => a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder");
+    // At the end the colony does not file back into the hill. Most ants keep the queen's circle,
+    // and the rest wander the page while one ant dances on every hill.
+    const circleCount = final ? Math.max(1, Math.ceil(eligible.length * 0.6)) : eligible.length;
+    const dancers = eligible.slice(0, circleCount);
+    const wanderers = final ? eligible.slice(circleCount) : [];
+    const pausedScouts = state.scoutQueue.filter((a) => eligible.includes(a));
+    state.scoutQueue = state.scoutQueue.filter((a) => !eligible.includes(a));
     const center = dancers.length ? dancers.reduce((sum, a) => ({ x: sum.x + a.x / dancers.length, y: sum.y + a.y / dancers.length }), { x: 0, y: 0 }) : stage;
     const firstAngle = Math.atan2(center.y - stage.y, center.x - stage.x);
     dancers.forEach((a, i) => {
       a.party = { angle: firstAngle + (i / Math.max(1, dancers.length)) * Math.PI * 2, radius: 48 };
       a.job = "dance"; a.el.classList.remove("wait", "dancing");
     });
+    wanderers.forEach((a, i) => {
+      a.party = null; a.job = "finale-wander"; a.el.classList.remove("wait");
+      a.el.classList.add("dancing");
+      a.finaleTarget = [stage.x + Math.cos(i * 2.4) * 90, stage.y + Math.sin(i * 1.7) * 60 + 40];
+      a.finaleNext = 0;
+    });
+    const moundDancers = [];
+    const pageDancers = [];
+    if (final) {
+      // The hills keep their own dancer, and if every ant is already in the queen's circle a few
+      // more join from the page so the celebration still reads across the whole width.
+      const hillsToDance = [home, ...minis];
+      hillsToDance.forEach((hillMound) => {
+        const d = document.createElement("div");
+        d.className = "nest-ant dancing nest-mound-dancer"; d.setAttribute("aria-hidden", "true");
+        d.innerHTML = antMarkup({ role: "worker" });
+        const x = hillMound.spot ? hillMound.spot.x : hillMound.hole[0];
+        const y = hillMound.spot ? hillMound.spot.y - 18 : hillMound.hole[1] - 6;
+        d.style.left = x + "px"; d.style.top = y + "px";
+        layer.append(d); moundDancers.push(d);
+      });
+      const extra = Math.max(0, Math.min(6, 5 - wanderers.length));
+      for (let i = 0; i < extra; i++) {
+        const d = document.createElement("div");
+        d.className = "nest-ant dancing nest-page-dancer"; d.setAttribute("aria-hidden", "true");
+        d.innerHTML = antMarkup({ role: "worker" });
+        const [x, y] = randomPoint();
+        d.style.left = x + "px"; d.style.top = y + "px";
+        layer.append(d);
+        pageDancers.push({ el: d, x, y, target: randomPoint(), next: 0 });
+      }
+    }
     const glyphs = [];
     [...state.stolen].slice(-8).forEach((L, i) => {
       const g = document.createElement("span"); g.className = "nest-orbit"; g.textContent = L.ch;
       g.dataset.radius = String(54 + (i % 2) * 16);
       layer.append(g); glyphs.push(g);
     });
-    const until = now + (final ? 16000 : 9000);
-    const returnAt = worshipReturnAt(until);
-    state.party = { start: now, until, returnAt, final, queen, dancers, glyphs, stage, departing: true, returning: false,
+    const until = final ? Infinity : now + 9000;
+    const returnAt = final ? Infinity : worshipReturnAt(until);
+    state.party = { start: now, until, returnAt, final, queen, dancers, wanderers, moundDancers, pageDancers, glyphs, stage, departing: true, returning: false,
       gathering: dancers.length > 0, gatherStart: now, pausedScouts,
       queenFrom: mound.hole.slice(),
       rivalReturnSpeed: rival.mound ? rival.ants.reduce((speed, ant) =>
@@ -1662,11 +1771,31 @@ import {
     });
     if (p.gathering && gathered) {
       p.gathering = false;
-      panel.dataset.partyPhase = "dance";
+      panel.dataset.partyPhase = p.final ? "finale" : "dance";
       const pause = now - p.gatherStart;
       p.until += pause;
       p.returnAt += pause;
     }
+    (p.wanderers || []).forEach((a) => {
+      if (!a.el) return;
+      if (!a.finaleTarget || now >= (a.finaleNext || 0) || Math.hypot(a.x - a.finaleTarget[0], a.y - a.finaleTarget[1]) < 14) {
+        a.finaleTarget = randomPoint(); a.finaleNext = now + 2200 + Math.random() * 2400;
+      }
+      const beforeX = a.x, beforeY = a.y;
+      move(a, a.finaleTarget[0], a.finaleTarget[1], dt, roleSpeed(a.role, "dance", SPEED, { factor: 0.55 }));
+      a.px = a.x; a.py = a.y;
+      a.el.classList.toggle("walk", Math.hypot(a.x - beforeX, a.y - beforeY) > 0.1);
+      a.el.classList.add("dancing");
+    });
+    (p.pageDancers || []).forEach((d) => {
+      if (now >= (d.next || 0) || Math.hypot(d.x - d.target[0], d.y - d.target[1]) < 16) {
+        d.target = randomPoint(); d.next = now + 1800 + Math.random() * 2600;
+      }
+      const dx = d.target[0] - d.x, dy = d.target[1] - d.y, len = Math.hypot(dx, dy) || 1;
+      const step = Math.min(len, 34 * dt);
+      d.x += (dx / len) * step; d.y += (dy / len) * step;
+      d.el.style.left = d.x + "px"; d.el.style.top = d.y + "px";
+    });
     p.glyphs.forEach((g, i) => {
       const angle = (i / Math.max(1, p.glyphs.length)) * Math.PI * 2 + t * 0.7;
       const r = Number(g.dataset.radius) || 58;
@@ -1674,11 +1803,14 @@ import {
       g.style.top = (p.stage.y + Math.sin(angle) * r * 0.55 - 4) + "px";
     });
     const rivalsSheltered = !rival.mound || rival.ants.every((ant) => !ant.el || ant.dead || ant.tongue || ant.el.hidden);
-    if (p.crawlDone && now >= p.until && rivalsSheltered) endParty();
+    if (!p.final && p.crawlDone && now >= p.until && rivalsSheltered) endParty();
   };
   const endParty = () => {
     const p = state.party; if (!p) return;
     p.queen.remove(); p.glyphs.forEach((g) => g.remove());
+    (p.moundDancers || []).forEach((d) => d.remove());
+    (p.pageDancers || []).forEach((d) => d.el.remove());
+    (p.wanderers || []).forEach((a) => a.el?.classList.remove("dancing"));
     panel.classList.remove("celebrating");
     scent.style.opacity = "";
     hills.forEach((h) => { h.el.style.pointerEvents = ""; });
@@ -1794,7 +1926,8 @@ import {
   };
   const randomPoint = () => [20 + Math.random() * (main.clientWidth - 40), main.scrollTop + 30 + Math.random() * (main.clientHeight - 60)];
   const spawnPageAnt = (role, at, mini) => {
-    if (mainAnts().length >= MAX_ANTS) return null;
+    const staff = role === "guard" || role === "flyer";
+    if (staff ? staffAnts().length >= MAX_STAFF : colonyAnts().length >= MAX_ANTS) return null;
     state.total++; const a = { id: state.total, role, side: "main", where: "page", x: at[0], y: at[1], px: at[0], py: at[1], heading: -Math.PI / 2, mini, hill: mini || home, hp: role === "guard" ? 2 : 1 };
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = antClasses(role, "main");
     a.el.innerHTML = antMarkup({ role });
@@ -1899,6 +2032,7 @@ import {
   };
   const squashQuiet = (ant) => { ant.el?.remove(); ant.el = null; state.ants = state.ants.filter((a) => a !== ant); };
   const removeMini = (mound, keepAnts = false) => {
+    if (!mound || !minis.includes(mound)) return;
     mound.el.remove();
     mound.links.forEach((link) => link.remove());
     minis.splice(minis.indexOf(mound), 1);
@@ -1977,7 +2111,7 @@ import {
     if (!move(f, g[0], g[1], dt, roleSpeed(f.role, f.job, SPEED, { factor: 2.1 }))) { f.px = f.x; f.py = f.y; return; }
     f.px = f.x; f.py = f.y;
     if (Math.random() < 0.35) { // dive for a letter somewhere on screen
-      const pool = []; for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 2) { if (!/\S/.test(n.data[i])) continue; const L = letterOf(n, i); if (L.state !== "free" || needOf(n) > 1) continue; const r = rectOf(n, i); if (onScreen(r)) pool.push([L, r]); if (pool.length > 400) break; }
+      const pool = []; for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 2) { if (!/\S/.test(n.data[i])) continue; const L = letterOf(n, i); if (L.state !== "free" || needOf(n) > 1) continue; const r = rectOf(n, i); if (reachableChar(n, i, r) && onScreen(r)) pool.push([L, r]); if (pool.length > 400) break; }
       if (pool.length) { const [L, r] = pool[Math.floor(Math.random() * pool.length)]; const [x, y] = local(r); L.state = "gather"; L.need = 1; L.crew = [f]; f.letter = L; f.job = "dive"; f.path = [[x + r.width / 2, y + r.height]]; f.k = 0; return; }
     }
     f.path = [randomPoint()]; f.k = 0;
@@ -1999,7 +2133,7 @@ import {
         }
       } else if (m.hp >= MINI_HP) m.nextHeal = 0;
       if (t < m.next || state.queenDead) return; m.next = t + SPEED_SPAWN();
-      if (m.guards.size < 3 && !(m.hadGuards && m.guards.size === 0)) { const g = spawnPageAnt("guard", [m.spot.x + (Math.random() < 0.5 ? -22 : 22), m.spot.y + 2], m); if (g) { m.guards.add(g); markGuards(m); assignGuard(g); blip(180, 0.05, "sawtooth", 0.03); } }
+      if (m.guards.size < 2 && !(m.hadGuards && m.guards.size === 0)) { const g = spawnPageAnt("guard", [m.spot.x + (Math.random() < 0.5 ? -22 : 22), m.spot.y + 2], m); if (g) { m.guards.add(g); markGuards(m); assignGuard(g); blip(180, 0.05, "sawtooth", 0.03); } }
       else if (m.flyers.size < 3) { const f = spawnPageAnt("flyer", m.hole.slice(), m); if (f) { m.flyers.add(f); f.job = "fly"; f.path = [randomPoint()]; f.k = 0; blip(720, 0.04, "sine", 0.02); } }
     });
   };
@@ -2135,7 +2269,6 @@ import {
   const squashRival = (a) => {
     if (!a.el || a.dead) return;
     a.dead = true;
-    state.squashed++;
     a.el.classList.add("swatted");
     blip(160, 0.08, "square", 0.04);
     setTimeout(() => { if (a.el) removeRivalAnt(a); }, 260);
@@ -2221,7 +2354,8 @@ import {
       if (!/\S/.test(n.data[i])) continue;
       const L = letterOf(n, i);
       if (L.state !== "free" || L.span || exclude.has(blockOf(n))) continue;
-      const r = rectOf(n, i); if (!r.width) continue;
+      const r = rectOf(n, i);
+      if (!reachableChar(n, i, r)) continue;
       const [x, y] = local(r);
       const d = Math.hypot(x - hole[0], y - hole[1]);
       if (d > 620) continue;
@@ -2237,7 +2371,8 @@ import {
       if (!/\S/.test(n.data[i])) continue;
       const L = letterOf(n, i);
       if (L.state !== "free" || L.span) continue;
-      const r = rectOf(n, i); if (!r.width) continue;
+      const r = rectOf(n, i);
+      if (!reachableChar(n, i, r)) continue;
       const [x, y] = local(r);
       const tx = x + r.width / 2, ty = y + r.height;
       if (Math.hypot(tx - hole[0], ty - hole[1]) > 620) continue;
@@ -2276,7 +2411,7 @@ import {
     scent.append(halo, line);
     const born = performance.now() / 1000;
     const t = { pts, block: pick.block, end: [pick.x, pick.y], ants: new Set(), line, halo, ready: true,
-      side: "rival", state: "ready", born, ttl: born + TUNING.trailTtl };
+      side: "rival", state: "ready", born, lastUse: born, ttl: born + TUNING.trailTtl };
     addEraser(t);
     state.trails.push(t); rival.trails.push(t);
     return t;
@@ -2291,6 +2426,7 @@ import {
     a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
     layer.append(a.el); placeAnt(a); label(a); state.ants.push(a); trail.ants.add(a);
+    trail.lastUse = performance.now() / 1000;
   };
   const stealRival = (trail, ant) => {
     if (!trail || !state.trails.includes(trail)) return false;
@@ -2355,10 +2491,40 @@ import {
       }
       return;
     }
-    if (a.job === "rival-flyer") {
+    if (a.job === "rival-flyer" || a.job === "rival-flyer-home") {
+      if (a.letter?.state === "rival-carry") {
+        const [hx, hy] = rival.mound.hole;
+        const arrived = move(a, hx, hy, dt, roleSpeed(a.role, "fly", SPEED, { factor: 1.6 }));
+        a.px = a.x; a.py = a.y;
+        if (a.glyph) { a.glyph.style.left = a.px + 2 + "px"; a.glyph.style.top = a.py - 16 + "px"; }
+        if (arrived) { bankRival(a); log("the rival flyer banks a letter at its mound"); }
+        return;
+      }
       const g = a.path[a.k]; if (!g) { a.path = [randomPoint()]; a.k = 0; return; }
       const arrived = move(a, g[0], g[1], dt, roleSpeed(a.role, a.job, SPEED)); a.px = a.x; a.py = a.y;
-      if (arrived) { a.path = [randomPoint()]; a.k = 0; }
+      if (!arrived) return;
+      if (Math.random() < 0.55) {
+        const pool = [];
+        for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 2) {
+          if (!/\S/.test(n.data[i])) continue;
+          const L = letterOf(n, i);
+          if (L.state !== "free" || needOf(n) > 1) continue;
+          const r = rectOf(n, i);
+          if (reachableChar(n, i, r) && onScreen(r)) pool.push([L, r]);
+          if (pool.length > 300) break;
+        }
+        if (pool.length) {
+          const [L, r] = pool[Math.floor(Math.random() * pool.length)];
+          const [x, y] = local(r);
+          hideChar(L); L.state = "rival-carry"; L.crew = [];
+          const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
+          glyph.style.cssText += lookOf(L.n.parentElement); glyph.style.left = x + "px"; glyph.style.top = y + "px";
+          layer.append(glyph); a.letter = L; a.glyph = glyph;
+          a.job = "rival-flyer-home"; a.path = [[rival.mound.hole[0], rival.mound.hole[1]]]; a.k = 0;
+          return;
+        }
+      }
+      a.path = [randomPoint()]; a.k = 0;
       return;
     }
     if (a.job === "rival-build") {
@@ -2367,6 +2533,28 @@ import {
         if (move(a, goal[0], goal[1], dt, SPEED * 1.5)) a.k++;
         a.px = a.x; a.py = a.y;
       } else if (a.buildSite) stepRivalMini(a, dt);
+      return;
+    }
+    if (a.job === "rival-raid") {
+      const m = a.raidMini;
+      if (!m || !minis.includes(m) || m.hp <= 0) {
+        a.raidMini = null; a.job = "rival-guard"; a.path = a.guardPath || []; a.k = 0;
+        a.el.classList.remove("marching");
+        return;
+      }
+      const arrived = move(a, m.spot.x, m.spot.y - 4, dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.8 }));
+      a.px = a.x; a.py = a.y;
+      if (!arrived || performance.now() < (a.nextBite || 0)) return;
+      a.nextBite = performance.now() + MOUND_BITE_INTERVAL * 1000;
+      m.hp = damageMound(m.hp); m.el.classList.add("hit"); setTimeout(() => m.el?.classList.remove("hit"), 320);
+      blip(140, 0.07, "square", 0.03);
+      log(`the rival bites a mini hill (${Math.max(0, m.hp)} hits left)`);
+      if (m.hp > 0) return;
+      m.el.classList.add("unbuilding");
+      setTimeout(() => { removeMini(m); checkWipe(); }, 560);
+      a.raidMini = null; a.job = "rival-guard"; a.path = a.guardPath || []; a.k = 0;
+      a.el.classList.remove("marching");
+      log("the rival breaks a mini hill");
       return;
     }
     if (a.job === "rival-guard" || a.job === "rival-defend") {
@@ -2393,7 +2581,10 @@ import {
     const now = performance.now();
     if (a.job === "rival-pause") {
       if (now < a.pauseAt) return;
-      if (!a.trail || !state.trails.includes(a.trail)) { removeRivalAnt(a); return; }
+      if (!a.trail || !state.trails.includes(a.trail)) {
+        if (a.flyer) { a.job = "rival-flyer"; a.path = [randomPoint()]; a.k = 0; return; }
+        removeRivalAnt(a); return;
+      }
       a.job = "rival-follow"; a.path = lanePath(a.trail.pts, a.lane); a.k = 0;
       return;
     }
@@ -2491,8 +2682,8 @@ import {
     const alive = allies.filter((a) => readyToFight(a) && (group.includes(a) || Math.hypot(a.x - origin[0], a.y - origin[1]) < 42));
     const power = alive.reduce((s, a) => s + combatPower(a), 0);
     if (!groupCanWin(power, combHp(target))) return;
-    if (side === "rival") { removeRivalAnt(target); state.squashed++; log(alive.length > 1 ? "the colony wins a group fight" : "a main ant drives off a rival ant"); }
-    else { removeMainCombatant(target); state.squashed++; log("the rival ants overwhelm a main ant"); }
+    if (side === "rival") { removeRivalAnt(target); log(alive.length > 1 ? "the colony wins a group fight" : "a main ant drives off a rival ant"); }
+    else { removeMainCombatant(target); log("the rival ants overwhelm a main ant"); }
   };
   const beginFight = (target, group, side) => {
     const fight = { target, group, side, origin: [target.x, target.y], done: false };
@@ -2507,8 +2698,8 @@ import {
     const { m, r, mainWins } = duel;
     releaseFighter(m); releaseFighter(r);
     if (state.party || !inCombat(m) || !inCombat(r)) return;
-    if (mainWins) { removeRivalAnt(r); state.squashed++; log("the main guard wins the duel"); }
-    else { removeMainCombatant(m); state.squashed++; log("the rival guard wins the duel"); }
+    if (mainWins) { removeRivalAnt(r); log("the main guard wins the duel"); }
+    else { removeMainCombatant(m); log("the rival guard wins the duel"); }
   };
   const beginDuel = (m, r, mainWins) => {
     stageCombat([m], [r]);
@@ -2574,7 +2765,10 @@ import {
   const stepRivalDefense = (ant, dt) => {
     if (!rival.active || !rival.mound) return goHome(ant);
     if (state.party) return;
-    const mini = ant.job === "rival-siege" ? rival.minis.find((m) => m.hp > 0) : null;
+    const goal = ant.path[0] || [ant.x, ant.y];
+    const mini = ant.job === "rival-siege"
+      ? rival.minis.find((m) => m.hp > 0 && Math.hypot(m.base[0] - goal[0], m.base[1] - goal[1]) < 90)
+      : null;
     const target = ant.job === "rival-contest" ? ant.path[ant.k] : mini ? [mini.base[0], mini.base[1]] : rival.mound.hole;
     if (!target) return goHome(ant);
     const arrived = move(ant, target[0], target[1], dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 0.85 }));
@@ -2593,7 +2787,9 @@ import {
     }
     if (ant.job === "rival-siege") {
       const crew = mainAnts().filter((a) => a.el && a.job === "rival-siege" && Math.hypot(a.x - target[0], a.y - target[1]) < 70).length;
-      if (crew < 3) { ant.el?.classList.add("waiting"); return; }
+      // Two ants can work a mound together; a lone ant still cannot. This keeps the stronger
+      // rival from turning the endgame into a permanent stalemate.
+      if (crew < 2) { ant.el?.classList.add("waiting"); return; }
       ant.el?.classList.remove("waiting");
       if (performance.now() < (ant.nextBite || 0)) return;
       ant.nextBite = performance.now() + MOUND_BITE_INTERVAL * 1000;
@@ -2605,6 +2801,7 @@ import {
         log(`the colony breaks a rival mini mound (${Math.max(0, mini.hp)} hits left)`);
         if (mini.hp <= 0) {
           mini.el.classList.add("unbuilding");
+          rival.nextMiniAt = performance.now() + 24000;
           setTimeout(() => { mini.el.remove(); rival.minis = rival.minis.filter((m) => m !== mini); }, 560);
         }
       } else {
@@ -2618,11 +2815,11 @@ import {
   let nextRivalAttack = 0, nextDefender = 0;
   const tickRivalAttack = (now) => {
     if (!rival.active || state.party || now < nextRivalAttack) return;
-    nextRivalAttack = now + 3500;
+    nextRivalAttack = now + (rival.war ? 3500 : 4000);
     if (rival.war) {
       const units = mainAnts().filter((a) => a.el && (a.role === "soldier" || a.role === "guard") && a.job !== "dance" && !a.rivalSiege && !a.rivalContest).slice(0, 3);
       units.forEach((a) => { a.job = "rival-siege"; a.path = [rival.mound.hole.slice()]; a.k = 0; a.rivalSiege = true; a.el.classList.add("marching"); });
-      if (units.length) log("the colony sends soldiers to end the rival");
+      if (units.length) log(units.length > 1 ? "the colony sends soldiers to end the rival" : "a soldier marches on the rival mound");
       return;
     }
     const soldier = mainAnts().find((a) => a.el && a.role === "soldier" && a.job !== "dance" && !a.rivalSiege && !a.rivalContest);
@@ -2633,6 +2830,28 @@ import {
     if (!unit) return;
     unit.job = "rival-contest"; unit.path = [contest]; unit.k = 0; unit.rivalContest = true; unit.el.classList.add("marching");
     log("a guard moves to a contested trail");
+  };
+
+  // The rival is not only a thief. A few guards leave the mound, walk to the nearest main mini
+  // hill, and bite it down while the colony's own guards try to drive them off.
+  const tickRivalRaid = (now) => {
+    if (!rival.active || state.party || !minis.length || now < (rival.raidAt || 0)) return;
+    rival.raidAt = now + 9000;
+    const hole = rival.mound.hole;
+    const target = minis.filter((m) => m.hp > 0 && !m.el.classList.contains("unbuilding"))
+      .reduce((best, m) => (Math.hypot(m.spot.x - hole[0], m.spot.y - hole[1]) < Math.hypot((best?.spot.x ?? Infinity) - hole[0], (best?.spot.y ?? Infinity) - hole[1]) ? m : best), null);
+    if (!target || Math.hypot(target.spot.x - hole[0], target.spot.y - hole[1]) > 640) return;
+    const pool = rival.ants.filter((a) => a.el && !a.dead && !a.fightUntil && a.job !== "rival-build" && a.job !== "rival-raid" && a.job !== "rival-home" && !a.letter);
+    const guards = pool.filter((a) => a.role === "guard" || a.job === "rival-defend");
+    const raiders = (guards.length ? guards : pool.filter((a) => a.job === "rival-flyer")).slice(0, 2);
+    if (!raiders.length) return;
+    raiders.forEach((a) => {
+      a.trail?.ants.delete(a); a.trail = null;
+      a.job = "rival-raid"; a.raidMini = target; a.path = [[target.spot.x, target.spot.y - 4]]; a.k = 0; a.nextBite = 0;
+      a.el.classList.add("marching");
+    });
+    callGuards(target);
+    log("rival guards march on a mini hill");
   };
 
   const retireRivalTrail = (t, retreat = true) => {
@@ -2726,19 +2945,37 @@ import {
     rival.stolen.forEach((L) => { L.state = "spent"; L.crew = []; });
     rival.stolen.clear();
     state.cache = null; state.cacheLetters = []; if (state.cacheTrail) retireCacheTrail();
-    rival.returnAt = performance.now() + 22000 + Math.random() * 18000;
+    // Put the marching soldiers back to work. Without this they keep a stale siege flag and never
+    // answer the next rival.
+    for (const a of mainAnts()) {
+      if (!a.rivalSiege && !a.rivalContest) continue;
+      a.rivalSiege = false; a.rivalContest = false;
+      if (a.job === "rival-siege" || a.job === "rival-contest") {
+        a.job = "home"; a.path = [hillOf(a).hole.slice()]; a.k = 0;
+      }
+      a.el?.classList.remove("marching");
+    }
+    rival.raidAt = 0; rival.nextMiniAt = 0;
+    // The next rival is tied to the next worship, not to a wall-clock delay: 2, then 3, 4, 5.
+    rival.returnAt = performance.now() + 5000;
     log("the rival colony falls; its stolen letters are gone");
     celebrate("the rival colony falls");
   };
   const foundRival = () => {
     if (rival.active || state.over || state.party) return;
     const milestone = state.partyIndex;
-    if (milestone < 2 || milestone % 2 !== 0 || rival.lastMilestone === milestone) return;
+    // A rival rises at worship 2, then 3, 4, 5, and every fifth worship after that. If one is
+    // still alive when its next worship passes, that slot is skipped and the colony waits for the
+    // next one in the sequence.
+    if (!isRivalWorship(milestone) || rival.lastMilestone >= milestone) return;
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
     mound.el.style.visibility = "hidden";
     rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = RIVAL_MOUND_HEALTH; rival.war = false;
     rival.lastMilestone = milestone; rival.lastBase = mound.base.slice(); rival.tier = (rival.tier || 0) + 1; rival.activeAt = performance.now();
+    rival.raidAt = performance.now() + 12000;
+    rival.nextMiniAt = performance.now() + 9000;
+    rival.repopAt = 0;
     const builders = Array.from({ length: 3 }, (_, index) => {
       const offset = index - 1;
       const bx = mound.base[0] + offset * 24, by = mound.base[1] + 8;
@@ -2782,9 +3019,19 @@ import {
     blip(260, 0.1, "sawtooth", 0.025);
   };
   const rivalCaps = () => {
-    const crew = mainAnts().length;
+    // The rival is an opponent, not a mirror. It keeps a little over half the main colony, so the
+    // player's nest can win a straight fight, and a later rival starts from the colony in front of
+    // it rather than from a fixed number.
+    // Count the whole nest, including the guards and flyers on the mini hills. Those are extra
+    // ants the rival has to face, so sizing the rival from the worker count alone made it weak.
+    const crew = Math.max(6, mainAnts().length);
     const tier = Math.max(1, rival.tier);
-    return { ants: Math.max(3, crew - 1), trails: Math.max(3, Math.ceil(crew / 5) + tier - 1), minis: Math.max(3, Math.floor(crew / 4) + tier - 1) };
+    const share = 0.58 + Math.min(0.1, (tier - 1) * 0.025);
+    return {
+      ants: Math.max(3, Math.min(20, Math.round(crew * share))),
+      trails: Math.max(3, Math.min(5, Math.ceil(crew / 7) + tier - 1)),
+      minis: Math.max(1, Math.min(3, Math.floor(crew / 8) + tier - 1)),
+    };
   };
   const damageRivalMini = (m) => {
     if (!rival.active || !m.el) return;
@@ -2795,6 +3042,7 @@ import {
     });
     if (m.hp <= 0) {
       m.el.classList.add("unbuilding");
+      rival.nextMiniAt = performance.now() + 24000;
       setTimeout(() => { m.el.remove(); rival.minis = rival.minis.filter((x) => x !== m); }, 560);
     }
   };
@@ -2836,8 +3084,11 @@ import {
     rival.nextExit = now + RIVAL_EXIT_GAP;
   };
   const buildRivalMinis = () => {
+    if (!rival.active || rival.founding || performance.now() < (rival.nextMiniAt || 0)) return;
+    if (rival.ants.length < 3) return;
     let remainingSites = Math.min(2, rivalCaps().minis - rival.minis.length - rival.sites.length);
-    if (!rival.active || rival.founding || remainingSites <= 0) return;
+    if (remainingSites <= 0) return;
+    rival.nextMiniAt = performance.now() + 12000;
     const terrain = miniTerrain();
     const occupied = rival.minis.map((mini) => mini.base).concat(rival.sites.map((site) => [site.x, site.y]));
     for (const radius of [130, 170, 210]) {
@@ -2898,6 +3149,7 @@ import {
     const guard = job === "rival-guard";
     const ant = spawnRivalUnit(job, mini.base, guard ? rivalMiniPatrol(mini) : [randomPoint()]);
     ant.mini = mini;
+    if (!guard) ant.flyer = true;
     (guard ? mini.guards : mini.flyers).add(ant);
   };
   const consumeRivalLetter = () => {
@@ -2920,8 +3172,29 @@ import {
   const growRival = () => {
     if (!rival.active || state.party || rival.founding) return;
     enforceRivalCap();
-    if (!rival.war && (rival.stolen.size >= 10 || performance.now() - (rival.activeAt || performance.now()) > 65000)) { rival.war = true; log("the colony declares all-out war on the rival"); }
-    if (!rival.ants.length) { retreatRival(); return; }
+    const age = performance.now() - (rival.activeAt || performance.now());
+    if (!rival.war && age > 150000) {
+      rival.war = true;
+      log("the colony declares all-out war on the rival");
+    }
+    // Killing every rival ant is not the same as breaking the mound. The mound keeps sending
+    // replacements until its own health is gone, which is the only way a rival colony is beaten.
+    if (!rival.ants.length) {
+      const now = performance.now();
+      if (now >= (rival.repopAt || 0)) {
+        const trail = rival.trails.find((t) => t.state !== "gone");
+        if (trail) spawnRival(trail);
+        else {
+          const pick = rivalTarget();
+          const made = pick ? rivalTrail(pick) : null;
+          if (made) spawnRival(made);
+          else spawnRivalUnit("rival-guard", rival.mound.hole, []);
+        }
+        rival.repopAt = now + 3500;
+        log("the rival mound sends another ant");
+      }
+      return;
+    }
     if (performance.now() < (rival.nextGrow || 0)) return;
     const caps = rivalCaps();
     if (rival.trails.length >= caps.trails && rival.minis.length >= caps.minis && rival.ants.length >= caps.ants) return;
@@ -3081,7 +3354,9 @@ import {
     setMeter("stores", state.stores / cap, state.builder ? "building" : minis.length >= MAX_MINIS ? "full" : `${state.stores}/${cap}`);
     const rivalStolen = rival.stolen.size;
     setText("rival-hint", rivalStolen ? ` · rival ${rivalStolen}` : "");
-    const held = pageLetters ? Math.max(0, 1 - (state.stolen.size + rivalStolen) / pageLetters) : 1;
+    // Count every letter that is off the page, whichever colony took it and whether it has since
+    // been eaten. A spent letter must not creep back into the denominator when the rival banks it.
+    const held = pageLetters ? Math.max(0, 1 - state.hiddenLetters.size / pageLetters) : 1;
     setMeter("holds", held, `${Math.round(held * 100)}%`);
     const pageLeft = Math.round(held * 100);
     setText("holds-hint", pageLeft >= 99 ? "page still whole"
@@ -3150,6 +3425,7 @@ import {
       stepRivalFounding(now, dt);
       rivalCombat(now);
       tickRivalAttack(now);
+      tickRivalRaid(now);
       growRival();
       releaseRival(now);
       drawPageAnts();
@@ -3158,27 +3434,27 @@ import {
       state.queen.eat = Math.max(0, state.queen.eat - dt); state.queen.lay = Math.max(0, state.queen.lay - dt * 0.7);
       state.eggs.slice().forEach((e) => {
         if (e.d < LEN.lay) e.d += NEST_SPEED * 0.6 * dt;
-        else if ((e.age += dt) > 3.4 && mainAnts().length < MAX_ANTS) {
+        else if ((e.age += dt) > 3.4 && colonyAnts().length < MAX_ANTS) {
           state.eggs.splice(state.eggs.indexOf(e), 1);
-          const soldiers = mainAnts().filter((a) => a.role === "soldier").length;
-          const wantSoldiers = Math.min(4, Math.floor(mainAnts().length / 6));
-          const soldier = mainAnts().length >= 10 && soldiers < wantSoldiers;
+          const soldiers = colonyAnts().filter((a) => a.role === "soldier").length;
+          const wantSoldiers = Math.min(4, Math.floor(colonyAnts().length / 6));
+          const soldier = colonyAnts().length >= 10 && soldiers < wantSoldiers;
           newAnt(soldier ? "soldier" : "worker", "hatch", 0);
           log(soldier ? "a soldier hatched" : "an egg hatched");
           blip(soldier ? 220 : 440, 0.06, "square", 0.035);
           setTimeout(() => blip(soldier ? 330 : 660, 0.05, "sine", 0.03), 90);
         }
       });
-      const mainCount = mainAnts().length;
-      const soldierCount = mainAnts().filter((a) => a.role === "soldier").length;
-      const threatSoldiers = rival.active ? Math.min(6, Math.ceil(rival.ants.length / 3)) : 0;
+      const mainCount = colonyAnts().length;
+      const soldierCount = colonyAnts().filter((a) => a.role === "soldier").length;
+      const threatSoldiers = rival.active ? Math.min(6, Math.max(rival.war ? 6 : 0, Math.ceil(rival.ants.length / 3))) : 0;
       const wantSoldiers = Math.max(Math.min(4, Math.floor(mainCount / 6)), threatSoldiers);
       if ((mainCount >= 10 || (rival.active && rival.ants.length >= 4)) && soldierCount < wantSoldiers && performance.now() >= nextDefender) {
         const spare = mainCount >= MAX_ANTS
-          ? mainAnts().find((a) => a.role === "worker" && !a.letter && a.job !== "carry" && a.job !== "crew")
+          ? colonyAnts().find((a) => a.role === "worker" && !a.letter && a.job !== "carry" && a.job !== "crew")
           : null;
         if (mainCount < MAX_ANTS || spare) {
-          nextDefender = now + 7000;
+          nextDefender = now + (rival.war ? 3000 : 6000);
           if (spare) squashQuiet(spare);
           if (state.stores > 0) state.stores--;
           else if (state.larder.length) state.larder.pop();
@@ -3190,16 +3466,26 @@ import {
     enforceMainCap();
     if ((tick = (tick + 1) % 6) === 0) {
       if (!state.paused) state.trails.slice().forEach((t) => {
-        if (t.side === "rival" || t.state === "gone" || t === state.cacheTrail) return;
-        if (!remaining(t)) {
-          const wore = t.ttl && performance.now() / 1000 > t.ttl;
-          retire(t);
-          log(wore ? "a trail wears out" : "a trail ran out of letters");
-          blip(220, 0.22, "sine", 0.03, -70);
+        if (t.state === "gone" || t === state.cacheTrail) return;
+        const nowS = performance.now() / 1000;
+        const idleAfter = t.side === "rival" ? TUNING.rivalTrailIdle : TUNING.trailIdle;
+        const empty = !t.ants.size;
+        const idle = empty && nowS - (t.lastUse || t.born || nowS) > idleAfter;
+        const wore = t.ttl && nowS > t.ttl;
+        if (t.side === "rival") {
+          if (!wore && !idle && remaining(t)) return;
+          retireRivalTrail(t, false);
+          log(wore ? "a rival trail wears out" : idle ? "a rival trail fades; no ants use it" : "a rival trail runs out of letters");
+          rivalRetarget();
+          return;
         }
+        if (!wore && !idle && remaining(t)) return;
+        retire(t);
+        log(wore ? "a trail wears out" : idle ? "a trail fades; no ants use it" : "a trail ran out of letters");
+        blip(220, 0.22, "sine", 0.03, -70);
       });
       if (!state.over) {
-        state.peak = Math.max(state.peak, mainAnts().length); checkWipe(); ensureScout();
+        state.peak = Math.max(state.peak, colonyAnts().length); checkWipe(); ensureScout(); watchForaging(now);
         if (!state.overrun && !state.party && state.stolenTotal >= worshipTarget()) startParty(false);
         tickMinis(now);
       }
@@ -3207,6 +3493,11 @@ import {
       drawNest(now);
       const perfStatsStart = performance.now();
       drawStats();
+      if (!state.over && !state.party && pageLetters > 0 && state.hiddenLetters.size >= pageLetters) {
+        state.over = true; state.finale = true;
+        startParty(true);
+        log("the page belongs to the colony");
+      }
       if (window.__nestPerf) { window.__nestPerfDraw = performance.now() - perfDrawStart; window.__nestPerfNest = perfStatsStart - perfDrawStart; }
     } else drawCounts();
     if (window.__nestPerf) {
@@ -3358,6 +3649,19 @@ import {
   const resetPage = () => {
     if (resetting) return;
     resetting = true;
+    if (state.party) {
+      const p = state.party;
+      p.queen.remove(); p.glyphs.forEach((g) => g.remove());
+      p.dancers.forEach((a) => a.el?.classList.remove("dancing"));
+      (p.wanderers || []).forEach((a) => a.el?.classList.remove("dancing"));
+      (p.moundDancers || []).forEach((d) => d.remove());
+      (p.pageDancers || []).forEach((d) => d.el.remove());
+      panel.classList.remove("celebrating");
+      hills.forEach((h) => { h.el.style.pointerEvents = ""; });
+      delete panel.dataset.partyPhase;
+      state.party = null;
+    }
+    state.over = false; state.finale = false;
     home.el.classList.add("unbuilding");
     setTimeout(() => {
     if (state.builder) cancelBuild(state.builder);
@@ -3432,6 +3736,9 @@ import {
       state.party.queen.remove();
       state.party.glyphs.forEach((g) => g.remove());
       state.party.dancers.forEach((a) => a.el?.classList.remove("dancing"));
+      (state.party.wanderers || []).forEach((a) => a.el?.classList.remove("dancing"));
+      (state.party.moundDancers || []).forEach((d) => d.remove());
+      (state.party.pageDancers || []).forEach((d) => d.el.remove());
       panel.classList.remove("celebrating");
       hills.forEach((h) => { h.el.style.pointerEvents = ""; });
       state.party = null;
@@ -3459,13 +3766,31 @@ import {
   $("leave").addEventListener("click", () => { $("confirm").hidden = true; leaveGo?.(); });
   $("stay").addEventListener("click", () => { $("confirm").hidden = true; antBtn.focus(); });
   const confirmLeave = (go, copy = {}) => {
-    $("confirm-title").textContent = copy.title || "Close the Nest?";
-    $("confirm-body").textContent = copy.body || "The colony is cleared and every stolen letter goes back where it was.";
+    $("confirm-title").textContent = copy.title || "Clear the colony and refresh the page?";
+    $("confirm-body").textContent = copy.body || "The colony stops and the page refreshes, so every letter is exactly where it started.";
     $("leave").textContent = copy.action || "clear and close";
     const box = $("confirm"); box.hidden = false; $("leave").focus();
     leaveGo = go;
   };
   if (new URLSearchParams(location.search).has("nest-debug")) {
+    const finishPage = () => {
+      let count = 0;
+      for (;;) {
+        let found = false;
+        for (const n of textNodes(main)) {
+          for (let i = 0; i < n.data.length; i++) {
+            const L = letterOf(n, i);
+            if (L.state !== "free" && L.state !== "gather") continue;
+            L.crew = []; L.state = "spent";
+            hideChar(L); state.stolen.add(L);
+            found = true; count++;
+            break;
+          }
+          if (found) break;
+        }
+        if (!found || count > 4000) return count;
+      }
+    };
     const forceRivalSteal = () => {
       if (!rival.active) return false;
       for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 3) {
@@ -3476,7 +3801,7 @@ import {
       }
       return false;
     };
-    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, startRival, forceRivalSteal, finishFights, spawnPageAnt, spawnRivalUnit, rivalCombat, retreatRival, removeRivalAnt, needOf };
+    window.__nest = { state, rival, home, minis, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, startRival, forceRivalSteal, finishPage, consumeRivalLetter, finishFights, spawnPageAnt, spawnRivalUnit, rivalCombat, retreatRival, removeRivalAnt, needOf, pageLetters, tickRivalRaid, tickRivalAttack, watchForaging, checkWipe };
   }
   return { stop, confirmLeave };
   };

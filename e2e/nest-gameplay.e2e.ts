@@ -96,7 +96,7 @@ test("the rival falls without dropping letters and celebrates", async ({ page })
   expect(result.celebration).toBeGreaterThan(0);
 });
 
-test("the rival mound dies when every rival ant dies", async ({ page }) => {
+test("the rival mound sends another ant when every rival ant dies", async ({ page }) => {
   await open(page);
   await page.evaluate(() => (window.__nest as any).startRival());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 20_000 }).toBeGreaterThan(0);
@@ -104,7 +104,8 @@ test("the rival mound dies when every rival ant dies", async ({ page }) => {
     const n = window.__nest as any;
     for (const a of n.rival.ants.slice()) n.removeRivalAnt(a);
   });
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 8_000 }).toBe(false);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.ants.length), { timeout: 12_000 }).toBeGreaterThan(0);
+  expect(await page.evaluate(() => (window.__nest as any).rival.active)).toBe(true);
 });
 
 
@@ -208,7 +209,7 @@ test("a main guard can break the rival mound without a player wipe", async ({ pa
 
 test("main trails share a trunk and fork instead of running parallel", async ({ page }) => {
   await open(page);
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.trails.filter((t: any) => !t.side).length), { timeout: 35_000 }).toBeGreaterThanOrEqual(2);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.trails.filter((t: any) => !t.side).length), { timeout: 45_000 }).toBeGreaterThanOrEqual(2);
   const shared = await page.evaluate(() => {
     const n = window.__nest as any;
     const trails = n.state.trails.filter((t: any) => !t.side);

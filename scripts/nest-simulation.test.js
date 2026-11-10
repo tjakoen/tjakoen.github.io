@@ -22,10 +22,10 @@ import { antClasses, antMarkup, miniArt } from "./nest-assets.js";
 
 describe("shared nest rules", () => {
   test("mound bites remove one shared hit point without going below zero", () => {
-    expect(RIVAL_MOUND_HEALTH).toBe(8);
+    expect(RIVAL_MOUND_HEALTH).toBe(16);
     expect(RIVAL_FOUNDING_TIME).toBe(3.2);
     expect(MOUND_BITE_INTERVAL).toBe(1.1);
-    expect(damageMound(8)).toBe(7);
+    expect(damageMound(16)).toBe(15);
     expect(damageMound(1)).toBe(0);
     expect(damageMound(0)).toBe(0);
   });
