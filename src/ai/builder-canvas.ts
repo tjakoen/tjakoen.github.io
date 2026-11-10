@@ -611,6 +611,10 @@ function boot(): void {
     clearProposal();
     const compositionAtAsk = state;
     const desk = deskModel();
+    if (document.body.dataset.deskMode === "browse") {
+      say("Local AI is off here. Use the block controls to edit the page.", "refusal");
+      return;
+    }
     if (!desk) {
       say("The desk cannot run here, so there is nothing to read your sentence. The rail's own controls still work.", "refusal");
       return;
@@ -825,6 +829,11 @@ function boot(): void {
   async function runBuild(ask: string): Promise<void> {
     const beforeComposition = state;
     const desk = deskModel();
+    if (document.body.dataset.deskMode === "browse") {
+      buildByWordList(ask);
+      say("Composed from the words in your brief. This used no AI model.", "reply");
+      return;
+    }
     if (!desk) {
       buildByWordList(ask);
       say("Composed from the words in that sentence. The desk cannot run here, so nothing read it.", "reply");

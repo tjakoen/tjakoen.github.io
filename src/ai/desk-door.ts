@@ -8,15 +8,13 @@
 // URL (resolved against this module's URL, so it works on a base-path host) — the `typeof import(...)`
 // annotations are type-only (erased). WebLLM itself is loaded lazily inside webllm-loader.loadEngine.
 //
-// OFFLINE (2026-07-13 requirement): markOffline sets body[data-desk="offline"], the portfolio's
-// CHAT-SPECIFIC marker — the CSS then hides the composer + chips and shows "Desk Offline", while the
-// door + stub demos stay ONLINE (global data-ai-online is untouched). We also probe WebGPU at load
-// and mark offline UP FRONT, so a browser that can't run the model never shows a dead composer.
+// Phones and browsers that cannot run WebGPU use Browse. The client door still serves scripted demos.
 
 import type { RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
+import { isMobileDevice, mountDeskBrowse } from "./desk-browse.ts";
 import { profileForPage, type ModelProfile } from "./webllm-loader.ts";
 import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS, CONTACT_FILL_BEAT_MS, FORM_FILL_BEAT_MS, type DeskNote } from "./desk-reasoner.ts";
 // B1 contact prefill — the ONE registered compose-body surface (contact-draft.ts names it in code;
@@ -75,29 +73,30 @@ const loc = (): { assign(u: string): void; pathname?: string } | undefined =>
 interface WebStorage { getItem(k: string): string | null; setItem(k: string, v: string): void; removeItem(k: string): void }
 const ss = (): WebStorage | undefined => (globalThis as unknown as { sessionStorage?: WebStorage }).sessionStorage;
 
-/** Mark the DESK CHAT offline (portfolio-owned marker). Not the global presence flag — the door and
- *  stub demos stay online; only the chat composer + chips hide (portfolio-frame.css). */
+/** Fall back to Browse while the client door and scripted demos stay available. */
 function markOffline(): void {
   const b = doc()?.body;
   if (b) b.dataset.desk = "offline";
+  browse.markFailed();
 }
 
 // ONE device probe at module load, used only for the up-front WebGPU/memory gate below (grain owns the
 // probe). The shared desk uses 0.5B; the Builder can choose 1.5B from conservative capability signals.
 // The same probe still decides whether any model can load here.
-const deviceCap = await grainWebllm.probeDevice();
+const mobile = matchMedia("(max-width: 768px)");
+const mobileDevice = isMobileDevice();
+const deviceCap = mobileDevice ? { webgpu: false } : await grainWebllm.probeDevice();
 // The up-front gate deliberately does NOT trust probeDevice()'s adapter result (`deviceCap.webgpu`).
 // On a COLD Safari load the GPU process isn't warm the instant this module evaluates, so
 // `requestAdapter()` can transiently resolve null even though WebGPU works a beat later — and a single
 // early false would strand the desk offline for the WHOLE session (sticky). So gate on the WebGPU API
 // being PRESENT (definitive: no API means no model, e.g. Firefox) plus the memory floor, and let the
 // REAL engine load on first chat.send be the true test — by then the GPU is warm, and ensureEngine
-// still degrades to offline if that load genuinely fails, so a merely-slow-to-warm browser recovers
-// while a truly incapable one still ends up offline (just on first use, not up front).
+// still falls back to Browse if the model fails to load.
 const gpuApiPresent = typeof (globalThis as unknown as
   { navigator?: { gpu?: { requestAdapter?: unknown } } }).navigator?.gpu?.requestAdapter === "function";
 const tooLittleMemory = typeof deviceCap.deviceMemory === "number" && deviceCap.deviceMemory < 4;
-const canRun = gpuApiPresent && !tooLittleMemory;
+const canRun = !mobileDevice && gpuApiPresent && !tooLittleMemory;
 // The shared desk stays on 0.5B. The Builder selects 1.5B only on devices that pass the memory/GPU
 // gate in webllm-loader.ts; all model data and prompts still stay in the browser.
 const profile = profileForPage(loc()?.pathname, deviceCap);
@@ -105,13 +104,17 @@ const profile = profileForPage(loc()?.pathname, deviceCap);
 // metadata only; it does not alter loading, prompts, or the visitor-facing page.
 if (typeof document !== "undefined" && document.body)
   document.body.dataset.aiModelProfile = profile.id;
-const probe = (): Promise<boolean> => Promise.resolve(canRun);
+const probe = (): Promise<boolean> => Promise.resolve(browse.allowsModel());
 
 // Load a GIVEN profile's model through grain's transport: grain owns the CDN import + warm-up, the desk
 // supplies WHICH model (profile.id) + its context window and forwards download progress to the load bar.
 // Takes the selected profile so the reasoner uses its window, generation knobs, and load-bar note.
-const loadEngine = (p: ModelProfile, onProgress: (progress: EngineProgress) => void) =>
-  grainWebllm.loadEngine({ modelId: p.id, onProgress, contextWindow: p.contextWindow });
+async function loadEngine(p: ModelProfile, onProgress: (progress: EngineProgress) => void) {
+  if (!browse.allowsModel()) throw new Error("Local AI is disabled in Browse.");
+  const engine = await grainWebllm.loadEngine({ modelId: p.id, onProgress, contextWindow: p.contextWindow });
+  try { ss()?.setItem("desk-model-warm:" + p.id, "1"); } catch { /* storage may be blocked */ }
+  return engine;
+}
 
 // A fetch whose failure is loud, not silent. Every one of the frozen artifacts below resolves to a
 // 404 HTML error page on a broken deploy rather than rejecting, so an unchecked status quietly parses
@@ -130,6 +133,7 @@ const knowledgeCache = createKnowledgeCache(async () => {
   return response.json() as Promise<Knowledge>;
 });
 const loadKnowledge = knowledgeCache.load;
+const browse = mountDeskBrowse({ canRun, downloadNote: profile.downloadNote, mobile });
 
 // Newest-first notes for "open the latest note" — the frozen /notes.json (base-path aware). Memoized.
 let notesP: Promise<DeskNote[]> | null = null;
@@ -721,8 +725,7 @@ async function runFormTask(applyOp: (op: RenderOp) => void): Promise<void> {
 /** The door the dispatcher composes (data-ai-door). grain marks presence ONLINE once this returns;
  *  the desk chat's own health rides the separate data-desk marker. */
 export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLayer {
-  // Up-front UX: if the model can't run here, hide the chat before the visitor ever types.
-  probe().then((ok) => { if (!ok) markOffline(); }).catch(() => markOffline());
+  if (!canRun) markOffline();
 
   // Navigate through GRAIN's own `navigate` RenderOp (kit.navigateOp → applyOp), not a bare
   // location.assign: it gets the SAME href validation (isSafeNavigateHref — navigateOp throws right
@@ -787,7 +790,8 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // model. That was the owner's call on 2026-08-14, and a silent fallback is the shape of every
   // silent-success bug this estate has recorded.
   (globalThis as unknown as { desk?: { complete(prompt: string, schema?: JsonSchema): Promise<string | null> } }).desk = {
-    complete: (prompt: string, schema?: JsonSchema) => reasoner.complete(prompt, schema),
+    complete: (prompt: string, schema?: JsonSchema) =>
+      browse.allowsModel() ? reasoner.complete(prompt, schema) : Promise.resolve(null),
   };
   // If we arrived here from a desk navigation, resume the lamp on this page (cross-page continuity).
   // Read the arrival key BEFORE runArrival consumes it, so page-arrival awareness can skip a page the
@@ -802,19 +806,23 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // (which owns the engine) reads the stashed agent state and takes the next turn. Runs last in the
   // chain, and suppresses the ordinary page-arrival greeting below (the agent speaks for itself). A
   // no-op when no agent state is stashed.
-  const showcaseRunning = showcaseActive();
+  const showcaseRunning = browse.allowsModel() && showcaseActive();
+  if (!browse.allowsModel()) showcaseClear();
   void runArrival(applyOp).then(() => runTourLeg(applyOp, navigate)).then(() => runMailTask(applyOp))
     .then(() => runContactTask(applyOp))
     .then(() => runFormTask(applyOp))
     .then(() => (showcaseRunning ? reasoner.showcaseResume?.(applyOp) : undefined))
     .catch((err) => console.error("[desk] arrival chain failed", err));
-  // Page-arrival awareness (reasoner-driven): read the new page and offer a greeting + contextual
-  // chips — but ONLY when the desk is already warm this session (site.js sets desk-warm on the first
-  // chat.send) and the visitor navigated here themselves. Gated so a visitor who never opened the desk
-  // is never forced to load the model just by navigating (this is an MPA: the engine reloads per page).
-  const warm = (() => { try { return ss()?.getItem("desk-warm") === "1"; } catch { return false; } })();
-  if (warm && !droveHere && !showcaseRunning) void reasoner.arrive(applyOp);
-  // There is no visitor model picker. The selected local profile loads on first use and stays warm
-  // for this page; its download size is disclosed in the Builder guidance and the load bar.
-  return grainDoor.createClientDoor(applyOp, { reasoner });
+  // Greet on arrival only after this profile has already loaded in this tab.
+  const warm = (() => { try { return ss()?.getItem("desk-model-warm:" + profile.id) === "1"; } catch { return false; } })();
+  if (browse.allowsModel() && warm && !droveHere && !showcaseRunning) void reasoner.arrive(applyOp);
+  return grainDoor.createClientDoor(applyOp, {
+    reasoner: {
+      decide(intent, tools) {
+        if (intent.action === "chat.send" && !browse.allowsModel())
+          return Promise.resolve({ ok: false, ops: [], reason: "Use Browse to search the portfolio without local AI." });
+        return reasoner.decide(intent, tools);
+      },
+    },
+  });
 }

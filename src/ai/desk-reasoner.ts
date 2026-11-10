@@ -1827,9 +1827,8 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
     },
 
     // Page-arrival awareness (reasoner-driven). Called by the door on load, only when the desk is
-    // already warm this session (desk-door.ts checks the desk-warm flag site.js sets on the first
-    // chat.send) — so a visitor who never opened the desk is never made to load the model just by
-    // navigating. Best-effort and unobtrusive: SILENT engine load (no progress bar on a nav), and if
+    // already warm this session. The door records a successful load of this profile before it
+    // allows an arrival greeting, so ordinary navigation never starts a first download. Best-effort and unobtrusive: SILENT engine load (no progress bar on a nav), and if
     // the model can't run, the page is empty, or the parse fails, it's a no-op and the static starter
     // chips stand. When it works: a short "you're on X, here's what's here" greeting + chips the model
     // drew from THIS page's content.

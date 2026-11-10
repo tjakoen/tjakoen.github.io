@@ -108,7 +108,7 @@ const MODULE_ENTRIES = [
 // grounding corpus (knowledge/notes), the SEO infra, and PROOF's stylesheet (/proof.css — every
 // /plans page links it, so now that /plans exports (Phase 2) it must travel too, or the frozen
 // board ships unstyled).
-const DATA_ROUTES = ["/components.css", "/proof.css", "/crumb.css", "/crumb-live.js", "/search.json", "/knowledge.json", "/notes.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
+const DATA_ROUTES = ["/components.css", "/proof.css", "/crumb.css", "/crumb-live.js", "/search.json", "/knowledge.json", "/notes.json", "/recent.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
 
 // CRUMB's tour DATA: the guided-tour client (crumb-live.js, injected on every page) fetches
 // /crumb/tours/<id>.json at run time, so a static export must freeze those JSON blobs or the dock's

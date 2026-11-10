@@ -33,6 +33,17 @@
   const get = (k) => { try { return store && store.getItem(k); } catch { return null; } };
   const put = (k, v) => { try { if (store) store.setItem(k, v); } catch { /* private mode */ } };
   const del = (k) => { try { if (store) store.removeItem(k); } catch { /* private mode */ } };
+  const hasDeskCookie = () => document.cookie.split(";").some((cookie) => cookie.trim().startsWith("desk_session="));
+  let rememberDesk = false;
+  try {
+    rememberDesk = hasDeskCookie() && sessionStorage.getItem("desk-consent") !== "deny" &&
+      sessionStorage.getItem("desk-history-scope") !== "tab";
+    sessionStorage.setItem("desk-history-scope", rememberDesk ? "device" : "tab");
+  } catch { /* private mode */ }
+  const deskStore = () => rememberDesk && hasDeskCookie() ? store : sessionStorage;
+  const getDesk = (key) => { try { return deskStore()?.getItem(key) ?? null; } catch { return null; } };
+  const putDesk = (key, value) => { try { deskStore()?.setItem(key, value); } catch { /* private mode */ } };
+  let clearing = false;
 
   // ---- "clear everything" — the full local wipe behind the window Refresh (top-left) and the
   // `clearcache` terminal command. Clears ALL device-local state: localStorage (chat history, notes,
@@ -40,6 +51,8 @@
   // the heavy one — the browser Cache API + IndexedDB, where WebLLM stores the downloaded model weights
   // (~350MB). So a wipe truly starts clean, model and all.
   async function wipeAll() {
+    clearing = true;
+    document.cookie = "desk_session=; Path=/; SameSite=Lax; Max-Age=0";
     try { if (window.localStorage) window.localStorage.clear(); } catch { /* private mode */ }
     try { if (window.sessionStorage) window.sessionStorage.clear(); } catch { /* private mode */ }
     // WebLLM caches weights in the Cache API (grain webllm.ts); clearing every cache reclaims it.
@@ -118,7 +131,7 @@
     const MODE_KEY = "portfolio:aside-mode";
     const modeTabs = document.querySelectorAll(".assistant__modes [data-shell-mode]");
     for (const b of modeTabs) b.addEventListener("click", () => {
-      try { if (store) store.setItem(MODE_KEY, b.getAttribute("data-shell-mode")); } catch { /* private mode */ }
+      try { if (store) store.setItem(MODE_KEY, b.dataset.shellMode === "browse" ? "chat" : b.dataset.shellMode); } catch { /* private mode */ }
     });
 
     // ---- mobile: the open-tabs strip (grain/scripts/tabs.js) scrolls horizontally with no
@@ -263,13 +276,8 @@
         el.disabled = off;
         if (off && el.matches("input")) el.placeholder = "The desk is offline";
       }
-      // A disabled composer is a weak signal: the pane still LOOKS like a live chat. On a client
-      // door (the desk's own, data-ai-transport="client"), data-ai-online="false" means the door
-      // module itself failed to load, so nothing can answer and nothing will mark the chat offline
-      // from the inside (markOffline lives in that module). Say it on the pane instead, through the
-      // marker the desk already owns: the composer and chips hide and the offline notice shows.
-      // Client transport only, deliberately: the SSE door flips presence off on a transient drop
-      // and back on reconnect, and a blip must not strand the chat behind a permanent notice.
+      // A failed client import cannot mount Browse. Keep the static navigation notice available.
+      // The server door can reconnect, so its composer follows the current presence state instead.
       if (off && document.body.dataset.aiTransport === "client") document.body.dataset.desk = "offline";
     };
     new MutationObserver(applyPresence).observe(document.body, { attributes: true, attributeFilter: ["data-ai-online"] });
@@ -277,7 +285,7 @@
 
     // ---- persistent chat + terminal across navigation (this is an MPA: each page is a fresh
     // document, so the desk's conversation and its narration would reset on every nav. Restore
-    // both from localStorage on load, and save on change — capped so they can't grow unbounded).
+    // both from the tab unless the visitor chose to remember the Desk, and save on change — capped so they can't grow unbounded).
     // A `replace` RenderOp swaps a surface NODE (outerHTML), so bind the observer to a STABLE
     // ancestor and re-query the surface each time — otherwise persistence orphans after the first run.
     const flushers = [];                           // synchronous "save NOW" for each persisted surface
@@ -287,15 +295,17 @@
       const cur = () => root.querySelector(`[data-surface="${surface}"]`);
       const el0 = cur();
       if (!el0) return null;
-      const saved = get(key);
+      const saved = getDesk(key);
       // the frame restores before first paint (portfolio-frame.html) and marks data-restored
       if (saved != null && !el0.hasAttribute("data-restored")) el0.innerHTML = saved;
       // the actual write — shared by the debounced saver AND the flush-on-exit below.
       const flush = () => {
         const el = cur();
-        if (!el) return;
+        if (!el || clearing) return;
         while (el.children.length > cap) el.removeChild(el.firstElementChild);
-        put(key, el.innerHTML);
+        const copy = el.cloneNode(true);
+        copy.querySelectorAll("[data-consent-notice]").forEach((notice) => notice.remove());
+        putDesk(key, copy.innerHTML);
       };
       flushers.push(flush);
       let t = null;
@@ -309,6 +319,12 @@
     // user) navigates — and typing/streaming keeps resetting it — so without this the chat + terminal
     // vanish on every navigation. pagehide fires on real nav; visibilitychange covers bfcache/mobile.
     const flushAll = () => { for (const f of flushers) f(); };
+    window.addEventListener("desk:remember", () => {
+      if (!hasDeskCookie()) return;
+      rememberDesk = true;
+      try { sessionStorage.setItem("desk-history-scope", "device"); } catch { /* private mode */ }
+      flushAll();
+    });
     window.addEventListener("pagehide", flushAll);
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushAll(); });
 
@@ -355,7 +371,7 @@
       };
       tick();
     };
-    if (chatLog && get(KEY.chat) == null) greet();
+    if (chatLog && getDesk(KEY.chat) == null) greet();
 
     // ---- suggestion chips: seed a per-page starter set; the desk then REPLACES them with contextual
     // follow-ups after each answer (desk-reasoner). A click routes through the SAME one door as the
@@ -436,19 +452,18 @@
       });
     }
 
-    // ---- mark the desk "warm" the first time the visitor engages it (any chat.send: a typed message
-    // or a chip). The desk door reads this session flag on load to decide whether to run page-arrival
-    // awareness (a greeting + contextual chips read from the new page) on later navigations — so a
-    // visitor who never opened the desk is never forced to load the browser model just by navigating.
+    // The server demo records engagement on send. The client door records warmth only after
+    // the selected model actually loads, so a navigation command cannot trigger a later download.
+    const clientDesk = document.body.dataset.aiTransport === "client";
     const markWarm = () => { try { sessionStorage.setItem("desk-warm", "1"); } catch { /* private mode */ } };
-    document.addEventListener("click", (ev) => {
-      const t = ev.target;
-      if (t && t.closest && t.closest('[data-action="chat.send"]')) markWarm();
-    });
-    document.addEventListener("keydown", (ev) => {
-      const t = ev.target;
-      if (ev.key === "Enter" && t && t.matches && t.matches('[data-surface="chat-input"]')) markWarm();
-    });
+    if (!clientDesk) {
+      document.addEventListener("click", (ev) => {
+        if (ev.target.closest?.('[data-action="chat.send"]')) markWarm();
+      });
+      document.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter" && ev.target.matches?.('[data-surface="chat-input"]')) markWarm();
+      });
+    }
 
     // ---- deep-link autostart: the welcome "Watch me work" card links to "/grain#watch". On arrival,
     // kick the demo through the SAME one door a chip/typed message uses, once the desk door is up. The
@@ -456,12 +471,20 @@
     // collapsed by design (you go to /grain to use it), so this is how that visible card launches it.
     if (location.hash === "#watch") {
       try { history.replaceState(null, "", location.pathname + location.search); } catch { /* no-op */ }
-      markWarm();
+      if (!clientDesk) markWarm();
       let tries = 0;
       const iv = setInterval(() => {
         const door = window.grain && window.grain.door;
-        if (door && typeof door.submit === "function") { clearInterval(iv); door.submit("chat.send", "chat-log", { text: "watch me work" }); }
-        else if (++tries > 80) clearInterval(iv);   // ~16s ceiling, then give up quietly
+        if (door && typeof door.submit === "function") {
+          clearInterval(iv);
+          if (document.body.dataset.deskMode === "browse") {
+            const shell = document.querySelector(".app-shell");
+            shell?.removeAttribute("data-aside-hidden");
+            shell?.setAttribute("data-aside-open", "true");
+            return;
+          }
+          door.submit("chat.send", "chat-log", { text: "watch me work" });
+        } else if (++tries > 80) clearInterval(iv);   // ~16s ceiling, then give up quietly
       }, 200);
     }
 
@@ -469,10 +492,9 @@
     // page's starter chips. The model itself stays loaded (deskReset only forgets the turns).
     const newChatBtn = document.querySelector("[data-desk-newchat]");
     if (newChatBtn) {
-      newChatBtn.addEventListener("click", (ev) => {
-        ev.stopPropagation();                           // don't also toggle the mobile sheet (head = grab bar)
+      newChatBtn.addEventListener("click", () => {
         if (chatLog) chatLog.innerHTML = '<p class="assistant__empty">Ask the desk about TJ — or anything on this site. It answers here, and narrates its work in the terminal below.</p>';
-        del(KEY.chat);
+        try { deskStore()?.removeItem(KEY.chat); } catch { /* private mode */ }
         if (typeof window.deskReset === "function") window.deskReset();
         greet();                                        // fresh greeting (also re-persists a clean log)
         setDefaultChips();                              // swap the follow-ups back to page starters

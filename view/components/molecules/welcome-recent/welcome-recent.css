@@ -5,6 +5,7 @@
 .recent__item { display: grid; grid-template-columns: minmax(0, 1fr) auto;
   align-items: baseline; gap: var(--space-1) var(--space-4); width: 100%; min-width: 0;
   text-decoration: none; font-size: var(--text-base); }
+.recent__type { display: none; }
 .recent__name { color: var(--color-accent, var(--ink)); }
 .recent__item:hover .recent__name { text-decoration: underline; }
 .recent__path { max-width: min(40vw, 18rem); overflow: hidden; color: var(--ink-muted);

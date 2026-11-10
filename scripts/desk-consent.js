@@ -10,7 +10,11 @@
   const session = window.__DESK_SESSION__;
   if (!LOG || !session) return;
   const stored = document.cookie.split("; ").some((cookie) => cookie.startsWith("desk_session="));
-  if (stored || sessionStorage.getItem("desk-consent")) return;
+  const remembered = () => stored && sessionStorage.getItem("desk-history-scope") === "device";
+  let answered = false;
+  try { answered = remembered() || Boolean(sessionStorage.getItem("desk-consent")); } catch { /* private mode */ }
+  LOG.querySelectorAll("[data-consent-notice]").forEach((notice) => notice.remove());
+  if (answered) return;
 
   const ask = () => {
     if (LOG.querySelector("[data-consent-notice]")) return;
@@ -19,9 +23,10 @@
     message.dataset.role = "ai";
     message.dataset.grade = "grain";
     message.dataset.consentNotice = "";
+    message.dataset.surface = "desk-consent";
     message.innerHTML =
       '<span class="chat-message__who">GRAIN</span>' +
-      '<span class="chat-message__body">May the desk remember this conversation on this device with a cookie? It stores a session id for 30 days. Not now loses only the remembering.</span>' +
+      '<span class="chat-message__body">May the Desk remember this conversation on this device? If you allow it, the Desk saves your chat and its terminal history in this browser and uses a cookie for 30 days. Otherwise, this conversation stays in this tab.</span>' +
       '<div class="chat-message__actions">' +
       '<button class="btn" data-variant="soft" type="button" data-consent="allow">Remember this chat</button>' +
       '<button class="btn" data-variant="outline" type="button" data-consent="deny">Not now</button>' +
@@ -31,10 +36,13 @@
       const button = event.target.closest("[data-consent]");
       if (!button) return;
       const allow = button.dataset.consent === "allow";
-      sessionStorage.setItem("desk-consent", allow ? "allow" : "deny");
-      if (allow)
-        document.cookie = `desk_session=${encodeURIComponent(session)}; Path=/; SameSite=Lax; Max-Age=2592000`;
+      try { sessionStorage.setItem("desk-consent", allow ? "allow" : "deny"); } catch { /* private mode */ }
       message.remove();
+      if (allow) {
+        const secure = location.protocol === "https:" ? "; Secure" : "";
+        document.cookie = `desk_session=${encodeURIComponent(session)}; Path=/; SameSite=Lax; Max-Age=2592000${secure}`;
+        window.dispatchEvent(new Event("desk:remember"));
+      }
     });
   };
 

@@ -21,8 +21,8 @@ import { test, expect } from "@playwright/test";
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     try {
-      localStorage.setItem("tj.chat", "");          // greeting skipped → empty-state chat (deterministic)
-      localStorage.setItem("tj.terminal", "");      // no restored console noise
+      sessionStorage.setItem("tj.chat", "");          // greeting skipped → empty-state chat (deterministic)
+      sessionStorage.setItem("tj.terminal", "");      // no restored console noise
       localStorage.setItem("tj.welcome-startup", "off");
     } catch { /* private mode — greeting will type, snapshot may flake; acceptable */ }
   });

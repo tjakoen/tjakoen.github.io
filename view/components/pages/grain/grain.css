@@ -1,7 +1,7 @@
 /* pages/grain — the /grain demo-site LAYOUT only (NOT the design system; this page is GRAIN's own
    marketing site, composed from GRAIN's components on the default theme). Bundled into /components.css,
    scoped to the grain screen so nothing leaks. Tokens only — no hardcoded colours. */
-[data-screen="grain"] .site { --site-max: 60rem; }
+[data-screen="grain"] .site { --site-max: 60rem; --site-pad: min(var(--page-pad), 6%); }
 
 /* persistent chrome: a quiet sticky bar (wordmark · demo flag · ⌘K · Inspect) */
 [data-screen="grain"] .site__bar {
@@ -22,7 +22,7 @@
 [data-screen="grain"] .site__bar-actions { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; }
 
 /* one editorial column, rules between sections */
-[data-screen="grain"] .site__section { max-width: var(--site-max); margin: 0 auto; padding: var(--space-7) var(--page-pad); }
+[data-screen="grain"] .site__section { max-width: var(--site-max); margin: 0 auto; padding-block: var(--space-8); padding-inline: var(--site-pad); }
 [data-screen="grain"] .site__section + .site__section { border-top: 1px solid var(--color-line); }
 [data-screen="grain"] .site__lede { color: var(--color-muted); font-size: var(--text-lg); max-width: 54ch; line-height: var(--leading-relaxed); }
 [data-screen="grain"] .site__why { color: var(--color-muted); font-size: var(--text-sm); max-width: 60ch; }
@@ -93,7 +93,7 @@
 [data-screen="grain"] .how__points { margin-top: var(--space-6); }
 
 /* footer */
-[data-screen="grain"] .site__foot { max-width: var(--site-max); margin: 0 auto; padding: var(--space-8) var(--page-pad) var(--space-16);
+[data-screen="grain"] .site__foot { max-width: var(--site-max); margin: 0 auto; padding-block: var(--space-8); padding-inline: var(--site-pad);
   border-top: 1px solid var(--color-line); color: var(--color-muted); font-size: var(--text-sm); }
 [data-screen="grain"] .site__foot-links { display: flex; flex-wrap: wrap; gap: var(--space-5); margin-bottom: var(--space-4); }
 [data-screen="grain"] .site__foot em { font-style: normal; text-decoration: underline; }

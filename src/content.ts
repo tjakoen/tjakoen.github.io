@@ -925,18 +925,22 @@ ${cards}
  *  first — server-composed live data (the export freezes it, §18). It says "Recent", so a talk
  *  given last week belongs in it as much as a note published last week; /calendar is the full
  *  version of the same merge. Shape matches the <welcome-recent> component's bindings. */
-export interface RecentNote { title: string; href: string; path: string; }
+export interface RecentNote { title: string; href: string; path: string; kindLabel: string; }
+export function invalidateRecentContent(): void {
+  sortedNoteEntriesP = null;
+  eventCalendarEventsP = null;
+}
 export async function listRecentNotes(limit = 4): Promise<RecentNote[]> {
   const notes = (await sortedNoteEntries()).filter((e) => e.date).map((e) => ({
-    date: e.date, title: e.title, href: `/notes/${e.slug}`, path: `notes/${e.slug}.md`,
+    date: e.date, title: e.title, href: `/notes/${e.slug}`, path: `notes/${e.slug}.md`, kindLabel: "Note",
   }));
   const events = (await listEventCalendarEvents()).map((e) => ({
-    date: e.date, title: e.title, href: e.link, path: `calendar/${e.id.replace(/^event-/, "")}.md`,
+    date: e.date, title: e.title, href: e.link, path: `calendar/${e.id.replace(/^event-/, "")}.md`, kindLabel: kindLabel(e.kind),
   }));
   return [...notes, ...events]
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, limit)
-    .map(({ title, href, path }) => ({ title, href, path }));
+    .map(({ title, href, path, kindLabel }) => ({ title, href, path, kindLabel }));
 }
 
 /** The welcome page's feed walkthrough: the single newest calendar event, as a one-item array so
