@@ -1,5 +1,5 @@
 ---
-title: "Our CTO Said Move Bugs Left. My Tech Lead Built the Tool."
+title: "Our CTO Said Move Bugs to the Left. My Tech Lead Built the Tool."
 subtitle: "Matt's standing rule is that a wrong assumption gets cheaper the earlier you catch it. Kercwin turned that rule into an epic checker that reads every ticket and pull request against the plan before the drift sets in."
 author: "Tjakoen Stolk"
 status: PUBLISHED
@@ -11,10 +11,10 @@ summary: >
   Kercwin, the tech lead of my team, built an epic checker that keeps a busy project aligned to its
   architecture plan. It reads each ticket and open pull request against the plan in Confluence, flags new
   decisions and conflicts between pull requests, and puts each one in front of the person who owns it. The
-  idea under it is our CTO Matt Monroe's rule: move bugs as far left in the process as possible.
+  idea under it is our CTO Matt Monroe's rule: move bugs as far to the left in the process as possible.
 social: |
   Our CTO, Matt Monroe (https://www.linkedin.com/in/matt-monroe-a3728593/), has a standing rule: move bugs
-  as far left in the process as possible. A wrong assumption caught on a ticket is cheaper than one caught
+  as far to the left in the process as possible. A wrong assumption caught on a ticket is cheaper than one caught
   in review, which is cheaper than one caught in production.
 
   Kercwin (https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/), the tech lead of my team,
@@ -38,7 +38,7 @@ How it started, with a demo of my own dashboards, is in
 The idea underneath it is not his or mine. It comes from [Matt](https://www.linkedin.com/in/matt-monroe-a3728593/), our CTO, and it is his standing
 rule:
 
-> Move bugs as far left in the process as possible.
+> Move bugs as far to the left in the process as possible.
 >
 > *The idea, in my words, from a knowledge-sharing session by [Matt Monroe](https://www.linkedin.com/in/matt-monroe-a3728593/), CTO at [Career Team](https://careerteam.com)*
 
@@ -191,7 +191,20 @@ feeling, how much the flags are worth reading.
 
 ## What the board says so far
 
-STATS_PLACEHOLDER
+Everything the checker produces lands in Confluence and Jira, so the numbers are easy to count. As a
+snapshot on Nov 10, about ten days after the Epic Alignment space was set up:
+
+| What | Count |
+|---|---|
+| Architecture plans the checker reads against | 16 |
+| Conflict pages it has opened | about 19 |
+| Conflicts already closed | 7 |
+| Follow-up tickets it drafted, labeled epic-review | 48 |
+| Of those, already done | 28 |
+
+These numbers do not say whether a flag was right. A closed conflict can mean two pull requests merged
+cleanly or that someone decided it was not a conflict at all, and the board does not grade that yet.
+That is the first lesson above, waiting to be applied.
 
 ## What I have not earned yet
 
