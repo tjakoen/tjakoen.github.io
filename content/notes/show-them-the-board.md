@@ -69,7 +69,7 @@ is its own note: [Seven Hundred Commits to Teach a Reviewer It Was Wrong](the-re
 Here I only want the window.
 
 What changed most is that I stopped managing it from a terminal. Every pull request the kit has
-touched sits on a board, in the column of whoever owes the next move. I can queue one by pasting a
+touched has a card on the board, in the column of whoever owes the next move. I can queue one by pasting a
 link, correct a finding, see which lens has been wrong lately, and watch whether precision and cost
 are moving the right way. I still run the reviews. I just get to look at them like a person instead
 of reading log files like a raccoon going through a bin.
@@ -178,6 +178,8 @@ set of queries that defined each metric precisely, which is the part that carrie
 Crew Watch's figures against DevLake's before I trusted them. DevLake answered the questions it was
 built for. It just was not built for mine, which were about people rather than pipelines, and that gap
 is what the next two tries were for.
+
+> DevLake answered the questions it was built for. It just was not built for mine.
 
 <figure class="shot">
   <img class="shot__img" src="/media/crew/people-manager.jpg" width="1280" height="800" loading="lazy" data-lightbox
@@ -307,6 +309,11 @@ review, and say why it is right. Do not post a comment, open a pull request, or 
 you could not have written yourself or do not understand. Make it readable by a human, because a human
 is going to read it. The tool is allowed to type. It is not allowed to think for you.
 
+The rule holds for me too, which is why letting go of my own reviewer took so long. The review board
+now runs fully automated, and I no longer check each review before it posts. I trust it fairly well by
+now, for reasons I can show rather than a feeling, and how I got there is the whole of
+[Seven Hundred Commits to Teach a Reviewer It Was Wrong](the-reviewer-that-learned-to-be-wrong.md).
+
 That rule is why I am comfortable cheering them on. Kercwin's checker does not decide anything. It
 puts the decision in front of the person who owns it. Kyle's board does not do his work. It shows him
 where it is. The machine drafts, and someone with their name on it signs.
@@ -319,8 +326,9 @@ Crew Watch replacing People Manager is my judgment after a short run, not a prov
 is parked rather than deleted in case I am wrong. And a dashboard is only as honest as the data under
 it, which is why the audit came before the one-on-ones and not after.
 
-What I am sure of is smaller. I built a board so I could stop reading log files. I showed it to my
-team mostly to show off. They took the hint, built their own, and one of them made my reviews better
+What I am sure of is smaller. I built a board so I could stop reading log files. I did not show it to my
+team only to show off. I wanted them to see what they could build with a nudge in the right
+direction. They took the hint, built their own, and one of them made my reviews better
 in the process. If you lead people and you have been sitting on something you built, show them. The
 worst case is they nod. The best case is they show you theirs.
 
