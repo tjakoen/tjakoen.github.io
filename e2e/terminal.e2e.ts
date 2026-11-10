@@ -408,7 +408,7 @@ test("the note has a separate self-running colony that drains and resets", async
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
     await expect(page.locator("#nest-mock .nest-meter .hint")).toHaveCount(4);
-    await expect(page.locator("#nest-mock .nest-meter .hint").nth(1)).toContainText("mound builders");
+    await expect(page.locator("#nest-mock .nest-meter .hint").nth(1)).toContainText("pays for new mounds");
     await expect(page.locator("#nest-mock .nest-meter .hint").nth(2)).toContainText("three meals lay an egg");
     await expect(page.locator("#nest-mock .nest-meter .hint").nth(3)).toContainText("queen dances");
   });
