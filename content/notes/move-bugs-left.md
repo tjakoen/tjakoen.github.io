@@ -77,7 +77,7 @@ delivery between product, leads and developers, in any order the cycle runs.
 Full credit goes to [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/). He went from developer to tech lead in about a year, which is fast for
 anyone. I pushed him into the role because I saw
 something in him before he did. I know that feeling from the other side. A lot of my job with him is
-the stuff nobody puts on a ticket: the voice that says you are not ready, learning to hand work off
+the stuff nobody puts on a ticket: the inner voice in your head that says you are not ready, learning to hand work off
 instead of carrying it, getting him to see in himself what the rest of us already see. He is doing a
 great job, and he is still working out what kind of leader he wants to be, which is the correct
 amount of figured out for anyone.
