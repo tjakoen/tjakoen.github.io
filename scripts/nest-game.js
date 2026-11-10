@@ -1011,7 +1011,7 @@ import {
     ant.el.className = antClasses(ant.role, ant.side); ant.el.innerHTML = antMarkup({ role: ant.role });
     ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(ant); });
     layer.append(ant.el); placeAnt(ant);
-    if (ant.role === "scout") { ant.job = "scout-pending"; state.scoutQueue.push(ant); return; }
+    if (ant.role === "scout") { label(ant); ant.job = "scout-pending"; state.scoutQueue.push(ant); return; }
     else if (ant.role === "soldier") { ant.lane = ant.lane || ((ant.id % 5) - 2) * 8; ant.patrolLaps = 0; ant.job = "patrol"; ant.path = ant.patrol ? lanePath(ant.patrol.pts, ant.lane) : []; ant.k = 0; ant.hp = ant.hp || 2; }
     else if (ant.trail && ant.trail.state !== "gone") { ant.job = "follow"; ant.path = lanePath(ant.trail.pts, ant.lane || 0); ant.k = 0; }
     else { ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; }
