@@ -1,7 +1,7 @@
 ---
 id: review-nest-note-figures
 mode: dev
-title: "Review the ant note figures"
+title: "Review: the ant note figures"
 route: /notes/the-site-has-ants
 ---
 
