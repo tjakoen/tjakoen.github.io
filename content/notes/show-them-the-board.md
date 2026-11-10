@@ -71,7 +71,7 @@ Here I only want the window.
 What changed most is that I stopped managing it from a terminal. Every pull request the kit has
 touched has a card on the board, in the column of whoever owes the next move. I can queue one by pasting a
 link, correct a finding, see which lens has been wrong lately, and watch whether precision and cost
-are moving the right way. I still run the reviews. I just get to look at them like a person instead
+are moving the right way. The reviews run on their own. I just get to look at them like a person instead
 of reading log files like a raccoon going through a bin.
 
 <figure class="shot">
@@ -292,6 +292,12 @@ In my one-on-one with him last week, he showed me a dashboard he had built
 in Obsidian to run his own work: his tickets, his pull requests, what is waiting on him and what is
 waiting on someone else. He had built it shortly after my demo. Nobody asked him to, and it is not for
 me. It is for him.
+
+<figure class="shot">
+  <img class="shot__img" src="/media/crew/kyle-obsidian-board.jpg" width="2880" height="1240" loading="lazy" data-lightbox
+       alt="Kyle's Obsidian board as a mock with invented data: a Tickets note and a PR reviews note open side by side. Tickets shows his work in progress, in code review and in QA, with one card flagged red for merge conflicts. PR reviews sorts the pull requests he reviewed into new commits, awaiting author and closed.">
+  <figcaption class="shot__cap">Kyle's board, redrawn with invented tickets and pull requests: his own work on the left, the reviews he owes on the right.</figcaption>
+</figure>
 
 I found that genuinely cool, and a little inspiring in the other direction. A junior developer saw a
 manager's dashboard and did not think "nice tool for managers." He thought "I could have one of those
