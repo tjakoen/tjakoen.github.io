@@ -16,48 +16,72 @@
     <hr class="rule">
     <p class="lede">By day I lead a group of 15 to 25 engineers and product specialists at Career Team. A
       manager is judged on five things, and I find it more honest to show the work behind each one than to
-      claim it. The figure names the five. Each one links to the notes and talks where the work is written
+      claim it. The matrix below sets each piece of work against the five, and every row links to the notes and talks where the work is written
       down, failures included.</p>
 
     <h2 class="section-head"><span>Managing a team, in five parts</span></h2>
-    <svg id="five-categories" viewBox="0 0 360 452" width="100%" role="img"
-         aria-label="Leading a team breaks into five categories. Leadership: set the direction and keep people unblocked. Impact: the team's results, not mine. Operational excellence: a board that tells the truth. Innovation: the team keeps pace with better tools. People growth: everyone leaves stronger than they came. Each category links to its section below."
-         style="display:block;width:100%;max-width:440px;height:auto;margin:0 auto 1.75rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
-      <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-        <rect x="90" y="8" width="180" height="40" rx="20"/>
-        <path d="M40,48 V420"/>
-      </g>
-      <text x="180" y="33" text-anchor="middle" style="fill:var(--color-fg);font-weight:600">Leading a team</text>
-      <g style="stroke:var(--color-line);stroke-width:1">
-        <path d="M40,94 H56"/><path d="M40,174 H56"/><path d="M40,254 H56"/><path d="M40,334 H56"/><path d="M40,414 H56"/>
-        <path d="M90,48 H40" style="fill:none"/>
-      </g>
-      <a href="#leadership">
-        <rect x="56" y="70" width="296" height="48" rx="6" style="fill:none;stroke:var(--color-fg);stroke-width:1.25"/>
-        <text x="70" y="90" style="fill:var(--color-fg);font-weight:600">1 · Leadership</text>
-        <text x="70" y="108" style="fill:var(--color-muted);font-size:12px">Set the direction, keep people unblocked.</text>
-      </a>
-      <a href="#impact">
-        <rect x="56" y="150" width="296" height="48" rx="6" style="fill:none;stroke:var(--color-fg);stroke-width:1.25"/>
-        <text x="70" y="170" style="fill:var(--color-fg);font-weight:600">2 · Impact</text>
-        <text x="70" y="188" style="fill:var(--color-muted);font-size:12px">The team's results, not mine.</text>
-      </a>
-      <a href="#operational-excellence">
-        <rect x="56" y="230" width="296" height="48" rx="6" style="fill:none;stroke:var(--color-fg);stroke-width:1.25"/>
-        <text x="70" y="250" style="fill:var(--color-fg);font-weight:600">3 · Operational excellence</text>
-        <text x="70" y="268" style="fill:var(--color-muted);font-size:12px">A board that tells the truth, on time.</text>
-      </a>
-      <a href="#innovation">
-        <rect x="56" y="310" width="296" height="48" rx="6" style="fill:none;stroke:var(--color-fg);stroke-width:1.25"/>
-        <text x="70" y="330" style="fill:var(--color-fg);font-weight:600">4 · Innovation</text>
-        <text x="70" y="348" style="fill:var(--color-muted);font-size:12px">The team keeps pace with better tools.</text>
-      </a>
-      <a href="#people-growth">
-        <rect x="56" y="390" width="296" height="48" rx="6" style="fill:none;stroke:var(--color-fg);stroke-width:1.25"/>
-        <text x="70" y="410" style="fill:var(--color-fg);font-weight:600">5 · People growth</text>
-        <text x="70" y="428" style="fill:var(--color-muted);font-size:12px">Everyone leaves stronger than they came.</text>
-      </a>
+<svg id="leading-matrix" viewBox="0 0 360 528" width="100%" role="group"
+         aria-label="A matrix of the work against the five management categories. Show them the board: Leadership, People growth. Build the floor: Leadership, Operational excellence. Move bugs left: Impact, Operational excellence, People growth. The console: Impact, Operational excellence. The check that never ran: Impact, Operational excellence. The standards: Operational excellence. Teaching: People growth. Why I teach: Innovation, People growth. Talks: People growth. The feed: People growth. Ten times zero: Leadership, Innovation. One loop, every repo: Innovation, Operational excellence. Three harnesses: Innovation, Operational excellence. Loop setup: Innovation. Watch its hands: Innovation, Operational excellence. The reviewer: Innovation, Operational excellence, People growth. One vocabulary: Innovation."
+         style="display:block;width:100%;max-width:440px;height:auto;margin:0 auto 0.75rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
+      <text x="0" y="36" style="fill:var(--color-muted);font-size:12px">Tap a letter to filter</text>
+      <g class="lm-col" role="button" tabindex="0" aria-pressed="false" data-cat="L" aria-label="Show only Leadership" style="cursor:pointer"><rect x="198" y="16" width="28" height="30" rx="4" style="fill:transparent;stroke:var(--color-line)"/><text x="212" y="36" text-anchor="middle" style="fill:var(--color-fg);font-weight:600">L</text></g><g class="lm-col" role="button" tabindex="0" aria-pressed="false" data-cat="I" aria-label="Show only Impact" style="cursor:pointer"><rect x="230" y="16" width="28" height="30" rx="4" style="fill:transparent;stroke:var(--color-line)"/><text x="244" y="36" text-anchor="middle" style="fill:var(--color-fg);font-weight:600">I</text></g><g class="lm-col" role="button" tabindex="0" aria-pressed="false" data-cat="O" aria-label="Show only Operational excellence" style="cursor:pointer"><rect x="262" y="16" width="28" height="30" rx="4" style="fill:transparent;stroke:var(--color-line)"/><text x="276" y="36" text-anchor="middle" style="fill:var(--color-fg);font-weight:600">O</text></g><g class="lm-col" role="button" tabindex="0" aria-pressed="false" data-cat="N" aria-label="Show only Innovation" style="cursor:pointer"><rect x="294" y="16" width="28" height="30" rx="4" style="fill:transparent;stroke:var(--color-line)"/><text x="308" y="36" text-anchor="middle" style="fill:var(--color-fg);font-weight:600">N</text></g><g class="lm-col" role="button" tabindex="0" aria-pressed="false" data-cat="P" aria-label="Show only People growth" style="cursor:pointer"><rect x="326" y="16" width="28" height="30" rx="4" style="fill:transparent;stroke:var(--color-line)"/><text x="340" y="36" text-anchor="middle" style="fill:var(--color-fg);font-weight:600">P</text></g>
+      <text x="0" y="72" style="fill:var(--color-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Managing the team</text>
+      <g class="lm-row" data-tags="LP"><rect x="0" y="82" width="360" height="22" style="fill:transparent"/><a href="/notes/show-them-the-board"><text x="4" y="97.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Show them the board</text></a><circle cx="212" cy="93" r="5.5" style="fill:var(--color-fg)"/><circle cx="244" cy="93" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="93" r="1.5" style="fill:var(--color-line)"/><circle cx="308" cy="93" r="1.5" style="fill:var(--color-line)"/><circle cx="340" cy="93" r="5.5" style="fill:var(--color-fg)"/></g>
+      <g class="lm-row" data-tags="LO"><rect x="0" y="104" width="360" height="22" style="fill:transparent"/><a href="/notes/build-the-floor"><text x="4" y="119.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Build the floor</text></a><circle cx="212" cy="115" r="5.5" style="fill:var(--color-fg)"/><circle cx="244" cy="115" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="115" r="5.5" style="fill:var(--color-fg)"/><circle cx="308" cy="115" r="1.5" style="fill:var(--color-line)"/><circle cx="340" cy="115" r="1.5" style="fill:var(--color-line)"/></g>
+      <g class="lm-row" data-tags="IOP"><rect x="0" y="126" width="360" height="22" style="fill:transparent"/><a href="/notes/move-bugs-left"><text x="4" y="141.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Move bugs left</text></a><circle cx="212" cy="137" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="137" r="5.5" style="fill:var(--color-fg)"/><circle cx="276" cy="137" r="5.5" style="fill:var(--color-fg)"/><circle cx="308" cy="137" r="1.5" style="fill:var(--color-line)"/><circle cx="340" cy="137" r="5.5" style="fill:var(--color-fg)"/></g>
+      <g class="lm-row" data-tags="IO"><rect x="0" y="148" width="360" height="22" style="fill:transparent"/><a href="/notes/the-console-i-built-to-stop-drowning"><text x="4" y="163.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">The console</text></a><circle cx="212" cy="159" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="159" r="5.5" style="fill:var(--color-fg)"/><circle cx="276" cy="159" r="5.5" style="fill:var(--color-fg)"/><circle cx="308" cy="159" r="1.5" style="fill:var(--color-line)"/><circle cx="340" cy="159" r="1.5" style="fill:var(--color-line)"/></g>
+      <g class="lm-row" data-tags="IO"><rect x="0" y="170" width="360" height="22" style="fill:transparent"/><a href="/notes/the-check-that-never-ran"><text x="4" y="185.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">The check that never ran</text></a><circle cx="212" cy="181" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="181" r="5.5" style="fill:var(--color-fg)"/><circle cx="276" cy="181" r="5.5" style="fill:var(--color-fg)"/><circle cx="308" cy="181" r="1.5" style="fill:var(--color-line)"/><circle cx="340" cy="181" r="1.5" style="fill:var(--color-line)"/></g>
+      <g class="lm-row" data-tags="O"><rect x="0" y="192" width="360" height="22" style="fill:transparent"/><a href="/standards"><text x="4" y="207.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">The standards</text></a><circle cx="212" cy="203" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="203" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="203" r="5.5" style="fill:var(--color-fg)"/><circle cx="308" cy="203" r="1.5" style="fill:var(--color-line)"/><circle cx="340" cy="203" r="1.5" style="fill:var(--color-line)"/></g>
+      <text x="0" y="236" style="fill:var(--color-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Teaching and talks</text>
+      <g class="lm-row" data-tags="P"><rect x="0" y="246" width="360" height="22" style="fill:transparent"/><a href="/teaching"><text x="4" y="261.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Teaching</text></a><circle cx="212" cy="257" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="257" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="257" r="1.5" style="fill:var(--color-line)"/><circle cx="308" cy="257" r="1.5" style="fill:var(--color-line)"/><circle cx="340" cy="257" r="5.5" style="fill:var(--color-fg)"/></g>
+      <g class="lm-row" data-tags="NP"><rect x="0" y="268" width="360" height="22" style="fill:transparent"/><a href="/notes/why-i-teach"><text x="4" y="283.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Why I teach</text></a><circle cx="212" cy="279" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="279" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="279" r="1.5" style="fill:var(--color-line)"/><circle cx="308" cy="279" r="5.5" style="fill:var(--color-fg)"/><circle cx="340" cy="279" r="5.5" style="fill:var(--color-fg)"/></g>
+      <g class="lm-row" data-tags="P"><rect x="0" y="290" width="360" height="22" style="fill:transparent"/><a href="/talks"><text x="4" y="305.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Talks</text></a><circle cx="212" cy="301" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="301" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="301" r="1.5" style="fill:var(--color-line)"/><circle cx="308" cy="301" r="1.5" style="fill:var(--color-line)"/><circle cx="340" cy="301" r="5.5" style="fill:var(--color-fg)"/></g>
+      <g class="lm-row" data-tags="P"><rect x="0" y="312" width="360" height="22" style="fill:transparent"/><a href="/calendar"><text x="4" y="327.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">The feed</text></a><circle cx="212" cy="323" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="323" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="323" r="1.5" style="fill:var(--color-line)"/><circle cx="308" cy="323" r="1.5" style="fill:var(--color-line)"/><circle cx="340" cy="323" r="5.5" style="fill:var(--color-fg)"/></g>
+      <text x="0" y="356" style="fill:var(--color-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase">AI workflows</text>
+      <g class="lm-row" data-tags="LN"><rect x="0" y="366" width="360" height="22" style="fill:transparent"/><a href="/notes/ten-times-zero"><text x="4" y="381.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Ten times zero</text></a><circle cx="212" cy="377" r="5.5" style="fill:var(--color-fg)"/><circle cx="244" cy="377" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="377" r="1.5" style="fill:var(--color-line)"/><circle cx="308" cy="377" r="5.5" style="fill:var(--color-fg)"/><circle cx="340" cy="377" r="1.5" style="fill:var(--color-line)"/></g>
+      <g class="lm-row" data-tags="NO"><rect x="0" y="388" width="360" height="22" style="fill:transparent"/><a href="/notes/one-loop-every-repo"><text x="4" y="403.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">One loop, every repo</text></a><circle cx="212" cy="399" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="399" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="399" r="5.5" style="fill:var(--color-fg)"/><circle cx="308" cy="399" r="5.5" style="fill:var(--color-fg)"/><circle cx="340" cy="399" r="1.5" style="fill:var(--color-line)"/></g>
+      <g class="lm-row" data-tags="NO"><rect x="0" y="410" width="360" height="22" style="fill:transparent"/><a href="/notes/one-loop-three-harnesses"><text x="4" y="425.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Three harnesses</text></a><circle cx="212" cy="421" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="421" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="421" r="5.5" style="fill:var(--color-fg)"/><circle cx="308" cy="421" r="5.5" style="fill:var(--color-fg)"/><circle cx="340" cy="421" r="1.5" style="fill:var(--color-line)"/></g>
+      <g class="lm-row" data-tags="N"><rect x="0" y="432" width="360" height="22" style="fill:transparent"/><a href="/notes/loop-setup"><text x="4" y="447.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Loop setup</text></a><circle cx="212" cy="443" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="443" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="443" r="1.5" style="fill:var(--color-line)"/><circle cx="308" cy="443" r="5.5" style="fill:var(--color-fg)"/><circle cx="340" cy="443" r="1.5" style="fill:var(--color-line)"/></g>
+      <g class="lm-row" data-tags="NO"><rect x="0" y="454" width="360" height="22" style="fill:transparent"/><a href="/notes/watch-its-hands"><text x="4" y="469.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">Watch its hands</text></a><circle cx="212" cy="465" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="465" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="465" r="5.5" style="fill:var(--color-fg)"/><circle cx="308" cy="465" r="5.5" style="fill:var(--color-fg)"/><circle cx="340" cy="465" r="1.5" style="fill:var(--color-line)"/></g>
+      <g class="lm-row" data-tags="NOP"><rect x="0" y="476" width="360" height="22" style="fill:transparent"/><a href="/notes/the-reviewer-that-learned-to-be-wrong"><text x="4" y="491.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">The reviewer</text></a><circle cx="212" cy="487" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="487" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="487" r="5.5" style="fill:var(--color-fg)"/><circle cx="308" cy="487" r="5.5" style="fill:var(--color-fg)"/><circle cx="340" cy="487" r="5.5" style="fill:var(--color-fg)"/></g>
+      <g class="lm-row" data-tags="N"><rect x="0" y="498" width="360" height="22" style="fill:transparent"/><a href="/notes/whitepaper-one-vocabulary"><text x="4" y="513.5" style="fill:var(--color-fg);text-decoration:underline;text-decoration-color:var(--color-line)">One vocabulary</text></a><circle cx="212" cy="509" r="1.5" style="fill:var(--color-line)"/><circle cx="244" cy="509" r="1.5" style="fill:var(--color-line)"/><circle cx="276" cy="509" r="1.5" style="fill:var(--color-line)"/><circle cx="308" cy="509" r="5.5" style="fill:var(--color-fg)"/><circle cx="340" cy="509" r="1.5" style="fill:var(--color-line)"/></g>
     </svg>
+    <p class="lede" style="font-size:0.9em;text-align:center"><strong>L</strong> <a href="#leadership">Leadership</a> · <strong>I</strong> <a href="#impact">Impact</a> · <strong>O</strong> <a href="#operational-excellence">Operational excellence</a> · <strong>N</strong> <a href="#innovation">Innovation</a> · <strong>P</strong> <a href="#people-growth">People growth</a></p>
+    <p class="lede" id="leading-matrix-status" aria-live="polite" style="font-size:0.9em;text-align:center">Showing all seventeen pieces.</p>
+    <script>
+      // Filters the matrix to one category. The links and dots work without it; this only dims
+      // the rows that do not answer the chosen category, and a second press clears the filter.
+      (() => {
+        const svg = document.getElementById("leading-matrix");
+        const status = document.getElementById("leading-matrix-status");
+        if (!svg || !status) return;
+        const rows = [...svg.querySelectorAll(".lm-row")];
+        const cols = [...svg.querySelectorAll(".lm-col")];
+        const names = { L: "Leadership", I: "Impact", O: "Operational excellence", N: "Innovation", P: "People growth" };
+        let active = null;
+        const apply = (cat) => {
+          active = active === cat ? null : cat;
+          let shown = 0;
+          for (const row of rows) {
+            const on = !active || row.dataset.tags.includes(active);
+            row.style.opacity = on ? "1" : "0.2";
+            if (on) shown++;
+          }
+          for (const col of cols) {
+            const pressed = col.dataset.cat === active;
+            col.setAttribute("aria-pressed", String(pressed));
+            col.querySelector("rect").style.fill = pressed ? "var(--color-line)" : "transparent";
+          }
+          status.textContent = active ? `${names[active]}: ${shown} of ${rows.length} pieces.` : `Showing all ${rows.length} pieces.`;
+        };
+        for (const col of cols) {
+          col.addEventListener("click", () => apply(col.dataset.cat));
+          col.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); apply(col.dataset.cat); }
+          });
+        }
+      })();
+    </script>
 
     <h3 class="section-head" id="leadership"><span>1 · Leadership</span></h3>
     <p class="lede">Leadership is deciding where the team goes and then getting out of its way. Most of my
