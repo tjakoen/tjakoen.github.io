@@ -460,6 +460,8 @@ import {
   antBtn.setAttribute("aria-pressed", "true"); antBtn.setAttribute("aria-label", "Close the Nest");
   const sidebarWasHidden = shell?.getAttribute("data-aside-hidden") === "true";
   shell?.removeAttribute("data-aside-hidden");
+  // Place the mound against the open sidebar's final page width.
+  shell?.getAnimations().find((animation) => animation.transitionProperty === "grid-template-columns")?.finish();
   const hidden = [...aside.children].filter((el) => el.style.display !== "none");
   hidden.forEach((el) => { el.dataset.nestDisplay = el.style.display; el.style.display = "none"; });
   const panel = document.createElement("div");
