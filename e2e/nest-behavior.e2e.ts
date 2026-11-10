@@ -263,3 +263,30 @@ test("workers leaving the same point form a moving trail queue", async ({ page }
   expect(row[1][0] - row[2][0]).toBeGreaterThanOrEqual(17.5);
   expect(row.every(([, y]) => Math.abs(y - 310) < 2)).toBe(true);
 });
+
+
+test("each attacker in a three-on-one fight faces the defender", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  await page.clock.pauseAt(new Date((await page.evaluate(() => Date.now())) + 5000));
+  const ids = await page.evaluate(() => {
+    const nest = window.__nest as any;
+    const mains = [-10, 0, 10].map((offset) => nest.spawnPageAnt("guard", [395, 340 + offset], null));
+    const rival = nest.spawnRivalUnit("rival-guard", [415, 340], [[415, 340]], null);
+    nest.rivalCombat(performance.now() + 1000);
+    return { mains: mains.map((ant) => ant.id), rival: rival.id };
+  });
+  await page.clock.runFor(620);
+  const facing = await page.evaluate((fighters) => {
+    const ants = (window.__nest as any).state.ants;
+    const rival = ants.find((ant: any) => ant.id === fighters.rival);
+    return fighters.mains.map((id) => {
+      const main = ants.find((ant: any) => ant.id === id);
+      const dx = rival.x - main.x, dy = rival.y - main.y;
+      return (Math.cos(main.heading) * dx + Math.sin(main.heading) * dy) / Math.hypot(dx, dy);
+    });
+  }, ids);
+  expect(Math.min(...facing)).toBeGreaterThan(0.94);
+});

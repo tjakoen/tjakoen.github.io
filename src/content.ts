@@ -226,7 +226,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       ? renderNoteContents(body, frontmatter) : "";
     // A note may open with its own start button. That call to action belongs directly under the
     // subtitle, above the generated contents block, not below it.
-    const leadingStart = body.match(/<p class="nest-start">[\s\S]*?<\/p>/)?.[0] ?? "";
+    const leadingStart = body.match(/<p class="nest-start"(?: hidden)?>[\s\S]*?<\/p>/)?.[0] ?? "";
     let readable = body;
     if (contents) {
       if (leadingStart) readable = readable.replace(leadingStart, "");

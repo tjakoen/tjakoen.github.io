@@ -10,6 +10,7 @@
 // side by side. A carried letter keeps its own colour, face and underline, and drifts home slowly
 // when a carrier is squashed. If the whole colony dies, the queen sends out one new scout.
 // Every colour is a theme token, so each flavor recolours the nest.
+import { nestDesktop } from "./nest-availability.js";
 import { antMarkup, antClasses, miniArt, NEST_LAYOUT, nestRouteLength, buildNestBase, encodeNestBraille, composeNestGrid } from "./nest-assets.js";
 import {
   BUILD_TIME,
@@ -107,8 +108,7 @@ import {
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
-    .nest-hill.rival.constructing { animation: rival-build 2.6s cubic-bezier(.2,.7,.3,1) both; transform-origin: 50% 100%; }
-    @keyframes rival-build { from { opacity: .12; transform: scaleY(.06); } 55% { opacity: .7; } to { opacity: 1; transform: none; } }
+    .nest-hill.rival.constructing { transform-origin: 50% 100%; pointer-events: none; }
     .nest-celebration { position: absolute; z-index: 9; left: 50%; top: 42%; transform: translate(-50%, -50%); padding: 10px 16px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); font: 12px/1.4 var(--font-mono); text-align: center; pointer-events: none; animation: nest-celebration 2.4s ease-out both; }
     @keyframes nest-celebration { 0% { opacity: 0; transform: translate(-50%, -40%) scale(.9); } 15% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -58%) scale(1); } }
     .nest-cache-letter { position: absolute; z-index: 4; color: var(--color-accent); pointer-events: none; text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 35%, transparent); }
@@ -147,7 +147,7 @@ import {
     .nest-stray.running .legs-a { animation-duration: .1s; }
     .nest-stray.running .legs-b { animation-duration: .1s; }
     .nest-ant.lift svg { animation: nest-lift .35s ease-out; }
-    .nest-ant.wait svg { animation: nest-wait 1s ease-in-out infinite; }
+    .nest-ant.wait svg, .nest-ant.building svg { animation: nest-wait 1s ease-in-out infinite; }
     @keyframes nest-step { 0% { opacity: 1; } 50% { opacity: 0; } }
     @keyframes nest-lift { 40% { transform: translateY(-3px) scale(1.08); } }
     @keyframes nest-wait { 50% { transform: rotate(8deg); } }
@@ -168,7 +168,7 @@ import {
     @keyframes nest-swat { 40% { transform: scale(1.25,.5) translateY(2px); } 100% { transform: scale(1.55,.16) translateY(4px); opacity: 0; } }
     @keyframes nest-splat { to { transform: scale(2.4); opacity: 0; } }
     @keyframes nest-flap { 50% { opacity: .15; } }
-    .nest-mini { width: 56px; height: 20px; translate: -50% -100%; text-align: center; font-size: 9px; line-height: 10px; }
+    .nest-mini, .rival-mini { width: 56px; height: 20px; translate: -50% -100%; text-align: center; font-size: 9px; line-height: 10px; }
     .nest-badge { position: absolute; translate: -50% 0; font: 10px/1 var(--font-mono); color: var(--ink-muted); pointer-events: none; white-space: nowrap; }
     .nest-badge.open { color: var(--color-accent); }
     .nest-mini.open { cursor: pointer; }
@@ -267,7 +267,7 @@ import {
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .activity li:first-child { color: var(--ink); }
     #nest-mock .activity li::before { content: "› "; color: var(--ink-faint); }
-    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.crawling, .nest-queen.crawling .legs-a, .nest-queen.crawling .legs-b, .nest-queen.dancing, .nest-ant.swatted svg, .nest-splat, .nest-ant.dancing svg, .nest-ant.flash, .nest-hill.rising, #nest-mock.celebrating .well, #nest-mock.celebrating .nest-pre { animation: none; } }`;
+    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-ant.building svg, .nest-queen.crawling, .nest-queen.crawling .legs-a, .nest-queen.crawling .legs-b, .nest-queen.dancing, .nest-ant.swatted svg, .nest-splat, .nest-ant.dancing svg, .nest-ant.flash, .nest-hill.rising, #nest-mock.celebrating .well, #nest-mock.celebrating .nest-pre { animation: none; } }`;
   document.head.append(style);
 
   // ================================ the switch ================================
@@ -306,7 +306,7 @@ import {
   const ANT_SVG = antMarkup();
   // The soldier is the same animal with a wider head and two mandibles, in the flyer's quieter
   // colour. At a glance it should not read as another worker.
-  const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return nestDesktop.matches && r.width > 0 && r.height > 0; };
   const cancelStray = () => {
     clearTimeout(strayTimer); clearTimeout(strayExitTimer);
     strayLeaving = false;
@@ -435,6 +435,7 @@ import {
   try { if (localStorage.getItem("portfolio:aside-mode") === "nest") localStorage.removeItem("portfolio:aside-mode"); } catch { /* private mode */ }
   const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; antBtn.focus(); scheduleStray(); });
   const openNest = () => {
+    if (!nestDesktop.matches) return;
     if (noteFiguresOnPage) { location.assign("/?nest=play"); return; }
     game = start();
   };
@@ -444,6 +445,14 @@ import {
     button.addEventListener("click", () => { if (!game) openNest(); });
   });
   window.__nestLauncher = { open: () => { if (!game) openNest(); }, close: () => { if (game) leave(); } };
+  nestDesktop.addEventListener("change", () => {
+    if (nestDesktop.matches) scheduleStray();
+    else {
+      cancelStray();
+      game?.stop();
+      game = null;
+    }
+  });
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelStray(); else scheduleStray(); });
   scheduleStray();
   window.__nestStray = { spawn: (force = false) => { cancelStray(); spawnStray(force); if (!strayEl) scheduleStray(); }, cancel: cancelStray };
@@ -604,7 +613,7 @@ import {
     cache: null, cacheLetters: [], cacheTrail: null, hiddenLetters: new Set(), scoutQueue: [],
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(mainAnts().length / 3)));
-  const rival = { active: false, mound: null, trails: [], minis: [], stolen: new Set(), returnAt: 0, hp: RIVAL_MOUND_HEALTH, war: false, lastMilestone: 0, lastBase: null, tier: 0 };
+  const rival = { active: false, mound: null, founding: null, trails: [], minis: [], sites: [], exits: [], nextExit: 0, stolen: new Set(), returnAt: 0, hp: RIVAL_MOUND_HEALTH, war: false, lastMilestone: 0, lastBase: null, tier: 0 };
   const mainAnts = () => state.ants.filter((a) => a.side !== "rival");
   Object.defineProperty(rival, "ants", { get: () => state.ants.filter((a) => a.side === "rival") });
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
@@ -941,7 +950,8 @@ import {
         el.style.transform = antTransform(ant, x, y);
         el._px = x; el._py = y; el._heading = ant.heading;
       }
-      const walking = ant.fightUntil ? ant.fightWalking : ant.job !== "wait" && !ant.paused;
+      const waiting = ant.job === "wait" || (ant.job === "rival-build" && !ant.path[ant.k]);
+      const walking = ant.fightUntil ? ant.fightWalking : !waiting && !ant.paused;
       if (el._walk !== walking) { el.classList.toggle("walk", walking); el._walk = walking; }
     }
   };
@@ -969,7 +979,9 @@ import {
     ant.el.inert = state.tool === "wipe";
     const classes = antClasses(ant.role, ant.side).split(" ");
     ["scout", "soldier", "flyer", "builder", "rival"].forEach((name) => ant.el.classList.toggle(name, classes.includes(name)));
-    ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival", "rival-worker": "Rival worker" }[ant.role]} ant. Press to squash.`);
+    const rivalNames = { "rival-build": "Rival builder", "rival-guard": "Rival guard", "rival-defend": "Rival guard", "rival-flyer": "Rival flyer" };
+    const name = rivalNames[ant.job] || { scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival", "rival-worker": "Rival worker" }[ant.role];
+    ant.el.setAttribute("aria-label", `${name} ant. Press to squash.`);
   };
 
   // A scout wanders: loose waypoints toward a block of text no trail reaches yet, its steps recorded.
@@ -1709,7 +1721,8 @@ import {
 
   // The compact mound fits on a line of prose. An open-ground site also needs room for its badge.
   const miniBox = ({ x, y, gap }) => [x - 30, y - (gap ? 20 : 34), x + 30, y + 2];
-  const miniTerrain = (includeMinis = true) => {
+  const rivalMiniBox = ({ x, y }) => [x - 28, y - 26, x + 28, y + 16];
+  const miniTerrain = (includeMinis = true, currentRivalSite = null) => {
     const gaps = [], obstacles = [];
     const stolen = new Set([...state.stolen].map((letter) => letter.span));
     const addRect = (rect, list, pad = 0) => {
@@ -1731,6 +1744,9 @@ import {
       addRect(mound.el.getBoundingClientRect(), obstacles, 24);
       if (mound.badge) addRect(mound.badge.getBoundingClientRect(), obstacles, 8);
     }
+    if (rival.mound) addRect(rival.mound.el.getBoundingClientRect(), obstacles, 8);
+    for (const mini of rival.minis) addRect(mini.el.getBoundingClientRect(), obstacles, 8);
+    for (const site of rival.sites) if (site !== currentRivalSite) obstacles.push(rivalMiniBox(site));
     return { gaps, obstacles };
   };
   const miniFits = (box, obstacles) => box[0] >= 4 && box[2] <= main.clientWidth - 4 &&
@@ -2103,6 +2119,10 @@ import {
 
   // ---- the rival colony: a small, inverse-colour nuisance below the fold -------------------
   const removeRivalAnt = (a) => {
+    if (a.buildSite) {
+      a.buildSite.el?.remove();
+      rival.sites = rival.sites.filter((site) => site !== a.buildSite);
+    }
     if (a.mini) { a.mini.guards?.delete(a); a.mini.flyers?.delete(a); }
     if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); a.letter.glyph = null; a.letter.state = "spent"; a.letter.crew = []; a.letter = null; }
     a.glyph?.remove(); a.glyph = null;
@@ -2288,14 +2308,15 @@ import {
     const a = { id: ++state.total, role: job === "rival-guard" ? "guard" : "rival", side: "rival", where: "page", x: at[0], y: at[1], px: at[0], py: at[1],
       heading: -Math.PI / 2, job, path, k: 0, hp: job === "rival-guard" ? 2 : 1 };
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = antClasses(job, "rival");
-    a.el.innerHTML = antMarkup({ role: job }); a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
+    a.el.innerHTML = antMarkup({ role: job });
+    if (job === "rival-guard") a.guardPath = path;
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
     layer.append(a.el); placeAnt(a); label(a); state.ants.push(a);
     return a;
   };
   const rivalBait = (x, y) => {
     if (state.party) return;
-    rival.ants.filter((a) => a.el && Math.hypot(a.x - x, a.y - y) < 210).forEach((a) => {
+    rival.ants.filter((a) => a.el && a.job !== "rival-build" && Math.hypot(a.x - x, a.y - y) < 210).forEach((a) => {
       a.job = "rival-bait"; a.baitUntil = performance.now() + 6000; a.path = [[x, y]]; a.k = 0;
     });
   };
@@ -2310,7 +2331,7 @@ import {
     if (!rival.active || rival.trails.length >= 3) return;
     const pick = rivalTarget();
     if (!pick) return;
-    const t = rivalTrail(pick); spawnRival(t); spawnRival(t);
+    const t = rivalTrail(pick); queueRivalWorkers(t, 2);
     log("the rival retargets a trail");
   };
 
@@ -2338,7 +2359,14 @@ import {
       if (arrived) { a.path = [randomPoint()]; a.k = 0; }
       return;
     }
-    if (a.job === "rival-build") return;
+    if (a.job === "rival-build") {
+      const goal = a.path[a.k];
+      if (goal) {
+        if (move(a, goal[0], goal[1], dt, SPEED * 1.5)) a.k++;
+        a.px = a.x; a.py = a.y;
+      } else if (a.buildSite) stepRivalMini(a, dt);
+      return;
+    }
     if (a.job === "rival-guard" || a.job === "rival-defend") {
       const threat = mainAnts().find((m) => m.el && m.where === "page" && (m.role === "soldier" || m.role === "guard" || m.role === "worker") && Math.hypot(m.x - a.x, m.y - a.y) < 110 && Math.hypot(m.x - home.hole[0], m.y - home.hole[1]) > 180 && (m.role === "soldier" || m.role === "guard"));
       if (threat) {
@@ -2418,10 +2446,18 @@ import {
     };
     placeSide(mains, -1);
     placeSide(rivals, 1);
+    for (const [side, opponents] of [[mains, rivals], [rivals, mains]]) {
+      for (const ant of side) {
+        const pose = ant.fightPose;
+        pose.opponents = opponents.toSorted((a, b) =>
+          Math.hypot(a.fightPose.x - pose.x, a.fightPose.y - pose.y) -
+          Math.hypot(b.fightPose.x - pose.x, b.fightPose.y - pose.y));
+      }
+    }
   };
   const stepCombatant = (ant, dt) => {
     if (!inCombat(ant)) return;
-    const { x, y, face, startedAt } = ant.fightPose;
+    const { x, y, face, startedAt, opponents } = ant.fightPose;
     const now = performance.now();
     const beforeX = ant.x, beforeY = ant.y;
     const carrying = ant.letter?.state === "carried" || ant.letter?.state === "rival-carry";
@@ -2431,7 +2467,9 @@ import {
       stepMovement(ant, x + Math.cos(face) * lean, y + Math.sin(face) * lean, dt, SPEED * 1.45, { now });
       ant.heading = heading;
     }
-    turnToward(ant, face, dt);
+    const opponent = opponents.find(inCombat);
+    const dx = (opponent?.x ?? ant.x) - ant.x, dy = (opponent?.y ?? ant.y) - ant.y;
+    turnToward(ant, Math.hypot(dx, dy) > 1 ? Math.atan2(dy, dx) : face, dt);
     ant.px = ant.x; ant.py = ant.y;
     ant.fightWalking = Math.hypot(ant.x - beforeX, ant.y - beforeY) > 0.03;
   };
@@ -2675,6 +2713,10 @@ import {
   const retreatRival = () => {
     if (!rival.active) return;
     rival.active = false;
+    rival.founding = null;
+    rival.exits.length = 0;
+    rival.sites.forEach((site) => site.el?.remove());
+    rival.sites = [];
     [...rival.trails].forEach((t) => retireRivalTrail(t, false));
     [...rival.ants].forEach(removeRivalAnt);
     rival.mound?.el.remove(); rival.mound = null;
@@ -2692,34 +2734,50 @@ import {
     if (milestone < 2 || milestone % 2 !== 0 || rival.lastMilestone === milestone) return;
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-    mound.el.classList.add("constructing");
-    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = RIVAL_MOUND_HEALTH; rival.buildUntil = performance.now() + RIVAL_FOUNDING_TIME * 1000; rival.war = false;
+    mound.el.style.visibility = "hidden";
+    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = RIVAL_MOUND_HEALTH; rival.war = false;
     rival.lastMilestone = milestone; rival.lastBase = mound.base.slice(); rival.tier = (rival.tier || 0) + 1; rival.activeAt = performance.now();
-    const builders = [];
-    for (let i = 0; i < 3; i++) {
-      const bx = mound.base[0] + (i - 1) * 26, by = mound.base[1] + 8;
-      const b = spawnRivalUnit("rival-build", [bx, by], [], null); b.el.classList.remove("walk"); b.el.classList.add("building"); builders.push(b);
-    }
-    log("three rival builders start the mound");
-    setTimeout(() => {
-      builders.forEach(removeRivalAnt);
-      mound.el.classList.remove("constructing");
-      if (!rival.active || rival.mound !== mound) return;
-      const pick = rivalTarget();
-      if (!pick) { mound.el.remove(); rival.active = false; rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-      const t = rivalTrail(pick); spawnRival(t); spawnRival(t);
-      const guardPath = lanePath(t.pts, 8);
-      spawnRivalUnit("rival-guard", [rival.mound.base[0] - 28, rival.mound.base[1] + 16], guardPath, null);
-      rival.nextGrow = performance.now() + 3500;
-      const starter = Math.min(rivalCaps().ants, 6 + rival.tier * 4);
-      let guard = 0;
-      while (rival.ants.length < starter && guard++ < 24) spawnRival(t);
-      buildRivalMinis(); buildRivalMinis();
-      if (starter > 3) log("the rival starts with extra mounds and workers");
-      log("the rival opens its first trail");
-      log("the rival trails open");
-      blip(260, 0.1, "sawtooth", 0.025);
-    }, 2600);
+    const builders = Array.from({ length: 3 }, (_, index) => {
+      const offset = index - 1;
+      const bx = mound.base[0] + offset * 24, by = mound.base[1] + 8;
+      const fromY = by + (by + 60 < main.scrollHeight ? 46 + index * 8 : -46 - index * 8);
+      return spawnRivalUnit("rival-build", [bx + offset * 12, fromY], [[bx, by]]);
+    });
+    rival.founding = { builders, progress: 0 };
+    log("three rival builders approach the mound site");
+  };
+  const stepRivalFounding = (now, dt) => {
+    const founding = rival.founding;
+    if (!founding || state.party) return;
+    const builders = founding.builders.filter((ant) => ant.el && !ant.dead);
+    if (!builders.length) return retreatRival();
+    if (builders.some((ant) => ant.path[ant.k])) return;
+    const el = rival.mound.el;
+    el.style.visibility = "";
+    el.classList.add("constructing");
+    builders.forEach((ant) => ant.el.classList.add("building"));
+    founding.progress = advanceBuild(founding.progress, dt, RIVAL_FOUNDING_TIME);
+    el.style.transform = `scaleY(${Math.max(0.06, founding.progress)})`;
+    el.style.opacity = String(Math.max(0.12, founding.progress));
+    if (founding.progress < 1) return;
+    el.style.transform = "";
+    el.style.opacity = "";
+    el.classList.remove("constructing");
+    rival.founding = null;
+    builders.forEach(removeRivalAnt);
+    const pick = rivalTarget();
+    if (!pick) return retreatRival();
+    const trail = rivalTrail(pick);
+    spawnRival(trail);
+    rival.nextExit = now + RIVAL_EXIT_GAP;
+    queueRivalExit(() => {
+      if (rival.trails.includes(trail)) spawnRivalUnit("rival-guard", rival.mound.hole, lanePath(trail.pts, 8));
+    });
+    queueRivalWorkers(trail, Math.min(rivalCaps().ants, 6 + rival.tier * 4) - 2);
+    buildRivalMinis();
+    rival.nextGrow = now + 3500;
+    log("the rival opens its first trail");
+    blip(260, 0.1, "sawtooth", 0.025);
   };
   const rivalCaps = () => {
     const crew = mainAnts().length;
@@ -2741,35 +2799,104 @@ import {
 
   const startRival = () => { state.partyIndex = 2; rival.lastMilestone = 0; foundRival(); };
 
+  const RIVAL_EXIT_GAP = 650;
+  const queueRivalExit = (launch) => {
+    if (rival.exits.length < rivalCaps().ants) rival.exits.push(launch);
+  };
+  const queueRivalWorkers = (trail, count) => {
+    for (let i = 0; i < count; i++) queueRivalExit(() => {
+      if (rival.trails.includes(trail)) spawnRival(trail);
+    });
+  };
+  const releaseRival = (now) => {
+    if (!rival.active || state.party || rival.founding || now < rival.nextExit) return;
+    const site = rival.sites.find((entry) => !entry.builder);
+    const room = rival.ants.length < rivalCaps().ants;
+    if (site) {
+      const builder = room ? spawnRivalUnit("rival-build", rival.mound.hole, [])
+        : rival.ants.find((ant) => ant.job === "rival-pause" && ant.el && !ant.dead && !ant.fightUntil && !ant.letter);
+      if (!builder) return;
+      builder.trail?.ants.delete(builder);
+      builder.trail = null;
+      builder.job = "rival-build";
+      builder.el.classList.add("rival-build");
+      builder.path = [[site.x, site.y + 4]];
+      builder.k = 0;
+      builder.buildSite = site;
+      site.builder = builder;
+    } else {
+      if (!room) return;
+      const unstaffed = rival.minis.find((mini) => mini.hp > 0 && (!mini.guards.size || !mini.flyers.size));
+      if (unstaffed) spawnRivalStaff(unstaffed, unstaffed.guards.size ? "rival-flyer" : "rival-guard");
+      else if (rival.exits.length) rival.exits.shift()();
+      else return;
+    }
+    rival.nextExit = now + RIVAL_EXIT_GAP;
+  };
   const buildRivalMinis = () => {
-    if (!rival.active || rival.minis.length >= rivalCaps().minis) return;
-    const miniSpots = [];
+    let remainingSites = Math.min(2, rivalCaps().minis - rival.minis.length - rival.sites.length);
+    if (!rival.active || rival.founding || remainingSites <= 0) return;
     const terrain = miniTerrain();
+    const occupied = rival.minis.map((mini) => mini.base).concat(rival.sites.map((site) => [site.x, site.y]));
     for (const radius of [130, 170, 210]) {
       for (let k = 0; k < 18; k++) {
         const a = (k / 18) * Math.PI * 2;
         const x = rival.mound.base[0] + Math.cos(a) * radius, y = rival.mound.base[1] + Math.sin(a) * radius * 0.6;
-        const box = [x - 26, y - 26, x + 26, y + 16];
-        if (!miniFits(box, terrain.obstacles)) continue;
+        if (!miniFits(rivalMiniBox({ x, y }), terrain.obstacles)) continue;
         if (Math.hypot(x - home.base[0], y - home.base[1]) < 180) continue;
-        if (miniSpots.some((p) => Math.hypot(p.x - x, p.y - y) < 90)) continue;
-        miniSpots.push({ x, y }); break;
+        if (occupied.some(([bx, by]) => Math.hypot(bx - x, by - y) < 90)) continue;
+        occupied.push([x, y]);
+        rival.sites.push({ x, y, progress: 0 });
+        if (--remainingSites === 0) return;
       }
-      if (miniSpots.length >= 2) break;
     }
-    miniSpots.slice(0, Math.max(1, rivalCaps().minis - rival.minis.length)).forEach((p) => {
-      const x = p.x, y = p.y;
-      const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
-      el.style.left = `${x}px`; el.style.top = `${y}px`; el.setAttribute("role", "button"); el.setAttribute("tabindex", "0"); el.setAttribute("aria-label", "Rival mini mound. Click to damage."); layer.append(el); el.classList.add("rising"); setTimeout(() => el.classList.remove("rising"), 900);
-      const mini = { el, base: [x, y], hp: 3, guards: new Set(), flyers: new Set() }; rival.minis.push(mini);
-      el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); damageRivalMini(mini); });
-      const trail = rival.trails[0];
-      const g = spawnRivalUnit("rival-guard", [x, y], trail ? lanePath(trail.pts, 8) : [[x, y - 22], [x, y + 22]], null);
-      const f = spawnRivalUnit("rival-flyer", [x, y], [randomPoint()], null);
-      if (g) { g.mini = mini; mini.guards.add(g); }
-      if (f) { f.mini = mini; mini.flyers.add(f); }
-    });
-    log("the rival raises its mini mounds");
+  };
+  const stepRivalMini = (builder, dt) => {
+    const site = builder.buildSite;
+    const { x, y } = site;
+    if (!site.el) {
+      if (!miniFits(rivalMiniBox(site), miniTerrain(true, site).obstacles)) {
+        removeRivalAnt(builder);
+        return;
+      }
+      builder.el.classList.add("building");
+      const el = document.createElement("div");
+      el.className = "nest-hill rival rival-mini constructing";
+      el.style.left = `${x}px`; el.style.top = `${y}px`;
+      layer.append(el);
+      site.el = el;
+    }
+    site.progress = advanceBuild(site.progress, dt, RIVAL_FOUNDING_TIME);
+    site.el.textContent = miniArt(site.progress);
+    if (site.progress < 1) return;
+    const el = site.el;
+    el.classList.remove("constructing");
+    el.setAttribute("role", "button"); el.setAttribute("tabindex", "0");
+    el.setAttribute("aria-label", "Rival mini mound. Click to damage.");
+    const mini = { el, base: [x, y], hp: 3, guards: new Set(), flyers: new Set() };
+    rival.minis.push(mini);
+    rival.sites = rival.sites.filter((entry) => entry !== site);
+    builder.buildSite = null;
+    builder.job = "rival-guard";
+    builder.role = "guard";
+    builder.hp = 2;
+    builder.path = builder.guardPath = rivalMiniPatrol(mini);
+    builder.k = 0;
+    builder.mini = mini;
+    mini.guards.add(builder);
+    builder.el.className = antClasses(builder.job, "rival");
+    builder.el.innerHTML = antMarkup({ role: builder.job });
+    label(builder);
+    el.addEventListener("click", (event) => { event.preventDefault(); event.stopPropagation(); damageRivalMini(mini); });
+    el.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); el.click(); } });
+    log("a rival builder finishes a mini mound");
+  };
+  const rivalMiniPatrol = ({ base: [x, y] }) => [[x - 24, y + 12], [x + 24, y + 12]];
+  const spawnRivalStaff = (mini, job) => {
+    const guard = job === "rival-guard";
+    const ant = spawnRivalUnit(job, mini.base, guard ? rivalMiniPatrol(mini) : [randomPoint()]);
+    ant.mini = mini;
+    (guard ? mini.guards : mini.flyers).add(ant);
   };
   const consumeRivalLetter = () => {
     const L = rival.stolen.values().next().value;
@@ -2789,10 +2916,10 @@ import {
   };
 
   const growRival = () => {
-    if (!rival.active || state.party) return;
+    if (!rival.active || state.party || rival.founding) return;
     enforceRivalCap();
     if (!rival.war && (rival.stolen.size >= 10 || performance.now() - (rival.activeAt || performance.now()) > 65000)) { rival.war = true; log("the colony declares all-out war on the rival"); }
-    if (!rival.ants.length) { if (rival.trails.length || performance.now() > (rival.buildUntil || 0)) retreatRival(); return; }
+    if (!rival.ants.length) { retreatRival(); return; }
     if (performance.now() < (rival.nextGrow || 0)) return;
     const caps = rivalCaps();
     if (rival.trails.length >= caps.trails && rival.minis.length >= caps.minis && rival.ants.length >= caps.ants) return;
@@ -2805,25 +2932,24 @@ import {
       const avoid = rival.trails.map((t) => ({ x: t.end[0], y: t.end[1] }));
       const pick = rivalBranchTarget(avoid);
       if (pick) {
-        const t = rivalTrail(pick); spawnRival(t); spawnRival(t);
-        spawnRivalUnit("rival-guard", [rival.mound.base[0] + 28, rival.mound.base[1] + 16], lanePath(t.pts, -8), null);
+        const t = rivalTrail(pick);
+        queueRivalWorkers(t, 2);
+        queueRivalExit(() => {
+          if (rival.trails.includes(t)) spawnRivalUnit("rival-guard", rival.mound.hole, lanePath(t.pts, -8));
+        });
         log("the rival opens another trail");
         if (rival.trails.length >= 2) buildRivalMinis();
       }
       return;
     }
-    if (rival.minis.length < caps.minis) { buildRivalMinis(); return; }
-    if (rival.ants.length >= caps.ants) return;
+    if (rival.minis.length + rival.sites.length < caps.minis) { buildRivalMinis(); return; }
+    if (rival.ants.length + rival.exits.length >= caps.ants) return;
     const t = rival.trails[Math.floor(Math.random() * rival.trails.length)];
-    if (t) { spawnRival(t); spawnRival(t); }
-    if (rival.minis.length) {
-      const m = rival.minis.find((mini) => mini.guards.size < 2) || rival.minis.find((mini) => mini.flyers.size < 2);
-      if (m) {
-        const g = spawnRivalUnit("rival-guard", [m.base[0], m.base[1]], [[m.base[0] - 24, m.base[1] + 12], [m.base[0] + 24, m.base[1] + 12]], null);
-        const f = spawnRivalUnit("rival-flyer", [m.base[0], m.base[1]], [randomPoint()], null);
-        if (g) { g.mini = m; m.guards.add(g); }
-        if (f) { f.mini = m; m.flyers.add(f); }
-      }
+    if (t) queueRivalWorkers(t, 2);
+    const mini = rival.minis.find((entry) => entry.hp > 0 && (entry.guards.size < 2 || entry.flyers.size < 2));
+    if (mini) {
+      queueRivalExit(() => { if (mini.hp > 0 && mini.guards.size < 2) spawnRivalStaff(mini, "rival-guard"); });
+      queueRivalExit(() => { if (mini.hp > 0 && mini.flyers.size < 2) spawnRivalStaff(mini, "rival-flyer"); });
     }
   };
 
@@ -3019,12 +3145,13 @@ import {
       if (state.party) stepParty(now, dt);
       if (state.scoutQueue.length) { const pending = state.scoutQueue.shift(); if (pending?.el && pending.role === "scout") scout(pending); }
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
+      stepRivalFounding(now, dt);
       rivalCombat(now);
       tickRivalAttack(now);
       growRival();
+      releaseRival(now);
       drawPageAnts();
       perfStep = performance.now();
-      if (rival.active && rival.ants.length === 0 && performance.now() > (rival.buildUntil || 0) && performance.now() > (rival.rebuildUntil || 0)) retreatRival();
       if (!rival.active && !state.party && state.partyIndex >= 1 && performance.now() >= rival.returnAt) foundRival();
       state.queen.eat = Math.max(0, state.queen.eat - dt); state.queen.lay = Math.max(0, state.queen.lay - dt * 0.7);
       state.eggs.slice().forEach((e) => {
@@ -3170,11 +3297,13 @@ import {
   document.addEventListener("auxclick", holdLinks, true);
   // Wipe with a drag anywhere on the page, not only if the pointer starts on the thin hit path.
   let wipeFrom = null;
+  const wipeController = new AbortController();
+  const wipeEvents = { signal: wipeController.signal };
   main.addEventListener("pointerdown", (e) => {
     if (state.tool !== "wipe" || !e.isPrimary || e.button !== 0) return;
     if (e.target.closest?.("#nest-mock, .nest-switch, [data-surface='console']")) return;
     e.preventDefault(); wipeFrom = [e.clientX, e.clientY];
-  });
+  }, wipeEvents);
   main.addEventListener("pointermove", (e) => {
     if (!wipeFrom || state.tool !== "wipe") return;
     if (Math.hypot(e.clientX - wipeFrom[0], e.clientY - wipeFrom[1]) < 8) return;
@@ -3184,8 +3313,8 @@ import {
     if (!hit) return;
     wipeFrom = null;
     wipeTrail(hit, at);
-  });
-  ["pointerup", "pointercancel"].forEach((ev) => main.addEventListener(ev, () => { wipeFrom = null; }));
+  }, wipeEvents);
+  ["pointerup", "pointercancel"].forEach((ev) => main.addEventListener(ev, () => { wipeFrom = null; }, wipeEvents));
   setTool("squash");
   $("tool-help").textContent = "Watch a scout find a letter and workers follow its trail. Use the tools to see how they respond.";
   $("x").addEventListener("click", leave);
@@ -3290,6 +3419,7 @@ import {
   const stop = () => {
     watchTerrain.disconnect();
     meterObserver.disconnect();
+    wipeController.abort();
     stopLoop();
     stopped = true; document.removeEventListener("click", holdLinks, true);
     document.removeEventListener("auxclick", holdLinks, true); document.removeEventListener("keydown", onKey);
