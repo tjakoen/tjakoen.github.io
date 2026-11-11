@@ -1,5 +1,5 @@
 ---
-title: VOICE.md — voice & tone
+title: "VOICE.md: voice and tone"
 summary: The standard for anything published in Tjakoen's name - cadence, the machine-tells to avoid, the honesty clause, and what a reader meets first.
 when: >
   Read this BEFORE writing the first line of prose that carries Tjakoen's byline, and before editing
@@ -24,10 +24,9 @@ when: >
 
 ## In one line
 
-**Honest, self-aware, and precise: a smart friend explaining something he actually cares about,
-who refuses to bullshit you and refuses to bore you.** Warm but not soft; confident but not
-salesy; technical but never jargon-drunk. The through-line on every surface: **no corporate voice,
-no hype, no hiding the hard parts.**
+**A smart friend explaining something he actually cares about, who refuses to bullshit you and
+refuses to bore you.** He is warm without going soft and technical without getting jargon-drunk. On
+every surface he skips the corporate voice and the hype, and he never hides the hard parts.
 
 ## Core principles
 
@@ -48,7 +47,7 @@ no hype, no hiding the hard parts.**
    studies with real people, and I say so plainly."* State the cost, the trade, the unproven claim.
    Honesty is the credibility.
 
-5. **Quirky and light, this is load-bearing, not decoration.** He does not take himself too
+5. **Quirky and light, on purpose.** He does not take himself too
    seriously, and the writing shouldn't either. Dry, self-deprecating humor is the *default*
    setting, not an occasional garnish: *"collecting abandoned workspaces like a very tidy hoarder,"*
    *"one chronically disorganized human and one alarmingly tidy AI."* The joke is almost always at
@@ -117,10 +116,11 @@ with it. Pick an image that carries part of the point.
 - **Rule of three & repetition for rhythm.** *"learn its system, fall off that one, and go around
   again."* One deliberate tricolon is rhythm; every list arriving in tidy threes is a machine tell
   (see *Do not sound like the machine*).
-- **Avoid em-dashes. A big no-no.** They have become one of the loudest AI tells, so the default is
-  none. Use a comma, a period, a colon, or parentheses, or just rewrite the sentence. (This reverses an
-  older "em-dash is the signature" stance: the prose reads *more* human without them.) Keep one only
-  when nothing else carries a genuine pivot, and never two in a paragraph.
+- **No em-dashes.** They have become one of the loudest AI tells, so there are none. Rewrite the
+  sentence, or use a period, a comma or parentheses. Reach for a colon last, because a colon holding
+  a pivot is the colon reveal (see *Do not sound like the machine*). This reverses an older "em-dash
+  is the signature" stance, and the prose reads *more* human without them. This bullet is the one
+  home for the rule.
 - **Direct address, sparingly.** *"You know the tone."* Pull the reader in at key moments.
 
 ## Signature moves
@@ -142,7 +142,7 @@ piece; rotate the openers especially.
 Homey and physical over grand and abstract. His own, reusable:
 
 - **The piano in the same room:** *"it plays the same piano I do, in the same room, where I can
-  watch its hands."* The AI-operability thesis in one image. The gold standard; don't overuse it.
+  watch its hands."* The AI-operability thesis in one image. The best of the bank, so don't overuse it.
 - **Grain vs. clean ink:** machine had a hand in it vs. settled and human. Works literally (the
   type) and as metaphor (a draft, a decision, a claim not yet earned).
 - **The tidy AI / the messy human:** *"one chronically disorganized human and one alarmingly tidy
@@ -195,11 +195,11 @@ where possible, never mixed or grandiose.
 
 ## What a reader meets first
 
-Twenty-five code reviews went out with the verdict on the last line. Every one of them opened with
-my reasoning, so the developer had to walk past two thousand characters of me explaining why I was
-right before reaching the sentence that told them whether they could merge. The one part I had
-thought to fold away was the evidence table, which is the part nobody needed. That is the whole
-lesson, and it is not about code review: **a reader decides whether to read a thing from its first
+Twenty-five of his code reviews went out with the verdict on the last line. Every one of them opened
+with his reasoning, so the developer had to walk past two thousand characters of him explaining why
+he was right before reaching the sentence that told them whether they could merge. The one part he
+had thought to fold away was the evidence table, which is the part nobody needed. That is the
+lesson, and it reaches past code review. **A reader decides whether to read a thing from its first
 screen, so the first screen holds what they have to act on, and everything that only proves it folds
 behind that.**
 
@@ -222,7 +222,7 @@ colleague, anything a person meets in a narrow column on a phone:
 - **Put a count on the label when there is one.** *Also worth doing (3)* tells a reader whether the
   tap is worth it. *Three smaller things, folded* does not, and it is the same number of characters.
 - **A hedge is never folded.** This is the honesty clause meeting the layout rule, and the layout
-  rule loses. If a claim rests on something I have not run, or on a reading I am not sure of, that
+  rule loses. If a claim rests on something he has not run, or on a reading he is not sure of, that
   caveat sits in the visible region next to the claim it qualifies. Fold *"I have not tested this"*
   and a careful finding becomes a flat assertion, which is exactly the overclaim the clause below
   exists to prevent. If the visible region will not hold the claim, the ask and the caveat together,
@@ -248,7 +248,7 @@ than one thing is laid out for scanning rather than for reading straight through
   bullets as it has facts: two is fine, five is fine, and three every time is the tidy-list tell
   coming back in through the layout.
 - **Every ticket key is a link.** A bare key makes the reader copy it into a search box, which is
-  work I could have done once for every reader.
+  work the writer could have done once for every reader.
 - **A one-line comment stays one line.** *"Fixed in [EDGE-4120](.), back to you."* needs no heading,
   no group and no bullet. Structure is for comments that have more than one thing to say, never a
   costume put on a short one.
@@ -269,7 +269,7 @@ The caveat sits in the visible bullets, next to the claim it qualifies, for the 
 hedge rule above.
 
 **What I have not shown.** Whether folding actually raises the odds of feedback being acted on is
-still open on my own numbers: the folded items ran well below the visible ones for adoption before
+still open on his own numbers: the folded items ran well below the visible ones for adoption before
 the change, and the sample since is small. The argument here is that a reader who never reaches the
 ask cannot act on it, which is a floor rather than a proof. If the next pass says otherwise, the
 problem was volume all along and the fix is writing less, not folding more.
@@ -294,8 +294,8 @@ Reach into this shelf instead of writing *"a modern typeface"* or *"a recent pro
 **Projects (the recurring cast)**
 - **TJ's Desk:** his personal site (portfolio.tjakoen.com), a portfolio, a notebook, and a live demo
   of the stack, built on it. E-ink / Swiss-editorial; the flagship of his aesthetic.
-- **The AI-operable design system (GRAIN + BATCH):** a docs site that doesn't just *describe*
-  components, it lets the AI *drive* them: drivable catalog, build queue, token playground. The
+- **The AI-operable design system (GRAIN + BATCH):** a docs site where the AI drives the same
+  components it documents, through a drivable catalog, a build queue and a token playground. The
   thesis project.
 - **An internal planning document:** the operating doc and deck for his engineering team.
   Swiss-editorial house style, vermilion ember accent. *(Internal; unnamed on purpose.)*
@@ -348,15 +348,15 @@ So a draft takes **his** side with **his** reasoning, not a plausible-sounding s
 
 If a draft argues the *opposite* of any row, it's off-voice regardless of how clean the prose is. The
 two AI stances have deeper roots: the multiplier line is the human-capability precondition under the
-augmentation thesis ([[ai-as-augmentation-thesis]]), *"using AI is only powerful if you can be
-amazing without it"*, and the flag-flying posture is set out in [[voice-and-ai-positioning]].
+augmentation thesis in [Ten Times Zero](/notes/ten-times-zero), *"using AI is only powerful if you can be
+amazing without it"*, and the flag-flying posture is the *Fly the AI flag* row above.
 
 ## Diction: reach for / avoid (quick pass; full tell-list below)
 
 | Reach for | Avoid |
 |---|---|
 | plain strong verbs (*build, prove, ship, refuse*) | corporate verbs (*leverage, utilize, empower, unlock*) |
-| named specifics (Bun, 120 students, 33 commits) | vague intensifiers (*very, really, incredibly, game-changing*) |
+| named specifics (Bun, 150 to 300 students, 33 commits) | vague intensifiers (*very, really, incredibly, game-changing*) |
 | honest limits (*I have not earned this yet*) | overclaiming (*revolutionary, seamless, effortless*) |
 | homey, physical metaphors | grandiose or mixed metaphors |
 | "the machine," "the AI," "the desk" (product) | anthropomorphizing hype ("magical AI") |
@@ -376,7 +376,7 @@ model. [Ege Vusal Chelebi](https://www.chele.bi/videos/the-cure-for-ai-slop) ran
 with a skill derived from STE. The linter counted 74 percent fewer violations per hundred words on
 Claude Sonnet and 50 percent fewer on GPT-5.5. A banned-word list cut violations by 3 percent and
 40 percent, respectively. The test scored writing against a set of rules. It did not test whether
-readers preferred the result or whether it sounded like me. The rule I borrow is the one about
+readers preferred the result or whether it sounded like him. The rule borrowed here is the one about
 choosing a verb over a noun that needs another verb to get it moving. See *Nominalizations* below.
 
 **A second borrowed source (and what was left behind).**
@@ -450,11 +450,9 @@ sometimes two confessions, sometimes an ending that just stops. Draw two or thre
 leave the rest on the shelf. Rotate the openers: some pieces start mid-problem, some with the
 pull-quote, some with a number.
 
-**Em-dashes: a big no-no.** The internet now reads the em-dash itself as an AI tell, and that is the
-call here: avoid them. Rewrite with a comma, a period, a colon, or parentheses. His older drafts lean
-on them heavily (the origin story especially), so de-em-dashing existing prose is genuine, per-sentence
-work, but going forward the default is none. A rare, truly load-bearing pivot can survive; a decorative
-one never does. When in doubt, there is no doubt: cut it.
+**Em-dashes.** The rule lives under *Sentence mechanics & rhythm*: none. His older drafts lean on them
+heavily (the origin story especially), so de-em-dashing existing prose is per-sentence work, covered
+under *Editing a draft that already exists*.
 
 **The tell underneath all the tells:** the deepest fingerprint is **texture, not vocabulary**:
 paragraphs all the same length, every point neatly balanced, no rough edge, no real opinion, no joke
@@ -471,8 +469,8 @@ filler. Replace it with a fact, a mechanism, a consequence or a judgment that on
 *"The integration improved efficiency"* travels anywhere. *"The integration cut the deploy from forty
 minutes to four"* cannot leave the building.
 
-And the deeper irony, worth saying plainly since he flies the flag: the way you keep AI-assisted
-writing from *sounding* like AI is to have the judgment to catch it, the same multiplier truth. Ten
+He flies the AI flag, and the thing that keeps AI-assisted writing from *sounding* like AI is the
+judgment to catch it. That is the same multiplier truth. Ten
 times zero is still zero. The voice is the part the machine cannot supply.
 
 ## Editing a draft that already exists
@@ -495,6 +493,22 @@ is the standing example, and it is where an over-eager pass does the most damage
 - **Say what changed, and why.** An editing pass owes a short list of what moved, not just the new
   file. A reorganized structure owes its reason in a sentence.
 
+## Writing to Tjakoen
+
+Everything above governs prose that goes out under his name. The other direction gets a rule too:
+how an AI should write *to* him, in a chat reply or a run report. His tech lead keeps a file like
+this for how he wants Claude to talk to him, and the two files are the same idea pointed opposite
+ways. The reader is named, so the writing fits that reader.
+
+- **The answer goes first.** No pleasantries, no restating the question, no sentence that exists
+  only to be polite. That is principle 7 carried over from the page to the chat.
+- **Whole sentences, all the articles.** Cutting ceremony is not a compression scheme. A reply in
+  fragments is harder to read, not faster.
+- **Say what was done and what was not.** A change that is not committed, not pushed or not
+  verified gets named as such. The honesty clause applies to a run report as much as to a note.
+- **A compression rule stops at the file boundary.** Whatever shortens a chat reply never reaches a
+  file. Anything written down is full prose under this standard.
+
 ## Content guardrails (this repo is public)
 
 - **Money stays vague. Always.** Never publish specific salary/pay numbers or exact ratios. Make the
@@ -502,13 +516,13 @@ is the standing example, and it is where an over-eager pass does the most damage
   pays," "the hourly math is a joke"), never with figures.
 - **Neutral, no names, lessons-forward** for anything sensitive. Company name is **Career Team**.
   People name-drops = public professional info + LinkedIn only. Student data, private course content,
-  and internal project internals never appear. See [[portfolio-content-backlog-guardrails]].
+  and internal project internals never appear.
 
 ## The honesty clause (non-negotiable)
 
 Never claim a benefit you have not shown. If something is a hypothesis, say so. If a trade-off hurts,
-name it. If a number is a snapshot, flag it. This is the load-bearing wall of the whole voice: it's
-*why* the confident parts are believable. See the whitepaper's §8 and the origin story's "what I have
+name it. If a number is a snapshot, flag it. The confident parts are believable because of
+this clause. See the whitepaper's §8 and the origin story's "what I have
 not earned yet."
 
 ## Structure of a typical piece
@@ -536,7 +550,7 @@ Every one of these has been used, and every one of them sounds reasonable at the
 | "It's a draft, I'll do the voice later." | Later means sanding a machine-flat draft, and the calibration pair below says start over rather than sand. Voice is cheaper written than retrofitted. |
 | "It's only a commit message." | Commit messages ship. The next session reads them, the log keeps them, and anyone auditing how the work was done reads them first. |
 | "I already know the voice." | The things most often missed are not the vibe, they are mechanical: a backtick, an em-dash, a tidy triad, a bare credential. Knowing the voice does not catch those. |
-| "The em-dash genuinely reads better here." | It is the loudest tell in the set, and the sentence has always survived a comma, a colon, or a rewrite. This file reversed its own earlier stance on exactly this point, so the bar for keeping one is high. |
+| "The em-dash genuinely reads better here." | It is the loudest tell in the set, and the sentence has always survived a rewrite. This file reversed its own earlier stance on exactly this point, and it keeps none. |
 | "There's no real foible to joke about here." | Then skip the joke, because a manufactured wink is the worse tell. But look first: "no foible available" is usually "I did not look." |
 | "The prose is clean, so it's fine." | Clean, correct, and forgettable is the definition of the failure, not the pass. |
 | "The linter came back green." | It covers the mechanical half by design. Green means nothing was misspelled in the machine's accent; it says nothing about whether the piece is his. |
@@ -593,7 +607,7 @@ flagged 318 lines of this repo where the sampled ones were ordinary sentence col
 the linter multiplies the eye, it does not replace it.
 
 - [ ] **A backtick in prose.** The number-one machine tell. (Code blocks, reference docs and the console exception exempt.)
-- [ ] **An em-dash.** Now a top machine tell too. Rewrite with a comma, period, colon, or parentheses.
+- [ ] **An em-dash.** Now a top machine tell too. Rewrite the sentence, or use a period, comma or parentheses.
 - [ ] **The "it's not just X, it's Y" shape**, an eager sign-off, or anything from *Do not sound like the machine*.
 - [ ] **A vague placeholder where a real name goes.** *"A modern font"* → *Redaction.* *"AI tooling"* → *Claude.*
 - [ ] **A bare credential.** A title or achievement standing alone reads as a boast. Attach its cost,
