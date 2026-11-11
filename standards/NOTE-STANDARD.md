@@ -54,8 +54,7 @@ summary: >
   A 1–3 sentence abstract for listing pages and AI/SEO. Says what the piece argues, in his voice,
   not "this post will discuss…". This is the AEO surface, make it a real answer.
 social: |
-  Optional ready-to-post copy. The page renders it at the bottom with the canonical link. It is the
-  post, not the summary.
+  Optional post copy. When included, supply the image and alt text below.
 socialImage: "/media/notes/example-social.png"
 socialImageAlt: "What the card shows."
 ---
@@ -73,17 +72,16 @@ socialImageAlt: "What the card shows."
 | `tags` | Topics | Lowercase, real, ~3–6. Reuse existing tags where they fit. |
 | `summary` | Abstract for listings + AI/SEO | A real answer in his voice. This is the AEO payload; treat it as first-class. |
 | `social` | Ready-to-post copy | Optional. A short post, not the summary. The page renders it at the bottom with the canonical link. |
-| `socialImage` | Social image path | Optional. A 1200×1200 PNG for the post. The share block shows it with a download link. |
-| `socialImageAlt` | Social image alt | What the card shows. Required when `socialImage` is set. |
+| `socialImage` | Social image path | Required with `social`. Supply a 1200×1200 PNG the reader can download and attach to the post. |
+| `socialImageAlt` | Social image alt | Required for every social image. Describe what the card shows. |
 
 ## Structure
 
 ### The share block
 
-If the note has a social block, the page renders it at the bottom, collapsed, with a copy button
-and the canonical link. The subtitle is the social preview; the social block is the post copy. Do
-not paste the summary into it. When a social image is set, the block also shows the image and a
-download link.
+When you write social post copy, make the image and write its alt text in the same pass. The
+collapsed block at the bottom of the note gives the reader the copy, the canonical link, and the
+image to download. The subtitle supplies the social preview. Write the post copy for the feed.
 
 Follow VOICE.md's *Structure of a typical piece* and *Signature moves*, as a **repertoire, not a
 template**, hitting every beat every time is itself the machine tell VOICE.md warns about. The hard
@@ -232,6 +230,7 @@ rather than cutting it.
 STEP 2 — WRITE:
 - Frontmatter block per the template (title/subtitle/author/status: DRAFT/type/date/readingTime/
   tags/summary). Make the summary a real answer, it's the AI/SEO surface.
+- If you include social post copy, make the 1200×1200 image and add its alt text before handoff.
 - Open stakes-first (confession, number, or mid-problem), not thesis-first.
 - Argue MY side with MY reasons (see VOICE.md's opinion stack). Take a side; no both-sides mush.
 - Name real specifics (Bun, Claude, the real project) instead of vague placeholders.

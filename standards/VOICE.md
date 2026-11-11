@@ -107,7 +107,8 @@ Same voice, different dial settings. Contractions are resolved here: this is the
 honest or most opinionated line, front it, add one real specific, stop. *"I would not describe
 myself as a fully functional adult, and yet I built a design system that lets an AI drive its own
 buttons. Vanilla HTML. No framework. Ask me how."* That shape: confession, flex, specific, door
-left open.
+left open. Give every social post draft an image the reader can attach and alt text they can use
+with it. Pick an image that carries part of the point.
 
 ## Sentence mechanics & rhythm
 
@@ -204,9 +205,8 @@ behind that.**
 
 The numbers, from two days of real output and therefore a snapshot rather than a standing fact: 25
 review bodies, verdict last in 25 of them. Forty-one comments alongside, averaging 694 visible
-characters, where the claim and the ask together ran a median of 253. Two of the 41 folded anything
-at all. So roughly two thirds of what I was putting in front of people was proof they had not asked
-for yet.
+characters, and the claim and the ask together ran a median of 253. Two of the 41 folded anything
+at all.
 
 The repair is four rules, and they apply to a README, a note, a pull request, a message to a
 colleague, anything a person meets in a narrow column on a phone:
@@ -372,14 +372,12 @@ fingerprint of it.
 writing standards predate the chatbot by decades: ASD-STE100 (Simplified Technical English, first
 issued 1986) exists so an aircraft manual reads the same in every hangar on earth, plain verbs, one
 name per thing, no decorative fog. The surprise is that the same discipline lands on a language
-model. [A 2026 experiment](https://github.com/woosal1337/blog/tree/main/videos/ep01-the-cure-for-ai-slop)
-fed an STE-derived writing skill to Claude and GPT-4 and measured the slop drop by half or more
-(roughly 50 to 74 percent) on every model tested, while a banned-word list alone barely moved the
-needle. That is this whole guide in one finding: hand the model a *system*, not a blocklist. Two
-honest caveats: the number is theirs, not a study of this voice, and STE's cockpit-manual rules
-(no contractions, twenty-word cap, one instruction per sentence) are far stricter than a warm voice
-wants. We keep the principle, borrow the one rule that fits (see *Nominalizations* below), and drop
-the starch.
+model. [Ege Vusal Chelebi](https://www.chele.bi/videos/the-cure-for-ai-slop) ran six writing tasks
+with a skill derived from STE. The linter counted 74 percent fewer violations per hundred words on
+Claude Sonnet and 50 percent fewer on GPT-5.5. A banned-word list cut violations by 3 percent and
+40 percent, respectively. The test scored writing against a set of rules. It did not test whether
+readers preferred the result or whether it sounded like me. The rule I borrow is the one about
+choosing a verb over a noun that needs another verb to get it moving. See *Nominalizations* below.
 
 **A second borrowed source (and what was left behind).**
 [no-ai-slop](https://github.com/petergyang/no-ai-slop) (petergyang, MIT-licensed) is a 2026 editing
