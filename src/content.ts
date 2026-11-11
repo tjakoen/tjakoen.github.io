@@ -189,6 +189,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // carry it too, because a note that started life as a social post keeps that post beside it.
     const shareBlock = kind === "entry" && (collection.prefix === "/calendar" || collection.prefix === "/notes") && frontmatter && slug
       ? renderShareBlock(frontmatter.social, `${SITE.origin}${collection.prefix}/${slug}`, frontmatter.socialImage, frontmatter.socialImageAlt) : "";
+    const copyScript = shareBlock || body.includes(" data-copy-template") ? CONTENT_COPY_SCRIPT : "";
     // /badges entry pages: a badge-CLASS page (roster of recipients) or a per-recipient CERT page.
     // The template (art + issuer + verification + roster/share) sits above the MILL-rendered body.
     const badgeCard = kind === "entry" && collection.prefix === "/badges" && frontmatter && slug
@@ -243,7 +244,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
       title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}`,
-      board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${videoCard}${gallery}${shareBlock}`,
+      board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${videoCard}${gallery}${shareBlock}${copyScript}`,
     });
   };
 }
@@ -1067,14 +1068,11 @@ function renderShareBlock(social: unknown, url: string, image?: unknown, imageAl
     <button class="share-block__copy" type="button" data-share-copy aria-live="polite">Copy</button>
     <a class="share-block__link" href="${href}">${href}</a>
   </p>
-</details>
-<script>
+</details>`;
+}
+
+const CONTENT_COPY_SCRIPT = `<script>
   (function () {
-    var block = document.querySelector('[data-share]');
-    if (!block) return;
-    var button = block.querySelector('[data-share-copy]');
-    var text = block.querySelector('[data-share-text]');
-    if (!button || !text) return;
     function legacyCopy(value) {
       var field = document.createElement('textarea');
       field.value = value;
@@ -1088,25 +1086,37 @@ function renderShareBlock(social: unknown, url: string, image?: unknown, imageAl
       field.remove();
       return copied;
     }
-    button.addEventListener('click', async function () {
-      var value = text.textContent || '';
-      try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          try { await navigator.clipboard.writeText(value); }
-          catch (_) { if (!legacyCopy(value)) throw new Error('Clipboard write failed'); }
-        } else if (!legacyCopy(value)) {
-          throw new Error('Clipboard is unavailable');
+    document.querySelectorAll('[data-share], [data-copy-template]').forEach(function (block) {
+      var button = block.querySelector('[data-share-copy], [data-copy-template-button]');
+      var text = block.querySelector('[data-share-text], pre code');
+      if (!button || !text) return;
+      var label = button.textContent;
+      var reset;
+      button.hidden = false;
+      button.addEventListener('click', async function () {
+        clearTimeout(reset);
+        button.removeAttribute('data-copied');
+        var value = text.textContent || '';
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            try { await navigator.clipboard.writeText(value); }
+            catch (_) { if (!legacyCopy(value)) throw new Error('Clipboard write failed'); }
+          } else if (!legacyCopy(value)) {
+            throw new Error('Clipboard is unavailable');
+          }
+          button.textContent = 'Copied';
+          button.setAttribute('data-copied', '');
+          reset = setTimeout(function () {
+            button.textContent = label;
+            button.removeAttribute('data-copied');
+          }, 1600);
+        } catch (_) {
+          button.textContent = 'Copy failed, select it instead';
         }
-        button.textContent = 'Copied';
-        button.setAttribute('data-copied', '');
-        setTimeout(function () { button.textContent = 'Copy'; button.removeAttribute('data-copied'); }, 1600);
-      } catch (_) {
-        button.textContent = 'Copy failed, select it instead';
-      }
+      });
     });
   })();
 </script>`;
-}
 
 function renderPhotoGrid(photos: EventPhoto[]): string {
   if (!photos.length) return "";
