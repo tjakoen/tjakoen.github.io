@@ -63,4 +63,4 @@ bun run export           # the static build GitHub Pages publishes
 - **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**, the beliefs the site proves.
 
 ---
-🤖 **Built with Claude, Codex and DeepSeek, and it is also the proof.** This site is the stack's own demo: I made the calls, the models typed them, and the same pages you are reading are the receipts. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](content/notes/ten-times-zero.md)
+🤖 **Built with [my AI loop](content/notes/one-loop-three-harnesses.md), and it is also the proof.** One loop runs Claude, Codex and DeepSeek on this repo. I made the calls, the models typed them, and the pages you are reading are the receipts. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](content/notes/ten-times-zero.md)
