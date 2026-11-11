@@ -18,6 +18,18 @@ a grid of all nine badge designs linking to their criteria pages. The term sits 
 the next semester gets its own note. The social post points at the note and uses the cover card and
 the story card from the same set.
 
+## The voice file note (published 2026-11-11)
+
+[the-voice-file](../content/notes/the-voice-file.md), **PUBLISHED**. A guide for teams whose issue
+trackers have filled with AI-drafted comments that are correct, complete, and hard to read. The
+argument: the writing was never specified in the repository, so the model supplies its default,
+which puts the ask in paragraph four. The fix is a short VOICE.md at the root, pointed at from the
+instruction file that already loads at session start, with a register per surface and a copyable
+starter template. The evidence is the review snapshot already published in VOICE (25 review
+bodies, the verdict last in all 25; 41 comments, 694 visible characters against a 253 median for
+the claim and the ask), framed as a floor rather than proof. The published standard at
+/standards/voice is linked as the long reference, not as the team's file.
+
 ## The AI implementation roadmap note (drafted 2026-08-18)
 
 **Everybody Wants the Agent. Somebody Has to Build the Floor.**

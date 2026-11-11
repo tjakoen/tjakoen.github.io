@@ -2,7 +2,7 @@
 title: "The Voice File Your Team Forgot to Write"
 subtitle: "A repo usually tells the agent how to build and almost never tells it how to write, so the tickets arrive in the model's default voice: context first, the ask in paragraph four. Give the agent a short file that tells it what belongs on line one."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-11-11
 readingTime: "~8 min"
