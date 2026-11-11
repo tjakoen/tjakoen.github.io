@@ -180,7 +180,7 @@ The visible pieces are small and shared:
 - The scent trails are soft, broken curves with a small walk in them, so they look walked rather than sampled.
 - The sounds are synthesized from a few oscillators and one noise buffer. There are no audio files.
 
-The game is lazy loaded. The note is a page first, and the game is only requested when someone opens the launcher.
+The game is lazy loaded. The browser fetches it when someone opens the colony or a stray ant is due to cross the page.
 
 The important constraint is that the page stays a page. The ants take real glyphs from real text nodes. The gaps keep the layout. The panel is a normal part of the sidebar, not an overlay that steals the screen. The game has to be able to disappear without a trace when it closes.
 
@@ -193,6 +193,8 @@ I could not have justified this as a serious side project if it took a month. It
 That is the real advertisement. Not that an AI can write a game. That I can see something interesting, turn it into a small idea, and have a tested thing on my site before the interest goes away. The AI does a lot of the work. I keep the decisions, the standards and the final read. This note is part of the same loop: the game exists, the tests exist, and the writing is the explanation.
 
 I also wanted the portfolio to stay professional. The easter egg is small on purpose. It is behind a status-bar ant, a terminal word and a button in a note. It does not interrupt a recruiter reading the résumé, and it does not turn the home page into a game landing page. If you find it, you get a surprise. If you do not, the site is still the site.
+
+If you see a lone ant crossing the page while you read, click it. It runs to the ant button at the bottom of the screen. That button opens the colony on whichever page you are reading. This note keeps the page for its figures, so the button below opens the colony on the home page.
 
 <p class="nest-start" hidden><a href="/?nest=play" data-nest-start>Open the full colony</a></p>
 
