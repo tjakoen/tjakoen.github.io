@@ -247,7 +247,7 @@ The examples are the part to replace first. A comment that made someone scroll a
 
 **A voice file can also describe how you want the AI to talk to you.**
 
-Everything above is about how the AI should sound when it writes as you. Kercwin, the tech lead on my team, went the other direction. Before he [built his epic checker](move-bugs-left.md), he showed the team how he makes Claude talk to him: tables, diagrams, specific wording, a format his brain reads fast. His file is about the reader at his own desk.
+Everything above is about how the AI should sound when it writes as you. [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/), the tech lead on my team, went the other direction. Before he [built his epic checker](move-bugs-left.md), he showed the team how he makes Claude talk to him: tables, diagrams, specific wording, a format his brain reads fast. His file is about the reader at his own desk.
 
 Both files rest on the same idea. Someone has to read what the model writes, and the file tells the model who that is. If you lose the point of a long AI answer halfway down, write down the shape you read fastest and put it beside your VOICE.md. One file shapes what you send your team, and the other shapes what comes back to you.
 
