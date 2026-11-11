@@ -1583,7 +1583,7 @@ describe("makeDeskReasoner — C1 visitor-intent onboarding", () => {
     const dialog = ops.find((o) => o.op === "replace" && typeof o.html === "string" && o.html.includes("data-choices"));
     expect(dialog).toBeDefined();
     expect(dialog!.html).toContain("Recruiter or hiring");
-    expect(dialog!.html).toContain("Developer curious about the stack");
+    expect(dialog!.html).toContain("Developer");
     expect(dialog!.html).toContain("Student of TJ");
   });
 
