@@ -20,7 +20,7 @@ social: |
 
   I keep the before-and-after pairs in a short VOICE.md so the agent starts from them too.
 socialImage: "/media/notes/the-voice-file-social-ticket.png"
-socialImageAlt: "Two versions of an export ticket comment. The first ends by asking which account the reporter used. The second opens with that question, keeps the untested date filter visible, and folds the two account checks."
+socialImageAlt: "Write for the person who has to read it. The same ticket comment twice: pasted from the AI, three paragraphs with the question in the last line; rewritten, the question opens it, the untested date filter stays visible, and the checks fold under a label."
 ---
 
 Your class project is due tomorrow. The submission asks you to explain what your app does and what you tested. You give an AI your notes and ask for a paragraph to paste into the project report. It writes, “The application provides a consistent authentication experience across devices.” You tested sign-in on your own laptop.
