@@ -1,6 +1,6 @@
 ---
-title: "The Voice File Your Team Forgot to Write"
-subtitle: "Write for the person who has to read your message. A short VOICE.md gives your AI examples of what an instructor or teammate needs to see first."
+title: "Write for the Person Who Has to Read It"
+subtitle: "A short VOICE.md gives your AI examples of what an instructor or teammate needs to see first."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
@@ -12,13 +12,13 @@ summary: >
   comments and chat messages with AI. Put the reader's next action first, keep open questions
   visible, and save before-and-after examples in a short VOICE.md the agent can read.
 social: |
-  I counted 25 AI-drafted code reviews. The verdict was on the last line in all 25.
+  An AI wrote "provides a consistent authentication experience across devices." The student
+  had tested sign-in on one laptop.
 
-  The same thing happens with a ticket comment. Say an export comes back empty. The reporter
-  can answer “Which account were you signed in as?” without reading every check I ran.
+  Write for the person who has to read it. Put what they need to do on the first line, keep
+  what you have yet to test visible, and use words you could explain if someone asked.
 
-  That's the first rule I'd put in VOICE.md. Put the question on line one. Give the checks a
-  place the reader can open when they need them.
+  I keep the before-and-after pairs in a short VOICE.md so the agent starts from them too.
 socialImage: "/media/notes/the-voice-file-social-ticket.png"
 socialImageAlt: "Two versions of an export ticket comment. The first ends by asking which account the reporter used. The second opens with that question, keeps the untested date filter visible, and folds the two account checks."
 ---
