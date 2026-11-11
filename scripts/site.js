@@ -68,7 +68,7 @@
   // are-you-sure → wipe → reload. `window.confirm` is the platform's own confirm primitive
   // (native-first: no library, no bespoke modal). Exposed on window so desk-commands.js's `clearcache`
   // runs the exact same flow. Returns false on cancel (nothing touched).
-  const CLEAR_MSG = "Clear everything saved on this device — chat history, notes, open tabs, your welcome setting, and the downloaded AI model? You'll start clean.";
+  const CLEAR_MSG = "Clear everything saved on this device? That is your chat history, notes, open tabs, theme and welcome setting, and the downloaded AI model. The site will reload as if it were your first visit, welcome tour included.";
   async function clearEverything() {
     if (!window.confirm(CLEAR_MSG)) return false;
     await wipeAll();
@@ -544,6 +544,40 @@
           closeSheet();
         });
       }
+
+      // ---- a lit surface inside a closed drawer opens that drawer. On a narrow layout the dock
+      // lives in the rail and the chat input in the aside sheet, both closed, so a tour step or the
+      // desk lighting either one would put the lamp on something off screen. The spotlight marks
+      // whatever it lights with .ai-spotlit, so watching for that class covers CRUMB and the desk
+      // alike without either one knowing about drawers. A drawer opened this way closes again when
+      // the lamp moves outside it or goes out, so the page is left the way the visitor had it.
+      const narrow = () => matchMedia("(max-width: 768px)").matches || document.body.getBoundingClientRect().width <= 768;
+      let autoOpened = null;   // "rail" | "aside" | null
+      const closeAuto = () => {
+        if (autoOpened === "rail") shell.removeAttribute("data-rail-open");
+        if (autoOpened === "aside") closeSheet();
+        autoOpened = null;
+      };
+      const reveal = (el) => {
+        const drawer = el.closest(".app-shell__rail") ? "rail" : el.closest(".app-shell__aside") ? "aside" : null;
+        if (autoOpened && autoOpened !== drawer) closeAuto();
+        if (!drawer || !narrow()) return;
+        const open = drawer === "rail" ? shell.getAttribute("data-rail-open") === "true" : shell.hasAttribute("data-aside-open");
+        if (open) return;
+        if (drawer === "rail") shell.setAttribute("data-rail-open", "true");
+        else shell.setAttribute("data-aside-open", "");
+        autoOpened = drawer;
+        // the drawer slides in; once it lands, bring the surface into view and let the lamp follow
+        setTimeout(() => { el.scrollIntoView({ block: "center" }); window.dispatchEvent(new Event("resize")); }, 320);
+      };
+      new MutationObserver((records) => {
+        for (const r of records) {
+          const was = (r.oldValue || "").includes("ai-spotlit");
+          const is = r.target.classList.contains("ai-spotlit");
+          if (is && !was) return reveal(r.target);
+        }
+        if (autoOpened && !document.querySelector(".ai-spotlit")) closeAuto();
+      }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ["class"], attributeOldValue: true });
     }
 
     // ---- the toast favicon follows the theme. A browser renders a favicon in isolation, so it
