@@ -19,8 +19,13 @@ the assistant can point at.
 - status: changed
 - review: The dock gained a Plans row and split into an apps group and a meta group, so navigation reads like a set of small apps rather than one list.
 - verify: Hover each row; every one is a real link with its own destination.
-This is the app dock. Notes, Calendar, Mail, About, and now Plans are separate little apps inside
-the one shell. Each row is an addressable navigation surface, so the AI can open any of them for you.
+This is the app dock. Projects, Notes, Calendar, Mail, Plans and About are separate little apps
+inside the one shell. Each row is an addressable navigation surface, so the AI can open any of them for you.
+
+## theme-scheme
+- verify: Click the highlighted button; the page should switch between light and dark, and a reload should keep the choice.
+The site opens in brioche, the light flavor. This button switches it to dark and back, and the
+flavor name beside it cycles the palette. Both choices are saved in this browser.
 
 ## chat-input
 - verify: Type an intent and watch the lamp travel to whatever the assistant touches.
@@ -43,5 +48,4 @@ AI doing most of the typing.
 - review: Plans moved out of a buried link and into the dock as a first-class app, so the board is reachable in one click.
 - verify: Open Plans; the board renders straight from the markdown files, which the tour never writes to.
 Last stop. Plans is the project board, rendered straight from markdown files that never get written
-back to. It used to be reachable only from a buried link. It now lives in the dock, where you would
-expect to find it.
+back to. It sits in the dock beside the other apps, one click from anywhere on the desk.
