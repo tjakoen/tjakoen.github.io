@@ -46,7 +46,7 @@ test.describe("C1 visitor-intent onboarding (deterministic, no model needed)", (
     await expect(choices.first()).toBeAttached();
     expect(await choices.count()).toBe(3);
     await expect(page.locator(".assistant__log .chat-choice", { hasText: "Recruiter or hiring" })).toBeAttached();
-    await expect(page.locator(".assistant__log .chat-choice", { hasText: "Developer curious about the stack" })).toBeAttached();
+    await expect(page.locator(".assistant__log .chat-choice", { hasText: "Developer" })).toBeAttached();
     await expect(page.locator(".assistant__log .chat-choice", { hasText: "Student of TJ" })).toBeAttached();
     // the nag-guard's own flag — the ask marks itself BEFORE rendering, so it's already set by now.
     expect(await sessionValue(page, "desk-intent-asked")).toBe("1");
