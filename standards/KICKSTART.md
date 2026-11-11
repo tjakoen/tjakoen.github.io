@@ -89,7 +89,7 @@ PHASE 3 — Plan, then stop. Given my answers and what you read, come back with:
   b) THE WIRING PLAN: the install commands, the file/folder layout, and the first plan
      file to drop in plans/ , in the order I should do them. Follow the setup and repo
      conventions in the standards you just read (the CLAUDE.starter template, the README
-     standard with the "Made with Claude" badge, the AI-repo standard). Write prose in
+     standard with the "Made with Claude, Codex and DeepSeek" badge, the AI-repo standard). Write prose in
      my voice unless I chose Tjakoen's VOICE.
   c) THE LOOP, WIRED ON DAY ONE, not left as prose for a future session to remember. Name
      the file that carries each one, and say plainly where the answer is "not worth it here":
