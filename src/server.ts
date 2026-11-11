@@ -385,6 +385,23 @@ function withPeekRoot(html: string): string {
   return html.replace('<main class="app-shell__main"', '<main data-peek-root class="app-shell__main"');
 }
 
+// Restore the shell's collapsed rail and terminal state before the first paint. grain's shell.js
+// reads the same localStorage keys, but it loads deferred, so the page painted open first and the
+// shell's grid transition then animated it shut: a collapsed rail or terminal flashed open on every
+// rail navigation. This inline script sits first inside the shell element and runs while the parser
+// is still there, so the page paints in its saved state and there is nothing to animate. shell.js
+// still owns the toggles and the writes; this only reads, and it sets exactly what shell.js would.
+const SHELL_STATE_SCRIPT = `<script>(function(s){try{var g=function(k){return localStorage.getItem("grain.shell."+k)==="1"};` +
+  `if(g("rail-collapsed"))s.setAttribute("data-rail-collapsed","true");` +
+  `if(g("aside-hidden"))s.setAttribute("data-aside-hidden","true");` +
+  `if(g("console-hidden"))s.setAttribute("data-console-hidden","true");` +
+  `if(g("console-expanded"))s.setAttribute("data-console-expanded","");` +
+  `if(g("console-open"))s.setAttribute("data-console-open","")}catch(e){}})(document.currentScript.parentElement)</script>`;
+
+function withShellState(html: string): string {
+  return html.replace(/<div [^>]*?class="app-shell[\s"][^>]*>/, (open) => open + SHELL_STATE_SCRIPT);
+}
+
 const DOCS_PROJECTS = {
   batch: "BATCH",
   grain: "GRAIN",
@@ -433,6 +450,7 @@ async function finalizePage(req: Request, res: Response | Promise<Response>): Pr
   html = addContextReturn(enrichHead(html, u.pathname, u.origin), u.pathname);
   html = addPlanPathBreaks(html, u.pathname);
   html = withPeekRoot(html);
+  html = withShellState(html);
   html = injectViews(html, u.pathname);
   return new Response(html, { status: r.status, headers: r.headers });
 }
