@@ -59,10 +59,10 @@ Follow **[README-STANDARD.md](https://portfolio.tjakoen.com/standards/readme-sta
 
 1. **Title emoji.** One emoji before the H1 that fits this repo (my repos lean a bread/baking family).
 2. **A curated badge row** (~5–7, honesty rule: only true, ideally verifiable badges), always led by:
-   `[![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://portfolio.tjakoen.com/notes/ten-times-zero)`
+   `[![Made with Claude, Codex and DeepSeek](https://img.shields.io/badge/Made_with-Claude_%C2%B7_Codex_%C2%B7_DeepSeek-D97757)](https://portfolio.tjakoen.com/notes/ten-times-zero)`
 3. **The text footer** at the bottom of the README:
    > ---
-   > 🤖 **Built with Claude. I don't prompt and pray, I prompt and prove.** Every commit here is co-authored with an AI, on purpose. [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)
+   > 🤖 **Built with Claude, Codex and DeepSeek. I don't prompt and pray, I prompt and prove.** Every change here was made with an AI, on purpose, and every commit carries my name. [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)
 
 The fastest way: paste the "reusable prompt" from README-STANDARD.md into a Claude session here, and it reads this
 codebase and proposes the emoji + honest badge set for you.
