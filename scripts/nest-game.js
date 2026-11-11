@@ -10,7 +10,7 @@
 // side by side. A carried letter keeps its own colour, face and underline, and drifts home slowly
 // when a carrier is squashed. If the whole colony dies, the queen sends out one new scout.
 // Every colour is a theme token, so each flavor recolours the nest.
-import { nestDesktop } from "./nest-availability.js";
+import { firstStrayDelay, nestDesktop, STRAY_KEY, strayConsumed } from "./nest-availability.js";
 import { antMarkup, antClasses, miniArt, NEST_LAYOUT, nestRouteLength, buildNestBase, encodeNestBraille, composeNestGrid } from "./nest-assets.js";
 import {
   BUILD_TIME,
@@ -311,11 +311,7 @@ import {
   // a trail, and if someone clicks it the ant runs for the launcher and makes it pulse. One click
   // marks the tab, so the random ant does not come back until a new tab.
   let strayTimer = null, strayExitTimer = null, strayEl = null, strayLeaving = false;
-  const STRAY_KEY = "nest-stray-clicked";
-  const strayDelay = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
-  const firstStrayDelay = () => strayDelay(120000, 180000);
-  const nextStrayDelay = () => strayDelay(300000, 480000);
-  const strayConsumed = () => { try { return sessionStorage.getItem(STRAY_KEY) === "1"; } catch { return false; } };
+  const nextStrayDelay = () => 300000 + Math.random() * 180000;
   const consumeStray = () => { try { sessionStorage.setItem(STRAY_KEY, "1"); } catch { /* private mode */ } };
   const strayReduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
   // The ant art is shared by the colony, the stray easter egg and the note figures.

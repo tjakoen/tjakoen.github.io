@@ -89,9 +89,23 @@ test.describe("the interactive terminal (third client of the one door)", () => {
 
   test("the note opens the colony on the home page", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
-    await page.getByRole("link", { name: "Play the colony" }).click();
+    await page.getByRole("link", { name: "Open the full colony" }).click();
     await expect(page).toHaveURL(/\/$/);
     await expect(page.locator("#nest-mock")).toBeVisible();
+  });
+
+  test("a stray crosses eligible desktop pages only after a delay", async ({ page }) => {
+    await page.clock.install();
+    await page.goto("/");
+    const stray = page.locator(".nest-stray");
+    await page.clock.fastForward(110_000);
+    await expect(stray).toHaveCount(0);
+    await page.clock.fastForward(75_000);
+    await expect(stray).toHaveCount(1);
+
+    await page.goto("/notes/the-site-has-ants");
+    await page.clock.fastForward(185_000);
+    await expect(stray).toHaveCount(0);
   });
 
 test("note figures keep their event loops with reduced motion enabled", async ({ page }) => {

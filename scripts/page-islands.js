@@ -1,4 +1,4 @@
-import { nestDesktop } from "./nest-availability.js";
+import { firstStrayDelay, nestDesktop, strayConsumed } from "./nest-availability.js";
 
 // Page-specific enhancements stay off routes that have no matching content.
 const tasks = [];
@@ -18,8 +18,8 @@ if (document.querySelector("[data-lightbox]")) {
 if (document.querySelector("[data-live-figure]")) tasks.push(import("/site/figures.js"));
 
 // The ant in the status bar is the door, not the colony. The small launcher below owns the ant,
-// the first click and the open API; the 138 KB game module is imported only when someone opens it,
-// types `nest`, asks for a stray, or calls the debug hook. The game keeps the same test hooks.
+// the first click and the open API. The game module loads when someone opens the Nest or a stray
+// is due to appear.
 const nestModes = document.querySelector(".assistant__modes");
 const nestAside = document.querySelector(".assistant");
 const nestMain = document.querySelector(".app-shell__main") || document.querySelector("main");
@@ -107,6 +107,21 @@ if (nestModes && nestAside && nestMain && nestBar) {
     launchNest.searchParams.delete("nest");
     history.replaceState(null, "", `${launchNest.pathname}${launchNest.search}${launchNest.hash}`);
     void openNest();
+  }
+  if (!document.querySelector('[data-live-figure="nest"]')) {
+    let firstStrayTimer;
+    const scheduleFirstStray = () => {
+      clearTimeout(firstStrayTimer);
+      if (nestGamePromise || document.hidden || !nestDesktop.matches || strayConsumed()) return;
+      firstStrayTimer = setTimeout(() => {
+        if (!nestGamePromise && !document.hidden && !strayConsumed()) {
+          void nestPlaceholderStray.spawn();
+        }
+      }, firstStrayDelay());
+    };
+    nestDesktop.addEventListener("change", scheduleFirstStray);
+    document.addEventListener("visibilitychange", scheduleFirstStray);
+    scheduleFirstStray();
   }
 }
 if (document.querySelector('[data-surface="chat-log"]')) tasks.push(import("/site/desk-consent.js"));
