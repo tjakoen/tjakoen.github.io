@@ -507,10 +507,43 @@
     const shell = document.querySelector(".app-shell");
     if (shell) {
       const closeSheet = () => shell.removeAttribute("data-aside-open");
+      const asideToggle = shell.querySelector('[data-shell="aside-toggle"]');
+      shell.querySelector(".assistant__close")?.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        asideToggle?.click();
+        asideToggle?.focus();
+      });
       shell.querySelector(".app-shell__scrim")?.addEventListener("click", closeSheet);
       document.addEventListener("keydown", (ev) => {
         if (ev.key === "Escape" && shell.hasAttribute("data-aside-open")) closeSheet();
       });
+
+      const viewportToggle = shell.querySelector('[data-shell="viewport-toggle"]');
+      const viewportLabel = viewportToggle?.querySelector("[data-viewport-name]");
+      if (viewportLabel) {
+        const updateViewportLabel = () => {
+          const width = document.body.getBoundingClientRect().width;
+          viewportLabel.textContent = width <= 768 ? "mobile" : width <= 1100 ? "tablet" : "desktop";
+        };
+        updateViewportLabel();
+        new ResizeObserver(updateViewportLabel).observe(document.body);
+        new MutationObserver(updateViewportLabel).observe(document.body, { attributeFilter: ["data-viewport"] });
+        viewportToggle.addEventListener("click", () => {
+          // Let Grain start its preview cycle from the current width on a tablet.
+          if (!document.body.hasAttribute("data-viewport") && viewportLabel.textContent === "tablet") {
+            document.body.setAttribute("data-viewport", "tablet");
+          }
+        }, { capture: true });
+        let windowWidth = window.innerWidth;
+        window.addEventListener("resize", () => {
+          if (window.innerWidth === windowWidth) return;
+          windowWidth = window.innerWidth;
+          if (!document.body.hasAttribute("data-viewport")) return;
+          document.body.removeAttribute("data-viewport");
+          shell.removeAttribute("data-rail-open");
+          closeSheet();
+        });
+      }
     }
 
     // ---- the toast favicon follows the theme. A browser renders a favicon in isolation, so it

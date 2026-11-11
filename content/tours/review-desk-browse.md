@@ -16,9 +16,9 @@ The same gutter carries through the rest of the page.
 ## desk-tabs
 - at: /grain
 - status: needs-verification
-- review: Chat and Browse sit alongside Catalog and Notepad. New chat is beside the composer on desktop.
-- verify: At about 900 pixels wide, open Catalog, return to Chat and use New chat. The tabs should remain on one row as the pane changes.
-On a phone, the tabs still open the Desk sheet.
+- review: The X at the end of the Desk tabs closes the panel. The sidebar icon beside Close all tabs brings it back.
+- verify: At about 900 pixels wide, select Browse and press Enter on the Desk's X. Focus should move to the sidebar icon. Press Enter again and check that Browse is still selected and the tabs and X share one row.
+Resize to phone width and open the Desk from its bottom handle. Both desktop controls disappear when the Desk becomes a drawer. The title bar shows the current layout, and the space around the manual mobile preview follows the theme.
 
 ## desk-browse
 - at: /grain
