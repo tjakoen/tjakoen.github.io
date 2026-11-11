@@ -1,18 +1,16 @@
 ---
 title: "The Voice File Your Team Forgot to Write"
-subtitle: "A repo usually tells the agent how to build and almost never tells it how to write, so the tickets arrive in the model's default voice: context first, the ask in paragraph four. Give the agent a short file that tells it what belongs on line one."
+subtitle: "Write for the person who has to read your message. A short VOICE.md gives your AI examples of what an instructor or teammate needs to see first."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-11
-readingTime: "~8 min"
+readingTime: "~6 min"
 tags: [ai, standards, communication, team, workflow]
 summary: >
-  Teams wrote down how their code should be built and left the writing to the model, so ticket
-  comments, reviews and chat arrive in a default voice that buries the ask. The fix is a short
-  VOICE.md at the repo root: what a reader must do first, per surface, with examples from the
-  team's own tracker. The rules that transfer are layout rules, and the evidence here is a snapshot
-  from one team's review output, not a study.
+  A practical guide for students and junior teammates on writing ticket comments, review
+  comments and chat messages with AI. Put the reader's next action first, keep open questions
+  visible, and save before-and-after examples in a short VOICE.md the agent can read.
 social: |
   I counted 25 AI-drafted code reviews. The verdict was on the last line in all 25.
 
@@ -25,27 +23,17 @@ socialImage: "/media/notes/the-voice-file-social-ticket.png"
 socialImageAlt: "Two versions of an export ticket comment. The first ends by asking which account the reporter used. The second opens with that question, keeps the untested date filter visible, and folds the two account checks."
 ---
 
-Your team never wrote down what a reader needs first, so the model chose for you, and it chose paragraph four.
+Your class project is due tomorrow. The submission asks you to explain what your app does and what you tested. You give an AI your notes and ask for a paragraph to paste into the project report. It writes, “The application provides a consistent authentication experience across devices.” You tested sign-in on your own laptop.
 
-A ticket comment now arrives as a status report: the context, a restatement of the request, a list of what was tried, and somewhere near the bottom the one thing the reader has to do. The same shape shows up in a review thread and in chat, where a question that needed one line arrives with a paragraph of setup. The writing is grammatical and often thorough. It is also a pile of work, and the person reading it is doing that work in a sidebar between two other tickets, on a phone, deciding whether this one is their turn.
+**Write for the human who has to read it.** Your instructor needs to know what worked and what you still need to check. Try “I signed in on my laptop and reached the dashboard. I still need to test sign-in on a phone.” Your instructor can tell what you did after one read, and you can show them what happened if they ask.
 
-Over two days, all 25 review summaries put the verdict on the last line. The 41 review comments averaged 694 visible characters, and the claim and the ask together ran a median of 253. Two comments folded anything. That is a snapshot from one team.
+An AI draft can turn two plain sentences into a paragraph full of phrases you would never say. It can also make the work sound more complete than it is. When you paste that paragraph into a report, it carries your name.
 
-The model did not invent that shape. It was built to be helpful and complete. A ticket comment has to be actionable and short. Those are different jobs, and nothing in the repository said which one applied.
+I tell my students and junior teammates the same thing: **Don't let AI do what you can't do or understand yourself.** That applies to the words you publish under your name. If a draft says the bug is caused by permissions, you should be able to explain what you checked and why it points to permissions. If you only know that two accounts got different results, say that. Read the draft aloud before you post it. Rewrite any sentence you wouldn't say or couldn't explain if someone asked.
 
-## The ask is in paragraph four
+## Start with the question you need answered
 
-**You already wrote the instruction file for code. Write the one for prose.**
-
-At the root of a repo, AGENTS.md or CLAUDE.md usually answers the questions an agent has before it touches code.
-
-- Where does the plan live?
-- Which tests do I run?
-- What do I check before I commit?
-
-The agent reads those instructions when the session opens. Then it has to write a ticket comment, and the repo goes quiet. The model opens with context, recounts the work, and saves the question for the end.
-
-Put VOICE.md beside the instruction file and point the agent to it. Tell it what the reader needs first in a ticket, a review, or chat. Give it an example from your own tracker.
+The same habit applies to a ticket, a shared record of a bug or a piece of work. Say someone reported an empty export. You tried two accounts and got different results. To take the next step, you need to know which account the reporter used.
 
 **Before**
 
@@ -66,35 +54,74 @@ Permissions or the date filter could explain the empty export. The filter is sti
 
 </details>
 
-The reporter can answer from the first line. If they need the proof, it is one tap away.
+The date filter stays visible because it could change what you investigate next. The two account checks can sit under the disclosure because the reporter can answer without opening it.
 
-<svg viewBox="0 0 340 270" width="100%" role="img"
-     aria-label="Two versions of the same export ticket comment. Before, the comment says the export worked as an admin and came back empty as a counselor, then says the date filter is untested, then asks which account the reporter used. After, the question comes first, the untested date filter stays visible, and the two account checks are folded under What I checked."
+Use these three questions to check your next draft before you post.
+
+<svg viewBox="0 0 340 230" width="100%" role="img"
+     aria-label="Before posting, check three things in order. Put what the reader needs to do on the first line. Keep anything that could change the answer visible. Put supporting checks under a label below."
      style="display:block;width:100%;max-width:400px;height:auto;margin:0 auto 1.5rem;
             font-family:Georgia,'Times New Roman',serif;font-size:16px">
-  <rect x="1" y="1" width="338" height="125" rx="8"
-        style="fill:var(--color-bg);stroke:var(--color-line)"/>
-  <rect x="1" y="141" width="338" height="128" rx="8"
-        style="fill:var(--color-bg);stroke:var(--color-fg)"/>
-  <g style="fill:var(--color-fg)">
-    <text x="18" y="28" font-weight="bold">Before</text>
-    <text x="18" y="55">The export worked as an admin.</text>
-    <text x="18" y="74">As a counselor, it came back empty.</text>
-    <text x="18" y="93">I haven’t tested the date filter yet.</text>
-    <text x="18" y="112">Which account were you signed in as?</text>
-    <text x="18" y="168" font-weight="bold">After</text>
+  <defs>
+    <marker id="fl-voice-file" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <rect x="12" y="4" width="316" height="52" rx="6"
+        style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="fill:none;stroke:var(--color-line)">
+    <rect x="12" y="89" width="316" height="52" rx="6"/>
+    <rect x="12" y="174" width="316" height="52" rx="6"/>
   </g>
-  <rect x="12" y="177" width="316" height="30" rx="4" style="fill:var(--color-fg)"/>
-  <text x="18" y="197" style="fill:var(--color-bg)" font-weight="bold">Which account were you signed in as?</text>
-  <text x="18" y="226" style="fill:var(--color-fg)">I haven’t tested the date filter yet.</text>
-  <text x="18" y="250" style="fill:var(--color-muted)">▸ What I checked (2)</text>
+  <g style="stroke:var(--color-muted);stroke-width:1.5">
+    <line x1="170" y1="63" x2="170" y2="82" marker-end="url(#fl-voice-file)"/>
+    <line x1="170" y1="148" x2="170" y2="167" marker-end="url(#fl-voice-file)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="170" y="36" style="fill:var(--color-bg)">What does the reader need to do?</text>
+    <text x="170" y="121" style="fill:var(--color-fg)">What could change the answer?</text>
+    <text x="170" y="206" style="fill:var(--color-fg)">Which checks can go below?</text>
+  </g>
 </svg>
-
-*The same export ticket, with the question at the end and then at the top.*
 
 ## What goes in the file
 
-**A voice file is short, example-first, and sorted by the surface a person reads.**
+**Write down the examples you want the agent to follow.**
+
+The agent reads AGENTS.md or CLAUDE.md when the session opens. That file tells it which tests to run. When you ask for a ticket comment, the agent also needs to know what the reader should see first. Without an example, it may recount the work and leave the question at the bottom.
+
+Put VOICE.md beside the instruction file and add a line telling the agent to read it before writing. Use an example from your own tracker to show where the question goes in a ticket. Do the same for a review and a chat message.
+
+<svg viewBox="0 0 340 248" width="100%" role="img"
+     aria-label="At startup the agent reads AGENTS.md or CLAUDE.md. When asked to write a ticket comment, it follows the instruction to read VOICE.md. It uses the tracker example to draft a comment with the question first."
+     style="display:block;width:100%;max-width:400px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:16px">
+  <defs>
+    <marker id="fl-voice-file-instructions" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line)">
+    <rect x="12" y="4" width="316" height="62" rx="6"/>
+    <rect x="12" y="93" width="316" height="62" rx="6"/>
+  </g>
+  <rect x="12" y="182" width="316" height="62" rx="6"
+        style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5">
+    <line x1="170" y1="71" x2="170" y2="88" marker-end="url(#fl-voice-file-instructions)"/>
+    <line x1="170" y1="160" x2="170" y2="177" marker-end="url(#fl-voice-file-instructions)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="170" y="30" style="fill:var(--color-fg)">The session opens</text>
+    <text x="170" y="51" style="fill:var(--color-muted)">Read AGENTS.md or CLAUDE.md</text>
+    <text x="170" y="119" style="fill:var(--color-fg)">You ask for a ticket comment</text>
+    <text x="170" y="140" style="fill:var(--color-muted)">Follow the pointer to VOICE.md</text>
+    <text x="170" y="208" style="fill:var(--color-bg)">The agent drafts the comment</text>
+    <text x="170" y="229" style="fill:var(--color-bg)">Use the example to put the question first</text>
+  </g>
+</svg>
 
 Forty lines that get read beat four thousand that get skimmed, because the file competes with the code for the model's attention. Examples carry more than adjectives. One bad comment and one good one teach a register faster than a page saying be clear and concise, which every writer already believes and the model will cheerfully agree with while doing the opposite.
 
@@ -109,7 +136,7 @@ The rules that survive a change of team are layout rules, not taste rules:
 
 My own standard is public at [portfolio.tjakoen.com/standards/voice](https://portfolio.tjakoen.com/standards/voice). It is longer than a team needs because it is also a guide to one person's prose. Take its structure, not its length: the registers, the scan rule, the list of shapes it refuses.
 
-Here is a version to commit to a team repository tomorrow.
+Try the template on one comment you are about to post. If you are working on a class project, use a paragraph from your project report. On a team, bring the original and your rewrite to your next review and ask which one they could act on faster.
 
 <div class="copy-template" data-copy-template>
 <button class="share-block__copy" type="button" data-copy-template-button aria-live="polite" hidden>Copy VOICE.md</button>
@@ -219,14 +246,6 @@ If VOICE.md sits at the root and the file that loads at session start never ment
 
 Placement in the workflow matters as much as placement in the tree. The file has to be in front of the model at the moment of drafting, not in a wiki it has never opened. If the tool ignores repository files, the file is not in force. Paste it in, or accept that the default is still doing the writing.
 
-## Two teams, one model
-
-**The file does not make the model better at writing. It makes the default yours.**
-
-Team one never writes it. Every comment is a small negotiation: the reader reconstructs the ask, the writer explains why the output is fine, and the tracker becomes a place people read late and answer shortly. Nothing is broken. The cost is spread across every reader, which is why it never shows up on a ticket.
-
-Team two commits the file and points the agent at it. When a comment buries the ask, the team adds the original and a rewrite to the file. The next draft has a pair to follow. The ask belongs on line one, and the label tells the reader how much proof sits behind it.
-
 ## What the file cannot do
 
 **A file is a prompt, not a guarantee.**
@@ -237,9 +256,7 @@ It does not stop the paste. Someone will drop in a generated comment that never 
 
 Before the team changed its review format, folded feedback was acted on less often than visible feedback. The sample since the change is small, so it is still open whether folding helps. A reader who never reaches the ask cannot act on it.
 
-Your team already has a voice. It is in the good tickets, the ones that start with the ask and leave the proof below. Write it down, put it where the agent reads it, and stop letting the model choose.
-
-An agent will write in a voice. The only question is whose.
+On your next ticket, write the first line yourself. Then give the agent that line, your checks, and the voice file. Before you post, make sure the question is still there and that anything you have yet to test is visible. Use words you would say and keep the claims you can explain. If the rewrite helped, save the pair for the next person who has to write one.
 
 ---
 
