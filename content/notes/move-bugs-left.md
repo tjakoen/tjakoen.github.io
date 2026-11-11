@@ -42,7 +42,7 @@ rule:
 
 > Move bugs as far to the left in the process as possible.
 >
-> *The idea, in my words, from a knowledge-sharing session by [Matt Monroe](https://www.linkedin.com/in/matt-monroe-a3728593/), CTO at [Career Team](https://careerteam.com)*
+> *My interpretation, from what I remember of a knowledge-sharing session by [Matt Monroe](https://www.linkedin.com/in/matt-monroe-a3728593/), CTO at [Career Team](https://careerteam.com). Not his exact words.*
 
 A wrong assumption caught on a ticket is
 cheaper than one caught in review, which is cheaper than one caught in production. The epic checker
