@@ -4,6 +4,8 @@ import { config } from "./config.ts";
 // --- BATCH (substrate) ---
 import { bunRuntime } from "@tjakoen/batch/platform/bun-runtime.ts";
 import { watchComponents } from "@tjakoen/batch/platform/watch.ts";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { watch, readFileSync } from "node:fs";   // the portfolio's own client modules: see the hot-reload block below
 import { makeStatic } from "@tjakoen/batch/http/static.ts";
 import { makePageServer } from "@tjakoen/batch/http/pages.ts";
@@ -554,6 +556,28 @@ async function fixProofCardLinks(res: Response): Promise<Response> {
   return new Response(fixed, { status: res.status, headers: res.headers });
 }
 const styles = createStyleBundle(bunRuntime, config.styleRoots);        // per-component CSS + GRAIN's AI module → /components.css
+// The bundle joins every component's CSS with a path comment above each file, which made it the
+// largest download on every page. Minifying it here drops the comments and whitespace, and keeps
+// the absolute paths of this machine out of the exported site. The result is cached against the
+// source text, so the watcher's refresh still takes effect on the next request.
+let minifiedFor = "", minifiedCss = "";
+async function componentsCss(): Promise<string> {
+  const source = await styles.css();
+  if (source === minifiedFor) return minifiedCss;
+  const dir = await mkdtemp(join(tmpdir(), "components-css-"));
+  try {
+    const entry = join(dir, "components.css");
+    await Bun.write(entry, source);
+    const out = await Bun.build({ entrypoints: [entry], minify: true });
+    minifiedCss = out.success && out.outputs[0] ? await out.outputs[0].text() : source;
+  } catch {
+    minifiedCss = source;
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+  minifiedFor = source;
+  return minifiedCss;
+}
 // The sitemap covers EVERYTHING this server actually serves: the portfolio pages tree + MILL's
 // content routes + PROOF's plan routes (SEO is first-class — content pages must be discoverable,
 // and the export derives its allowlist from the same lists). Routes are computed at boot;
@@ -811,7 +835,7 @@ Bun.serve({
   routes: {
     ...buildAiRoutes(stream, aiLayer),   // /intent, /stream, /ai/manifest
     "/components.css": async () =>
-      new Response(await styles.css(), { headers: { "Content-Type": "text/css" } }),
+      new Response(await componentsCss(), { headers: { "Content-Type": "text/css" } }),
     "/proof.css": async () =>
       new Response((await Bun.file(PROOF_CSS).text()) + PROOF_CSS_OVERRIDES, { headers: { "Content-Type": "text/css" } }),
     // CRUMB's client + popover CSS, served straight from the package (never vendored) — the same
