@@ -115,6 +115,10 @@ the learning is. So the rules follow it straight down:
 - **Exams come straight out of your head. No tools.** If you learned it, this is easy. If you didn't,
   no autocomplete is going to save you, and that is the whole point.
 
+Across all my student activities, tell me whether you used AI. If you did, tell me what it did. I
+check that account against your commits. The part I care about most is whether you can explain the
+work you turned in.
+
 And the one that makes the room go quiet: if I flag your work as vibe-coded and you cannot explain it
 back to me, that is an automatic fail on the activity. Not because you used a tool, but because you
 shipped something with your name on it that you do not understand. How I run AI on *my* side of the
