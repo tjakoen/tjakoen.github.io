@@ -23,9 +23,9 @@ This is the app dock. Projects, Notes, Calendar, Mail, Plans and About are separ
 inside the one shell. Each row is an addressable navigation surface, so the AI can open any of them for you.
 
 ## dark-mode
-- verify: Click the highlighted button; the page should switch between light and dark, and a reload should keep the choice.
-The site opens in brioche, the light flavor. This button switches it to dark and back, and the
-flavor name beside it cycles the palette. Both choices are saved in this browser.
+- verify: Click the highlighted button three times; it should go light, dark, then match the device, and a reload should keep the choice.
+The site opens in brioche, the light flavor. This button moves through light, dark and match your
+device, and the flavor name beside it cycles the palette. Both choices are saved in this browser.
 
 ## chat-input
 - verify: Type an intent and watch the lamp travel to whatever the assistant touches.

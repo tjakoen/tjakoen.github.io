@@ -5,14 +5,15 @@ title: "Welcome to the desk"
 route: /
 ---
 Welcome! This is my portfolio, built as a small desk you can poke at: notes, projects, a calendar
-and an assistant that answers questions about my work. Before you start, here are two controls worth
-knowing, light or dark and the color flavor, plus where the longer tour lives. It
-takes three clicks, and you can close it at any point.
+and an assistant that answers questions about my work. Before you start, here is where the choice you
+just made lives, the color flavor beside it, and where the longer tour lives. It takes three
+clicks, and you can close it at any point.
 
 ## dark-mode
-- verify: Click the highlighted button; the page should switch between light and dark, and reloading should keep your choice.
-This button switches the page between light and dark. Your choice is saved in this browser, so the
-site opens the way you left it next time.
+- verify: Click the highlighted button three times; it should go light, dark, then match the device, with its icon and tooltip following, and a reload should keep the choice.
+This is where the choice you just made lives. Each click moves it one step: light, dark, then
+match your device, which follows your system setting as it changes. Whatever you land on is saved
+in this browser.
 
 ## flavor
 - verify: Click the flavor name; it should cycle through sourdough, baguette and brioche, and the label should follow.

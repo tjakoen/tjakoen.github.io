@@ -292,6 +292,38 @@
       });
     }
 
+    // ---- the ◐ button cycles three states: light, dark, then match the device. GRAIN's own
+    // [data-toggle-scheme] only flips light and dark, which left following the device reachable
+    // only from a checkbox at the foot of the welcome page. A person's click is caught here in the
+    // capture phase, before theme.js's delegated listener sees it. A scripted .click() (the desk
+    // driving the same button) is not trusted input and falls through to GRAIN's plain toggle, so
+    // "switch to dark" from the assistant keeps meaning exactly that.
+    const SCHEME_ORDER = ["light", "dark", "auto"];
+    const SCHEME_FACE = {
+      light: { icon: "☀", name: "Light" },
+      dark: { icon: "☾", name: "Dark" },
+      auto: { icon: "◐", name: "Match your device" },
+    };
+    const schemeNow = () => (window.grain && window.grain.theme ? window.grain.theme.scheme() : get("grain-color-scheme") || "auto");
+    const paintSchemeButtons = () => {
+      const cur = schemeNow();
+      const next = SCHEME_ORDER[(SCHEME_ORDER.indexOf(cur) + 1) % SCHEME_ORDER.length];
+      for (const btn of document.querySelectorAll("[data-scheme-cycle]")) {
+        btn.textContent = SCHEME_FACE[cur].icon;
+        btn.title = `Color scheme: ${SCHEME_FACE[cur].name}. Click for ${SCHEME_FACE[next].name.toLowerCase()}.`;
+        btn.setAttribute("aria-label", btn.title);
+      }
+    };
+    document.addEventListener("click", (ev) => {
+      const btn = ev.target.closest && ev.target.closest("[data-scheme-cycle]");
+      if (!btn || !ev.isTrusted || !(window.grain && window.grain.theme)) return;
+      ev.stopPropagation();
+      const cur = schemeNow();
+      window.grain.theme.setScheme(SCHEME_ORDER[(SCHEME_ORDER.indexOf(cur) + 1) % SCHEME_ORDER.length]);
+    }, { capture: true });
+    paintSchemeButtons();
+    new MutationObserver(paintSchemeButtons).observe(document.documentElement, { attributes: true, attributeFilter: ["data-color-scheme"] });
+
     // ---- offline degradation: if the door never came up (body[data-ai-online="false"], set
     // by ai-dispatch by OUTCOME), the chat composer disables honestly instead of pretending.
     const composer = document.querySelectorAll(".assistant__composer input, .assistant__composer button");
