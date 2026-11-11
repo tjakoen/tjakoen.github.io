@@ -25,7 +25,7 @@
       try {
         if (!window.crumb || sessionStorage.getItem("crumb:active")) return;
         if (new URLSearchParams(location.search).has("crumb")) return;
-        var toggle = document.querySelector('[data-surface="theme-scheme"]');
+        var toggle = document.querySelector('[data-surface="dark-mode"]');
         if (!toggle || !toggle.getClientRects().length) return;
         store.setItem(TOUR, "shown");
         window.crumb.start("welcome", { mode: "demo" });

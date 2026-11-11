@@ -65,12 +65,33 @@
       }
     } catch { /* no IndexedDB.databases (Safari < 14) — the Cache API clear already freed the model */ }
   }
-  // are-you-sure → wipe → reload. `window.confirm` is the platform's own confirm primitive
-  // (native-first: no library, no bespoke modal). Exposed on window so desk-commands.js's `clearcache`
-  // runs the exact same flow. Returns false on cancel (nothing touched).
-  const CLEAR_MSG = "Clear everything saved on this device? That is your chat history, notes, open tabs, theme and welcome setting, and the downloaded AI model. The site will reload as if it were your first visit, welcome tour included.";
+  // are-you-sure → wipe → reload. The question is asked in a native <dialog>, not window.confirm:
+  // embedded browsers (an app's preview pane, some in-app webviews) suppress window.confirm, so it
+  // returns false on its own and the button looks dead. Exposed on window so desk-commands.js's
+  // `clearcache` runs the exact same flow. Resolves false on cancel (nothing touched).
+  const CLEAR_TITLE = "Start this site fresh?";
+  const CLEAR_MSG = "This clears everything the site saved on this device: your chat history, notes, open tabs, theme and welcome setting, and the downloaded AI model. The page then reloads as if it were your first visit, welcome tour included.";
+  function askClear() {
+    if (typeof HTMLDialogElement !== "function") return Promise.resolve(window.confirm(CLEAR_TITLE + " " + CLEAR_MSG));
+    return new Promise((resolve) => {
+      const dlg = document.createElement("dialog");
+      dlg.className = "clear-dialog";
+      dlg.setAttribute("aria-labelledby", "clear-dialog-title");
+      dlg.innerHTML =
+        '<form method="dialog" class="clear-dialog__body">' +
+        '<h2 id="clear-dialog-title" class="clear-dialog__title"></h2><p class="clear-dialog__msg"></p>' +
+        '<div class="clear-dialog__actions"><button value="cancel" autofocus>Cancel</button>' +
+        '<button value="clear" class="clear-dialog__go">Clear and reload</button></div></form>';
+      dlg.querySelector(".clear-dialog__title").textContent = CLEAR_TITLE;
+      dlg.querySelector(".clear-dialog__msg").textContent = CLEAR_MSG;
+      dlg.addEventListener("close", () => { resolve(dlg.returnValue === "clear"); dlg.remove(); });
+      dlg.addEventListener("click", (ev) => { if (ev.target === dlg) dlg.close("cancel"); });   // backdrop click
+      document.body.appendChild(dlg);
+      dlg.showModal();
+    });
+  }
   async function clearEverything() {
-    if (!window.confirm(CLEAR_MSG)) return false;
+    if (!(await askClear())) return false;
     await wipeAll();
     location.reload();
     return true;

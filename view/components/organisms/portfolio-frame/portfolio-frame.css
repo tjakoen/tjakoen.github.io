@@ -553,3 +553,29 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
 .app-shell__aside { view-transition-name: app-aside; }
 ::view-transition-old(app-aside), ::view-transition-new(app-aside) { animation: none; }
 ::view-transition-old(app-aside) { display: none; }
+
+/* The "start fresh" question behind the window Refresh. A native <dialog> rather than
+   window.confirm, because embedded browsers suppress confirm and the button then looks dead. */
+.clear-dialog {
+  max-width: min(28rem, calc(100vw - 2rem));
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--paper);
+  color: var(--ink);
+}
+.clear-dialog::backdrop { background: color-mix(in srgb, var(--ink) 35%, transparent); }
+.clear-dialog__body { display: grid; gap: var(--space-4); padding: var(--space-8) var(--space-8) var(--space-4); }
+.clear-dialog__title { margin: 0; font-size: 1.15rem; }
+.clear-dialog__msg { margin: 0; color: var(--ink-muted); line-height: 1.5; }
+.clear-dialog__actions { display: flex; justify-content: flex-end; gap: var(--space-4); padding-block-end: var(--space-4); }
+.clear-dialog__actions button {
+  font: inherit;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--paper-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+.clear-dialog__actions .clear-dialog__go { background: var(--ink); color: var(--paper); border-color: var(--ink); }

@@ -22,7 +22,7 @@ the assistant can point at.
 This is the app dock. Projects, Notes, Calendar, Mail, Plans and About are separate little apps
 inside the one shell. Each row is an addressable navigation surface, so the AI can open any of them for you.
 
-## theme-scheme
+## dark-mode
 - verify: Click the highlighted button; the page should switch between light and dark, and a reload should keep the choice.
 The site opens in brioche, the light flavor. This button switches it to dark and back, and the
 flavor name beside it cycles the palette. Both choices are saved in this browser.
@@ -42,7 +42,7 @@ Now we have moved for real. The tour did not fake a transition, it navigated to 
 same way clicking the dock would. This is the flagship post, on how the whole stack got built with
 AI doing most of the typing.
 
-## screen
+## projects
 - at: /projects
 - status: changed
 - review: The tour ends by navigating to Projects and lighting the page itself, rather than the dock link, because the dock is collapsed on narrow screens and a link it cannot see is no stop at all.
