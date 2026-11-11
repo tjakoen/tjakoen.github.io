@@ -3,19 +3,19 @@ title: "Ten Times Zero Is Still Zero"
 subtitle: >
   "Vibe coder" gets used as an insult: prompt and pray, ship a house of cards. I claim it anyway,
   with one word in front: professional. The receipt is the portfolio you're reading this on, where
-  nearly half of everything written is words rather than code.
+  more than half of everything written is words rather than code.
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-08-07
 readingTime: "~18 min"
-deck: "Ten times zero | Talk | /talks/ten-times-zero | 34 slides · runs in the browser, no download"
+deck: "Ten times zero | Talk | /talks/ten-times-zero | 35 slides · runs in the browser, no download"
 tags: [ai, vibe-coding, workflow, fundamentals, native-first, batch, grain]
 summary: >
   How I actually work with AI, and why it holds up. AI is a multiplier, not an addend; it
   multiplies what you already are, and ten times zero is still zero, so I made sure I wasn't zero
-  first. Then the receipt, pulled from this portfolio's own git history: a snapshot on 2026-08-22
-  counted 503 commits, each co-authored with an AI. Professional vibe coding is the human
+  first. Then the receipt, pulled from this portfolio's own git history: a snapshot on 2026-11-12
+  counted 1,147 commits, each co-authored with an AI. Professional vibe coding is the human
   writing the rails and the AI writing much of the code inside them. Includes the playbook, the
   context and loop engineering underneath it, what to check before anything counts as done, and
   where to start if you are early.
@@ -27,9 +27,14 @@ summary: >
 
 > **There's a talk version of this**, built for a room full of students, and it's live:
 > [portfolio.tjakoen.com/talks/ten-times-zero](/talks/ten-times-zero).
-> Same argument, thirty-four slides, and the figures are real rather than pictures of figures. Drag
+> Same argument, thirty-five slides, and the figures are real rather than pictures of figures. Drag
 > the multiplier to zero, run six sessions with and without the loop and watch the bill arrive, or
 > open a cold session with no brief and see what it does first. Arrow keys move it.
+
+> **Since I wrote this.** First published 7 August, refreshed 12 November 2026. The argument hasn't
+> moved. The receipts have: the repo more than doubled, the writing pulled further ahead, and the
+> rails stopped being habits I keep and became machinery that checks itself. That last part gets its
+> own rule in the playbook below, rule seven, with links to the notes that tell each piece in full.
 
 ## "Vibe coder" is used as an insult
 
@@ -197,12 +202,14 @@ portfolio, built on three tools I made for it. My own no-build framework (BATCH)
 system (GRAIN), and a little Markdown CMS that renders these very words into the page (MILL). 
 
 Not a demo, not a tutorial repo. The thing I actually build on, and it's live now, so you're reading
-this on it. Every count below was measured on 19 August 2026 from committed files only, because those
+this on it. Every count below was measured on 12 November 2026 from committed files only, because those
 are the ones you can go and check. Counting my working tree, where the plans and the agent-facing
 notes live deliberately uncommitted, gives me a friendlier number. I'm not using it.
 
 <!-- REFRESH THESE NUMBERS (occasionally, and definitely before publishing) — the ratio + counts are a
-     living git snapshot. Last measured 2026-08-22 (committed/tracked): 503 commits, 36,837 prose,
+     living git snapshot. Last measured 2026-11-12 (committed/tracked): 1,147 commits, 75,534 prose,
+     57,341 code, 57% prose; across all seven repos 96,867 prose against 120,469 code, 45%. Previous
+     marker, 2026-08-22: 503 commits, 36,837 prose,
      34,595 code, 52% prose, 88,018 lines added. Previous marker, 2026-08-19: 440 commits, 31,228
      prose, 30,082 code, 51% prose, 76,497 added. Marker before that, 2026-08-07: 242 commits, 17,610
      prose, 18,876 code, 48% prose, 46,665 added, the pass where writing first passed code.
@@ -229,44 +236,46 @@ notes live deliberately uncommitted, gives me a friendlier number. I'm not using
 
 Let me get the headline out of the way, because it reframes everything else:
 
-> **More than half of this repo is writing, not code.** 36,837 lines of words against 34,595 lines
+> **More than half of this repo is writing, not code.** 75,534 lines of words against 57,341 lines
 > of code. Ask a room to guess and they say twenty percent.
 
 Sit with that for a second, because it's the opposite of what vibe coding is supposed to look
 like. The caricature is a person who writes *no* docs, who couldn't produce a spec if you begged.
-This repo has the inverse problem: there's about as much specification as there is implementation.
+This repo has the inverse problem: there's more specification than implementation.
 
 I didn't tidy that up after the fact. It's the method. When you work with an AI at speed, the scarce resource stops being code and becomes *intent.* The model can't know what you meant, what the rules are, or what "done" looks like, unless you wrote it down. So I do. The documentation *is* the work, the code is the cheap part the machine handles.
 
 <div class="live-fig" data-live-figure="ratio" data-surface="figure:ratio">
 <svg viewBox="0 0 620 200" width="100%" role="img"
-     aria-label="On this repo: 34,595 lines of code versus 36,837 lines of writing. 52% of everything written is words, not code. A marker shows where the writing bar would end at the 20% a room typically guesses, well short of where it actually ends."
+     aria-label="On this repo: 57,341 lines of code versus 75,534 lines of writing. 57% of everything written is words, not code. A marker shows where the writing bar would end at the 20% a room typically guesses, well short of where it actually ends."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
   <rect x="0.5" y="0.5" width="619" height="199" style="fill:var(--paper);stroke:var(--edge)"/>
   <text x="28" y="36" style="fill:var(--muted);font-size:15px">What my repo actually is</text>
   <text x="28" y="86" style="fill:var(--ink);font-size:14px">Code</text>
-  <rect x="96" y="72" width="394" height="20" style="fill:var(--bar)"/>
-  <text x="498" y="87" style="fill:var(--muted);font-size:12.5px">34,595 lines</text>
+  <rect x="96" y="72" width="319" height="20" style="fill:var(--bar)"/>
+  <text x="423" y="87" style="fill:var(--muted);font-size:12.5px">57,341 lines</text>
   <text x="28" y="128" style="fill:var(--ink);font-size:14px">Writing</text>
   <rect x="96" y="114" width="420" height="20" style="fill:var(--ink)"/>
-  <text x="524" y="129" style="fill:var(--ink);font-size:12.5px">36,837 lines</text>
+  <text x="524" y="129" style="fill:var(--ink);font-size:12.5px">75,534 lines</text>
   <!-- where the writing bar would END if the room's usual guess were right. 20% of the repo is
-       14,286 lines, which on this axis (420px = 36,837 lines) lands at x = 259. The writing bar is
+       26,575 lines, which on this axis (420px = 75,534 lines) lands at x = 244. The writing bar is
        now the longer of the two, so it carries the full 420 and code is scaled against it. -->
-  <line x1="259" y1="106" x2="259" y2="142" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3"/>
-  <text x="267" y="152" style="fill:var(--muted);font-size:12px">where a room's guess of 20% would end</text>
-  <text x="28" y="176" style="fill:var(--accent);font-size:13px">52% of everything written is words, not code.</text>
+  <line x1="244" y1="106" x2="244" y2="142" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3"/>
+  <text x="252" y="152" style="fill:var(--muted);font-size:12px">where a room's guess of 20% would end</text>
+  <text x="28" y="176" style="fill:var(--accent);font-size:13px">57% of everything written is words, not code.</text>
 </svg>
 </div>
 
-*About as much spec as implementation: the inverse of what vibe coding is supposed to look like.*
+*More spec than implementation: the inverse of what vibe coding is supposed to look like.*
 
-One honest wrinkle, since I keep the receipts either way. When I first published this the same
-count read 56%, and the writing was ahead. It has since evened out, for a boring reason: the stack
-moved into its own repos and took a big slice of its own documentation with it, while the site's
-code kept growing. Across all seven repositories I work in, one line in three is still
-documentation. The ratio moved. The habit didn't.
+One honest wrinkle, since I keep the receipts either way. This number wanders. My first count read
+56%, and by August it had sagged to 52%, for a boring reason: the stack moved into its own repos and
+took a big slice of its documentation with it, while the site's code kept growing. I half expected
+it to keep sliding. It went the other way. Three months later it reads 57%, and across all seven
+repositories I work in the documentation went from one line in three to 45%. I didn't set out to
+write more. The loop got stricter, and a stricter loop is mostly more things written down. The ratio
+moved. The habit didn't.
 
 ## Now the "vibe" part, because I do go fast
 
@@ -395,7 +404,7 @@ not to touch" before it writes a line. The AI goes fast because the guardrails a
 don't tell a fast driver to be careful; you build the track.
 
 **2. Give the AI a memory.** The model forgets everything between sessions, so I keep a running set
-of decision notes, twenty-odd small records of *why* things are the way they are. We went through
+of decision notes, about a hundred small records by now, of *why* things are the way they are. We went through
 the single write door because of this. The theme is decoupled because of that. Next session the AI
 inherits the reasoning instead of relitigating it, or worse, quietly undoing it. A professional
 keeps a paper trail. So does my repo.
@@ -418,7 +427,7 @@ commits there's a [repeatable runbook](https://github.com/tjakoen/bread/blob/mai
 one direction only? Any hardcoded values that should be design tokens? Going fast is only safe when
 there's a cheap, repeatable way to prove you didn't bend the shape of the thing.
 
-What that adds up to, counted the same day as everything else here: 184 test files across the seven
+What that adds up to, counted on 19 August: 184 test files across the seven
 repositories, roughly 2,159 test cases behind them, and 44 end-to-end specs on this site alone, all
 of it behind one command that has to come back green before anything counts as done. There's even a
 linter for the prose, which sounds absurd until you remember that half of what's in here is prose.
@@ -440,6 +449,22 @@ a new teammate would. And I've started taking that down to the component level i
 where the pieces the AI actually operates get a second doc written only for the machine: how to drive
 the thing, not how a human reads about it. You onboard this collaborator every time you spin up a new session, so you build
 the onboarding, make it excellent, and polish it as you go.
+
+**7. Make the rails enforce themselves.** Everything above is a habit, and in August that's all it
+was. Habits are exactly what a tired person skips at two in the morning, and I'm the tired person. So
+the rules moved out of my head and into machinery. Every session now opens with a checklist printed
+by a script, not recited by the model, and it ends on one verdict line nobody is allowed to type by
+hand. Hooks refuse the moves I've already been burned by. A reviewer scores its own past calls and
+gets told when it was wrong. The prose has its own linter, and the [voice file](the-voice-file.md) it
+enforces is public. None of this held up the first time. The check I trusted most [ran once in 165
+sessions](the-check-that-never-ran.md), and I got the reason wrong before I got it right. The
+reviewer took [seven hundred commits](the-reviewer-that-learned-to-be-wrong.md) to learn to admit a
+miss. The payoff is that the loop no longer depends on the model, or on me: the same rules run in
+three different harnesses, which is its own note, [the loop outlives the
+model](one-loop-three-harnesses.md). If you want it on your machine, it [sets up from one
+prompt](loop-setup.md).
+
+> A rule you have to remember is a wish. A rule that refuses the commit is a rail.
 
 <div class="live-fig" data-live-figure="loop" data-surface="figure:loop">
 <svg viewBox="0 0 252 340" width="100%" role="img"
