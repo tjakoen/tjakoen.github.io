@@ -1049,7 +1049,7 @@ import {
     ant.el.inert = state.tool === "wipe";
     const classes = antClasses(ant.role, ant.side).split(" ");
     ["scout", "soldier", "flyer", "builder", "rival"].forEach((name) => ant.el.classList.toggle(name, classes.includes(name)));
-    const rivalNames = { "rival-build": "Rival builder", "rival-guard": "Rival guard", "rival-defend": "Rival guard", "rival-flyer": "Rival flyer", "rival-flyer-home": "Rival flyer" };
+    const rivalNames = { "rival-build": "Rival builder", "rival-scout": "Rival scout", "rival-guard": "Rival guard", "rival-defend": "Rival guard", "rival-flyer": "Rival flyer", "rival-flyer-home": "Rival flyer" };
     const name = rivalNames[ant.job] || { scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival", "rival-worker": "Rival worker" }[ant.role];
     ant.el.setAttribute("aria-label", `${name} ant. Press to squash.`);
   };
@@ -2288,8 +2288,12 @@ import {
       rival.sites = rival.sites.filter((site) => site !== a.buildSite);
     }
     if (a.mini) { a.mini.guards?.delete(a); a.mini.flyers?.delete(a); }
-    if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); a.letter.glyph = null; a.letter.state = "spent"; a.letter.crew = []; a.letter = null; }
+    if (a.letter?.state === "rival-carry" && a.glyph && a.letter.home) {
+      const L = a.letter; L.glyph = a.glyph; L.glyph.classList.remove("rival-carry"); L.state = "carried"; L.crew = [];
+      a.glyph = null; a.letter = null; drop(L);
+    } else if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); a.letter.glyph = null; a.letter.state = "spent"; a.letter.crew = []; a.letter = null; }
     a.glyph?.remove(); a.glyph = null;
+    if (a.job === "rival-scout" && a.trail && !a.trail.ready) { const t = a.trail; a.trail = null; t.ants.delete(a); retireRivalTrail(t, false); log("the rival scout dies; its trail never opens"); }
     a.el?.remove(); a.el = null;
     a.trail?.ants.delete(a);
     state.ants = state.ants.filter((x) => x !== a);
@@ -2433,18 +2437,38 @@ import {
     }
     pts = mergeRoute(pts, pick.block, rival.trails, false);
     const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    halo.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); halo.classList.add("halo", "rival");
+    halo.setAttribute("points", pts[0].join(",")); halo.classList.add("halo", "rival", "scouting");
     const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    line.setAttribute("points", halo.getAttribute("points")); line.classList.add("rival");
+    line.setAttribute("points", halo.getAttribute("points")); line.classList.add("rival", "scouting");
     scent.append(halo, line);
     const born = performance.now() / 1000;
-    const t = { pts, block: pick.block, end: [pick.x, pick.y], ants: new Set(), line, halo, ready: true,
+    // The trail is not open until a rival scout has walked it. The scout draws the scent behind it
+    // as it goes, and the workers and guards wait in the mound until it reaches the letters.
+    const t = { pts, block: pick.block, end: [pick.x, pick.y], ants: new Set(), line, halo, ready: false, onReady: [],
       side: "rival", state: "ready", born, lastUse: born, ttl: born + TUNING.trailTtl };
     addEraser(t);
     state.trails.push(t); rival.trails.push(t);
+    const scoutAnt = spawnRivalUnit("rival-scout", rival.mound.hole, pts.slice(1));
+    scoutAnt.trail = t; scoutAnt.lane = 5; t.ants.add(scoutAnt);
     return t;
   };
+  const whenScouted = (t, fn) => { if (t.ready) fn(); else t.onReady.push(fn); };
+  const drawRivalScent = (t, upto, at) => {
+    const pts = at ? [...t.pts.slice(0, upto), at] : t.pts;
+    const points = pts.map((p) => p.join(",")).join(" ");
+    t.line.setAttribute("points", points); t.halo.setAttribute("points", points); t.hit?.setAttribute("points", points);
+  };
+  const openRivalTrail = (t) => {
+    if (t.ready || t.state === "gone") return;
+    t.ready = true; t.lastUse = performance.now() / 1000;
+    drawRivalScent(t);
+    t.line.classList.remove("scouting"); t.halo.classList.remove("scouting");
+    log("a rival scout reaches the letters; its trail opens");
+    const waiting = t.onReady; t.onReady = [];
+    waiting.forEach((fn) => fn());
+  };
   const spawnRival = (trail) => {
+    if (!trail.ready) return whenScouted(trail, () => { if (rival.trails.includes(trail)) spawnRival(trail); });
     if (rival.active && rival.ants.length >= rivalCaps().ants) return;
     const hole = rival.mound.hole;
     const a = { id: ++state.total, role: "rival-worker", side: "rival", where: "page", x: hole[0], y: hole[1], px: hole[0], py: hole[1],
@@ -2464,7 +2488,7 @@ import {
     if (!option) return false;
     const L = option.L;
     const r = rectOf(L.n, L.i); const [x, y] = local(r);
-    hideChar(L); L.state = "rival-carry"; L.crew = [];
+    hideChar(L); L.state = "rival-carry"; L.crew = []; L.home = [x, y];
     const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
     glyph.style.cssText += lookOf(L.n.parentElement); glyph.style.left = x + "px"; glyph.style.top = y + "px";
     layer.append(glyph); ant.letter = L; ant.glyph = glyph;
@@ -2559,7 +2583,7 @@ import {
           const [n, i] = pool[Math.floor(Math.random() * pool.length)];
           const L = letterOf(n, i), r = rectOf(n, i);
           const [x, y] = local(r);
-          hideChar(L); L.state = "rival-carry"; L.crew = [];
+          hideChar(L); L.state = "rival-carry"; L.crew = []; L.home = [x, y];
           const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
           glyph.style.cssText += lookOf(L.n.parentElement); glyph.style.left = x + "px"; glyph.style.top = y + "px";
           layer.append(glyph); a.letter = L; a.glyph = glyph;
@@ -2629,6 +2653,21 @@ import {
         removeRivalAnt(a); return;
       }
       a.job = "rival-follow"; a.path = lanePath(a.trail.pts, a.lane); a.k = 0;
+      return;
+    }
+    if (a.job === "rival-scout") {
+      const t = a.trail;
+      if (!t || t.state === "gone") { removeRivalAnt(a); return; }
+      t.lastUse = now / 1000;
+      const goal = a.path[a.k];
+      const arrived = !goal || move(a, goal[0], goal[1], dt, roleSpeed(a.role, "rival-follow", SPEED, { factor: 0.75 }));
+      a.px = a.x; a.py = a.y;
+      if (arrived && goal) a.k++;
+      if (a.k < a.path.length) { drawRivalScent(t, a.k + 1, [a.x, a.y]); return; }
+      openRivalTrail(t);
+      a.role = "rival-worker"; a.job = "rival-follow"; a.el.classList.remove("rival-scout"); label(a);
+      stealRival(t, a);
+      a.job = "rival-home"; a.path = lanePath(t.pts.toReversed(), a.lane); a.k = 0;
       return;
     }
     const g = a.path[a.k]; if (!g) return;
@@ -3047,9 +3086,9 @@ import {
     const trail = rivalTrail(pick);
     spawnRival(trail);
     rival.nextExit = now + RIVAL_EXIT_GAP;
-    queueRivalExit(() => {
+    queueRivalExit(() => whenScouted(trail, () => {
       if (rival.trails.includes(trail)) spawnRivalUnit("rival-guard", rival.mound.hole, lanePath(trail.pts, 8));
-    });
+    }));
     queueRivalWorkers(trail, Math.min(rivalCaps().ants, 6 + rival.tier * 4) - 2);
     buildRivalMinis();
     rival.nextGrow = now + 3500;
@@ -3247,9 +3286,9 @@ import {
       if (pick) {
         const t = rivalTrail(pick);
         queueRivalWorkers(t, 2);
-        queueRivalExit(() => {
+        queueRivalExit(() => whenScouted(t, () => {
           if (rival.trails.includes(t)) spawnRivalUnit("rival-guard", rival.mound.hole, lanePath(t.pts, -8));
-        });
+        }));
         log("the rival opens another trail");
         if (rival.trails.length >= 2) buildRivalMinis();
       }
