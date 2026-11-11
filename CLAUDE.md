@@ -90,7 +90,7 @@ Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
   string in the template.
 - **Public-repo guardrails.** Company is "Career Team". Neutral, no names, lessons-forward on
   anything sensitive. No student data or private course internals.
-- **AI use flown proudly.** Every repo carries the "made with Claude" badge + footer
+- **AI use flown proudly.** Every repo carries the "made with Claude, Codex and DeepSeek" badge + footer
   ([README-STANDARD](https://portfolio.tjakoen.com/standards/readme-standard)); the flagship post is
   `content/notes/ten-times-zero.md`.
 - **It consumes the stack, never forks it.** New design work belongs up in grain, not here.

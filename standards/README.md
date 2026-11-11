@@ -5,7 +5,7 @@ summary: The index - one line per standard, so a reader loads one file, not nine
 
 # 📐 standards/: how I build, write, and work with AI
 
-[![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://portfolio.tjakoen.com/notes/ten-times-zero)
+[![Made with Claude, Codex and DeepSeek](https://img.shields.io/badge/Made_with-Claude_%C2%B7_Codex_%C2%B7_DeepSeek-D97757)](https://portfolio.tjakoen.com/notes/ten-times-zero)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE)
 [![Published](https://img.shields.io/badge/published-portfolio.tjakoen.com%2Fstandards-2ea44f)](https://portfolio.tjakoen.com/standards)
 
@@ -101,4 +101,4 @@ Single source of truth, everywhere. Each fact has exactly one home here; every o
 thing stated in two of these files, one of them is a bug: fix it to a link.
 
 ---
-🤖 **Built with Claude, rules included.** The standards that govern how I work with an AI were themselves written with one, which is either very meta or very honest, and I am going with both. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)
+🤖 **Built with Claude, Codex and DeepSeek, rules included.** The standards that govern how I work with AI were themselves written with it, which is either very meta or very honest, and I am going with both. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)
