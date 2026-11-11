@@ -53,49 +53,23 @@ test("a rival trail with no ants on it fades instead of staying forever", async 
   await expect.poll(() => page.evaluate((born) => (window.__nest as any).rival.trails.some((t: any) => t.born === born), gone), { timeout: 8_000 }).toBe(false);
 });
 
-test("rivals return at worships 2, 3, 4, 5, then every fifth worship", async ({ page }) => {
+test("the first rival comes at worship 2, and each next one two worships after the last falls", async ({ page }) => {
   await open(page);
-  const seen: number[] = [];
-  for (const milestone of [2, 3, 4, 5]) {
-    const result = await page.evaluate((worship) => {
-      const n = (window.__nest as any);
-      n.state.partyIndex = worship;
-      n.foundRival();
-      return { active: n.rival.active, tier: n.rival.tier };
-    }, milestone);
-    expect(result.active).toBe(true);
-    seen.push(milestone);
-    await page.evaluate(() => (window.__nest as any).retreatRival());
-  }
-  expect(seen).toEqual([2, 3, 4, 5]);
-  const afterFive = await page.evaluate(() => {
+  const found = (worship: number) => page.evaluate((w) => {
     const n = (window.__nest as any);
-    n.state.partyIndex = 6;
+    n.state.partyIndex = w;
     n.foundRival();
     return n.rival.active;
-  });
-  expect(afterFive).toBe(false);
-  for (const milestone of [10, 15]) {
-    const active = await page.evaluate((worship) => {
-      const n = (window.__nest as any);
-      n.state.partyIndex = worship;
-      n.foundRival();
-      return n.rival.active;
-    }, milestone);
-    expect(active).toBe(true);
-    await page.evaluate(() => (window.__nest as any).retreatRival());
-  }
-});
-
-test("a missed rival milestone stays due until the current rival falls", async ({ page }) => {
-  await open(page);
-  await page.evaluate(() => {
-    const n = window.__nest as any;
-    n.startRival();
-    n.state.partyIndex = 6;
-    n.retreatRival();
-  });
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.tier), { timeout: 10_000 }).toBe(2);
+  }, worship);
+  expect(await found(1)).toBe(false);
+  expect(await found(2)).toBe(true);
+  // The rival survives several worships; no extra rival is owed for them.
+  await page.evaluate(() => { (window.__nest as any).state.partyIndex = 6; (window.__nest as any).retreatRival(); });
+  expect(await found(7)).toBe(false);
+  expect(await found(8)).toBe(true);
+  await page.evaluate(() => (window.__nest as any).retreatRival());
+  expect(await found(9)).toBe(false);
+  expect(await found(10)).toBe(true);
 });
 
 test("worship keeps counting after the last fixed letter threshold", async ({ page }) => {
@@ -103,7 +77,7 @@ test("worship keeps counting after the last fixed letter threshold", async ({ pa
   await page.evaluate(() => {
     const n = window.__nest as any;
     n.state.partyIndex = 9;
-    n.rival.lastMilestone = 5;
+    n.rival.nextWorship = 10;
     n.state.speed = 4;
     n.startParty();
   });
@@ -301,13 +275,13 @@ test("an uncontested colony eventually breaks its rival and still has workers", 
     await page.clock.runFor(30_000);
     ended = await page.evaluate(() => {
       const n = (window.__nest as any);
-      return n.rival.lastMilestone >= 2 && !n.rival.active;
+      return n.rival.tier >= 1 && !n.rival.active;
     });
   }
   const result = await page.evaluate(() => {
     const n = (window.__nest as any);
     return {
-      ended: n.rival.lastMilestone >= 2 && !n.rival.active,
+      ended: n.rival.tier >= 1 && !n.rival.active,
       workers: n.state.ants.filter((a: any) => a.side !== "rival" && a.role === "worker").length,
       colony: n.state.ants.filter((a: any) => a.side !== "rival" && a.role !== "guard" && a.role !== "flyer").length,
       rivals: n.rival.tier,
@@ -315,7 +289,7 @@ test("an uncontested colony eventually breaks its rival and still has workers", 
       war: n.rival.war,
       active: n.rival.active,
       hp: n.rival.hp,
-      lastMilestone: n.rival.lastMilestone,
+      nextWorship: n.rival.nextWorship,
       soldiers: n.state.ants.filter((a: any) => a.side !== "rival" && a.role === "soldier").map((a: any) => ({ job: a.job, hp: a.hp, fight: !!a.fightUntil })),
       rivalAnts: n.rival.ants.length,
       rivalHole: n.rival.mound?.hole,
