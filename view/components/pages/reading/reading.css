@@ -84,7 +84,9 @@
   display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
 
 /* The category sits at the foot of each spine under a rule, the way a library label would. */
-[data-screen="reading"] .book__cat { align-self: stretch; text-align: center; margin-top: var(--space-1);
+/* position: relative anchors the visually-hidden label to its spine. Without it the absolute label
+   resolves against the page, lands below the window, and the whole page grows a scrollbar. */
+[data-screen="reading"] .book__cat { position: relative; align-self: stretch; text-align: center; margin-top: var(--space-1);
   padding-top: var(--space-1); border-top: 1px solid color-mix(in srgb, currentColor 45%, transparent);
   font-family: var(--font-mono); font-size: 0.55rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.85; }
 [data-screen="reading"] .book__cat .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden;
