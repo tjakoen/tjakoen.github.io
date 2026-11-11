@@ -42,11 +42,11 @@ Now we have moved for real. The tour did not fake a transition, it navigated to 
 same way clicking the dock would. This is the flagship post, on how the whole stack got built with
 AI doing most of the typing.
 
-## nav:/projects
-- at: /notes
+## screen
+- at: /projects
 - status: changed
-- review: The tour now ends on Projects, the work itself, instead of the plans board, and closes by pointing at Mail.
-- verify: Click Projects; the page should list the shipped work, and the tour should end on this card.
-Last stop, and the one worth your time. Projects is the work itself: what got built, for whom, and
-what it cost to get right. Open it when the tour ends. If something there is close to what you need,
-the Mail app in the same dock reaches me directly.
+- review: The tour ends by navigating to Projects and lighting the page itself, rather than the dock link, because the dock is collapsed on narrow screens and a link it cannot see is no stop at all.
+- verify: Walk the tour at a phone width and at a desktop width; both should land on the Projects page with this card showing.
+Last stop, and the one worth your time. This is Projects, the work itself: what got built, for whom,
+and what it cost to get right. Stay and read once the tour ends. If something here is close to what
+you need, the Mail app reaches me directly.
