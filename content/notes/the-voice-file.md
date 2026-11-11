@@ -25,9 +25,11 @@ socialImageAlt: "Two versions of an export ticket comment. The first ends by ask
 
 Your class project is due tomorrow. The submission asks you to explain what your app does and what you tested. You give an AI your notes and ask for a paragraph to paste into the project report. It writes, “The application provides a consistent authentication experience across devices.” You tested sign-in on your own laptop.
 
-**Write for the human who has to read it.** Your instructor needs to know what worked and what you still need to check. Try “I signed in on my laptop and reached the dashboard. I still need to test sign-in on a phone.” Your instructor can tell what you did after one read, and you can show them what happened if they ask.
+Or you are a few months into your first developer job, and a bug ticket is waiting for an update. You paste the thread into an AI and post what comes back. It is four paragraphs long, and the question you needed answered is in the last one.
 
-An AI draft can turn two plain sentences into a paragraph full of phrases you would never say. It can also make the work sound more complete than it is. When you paste that paragraph into a report, it carries your name.
+**Write for the human who has to read it.** Your instructor needs to know what worked and what you still need to check. Try “I signed in on my laptop and reached the dashboard. I still need to test sign-in on a phone.” Your instructor can tell what you did after one read, and you can show them what happened if they ask. Your teammate needs the same thing from a ticket: what you found, and what they have to do next.
+
+An AI draft can turn two plain sentences into a paragraph full of phrases you would never say. It can also make the work sound more complete than it is. When you paste that paragraph into a report or a ticket, it carries your name. Readers notice, too. An instructor grading forty reports and a lead reading twenty tickets can tell a pasted draft by the second line, and from then on they read everything you write a little more slowly.
 
 I tell my students and junior teammates the same thing: **Don't let AI do what you can't do or understand yourself.** That applies to the words you publish under your name. If a draft says the bug is caused by permissions, you should be able to explain what you checked and why it points to permissions. If you only know that two accounts got different results, say that. Read the draft aloud before you post it. Rewrite any sentence you wouldn't say or couldn't explain if someone asked.
 
@@ -90,6 +92,8 @@ Use these three questions to check your next draft before you post.
 
 **Write down the examples you want the agent to follow.**
 
+You can keep a VOICE.md for yourself in a class repo or a side project. On a team, ask whoever owns the repository whether one exists, and offer to start it if it does not. The rest of this section is the setup.
+
 The agent reads AGENTS.md or CLAUDE.md when the session opens. That file tells it which tests to run. When you ask for a ticket comment, the agent also needs to know what the reader should see first. Without an example, it may recount the work and leave the question at the bottom.
 
 Put VOICE.md beside the instruction file and add a line telling the agent to read it before writing. Use an example from your own tracker to show where the question goes in a ticket. Do the same for a review and a chat message.
@@ -126,18 +130,18 @@ Put VOICE.md beside the instruction file and add a line telling the agent to rea
 
 Forty lines that get read beat four thousand that get skimmed, because the file competes with the code for the model's attention. Examples carry more than adjectives. One bad comment and one good one teach a register faster than a page saying be clear and concise, which every writer already believes and the model will cheerfully agree with while doing the opposite.
 
-The rules that survive a change of team are layout rules, not taste rules:
+The rules worth writing down are about where things go, not about taste:
 
-- **Front the ask.** The first line carries the action and the owner: needs a check, needs the reporter, fixed and back to you. Nothing above it.
-- **Fold the proof under one label, with a count.** Also worth doing (3) tells a reader whether the tap is worth it. Fourteen labels for two kinds of block is a shrug.
-- **Never fold a hedge.** If the claim rests on something untested, the caveat sits next to the claim. Fold it and a careful finding turns into a flat assertion.
-- **A one-line comment stays one line.** Structure is for comments with more than one thing to say, not a costume for a short one.
-- **Each surface has its own register.** A chat message can be a sentence. A pull request body cannot, and documentation takes full sentences and all the articles.
-- **Give the model rules for whole sentences.** [Ege Vusal Chelebi](https://www.chele.bi/videos/the-cure-for-ai-slop) tried a writing skill derived from Simplified Technical English on six tasks. The linter counted 74 percent fewer violations per hundred words on Claude Sonnet and 50 percent fewer on GPT-5.5. A banned-word list cut violations by 3 percent and 40 percent, respectively. The linter scored the writing against a set of rules. The test did not measure whether readers found the ask faster.
+- **Put the ask first.** The first line says what the reader has to do and who has to do it: needs a check, needs the reporter, fixed and back to you.
+- **Put the proof under a label with a count.** What I checked (2) tells the reader whether opening it is worth the tap.
+- **Keep what you have not tested in view.** If a claim rests on something untested, say so next to the claim, never inside the fold.
+- **A one-line comment stays one line.** Structure is for comments with more than one thing to say.
+
+Write them as rules, not as a list of banned words. [Ege Vusal Chelebi](https://www.chele.bi/videos/the-cure-for-ai-slop) tried a writing skill derived from Simplified Technical English on six tasks. The linter counted 74 percent fewer violations per hundred words on Claude Sonnet and 50 percent fewer on GPT-5.5. A banned-word list cut violations by 3 percent and 40 percent, respectively. The linter scored the writing against a set of rules. The test did not measure whether readers found the ask faster.
 
 My own standard is public at [portfolio.tjakoen.com/standards/voice](https://portfolio.tjakoen.com/standards/voice). It is longer than a team needs because it is also a guide to one person's prose. Take its structure, not its length: the registers, the scan rule, the list of shapes it refuses.
 
-Try the template on one comment you are about to post. If you are working on a class project, use a paragraph from your project report. On a team, bring the original and your rewrite to your next review and ask which one they could act on faster.
+Try the template on one comment you are about to post. If you are working on a class project, use a paragraph from your project report and ask your instructor which version they would rather grade. On a team, bring the original and your rewrite to your next one-on-one and ask which one they could act on faster.
 
 <div class="copy-template" data-copy-template>
 <button class="share-block__copy" type="button" data-copy-template-button aria-live="polite" hidden>Copy VOICE.md</button>
