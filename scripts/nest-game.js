@@ -55,13 +55,16 @@ import {
     trailFade: 1600,      // ms a spent trail takes to leave the page
     staff: 12,            // guards and flyers the mini hills may keep, on top of the colony
     party: [20, 50, 90, 140, 200, 280, 380], // letters stolen at each colony dance
-    rivalWorshipEvery: 5, // after the first four, a rival returns every fifth worship
+    rivalFirst: 2,        // the worship that brings the first rival
+    rivalGap: 2,          // worships after a rival falls before the next one comes
+    rivalRepop: 8000,     // ms between replacement ants once every rival ant is dead
+    rivalRetarget: 15000, // ms a rival waits before opening another trail
   };
   const LINE = TUNING.line, MAX_ANTS = TUNING.maxAnts, SPEED = TUNING.speed;
   const MAX_STAFF = TUNING.staff;
-  // The first four rivals answer worships two, three, four and five. After that the page sends
-  // one every fifth worship, so the schedule never runs out.
-  const latestRivalWorship = (n) => n <= 5 ? n : n - n % TUNING.rivalWorshipEvery;
+  // Rivals come one at a time. The first answers an early worship, and each later one is counted
+  // from the fall of the last, so a long fight never leaves a rival owed and the player always
+  // gets some quiet worships between them.
   const GAP = TUNING.gap, NEST_SPEED = TUNING.nestSpeed;
 
   const style = document.createElement("style");
@@ -626,7 +629,7 @@ import {
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0,
     lastForageAt: performance.now(), finale: false };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(colonyAnts().length / 3)));
-  const rival = { active: false, mound: null, founding: null, trails: [], minis: [], sites: [], exits: [], nextExit: 0, stolen: new Set(), returnAt: 0, hp: RIVAL_MOUND_HEALTH, war: false, lastMilestone: 0, lastBase: null, tier: 0, raidAt: 0, nextMiniAt: 0 };
+  const rival = { active: false, mound: null, founding: null, trails: [], minis: [], sites: [], exits: [], nextExit: 0, stolen: new Set(), returnAt: 0, nextWorship: TUNING.rivalFirst, hp: RIVAL_MOUND_HEALTH, war: false, lastMilestone: 0, lastBase: null, tier: 0, raidAt: 0, nextMiniAt: 0 };
   const mainAnts = () => state.ants.filter((a) => a.side !== "rival");
   // Guards and flyers live on the mini hills. They are kept on a separate roster so a busy mound
   // can never eat the colony's whole population and leave no workers to forage.
@@ -709,7 +712,15 @@ import {
   };
   const showChar = (L) => { if (L.span) L.span.style.visibility = ""; state.hiddenLetters.delete(L); };
   const blockOf = (n) => n.parentElement.closest("p, h1, h2, h3, h4, li, dd, blockquote, figcaption, a") || n.parentElement;
-  const needOf = (n) => { const fs = parseFloat(getComputedStyle(n.parentElement).fontSize); return fs >= 28 ? 3 : fs >= 20 ? 2 : 1; };
+  // Font size decides the crew, and it is the same for every letter in an element, so it is read
+  // once per element rather than once per letter.
+  const needCache = new WeakMap();
+  const needOf = (n) => {
+    const el = n.parentElement;
+    let need = needCache.get(el);
+    if (need === undefined) { const fs = parseFloat(getComputedStyle(el).fontSize); need = fs >= 28 ? 3 : fs >= 20 ? 2 : 1; needCache.set(el, need); }
+    return need;
+  };
 
   // The anthill on the page: the same dome, drawn in Braille, its entrance at the crown.
   const hill = document.createElement("div"); hill.className = "nest-hill"; hill.setAttribute("aria-hidden", "true");
@@ -2433,9 +2444,11 @@ import {
   };
   const stealRival = (trail, ant) => {
     if (!trail || !state.trails.includes(trail)) return false;
-    const options = freeIn(trail.block, trail.end);
-    if (!options.length) return false;
-    const L = options[0].L;
+    // A rival worker carries alone, so it follows the colony's crew rule: only a letter one ant
+    // can lift, and never one the colony is already gathering.
+    const option = freeIn(trail.block, trail.end).find((o) => o.L.state === "free" && needOf(o.L.n) === 1);
+    if (!option) return false;
+    const L = option.L;
     const r = rectOf(L.n, L.i); const [x, y] = local(r);
     hideChar(L); L.state = "rival-carry"; L.crew = [];
     const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
@@ -2472,6 +2485,9 @@ import {
   };
   const rivalRetarget = () => {
     if (!rival.active || rival.trails.length >= 3) return;
+    const now = performance.now();
+    if (now < (rival.retargetAt || 0)) return;
+    rival.retargetAt = now + TUNING.rivalRetarget;
     const pick = rivalTarget();
     if (!pick) return;
     const t = rivalTrail(pick); queueRivalWorkers(t, 2);
@@ -2510,17 +2526,24 @@ import {
       const arrived = move(a, g[0], g[1], dt, roleSpeed(a.role, a.job, SPEED)); a.px = a.x; a.py = a.y;
       if (!arrived) return;
       if (Math.random() < 0.55) {
-        const pool = [];
-        for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 2) {
-          if (!/\S/.test(n.data[i])) continue;
-          const L = letterOf(n, i);
-          if (L.state !== "free" || needOf(n) > 1) continue;
-          const r = rectOf(n, i);
-          if (reachableChar(n, i, r) && onScreen(r)) pool.push([L, r]);
-          if (pool.length > 300) break;
+        // Every flyer shares one scan of the page for two seconds. Measuring each letter forces a
+        // layout, and one scan per landing per flyer was the costliest thing the rival did.
+        const now = performance.now();
+        if (!rival.flyerPool || now > rival.flyerPool.until) {
+          const list = [];
+          for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 2) {
+            if (!/\S/.test(n.data[i])) continue;
+            if (letterOf(n, i).state !== "free" || needOf(n) > 1) continue;
+            const r = rectOf(n, i);
+            if (reachableChar(n, i, r) && onScreen(r)) list.push([n, i]);
+            if (list.length > 300) break;
+          }
+          rival.flyerPool = { list, until: now + 2000 };
         }
+        const pool = rival.flyerPool.list.filter(([n, i]) => letterOf(n, i).state === "free");
         if (pool.length) {
-          const [L, r] = pool[Math.floor(Math.random() * pool.length)];
+          const [n, i] = pool[Math.floor(Math.random() * pool.length)];
+          const L = letterOf(n, i), r = rectOf(n, i);
           const [x, y] = local(r);
           hideChar(L); L.state = "rival-carry"; L.crew = [];
           const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
@@ -2961,20 +2984,18 @@ import {
       a.el?.classList.remove("marching");
     }
     rival.raidAt = 0; rival.nextMiniAt = 0;
-    rival.returnAt = performance.now() + 5000;
+    rival.nextWorship = state.partyIndex + TUNING.rivalGap;
     log("the rival colony falls; its stolen letters are gone");
     celebrate("the rival colony falls");
   };
   const foundRival = () => {
     if (rival.active || state.over || state.party) return;
-    // A rival that was still alive at a milestone leaves one return due after it falls.
-    const milestone = latestRivalWorship(state.partyIndex);
-    if (milestone < 2 || rival.lastMilestone >= milestone) return;
+    if (state.partyIndex < rival.nextWorship) return;
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
     mound.el.style.visibility = "hidden";
     rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = RIVAL_MOUND_HEALTH; rival.war = false;
-    rival.lastMilestone = milestone; rival.lastBase = mound.base.slice(); rival.tier = (rival.tier || 0) + 1; rival.activeAt = performance.now();
+    rival.nextWorship = Infinity; rival.lastBase = mound.base.slice(); rival.tier = (rival.tier || 0) + 1; rival.activeAt = performance.now();
     rival.raidAt = performance.now() + 12000;
     rival.nextMiniAt = performance.now() + 9000;
     rival.repopAt = 0;
@@ -3050,7 +3071,7 @@ import {
     }
   };
 
-  const startRival = () => { state.partyIndex = 2; rival.lastMilestone = 0; foundRival(); };
+  const startRival = () => { state.partyIndex = TUNING.rivalFirst; rival.nextWorship = TUNING.rivalFirst; foundRival(); };
 
   const RIVAL_EXIT_GAP = 650;
   const queueRivalExit = (launch) => {
@@ -3193,7 +3214,7 @@ import {
           if (made) spawnRival(made);
           else spawnRivalUnit("rival-guard", rival.mound.hole, []);
         }
-        rival.repopAt = now + 3500;
+        rival.repopAt = now + TUNING.rivalRepop;
         log("the rival mound sends another ant");
       }
       return;
