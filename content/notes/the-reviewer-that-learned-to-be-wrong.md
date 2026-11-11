@@ -51,15 +51,6 @@ way I would, in the tone I would, and posts under my account. It reads the ticke
 it never approves anything, and it keeps a log of every time it was wrong. That last part is most of
 the story.
 
-It has a sibling. Career Team's platform group ships its own Claude plugins for our codebase, among
-them a staff-level PR reviewer that Kaither built, and mine started from his. The bones of my first version, the
-parallel lenses and the habit of checking every finding before it posts, are the company reviewer's
-idea, and I am not going to pretend otherwise. After that the two grew up side by side, and I kept
-borrowing when it paid. Their PR fixer's evaluation suite is why
-my kit tests whether a review is any good, and since November my kit treats a verdict from theirs as
-a review to build on instead of one to repeat. Theirs is the reviewer for everyone. Mine is the
-opinionated one, and it reviews the way I do.
-
 On `Aug 14` I committed the first version of a skill called `/check-pr-voice`. The next day I made forty more
 commits to it, and one of them was titled `feat(check-pr): review the ticket, not just the diff`. That should have
 told me how this was going to go. As a snapshot, on `Nov 9` the repository has 737 commits and
@@ -150,19 +141,21 @@ its AI reviewer that must not go wrong out of the model and into plain code, and
 describes the loop that agentic work runs on, each one went into the kit. The full list is in the
 sources at the end.
 
-Kaither did not hand me a tool or a plan. He asked a question that made me want to trust my AI, and
-trust it for reasons I could show rather than a feeling. Everything below is me trying to earn that:
+What Kaither gave me in that meeting was a question. It made me want to trust my AI, and trust it
+for reasons I could show rather than a feeling. Everything below is me trying to earn that:
 a record I could check, a fix every time the record said it was wrong, and guardrails around the
 parts I was never going to hand over.
 
 ## Aug 14 · It started as a reviewer I had to babysit
 
-The first version was a skill I typed a pull request number into and watched. The core of it came
-straight from the company reviewer: a handful of parallel lenses over the change (security,
-accessibility, tests, migrations, a staff-engineer read), every finding checked a second time before
+The first version was a skill I typed a pull request number into and watched. I started from the
+staff-level PR reviewer Kaither built for Career Team's platform group. The core was his: a handful
+of parallel lenses over the change (security, accessibility, tests, migrations, a staff-engineer
+read), every finding checked a second time before
 it was kept, and one review posted with comments anchored to lines. What I added was the reading
 before the diff, the linked ticket and its epic, and my own tone on the way out. Then it waited for
-me to run it again.
+me to run it again. Theirs is the reviewer for everyone. Mine is the opinionated one, and it
+reviews the way I do.
 
 The first two days of history are mostly the skill learning manners. The commit titles read like
 notes from a bad first week:
@@ -330,7 +323,8 @@ learned the second look: when a teammate's kit has already reviewed the head com
 what theirs left unchecked, posts an addendum. At first it left a one-line note when it had nothing new; now it posts nothing
 at all.
 Since `Nov 4` every second look carries its own label, so a silent one still shows on the pull
-request.
+request. In November my kit also started taking a second look when the platform group's reviewer
+had already left a verdict. It builds on that review instead of repeating it.
 
 ## Oct 8 · Then it needed a second engine
 
