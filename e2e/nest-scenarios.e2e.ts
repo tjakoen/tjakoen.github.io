@@ -70,24 +70,61 @@ test("the first worship does not spawn the rival; the second does", async ({ pag
 });
 
 
-test("rival ants shelter at their own mound during worship and return to work", async ({ page }) => {
+test("rival workers shelter during worship while guards and soldiers keep fighting", async ({ page }) => {
   await open(page);
-  await page.evaluate(() => {
+  const combat = await page.evaluate(() => {
     const nest = window.__nest as any;
     nest.startRival();
     nest.state.speed = 4;
-    const [x, y] = nest.rival.mound.hole;
-    nest.spawnRivalUnit("rival-guard", [x + 70, y], [[x + 70, y]], null);
+    const at = [420, 420];
+    const mainGuard = nest.spawnPageAnt("guard", [600, 420], null);
+    const soldier = nest.spawnPageAnt("soldier", at, null);
+    const rivalGuard = nest.spawnRivalUnit("rival-guard", at, [at]);
     nest.startParty();
+    nest.rivalCombat(performance.now() + 1000);
+    const fighting = !!soldier.fightUntil && !!rivalGuard.fightUntil;
+    nest.finishFights();
+    return {
+      fighting,
+      resolved: !soldier.el || !rivalGuard.el,
+      mainGuardDancing: nest.state.party.dancers.includes(mainGuard),
+    };
+  });
+  expect(combat).toEqual({ fighting: true, resolved: true, mainGuardDancing: false });
+  await page.evaluate(() => {
+    const nest = window.__nest as any;
+    const [x, y] = nest.rival.mound.hole;
+    nest.spawnRivalUnit("rival-guard", [x + 70, y], [[x + 100, y]]);
   });
   await expect.poll(() => page.evaluate(() => {
     const nest = window.__nest as any;
     const [x, y] = nest.rival.mound.hole;
-    return !!nest.state.party && nest.rival.ants.length > 0 && nest.rival.ants.every((ant: any) =>
-      ant.el.hidden && Math.hypot(ant.x - x, ant.y - y) < 2);
+    return !!nest.state.party && nest.rival.ants.some((ant: any) => ant.role !== "guard") &&
+      nest.rival.ants.every((ant: any) => ant.role === "guard"
+        ? !ant.el.hidden : ant.el.hidden && Math.hypot(ant.x - x, ant.y - y) < 2);
   }), { timeout: 6000 }).toBe(true);
   await expect.poll(() => page.evaluate(() => {
     const nest = window.__nest as any;
     return !nest.state.party && nest.rival.ants.length > 0 && nest.rival.ants.every((ant: any) => !ant.el.hidden);
   }), { timeout: 20000 }).toBe(true);
+});
+
+test("Seal closes both colony entrances and holds rival departures until reopening", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const nest = window.__nest as any;
+    nest.state.speed = 4;
+    nest.startRival();
+  });
+  await expect.poll(() => page.evaluate(() => !(window.__nest as any).rival.founding)).toBe(true);
+  await page.locator("button[data-k='seal']").click();
+  await expect(page.locator(".nest-hill:not(.rival).sealed").first()).toBeAttached();
+  await expect(page.locator(".nest-hill.rival.sealed")).toBeAttached();
+  const nextExit = () => page.evaluate(() => (window.__nest as any).rival.nextExit);
+  const due = await nextExit();
+  expect(await page.evaluate(() => (window.__nest as any).rival.exits.length)).toBeGreaterThan(0);
+  await page.waitForFunction((time) => performance.now() > time, due);
+  expect(await nextExit()).toBe(due);
+  await expect(page.locator(".nest-hill.rival.sealed")).toHaveCount(0, { timeout: 10_000 });
+  await expect.poll(nextExit).toBeGreaterThan(due);
 });
