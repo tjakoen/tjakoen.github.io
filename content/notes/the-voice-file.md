@@ -31,6 +31,8 @@ An AI draft can turn two plain sentences into a paragraph full of phrases you wo
 
 I tell my students and junior teammates the same thing: **Don't let AI do what you can't do or understand yourself.** That applies to the words you publish under your name. If a draft says the bug is caused by permissions, you should be able to explain what you checked and why it points to permissions. If you only know that two accounts got different results, say that. Read the draft aloud before you post it. Rewrite any sentence you wouldn't say or couldn't explain if someone asked.
 
+Fixing one draft by hand is easy. Fixing the same draft every week is the part that wears you down, because the AI forgets your fix the moment the chat closes. A short file called VOICE.md is how you make it remember. You write one rewrite down as an example, the agent reads it before it drafts, and the next comment starts closer to what your reader needs. The rest of this note shows one rewrite worth saving and the file to save it in.
+
 ## Start with the question you need answered
 
 The same habit applies to a ticket, a shared record of a bug or a piece of work. Say someone reported an empty export. You tried two accounts and got different results. To take the next step, you need to know which account the reporter used.
@@ -44,15 +46,14 @@ The same habit applies to a ticket, a shared record of a bug or a piece of work.
 <blockquote class="callout">
 <strong>Needs the reporter:</strong> which account were you signed in as when the export came back empty?<br>
 Permissions or the date filter could explain the empty export. The filter is still untested.
-</blockquote>
-
 <details>
 <summary>What I checked (2)</summary>
-
-- Export fills for an admin account.
-- The same report as a counselor comes back empty.
-
+<ul>
+<li>Export fills for an admin account.</li>
+<li>The same report as a counselor comes back empty.</li>
+</ul>
 </details>
+</blockquote>
 
 The date filter stays visible because it could change what you investigate next. The two account checks can sit under the disclosure because the reporter can answer without opening it.
 
@@ -237,6 +238,14 @@ invented ones.
 </div>
 
 The examples are the part to replace first. A comment that made someone scroll and a rewritten one that did not are worth more than anything invented here.
+
+## The same file can point the other way
+
+**A voice file can also describe how you want the AI to talk to you.**
+
+Everything above is about how the AI should sound when it writes as you. Kercwin, the tech lead on my team, went the other direction. Before he [built his epic checker](move-bugs-left.md), he showed the team how he makes Claude talk to him: tables, diagrams, specific wording, a format his brain reads fast. His file is about the reader at his own desk.
+
+Both files rest on the same idea. Someone has to read what the model writes, and the file tells the model who that is. If you lose the point of a long AI answer halfway down, write down the shape you read fastest and put it beside your VOICE.md. One file shapes what you send your team, and the other shapes what comes back to you.
 
 ## A file nobody points at is a file nobody reads
 
