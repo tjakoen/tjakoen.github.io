@@ -18,11 +18,11 @@ export const RATIO = `<div class="ratio" data-ratio>
           <span class="ratio__guess" data-ratio-guess data-label="the room says: 20%" style="left:20%"></span>
         </div>
         <p class="ratio__keys">
-          <span><b>code</b> <span data-ratio-code-val>34,595</span> lines</span>
+          <span><b>code</b> <span data-ratio-code-val>57,341</span> lines</span>
           <span class="ratio__nudge">drag the marker, then reveal</span>
           <span><b>writing</b> <span data-ratio-prose-val>0</span> lines</span>
         </p>
-        <p class="ratio__punch frag" data-grade="grain"><b>52% of that repo is writing, not code.</b> Plans, conventions, decisions, and notes to whoever opens it next.</p>
+        <p class="ratio__punch frag" data-grade="grain"><b>57% of that repo is writing, not code.</b> Plans, conventions, decisions, and notes to whoever opens it next.</p>
       </div>`;
 export function mountRatio(host) {
   h(host, RATIO);
@@ -69,12 +69,12 @@ export function mountRatio(host) {
 
   btn.addEventListener('click', () => {
     shown = !shown;
-    // 34,595 lines of code against 36,837 of writing, git-tracked, counted 22 August 2026.
+    // 57,341 lines of code against 75,534 of writing, git-tracked, counted 12 November 2026.
     // Keep in step with the static SVG and the prose in content/notes/ten-times-zero.md, whose
     // REFRESH comment carries the recompute commands.
-    host.querySelector('[data-ratio-code]').style.width = shown ? '48.4%' : '100%';
-    host.querySelector('[data-ratio-prose]').style.width = shown ? '51.6%' : '0%';
-    host.querySelector('[data-ratio-prose-val]').textContent = shown ? '36,837' : '0';
+    host.querySelector('[data-ratio-code]').style.width = shown ? '43.2%' : '100%';
+    host.querySelector('[data-ratio-prose]').style.width = shown ? '56.8%' : '0%';
+    host.querySelector('[data-ratio-prose-val]').textContent = shown ? '75,534' : '0';
     host.querySelector('.ratio__punch').classList.toggle('is-on', shown);
     btn.textContent = shown ? 'Hide it again' : 'Show me';
   });
