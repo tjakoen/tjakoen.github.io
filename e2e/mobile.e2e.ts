@@ -24,6 +24,14 @@ test.describe("mobile — the assistant bottom sheet", () => {
     await expect(shell).toHaveAttribute("data-aside-open", "");
     await expect.poll(async () => (await aside.boundingBox())?.y ?? 9999).toBeLessThan(closed?.y ?? 0);  // slid up
     await expect(page.locator('[data-surface="chat-input"]')).toBeInViewport();   // the composer is reachable
+
+    const close = aside.getByRole("button", { name: "Close the assistant panel" });
+    const toggle = page.locator(".app-shell__topbar").getByRole("button", { name: "Toggle the assistant panel" });
+    await expect(close).toBeHidden();
+    await expect(toggle).toBeHidden();
+    await page.keyboard.press("Escape");
+    await expect(shell).not.toHaveAttribute("data-aside-open");
+    await expect(shell).not.toHaveAttribute("data-aside-hidden");
   });
 
   test("the rail rides the off-canvas drawer; its app links (in the app dock) are reachable", async ({ page }) => {

@@ -29,6 +29,41 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     await expect(page.locator(".cmdk[open]")).toBeVisible();   // the palette dropped from the search
   });
 
+  test("the viewport label follows resizing and the mobile preview keeps the Desk drawer usable", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.goto("/grain");
+    const viewportToggle = page.locator('[data-shell="viewport-toggle"]');
+    const shell = page.locator(".app-shell");
+    const asideToggle = page.getByRole("button", { name: "Toggle the assistant panel" });
+    await expect(viewportToggle).toHaveText(/desktop/);
+
+    await viewportToggle.click();
+    await expect(viewportToggle).toHaveText(/tablet/);
+    await expect(asideToggle).toBeVisible();
+    expect(await page.locator("html").evaluate((html) => getComputedStyle(html).backgroundColor))
+      .toBe(await page.locator("body").evaluate((body) => getComputedStyle(body).backgroundColor));
+
+    await viewportToggle.click();
+    await expect(viewportToggle).toHaveText(/mobile/);
+    await expect(asideToggle).toBeHidden();
+    await page.locator('.assistant__modes [data-shell-mode="chat"]').click();
+    await expect(shell).toHaveAttribute("data-aside-open", "");
+    await page.keyboard.press("Escape");
+
+    await page.setViewportSize({ width: 780, height: 720 });
+    await expect(viewportToggle).toHaveText(/tablet/);
+    await expect(asideToggle).toBeVisible();
+    await viewportToggle.click();
+    await expect(viewportToggle).toHaveText(/mobile/);
+    await page.setViewportSize({ width: 768, height: 720 });
+    await expect(viewportToggle).toHaveText(/mobile/);
+    await page.locator('.assistant__modes [data-shell-mode="chat"]').click();
+    await expect(shell).toHaveAttribute("data-aside-open", "");
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await expect(viewportToggle).toHaveText(/desktop/);
+    await expect(shell).not.toHaveAttribute("data-aside-open");
+  });
+
   test("presence is HONEST: the status bar reports online once the door's ready lands", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("body")).toHaveAttribute("data-ai-online", "true", { timeout: 5000 });
@@ -78,17 +113,19 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     expect(await scheme()).not.toBeNull();
   });
 
-  test("title-bar view controls: aside hides (persisted); the terminal button expands/collapses the feed", async ({ page }) => {
+  test("the Desk closes from its header and reopens from the editor tabs; the terminal expands from the title bar", async ({ page }) => {
     await page.goto("/grain");
     const shell = page.locator(".app-shell");
-    // aside toggle → hides (animated to width 0), and the choice persists across a reload
+    const asideToggle = page.locator(".app-shell__topbar").getByRole("button", { name: "Toggle the assistant panel" });
     await expect(page.locator(".app-shell__aside")).toBeVisible();
-    await page.locator('.window-bar__ctl [data-shell="aside-toggle"]').click();
+    await page.getByRole("button", { name: "Close the assistant panel" }).press("Enter");
     await expect(shell).toHaveAttribute("data-aside-hidden", "true");
+    await expect(asideToggle).toBeFocused();
     await expect(page.locator(".app-shell__aside")).toBeHidden();
+    await expect(page.getByRole("tab", { name: "Chat", exact: true })).toHaveCount(0);
     await page.reload();
     await expect(page.locator(".app-shell__aside")).toBeHidden();
-    await page.locator('.window-bar__ctl [data-shell="aside-toggle"]').click();   // restore
+    await asideToggle.click();
     await expect(page.locator(".app-shell__aside")).toBeVisible();
     // the title-bar terminal button EXPANDS/COLLAPSES the feed (it does not hide the strip)
     await expect(page.locator(".console__feed")).toBeHidden();

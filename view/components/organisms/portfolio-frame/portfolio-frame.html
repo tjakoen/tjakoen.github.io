@@ -34,8 +34,7 @@
   <span class="window-bar__ctl">
     <button type="button" data-cycle-theme title="Cycle theme"><span aria-hidden="true">◆</span><span data-theme-name>sourdough</span></button>
     <button type="button" data-toggle-scheme title="Light / dark" aria-label="Light or dark">◐</button>
-    <button type="button" data-shell="aside-toggle" title="Toggle the assistant panel" aria-label="Toggle the assistant panel">◫</button>
-<button type="button" data-shell="console-toggle" title="Expand or collapse the terminal" aria-label="Expand or collapse the terminal">▭</button>
+    <button type="button" data-shell="console-toggle" title="Expand or collapse the terminal" aria-label="Expand or collapse the terminal">▭</button>
     <button type="button" data-xray-toggle title="X-ray — see the page as the AI sees it" aria-label="X-ray, see the page as the AI sees it">⊹</button>
     <button type="button" data-shell="viewport-toggle" title="Preview width: desktop / tablet / mobile"><span aria-hidden="true">⬚</span><span data-viewport-name>desktop</span></button>
   </span>
@@ -259,6 +258,10 @@
           aria-label="Close all tabs" title="Close all tabs" hidden>
     <svg class="icon" aria-hidden="true" focusable="false"><use href="/assets/sprite.svg#close"></use></svg>
   </button>
+  <button class="icon-btn" data-variant="ghost" data-shell="aside-toggle" type="button"
+          aria-label="Toggle the assistant panel" title="Toggle the assistant panel" aria-controls="desk-sidebar">
+    <span aria-hidden="true">◫</span>
+  </button>
 </header>
 <!-- tabs.js runs HERE, synchronously, rather than as a deferred module: a view transition captures
      the new page's first paint, and the shell chrome snaps to it. Deferred, the strip painted with
@@ -266,7 +269,7 @@
      tab switch. The rail it reads labels from (data-tab-source) is already parsed above. -->
 <script src="/scripts/tabs.js"></script>
 
-<aside class="app-shell__aside">
+<aside class="app-shell__aside" id="desk-sidebar">
   <!-- the sidebar-panel with MODES, SITEWIDE: Chat (default) ⇄ Catalog. shell.js flips
        data-mode/hidden/aria-selected; SSR ships the initial state, so with no JS the chat
        shows and the catalog stays hidden. -->
@@ -281,6 +284,10 @@
         <button type="button" role="tab" data-shell-mode="catalog" aria-selected="false">Catalog</button>
         <button type="button" role="tab" data-shell-mode="notepad" aria-selected="false">Notepad</button>
       </div>
+      <button class="icon-btn assistant__close" data-size="sm" data-variant="ghost" type="button"
+              aria-label="Close the assistant panel" title="Close the assistant panel">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="/assets/sprite.svg#close"></use></svg>
+      </button>
     </div>
     <div class="assistant__pane" data-pane="chat" id="desk-chat">
       <!-- the desk appends here over SSE (chat.send → your bubble + the streamed reply). Site-wide.
