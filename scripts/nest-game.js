@@ -54,7 +54,10 @@ import {
     rivalTrailIdle: 18,   // seconds a rival trail may sit empty before it fades
     trailFade: 1600,      // ms a spent trail takes to leave the page
     staff: 12,            // guards and flyers the mini hills may keep, on top of the colony
-    party: [20, 50, 90, 140, 200, 280, 380], // letters stolen at each colony dance
+    // Letters stolen at each colony dance. The gaps widen so worships stay an event rather than
+    // a rhythm, and after the last fixed one the colony dances every partyAfter letters.
+    party: [25, 70, 130, 210, 310, 430, 580],
+    partyAfter: 180,
     rivalFirst: 2,        // the worship that brings the first rival
     rivalGap: 2,          // worships after a rival falls before the next one comes
     rivalRepop: 8000,     // ms between replacement ants once every rival ant is dead
@@ -76,7 +79,7 @@ import {
     #nest-mock > * { min-width: 0; max-width: 100%; }
     #nest-mock .head { min-width: 0; }
     #nest-mock .head .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #nest-mock .muted { color: var(--ink-muted); }
+    #nest-mock .muted, .nest-confirms .muted { color: var(--ink-muted); }
     #nest-mock .lbl { font-size: var(--text-3xs); text-transform: uppercase; letter-spacing: .08em; display: flex; justify-content: space-between; gap: 8px; }
     #nest-mock .well { position: relative; flex: 1 1 0; min-height: 8em; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
       display: flex; align-items: stretch; justify-content: center; }
@@ -97,17 +100,21 @@ import {
     #nest-mock .log li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .log li:first-child { color: var(--ink); }
     #nest-mock .log li::before { content: "› "; color: var(--ink-faint); }
-    #nest-mock .row { display: flex; gap: 6px; }
-    #nest-mock button { flex: 1; padding: 6px; background: none; border: 1px solid currentColor; color: inherit; font: inherit; cursor: pointer; }
-    #nest-mock button:hover { background: var(--paper-2); }
+    #nest-mock .row, .nest-confirms .row { display: flex; gap: 6px; }
+    #nest-mock button, .nest-confirms button { flex: 1; padding: 6px; background: none; border: 1px solid currentColor; color: inherit; font: inherit; cursor: pointer; }
+    #nest-mock button:hover, .nest-confirms button:hover { background: var(--paper-2); }
     #nest-mock .tools button { position: relative; display: grid; place-items: center; min-width: 0; min-height: 40px; }
     #nest-mock .tools button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
     #nest-mock .tools button[data-cooldown]::after { content: attr(data-cooldown); position: absolute; right: 2px; bottom: 0; font-size: var(--text-3xs); }
     #nest-mock .tool-help { min-height: 2.8em; margin: 0; font-size: var(--text-3xs); line-height: 1.4; }
     #nest-mock { position: relative; }
-    #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
-      background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
-    #nest-mock .confirm p { margin: 0 0 8px; }
+    /* A confirm sits low in the middle of the window, where the other Nest popups appear. Tucked
+       into the sidebar it went unnoticed when a link click asked whether to leave the page. */
+    .nest-confirms { font: var(--text-2xs)/1.4 var(--font-mono); color: var(--ink); }
+    .nest-confirms .confirm { position: fixed; left: 50%; bottom: 48px; transform: translateX(-50%); z-index: 300;
+      width: min(92vw, 420px); padding: var(--space-3, 12px);
+      background: var(--paper); border: 1px solid var(--ink); box-shadow: 4px 4px 0 var(--color-line), 0 6px 24px rgba(0,0,0,.35); }
+    .nest-confirms .confirm p { margin: 0 0 8px; }
     .nest-layer { position: absolute; left: 0; top: 0; width: 100%; z-index: 50; pointer-events: none; overflow: hidden; user-select: none; -webkit-user-select: none; }
     [data-nest-tool="squash"], [data-nest-tool="squash"] *,
     [data-nest-tool="wipe"], [data-nest-tool="wipe"] * { user-select: none; -webkit-user-select: none; }
@@ -563,7 +570,14 @@ import {
       <div class="row"><button data-k="reset-go">reset the page</button><button data-k="reset-cancel" class="muted">keep playing</button></div>
     </div>`;
   aside.append(panel);
-  const $ = (k) => panel.querySelector(`[data-k="${k}"]`);
+  // The sidebar is its own stacking context, so a confirm inside it painted under the page text
+  // and the terminal bar. The confirms move to a host on the body, beside the other popups, and
+  // the lookup checks that host after the panel.
+  const confirmHost = document.createElement("div");
+  confirmHost.className = "nest-confirms";
+  confirmHost.append(...panel.querySelectorAll(".confirm"));
+  document.body.append(confirmHost);
+  const $ = (k) => panel.querySelector(`[data-k="${k}"]`) || confirmHost.querySelector(`[data-k="${k}"]`);
   const setAction = (key, glyph, label, help) => {
     const button = $(key);
     const text = button.querySelector("[data-label]")?.textContent || "";
@@ -1854,7 +1868,7 @@ import {
     log("the worship fills the stores");
     if (p.final) { state.nextParty = Infinity; return; }
     state.partyIndex++;
-    state.nextParty = TUNING.party[state.partyIndex] ?? state.nextParty + 120;
+    state.nextParty = TUNING.party[state.partyIndex] ?? state.nextParty + TUNING.partyAfter;
   };
 
   // ================================ mini hills ================================
@@ -3781,7 +3795,7 @@ import {
     clearTimeout(soundHintTimer);
     document.body.classList.remove("nest-links-locked");
     delete window.__nest;
-    layer.remove(); panel.remove();
+    layer.remove(); panel.remove(); confirmHost.remove();
     hidden.forEach((el) => { el.style.display = el.dataset.nestDisplay; delete el.dataset.nestDisplay; });
     if (sidebarWasHidden) shell?.setAttribute("data-aside-hidden", "true");
     antBtn.setAttribute("aria-pressed", "false"); antBtn.setAttribute("aria-label", "Open the Nest");
