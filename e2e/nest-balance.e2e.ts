@@ -87,6 +87,30 @@ test("rivals return at worships 2, 3, 4, 5, then every fifth worship", async ({ 
   }
 });
 
+test("a missed rival milestone stays due until the current rival falls", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const n = window.__nest as any;
+    n.startRival();
+    n.state.partyIndex = 6;
+    n.retreatRival();
+  });
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.tier), { timeout: 10_000 }).toBe(2);
+});
+
+test("worship keeps counting after the last fixed letter threshold", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const n = window.__nest as any;
+    n.state.partyIndex = 9;
+    n.rival.lastMilestone = 5;
+    n.state.speed = 4;
+    n.startParty();
+  });
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.partyIndex), { timeout: 25_000 }).toBe(10);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active)).toBe(true);
+});
+
 test("rival guards can break a main mini hill", async ({ page }) => {
   await open(page);
   await startRival(page);
@@ -197,12 +221,20 @@ test("a three-digit squash count stays readable in the stat grid", async ({ page
   expect(box.rowScroll).toBeLessThanOrEqual(box.rowClient + 1);
 });
 
-test("clear and close reloads the page clean", async ({ page }) => {
+test("clear and close keeps the Nest visible until the clean page loads", async ({ page }) => {
   await open(page);
+  await expect(page.locator("#nest-mock .head")).toContainText("The Nest");
+  await page.evaluate(() => {
+    window.addEventListener("beforeunload", () => {
+      const panel = document.querySelector("#nest-mock");
+      sessionStorage.setItem("nestVisibleBeforeReload", String(!!panel?.getClientRects().length));
+    }, { once: true });
+  });
   await page.locator("[data-k='x']").click();
   const loaded = page.waitForEvent("load");
   await page.locator("[data-k='leave']").click();
   await loaded;
+  expect(await page.evaluate(() => sessionStorage.getItem("nestVisibleBeforeReload"))).toBe("true");
   await expect(page.locator(".nest-layer")).toHaveCount(0);
   expect(await page.evaluate(() => document.querySelectorAll(".nest-gap").length)).toBe(0);
 });

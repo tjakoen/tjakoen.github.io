@@ -111,7 +111,7 @@ There is no win screen after the dance. Worship is the colony's own event, not t
 
 ## The rival is a second ecosystem, not a second player
 
-The first rival appears after the second worship, not the first. It starts as a smaller colony with one trail, a few workers and a guard. A new rival comes at worships three, four and five if the last one was beaten. After the fifth, the page sends another rival every fifth worship: ten, fifteen, twenty. If one is still alive when its next worship passes, that slot is skipped and the next one waits.
+The first rival appears after the second worship, not the first. It starts as a smaller colony with one trail, a few workers and a guard. A new rival comes at worships three, four and five if the last one was beaten. After the fifth, the page sends another rival every fifth worship: ten, fifteen, twenty. If a rival survives one or more of those dances, one new colony arrives after it falls.
 
 The rival is not a second player base. It does not take orders, it does not get a turn, and it cannot see the whole board. It runs the same kind of local rules the main colony runs: follow a trail, take a letter, carry it home, spend it on another ant. The difference is that its growth comes out of what it steals.
 

@@ -80,13 +80,15 @@ unreadable and the colony has won that page.
   a missed ant never navigates, wipe is the only tool that breaks scent, and links gives the page
   back with a leave confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
   each tool a name, an icon and a key. Squash ants (a pile goes together), drag across a scent trail to break it, drop bait
-  to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
-  seals have cooldowns. Restore page asks first: it puts the letters back, re-sites the home and mini mounds, keeps the ants, and scrolls to a new home that lands off screen.
+  to pull nearby ants off course, and seal both colony entrances from the panel or hold one to seal it on its own.
+  Ants wait to leave or enter a sealed hill until it reopens. Bait and seals have cooldowns.
+  Restore page asks first: it puts the letters back, re-sites the home and mini mounds, keeps the ants, and scrolls to a new home that lands off screen.
   Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
 - **The colony worships.** Every time the colony has taken twenty, then fifty, then a rising
   number of letters, it stops: the queen crawls out of the hill and walks to a clear patch near
-  it, every ant on the page moves toward her and the far ones turn back to their trails when it
-  ends, the sidepanel pulses, the stolen glyphs orbit, and a next worship bar tracks the next
+  it, the main colony gathers around her, and rival workers shelter at their own mound. Guards
+  on both sides and the main colony's soldiers keep fighting. The far dancers turn back to their
+  trails when worship ends, the sidepanel pulses, the stolen glyphs orbit, and a next worship bar tracks the next
   one. The target is fixed until that dance finishes, then the next one is set. The queen climbs
   out of the panel nest and back down, and the trails hide while she is out. The page is the whole environment, so the ants may work below the fold while
   the player reads.
