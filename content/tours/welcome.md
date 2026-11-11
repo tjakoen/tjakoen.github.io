@@ -1,12 +1,13 @@
 ---
 id: welcome
 mode: demo
-title: "Before you start reading"
+title: "Welcome to the desk"
 route: /
 ---
-This site opens in brioche, the light flavor, the first time you visit. Two controls are worth knowing
-before you start reading, and this walk shows you both. It runs once, and you can close it at any
-point.
+Welcome! This is my portfolio, built as a small desk you can poke at: notes, projects, a calendar
+and an assistant that answers questions about my work. Before you start, here are two controls worth
+knowing, light or dark and the color flavor, plus where the longer tour lives. It
+takes three clicks, and you can close it at any point.
 
 ## dark-mode
 - verify: Click the highlighted button; the page should switch between light and dark, and reloading should keep your choice.

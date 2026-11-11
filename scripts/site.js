@@ -74,16 +74,20 @@
   function askClear() {
     if (typeof HTMLDialogElement !== "function") return Promise.resolve(window.confirm(CLEAR_TITLE + " " + CLEAR_MSG));
     return new Promise((resolve) => {
+      // Built from the CRUMB card's own markup and GRAIN's buttons, so the question reads as the
+      // same family as the tour cards rather than a one-off box.
       const dlg = document.createElement("dialog");
-      dlg.className = "clear-dialog";
+      dlg.className = "crumb-pop clear-dialog";
       dlg.setAttribute("aria-labelledby", "clear-dialog-title");
       dlg.innerHTML =
-        '<form method="dialog" class="clear-dialog__body">' +
-        '<h2 id="clear-dialog-title" class="clear-dialog__title"></h2><p class="clear-dialog__msg"></p>' +
-        '<div class="clear-dialog__actions"><button value="cancel" autofocus>Cancel</button>' +
-        '<button value="clear" class="clear-dialog__go">Clear and reload</button></div></form>';
-      dlg.querySelector(".clear-dialog__title").textContent = CLEAR_TITLE;
-      dlg.querySelector(".clear-dialog__msg").textContent = CLEAR_MSG;
+        '<form method="dialog" class="clear-dialog__form">' +
+        '<div class="crumb-pop__head"><span id="clear-dialog-title" class="crumb-pop__title"></span>' +
+        '<button class="crumb-pop__x" value="cancel" aria-label="Cancel">&times;</button></div>' +
+        '<div class="crumb-pop__body"><p class="crumb-pop__say"></p></div>' +
+        '<div class="crumb-pop__foot"><button class="btn" data-variant="soft" value="cancel" autofocus>Cancel</button>' +
+        '<button class="btn" value="clear">Clear and reload</button></div></form>';
+      dlg.querySelector(".crumb-pop__title").textContent = CLEAR_TITLE;
+      dlg.querySelector(".crumb-pop__say").textContent = CLEAR_MSG;
       dlg.addEventListener("close", () => { resolve(dlg.returnValue === "clear"); dlg.remove(); });
       dlg.addEventListener("click", (ev) => { if (ev.target === dlg) dlg.close("cancel"); });   // backdrop click
       document.body.appendChild(dlg);
