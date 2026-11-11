@@ -31,6 +31,7 @@ you know where to edit.
 |---|---|
 | `/` | `view/pages/index.html` — Recent binds `recentNotes` (notes AND calendar posts merged, `content.ts` `listRecentNotes`) and the feed walkthrough binds `latestEvents` (`listLatestEvents`, the newest event as a one-item array, `molecules/walk-latest`) |
 | `/about` | `view/pages/about.html` (tabbed profile app; the Lessons tab's roles + résumé roles link to `/notes?tag=<tag>`) |
+| `/ai-disclosure` | `view/pages/ai-disclosure.html` (how I use AI in projects, writing, and teaching) |
 | `/resume` | `view/pages/resume.html` (the résumé board; each experience role links to its tagged notes) |
 | `/mail` | `view/pages/mail.html` + `content/data/mailbox.json` (the messages) — bound through the `mail-folder`/`mail-row`/`mail-reader`/`mail-related` molecules |
 | `/calendar` | `view/pages/calendar.html` (the feed page, incl. the Events/Notes/All filter tabs, whose choice lives in the URL as `?feed=notes|all` so a filtered feed is linkable) + `content/data/desk-feed.json` (shipped posts) — the feed cards are the `feed-card` molecule, coloured per kind; see the events collection below for `/calendar/<slug>` |
