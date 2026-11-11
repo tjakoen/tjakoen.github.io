@@ -42,10 +42,11 @@ Now we have moved for real. The tour did not fake a transition, it navigated to 
 same way clicking the dock would. This is the flagship post, on how the whole stack got built with
 AI doing most of the typing.
 
-## nav:/plans
+## nav:/projects
 - at: /notes
 - status: changed
-- review: Plans moved out of a buried link and into the dock as a first-class app, so the board is reachable in one click.
-- verify: Open Plans; the board renders straight from the markdown files, which the tour never writes to.
-Last stop. Plans is the project board, rendered straight from markdown files that never get written
-back to. It sits in the dock beside the other apps, one click from anywhere on the desk.
+- review: The tour now ends on Projects, the work itself, instead of the plans board, and closes by pointing at Mail.
+- verify: Click Projects; the page should list the shipped work, and the tour should end on this card.
+Last stop, and the one worth your time. Projects is the work itself: what got built, for whom, and
+what it cost to get right. Open it when the tour ends. If something there is close to what you need,
+the Mail app in the same dock reaches me directly.
