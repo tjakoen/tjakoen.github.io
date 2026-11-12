@@ -52,6 +52,7 @@
   body[data-screen="resume"] .cv-entry__toggle,
   body[data-screen="resume"] .cv-entry__links,
   body[data-screen="resume"] .cv-entry__media,
+  body[data-screen="resume"] .where-next,
   body[data-screen="resume"] .page-foot { display: none !important; }
   body[data-screen="resume"] .board > p.lede:last-of-type { display: none !important; }
   /* force every accordion open no matter its screen state, so no bullet is hidden from the PDF/ATS */

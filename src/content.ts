@@ -26,7 +26,7 @@ import { servedDiagramRenderer } from "./diagrams.ts";
 import { highlightedCodeBlock } from "./content-code.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
 import { createKnowledgeCache } from "./ai/knowledge-cache.ts";
 import { SITE } from "./seo.ts";
@@ -233,6 +233,8 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // linking to its entry on /people or its card on /reading rather than straight off the site.
     const credits = kind === "entry" && collection.prefix === "/notes" && frontmatter
       ? renderNoteCredits(frontmatter) : "";
+    // …and a way onward. A note used to end at its footer with nothing but the dock to leave by.
+    const whereNext = kind === "entry" && collection.prefix === "/notes" && slug ? renderNoteNext(slug) : "";
     let readable = body;
     if (contents) {
       if (leadingStart) readable = readable.replace(leadingStart, "");
@@ -249,7 +251,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
       title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}`,
-      board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${credits}${videoCard}${gallery}${shareBlock}${copyScript}`,
+      board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${credits}${whereNext}${videoCard}${gallery}${shareBlock}${copyScript}`,
     });
   };
 }
@@ -1871,6 +1873,38 @@ export function readingEntries(): Map<string, CreditEntry> {
 
 function slugList(raw: unknown): string[] {
   return Array.isArray(raw) ? raw.filter((v): v is string => typeof v === "string" && v.trim() !== "").map((v) => v.trim()) : [];
+}
+
+/** The "Where to next" block that closes a note: the next older published note (the oldest wraps
+ *  to the newest, so no note is a dead end), the full list, and contact. Same markup as the block
+ *  on the static pages in view/pages, so one stylesheet and one test cover both. Read
+ *  synchronously because shellChrome is synchronous, and cached because the corpus does not change
+ *  under a running server (dev --hot reloads this module, which resets it). */
+const NOTES_DIR = join(import.meta.dir, "..", "content", "notes");
+let datedNotesCache: { slug: string; title: string; date: string }[] | null = null;
+function datedNotes(): { slug: string; title: string; date: string }[] {
+  if (datedNotesCache) return datedNotesCache;
+  const out: { slug: string; title: string; date: string }[] = [];
+  for (const file of readdirSync(NOTES_DIR)) {
+    if (!file.endsWith(".md")) continue;
+    const { data } = parseFrontmatter(readFileSync(join(NOTES_DIR, file), "utf8"));
+    if (!isPublishedStatus(data.status) || typeof data.date !== "string" || !data.date) continue;
+    const slug = file.slice(0, -3);
+    out.push({ slug, title: typeof data.title === "string" ? data.title : slug, date: data.date });
+  }
+  out.sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
+  return (datedNotesCache = out);
+}
+export function renderNoteNext(slug: string): string {
+  const notes = datedNotes();
+  const at = notes.findIndex((n) => n.slug === slug);
+  const next = notes.length > 1 ? notes[(at + 1) % notes.length] : undefined;
+  const card = (href: string, title: string, body: string) =>
+    `<a class="card" data-pad="sm" href="${escapeHtml(href)}"><h3 class="card__title">${escapeHtml(title)} →</h3><p class="card__body">${escapeHtml(body)}</p></a>`;
+  const nextCard = next && next.slug !== slug
+    ? card(`/notes/${next.slug}`, next.title, at >= 0 && at === notes.length - 1 ? "The newest note, since this was the oldest one." : "The note I wrote before this one.")
+    : "";
+  return `<nav class="where-next" aria-label="Where to next"><hr class="rule" style="margin:3rem 0 1.5rem"><h2 class="section-head"><span>Where to next</span></h2><div class="card-grid">${nextCard}${card("/notes", "All notes", "Every note on the desk, newest first, with a tag filter.")}${card("/about#contact", "Contact", "A question, a correction, or a talk. I read everything.")}</div></nav>`;
 }
 
 function renderNoteCredits(frontmatter: Record<string, unknown>): string {
