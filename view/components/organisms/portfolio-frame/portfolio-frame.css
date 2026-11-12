@@ -703,5 +703,17 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   .app-shell.app-window .window-bar__search { order: 2; margin-inline: 0; }
   .app-shell.app-window .window-bar__ctl { order: 3; }
   .app-shell.app-window .window-bar__ctl [data-cycle-theme] { display: none; }
+  /* the light and dark switch wears the same square as search beside it, with a symbol big enough
+     to read and tap */
+  .app-shell.app-window .window-bar__ctl [data-toggle-scheme] {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.25rem; height: 2rem; padding: 0;
+    border: 1px solid var(--color-line); border-radius: var(--radius-sm);
+    background: var(--color-bg); color: var(--color-muted); font-size: 1.1rem; line-height: 1; }
   body:not([data-viewport]) .app-shell.app-window .window-bar__ctl [data-shell="viewport-toggle"] { display: none; }
+}
+
+/* Catalog is a desktop tool: hide its tab on tablet as well as on a phone. */
+@container shell-frame (max-width: 1100px) {
+  .assistant__modes [data-shell-mode="catalog"] { display: none !important; }
 }
