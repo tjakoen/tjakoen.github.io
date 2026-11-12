@@ -26,7 +26,7 @@ import { servedDiagramRenderer } from "./diagrams.ts";
 import { highlightedCodeBlock } from "./content-code.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
 import { createKnowledgeCache } from "./ai/knowledge-cache.ts";
 import { SITE } from "./seo.ts";
@@ -104,6 +104,30 @@ function publishedSource(base: ContentSource): ContentSource {
     },
   };
 }
+
+/**
+ * The other half of the same gate: a ContentSource that serves ONLY the explicit drafts. It feeds
+ * the unlisted /drafts section below, which exists so an unfinished note can be pushed, deployed
+ * and read on the real site without reaching any surface a visitor or a crawler enumerates.
+ */
+function draftsSource(base: ContentSource): ContentSource {
+  const draft = async (slug: string): Promise<boolean> => {
+    const raw = await base.read(slug);
+    return raw !== null && !isPublishedStatus(parseFrontmatter(raw).data.status);
+  };
+  return {
+    list: async () => {
+      const slugs = await base.list();
+      const keep = await Promise.all(slugs.map(draft));
+      return slugs.filter((_, i) => keep[i] === true);
+    },
+    read: async (slug) => ((await draft(slug)) ? base.read(slug) : null),
+  };
+}
+
+/** True for the two collections that render a note: the published feed and the unlisted drafts. */
+const isNoteCollection = (prefix: string): boolean => prefix === "/notes" || prefix === DRAFTS_PREFIX;
+const DRAFTS_PREFIX = "/drafts";
 
 // ---- link resolution --------------------------------------------------------
 // Docs cross-link each other as relative .md paths (./AI-INTERFACE.md,
@@ -188,9 +212,14 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       ? renderGallery(parsePhotos(frontmatter.gallery)) : "";
     // …and, below the body, the ready-to-post share block (opt-in via the entry's `social:` key). Notes
     // carry it too, because a note that started life as a social post keeps that post beside it.
-    const shareBlock = kind === "entry" && (collection.prefix === "/calendar" || collection.prefix === "/notes") && frontmatter && slug
+    const shareBlock = kind === "entry" && (collection.prefix === "/calendar" || isNoteCollection(collection.prefix)) && frontmatter && slug
       ? renderShareBlock(frontmatter.social, `${SITE.origin}${collection.prefix}/${slug}`, frontmatter.socialImage, frontmatter.socialImageAlt) : "";
-    const copyScript = shareBlock || body.includes(" data-copy-template") ? CONTENT_COPY_SCRIPT : "";
+    // A published note carries a Share button beside Rendered and Source. It opens a dialog holding
+    // the note's canonical address and a copy button, and reuses the copy script the share block has.
+    // A draft gets none: its own banner asks the reader not to pass it on.
+    const shareDialog = kind === "entry" && collection.prefix === "/notes" && slug
+      ? renderShareDialog(title, `${SITE.origin}/notes/${slug}`) : "";
+    const copyScript = shareBlock || shareDialog || body.includes(" data-copy-template") ? CONTENT_COPY_SCRIPT : "";
     // /badges entry pages: a badge-CLASS page (roster of recipients) or a per-recipient CERT page.
     // The template (art + issuer + verification + roster/share) sits above the MILL-rendered body.
     const badgeCard = kind === "entry" && collection.prefix === "/badges" && frontmatter && slug
@@ -204,10 +233,10 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     const badgeHead = ogClass ? `<meta name="x-og-image" content="/media/badges/og-${escapeHtml(ogClass)}.png">` : "";
     // A note may name its own share card with an image key (a /media path), plus imageAlt for its
     // description, so a shared post unfurls with its own picture instead of the site card.
-    const noteImg = collection.prefix === "/notes" && frontmatter && typeof frontmatter.image === "string" && frontmatter.image.startsWith("/media/") ? frontmatter.image : "";
+    const noteImg = isNoteCollection(collection.prefix) && frontmatter && typeof frontmatter.image === "string" && frontmatter.image.startsWith("/media/") ? frontmatter.image : "";
     const noteHead = noteImg ? `<meta name="x-og-image" content="${escapeHtml(noteImg)}">${frontmatter?.imageAlt ? `<meta name="x-og-image-alt" content="${escapeHtml(String(frontmatter.imageAlt))}">` : ""}` : "";
     // THE EDITOR section (rail active + tab group): notes → its own; layer docs live under BREAD.
-    const sectionName = collection.prefix === "/notes" ? "notes" : "bread";
+    const sectionName = isNoteCollection(collection.prefix) ? "notes" : "bread";
     const section = ` data-section="${sectionName}"`;
     // the honest-source toggle: an entry page links straight to its own raw .md (MILL's
     // honest-source route) — "the site is its own source tree" made clickable.
@@ -215,7 +244,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     const sourceToggle = kind === "entry" && slug
       ? `<nav class="content-source" aria-label="${isCalendarEntry ? "Event page navigation" : "View"}">
       <a class="tab" aria-current="page" href="${escapeHtml(`${collection.prefix}/${slug}`)}">Rendered</a>
-      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>${collection.prefix === "/notes" ? '\n      <button class="tab content-source__bionic" type="button" data-bionic-toggle aria-pressed="false" title="Bold the start of each word" hidden>Bionic</button>' : ""}${isCalendarEntry ? '\n      <a class="tab" href="/calendar">Calendar feed</a>' : ""}
+      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>${collection.prefix === "/notes" ? '\n      <button class="tab content-source__bionic" type="button" data-bionic-toggle aria-pressed="false" title="Bold the start of each word" hidden>Bionic</button>' : ""}${shareDialog ? '\n      <button class="tab content-source__share" type="button" data-note-share hidden>Share</button>' : ""}${isCalendarEntry ? '\n      <a class="tab" href="/calendar">Calendar feed</a>' : ""}
       </nav>`
       : "";
     // NOTE: the /notes index's "See what's new" AI trigger (data-ai-run demo.run) used to render
@@ -224,19 +253,34 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // …the summary + contents block, for a note with enough sections to be worth navigating. It is
     // spliced INTO the body after the note head rather than emitted before it, because it belongs
     // under the masthead and above the first section, not above the title.
-    const contents = kind === "entry" && collection.prefix === "/notes" && frontmatter
+    const contents = kind === "entry" && isNoteCollection(collection.prefix) && frontmatter
       ? renderNoteContents(body, frontmatter) : "";
     // A note may open with its own start button. That call to action belongs directly under the
     // subtitle, above the generated contents block, not below it.
     const leadingStart = body.match(/<p class="nest-start"(?: hidden)?>[\s\S]*?<\/p>/)?.[0] ?? "";
     // …and the people and sources the note names (`people:` and `sources:`), at the very end, each
     // linking to its entry on /people or its card on /reading rather than straight off the site.
-    const credits = kind === "entry" && collection.prefix === "/notes" && frontmatter
+    const credits = kind === "entry" && isNoteCollection(collection.prefix) && frontmatter
       ? renderNoteCredits(frontmatter) : "";
+    // …and a way onward. A note used to end at its footer with nothing but the dock to leave by.
+    const whereNext = kind === "entry" && collection.prefix === "/notes" && slug ? renderNoteNext(slug) : "";
+    // A draft says so at the top of its own page, and its index says what the section is, because a
+    // link to either can be forwarded to someone who has no idea the note is unfinished.
+    const draftFlag = collection.prefix !== DRAFTS_PREFIX ? ""
+      : kind === "entry"
+        ? `<p class="draft-flag" role="note"><strong>Draft.</strong> This note is unfinished and unlisted. It can change or disappear, so please do not share it yet. <a href="${DRAFTS_PREFIX}">All drafts</a></p>`
+        : `<p class="draft-flag" role="note"><strong>Drafts.</strong> Unfinished notes, deployed so they can be read on the real site. Nothing here is listed in the feed, the search, the sitemap or the desk's answers. The repository is public, so unlisted is not the same as private.</p>`;
+    // …and, for a note that changed in a way a returning reader should know about, the day it was
+    // edited under the masthead and the list of what changed at the foot (`updated:`, `changelog:`).
+    const noteEntry = kind === "entry" && isNoteCollection(collection.prefix) && frontmatter;
+    const edited = noteEntry ? renderNoteEdited(frontmatter) : "";
+    const changelog = noteEntry ? renderNoteChangelog(frontmatter) : "";
     let readable = body;
     if (contents) {
       if (leadingStart) readable = readable.replace(leadingStart, "");
-      readable = readable.replace("</header>", `</header>${leadingStart}${contents}`);
+      readable = readable.replace("</header>", `</header>${edited}${leadingStart}${contents}`);
+    } else if (edited) {
+      readable = readable.replace("</header>", `</header>${edited}`);
     }
     // A badge page's own template already states the title, the skill and the recipient, so MILL's
     // entry header underneath it would be the same words a second time at h1 size. Drop that header
@@ -249,7 +293,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
       title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}`,
-      board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${credits}${videoCard}${gallery}${shareBlock}${copyScript}`,
+      board: `${draftFlag}${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${changelog}${credits}${whereNext}${videoCard}${gallery}${shareBlock}${shareDialog}${copyScript}`,
     });
   };
 }
@@ -407,6 +451,49 @@ const collections: MillCollection[] = [
     index: false,
   },
 ];
+
+/**
+ * The unlisted drafts section. Deliberately NOT a member of `collections`: everything that
+ * enumerates content (the sitemap, /search.json, the feed, the calendar merge, the desk's grounding
+ * corpus, llms.txt) walks that array, so a draft stays out of all of them by never being in it.
+ * The pages are served, exported and marked noindex, and the only door in is a typed address or
+ * the terminal's unlisted `drafts` command.
+ */
+const draftCollections: MillCollection[] = [
+  {
+    prefix: DRAFTS_PREFIX,
+    title: "Drafts",
+    description: "Unfinished notes, unlisted. They can change or disappear.",
+    source: draftsSource(dirSource(COLLECTION_DIRS["/notes"])),
+    adapter: withHeadingAnchors({ resolveLink: notesLink }),
+    indexVariant: "log",
+    itemSurfacePrefix: "draft",
+  },
+];
+
+export function createPortfolioDraftRoutes(
+  compose?: (html: string) => Promise<string>,
+  inject = "",
+  injectHead = "",
+): MillRequestHandler {
+  return createMillRoutes({
+    compose,
+    chrome: shellChrome(inject, `${injectHead}<meta name="robots" content="noindex, nofollow">`),
+    collections: draftCollections,
+    diagrams: servedDiagramRenderer(),
+  });
+}
+
+/** The draft pages and their index, for the static export only. Never hand this to the sitemap. */
+export async function listPortfolioDraftRoutes(): Promise<string[]> {
+  const routes = await listMillRoutes(draftCollections);
+  if (!routes.includes(DRAFTS_PREFIX)) routes.push(DRAFTS_PREFIX);
+  return routes;
+}
+/** Each draft's raw `.md` twin, so the Source tab on a draft works on the deployed site too. */
+export function listPortfolioDraftRawRoutes(): Promise<string[]> {
+  return listMillRawRoutes(draftCollections);
+}
 
 /**
  * Every served collection paired with the folder it reads. Tools that must walk exactly what MILL
@@ -1091,7 +1178,7 @@ const CONTENT_COPY_SCRIPT = `<script>
       field.remove();
       return copied;
     }
-    document.querySelectorAll('[data-share], [data-copy-template]').forEach(function (block) {
+    function wire(block) {
       var button = block.querySelector('[data-share-copy], [data-copy-template-button]');
       var text = block.querySelector('[data-share-text], pre code');
       if (!button || !text) return;
@@ -1119,7 +1206,9 @@ const CONTENT_COPY_SCRIPT = `<script>
           button.textContent = 'Copy failed, select it instead';
         }
       });
-    });
+    }
+    document.querySelectorAll('[data-share], [data-copy-template]').forEach(wire);
+    window.addEventListener('note-share:open', function (e) { wire(e.detail); });
   })();
 </script>`;
 
@@ -1871,6 +1960,91 @@ export function readingEntries(): Map<string, CreditEntry> {
 
 function slugList(raw: unknown): string[] {
   return Array.isArray(raw) ? raw.filter((v): v is string => typeof v === "string" && v.trim() !== "").map((v) => v.trim()) : [];
+}
+
+/** The "Where to next" block that closes a note: the next older published note (the oldest wraps
+ *  to the newest, so no note is a dead end), the full list, and contact. Same markup as the block
+ *  on the static pages in view/pages, so one stylesheet and one test cover both. Read
+ *  synchronously because shellChrome is synchronous, and cached because the corpus does not change
+ *  under a running server (dev --hot reloads this module, which resets it). */
+const NOTES_DIR = join(import.meta.dir, "..", "content", "notes");
+let datedNotesCache: { slug: string; title: string; date: string }[] | null = null;
+function datedNotes(): { slug: string; title: string; date: string }[] {
+  if (datedNotesCache) return datedNotesCache;
+  const out: { slug: string; title: string; date: string }[] = [];
+  for (const file of readdirSync(NOTES_DIR)) {
+    if (!file.endsWith(".md")) continue;
+    const { data } = parseFrontmatter(readFileSync(join(NOTES_DIR, file), "utf8"));
+    if (!isPublishedStatus(data.status) || typeof data.date !== "string" || !data.date) continue;
+    const slug = file.slice(0, -3);
+    out.push({ slug, title: typeof data.title === "string" ? data.title : slug, date: data.date });
+  }
+  out.sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
+  return (datedNotesCache = out);
+}
+export function renderNoteNext(slug: string): string {
+  const notes = datedNotes();
+  const at = notes.findIndex((n) => n.slug === slug);
+  const next = notes.length > 1 ? notes[(at + 1) % notes.length] : undefined;
+  const card = (href: string, title: string, body: string) =>
+    `<a class="card" data-pad="sm" href="${escapeHtml(href)}"><h3 class="card__title">${escapeHtml(title)} →</h3><p class="card__body">${escapeHtml(body)}</p></a>`;
+  const nextCard = next && next.slug !== slug
+    ? card(`/notes/${next.slug}`, next.title, at >= 0 && at === notes.length - 1 ? "The newest note, since this was the oldest one." : "The note I wrote before this one.")
+    : "";
+  return `<nav class="where-next" aria-label="Where to next"><hr class="rule" style="margin:3rem 0 1.5rem"><h2 class="section-head"><span>Where to next</span></h2><div class="card-grid">${nextCard}${card("/notes", "All notes", "Every note on the desk, newest first, with a tag filter.")}${card("/about#contact", "Contact", "A question, a correction, or a talk. I read everything.")}</div></nav>`;
+}
+
+// ---- edited date, changelog and the share dialog -------------------------------------------
+// `date` stays the day a note was first published, so the feed order and a reader's memory of when
+// they read it both hold. A note that later changes in substance says so with two more keys:
+//
+//   updated: 2026-11-12
+//   changelog:
+//     - "2026-11-12 | What changed, in a sentence a returning reader can act on."
+//
+// Both are for major changes only: a claim revised, a section added or cut, a number corrected. A
+// typo or a grammar fix gets neither, because a changelog that logs commas stops being read.
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+export function parseChangelog(raw: unknown): { date: string; text: string }[] {
+  if (!Array.isArray(raw)) return [];
+  const out: { date: string; text: string }[] = [];
+  for (const item of raw) {
+    if (typeof item !== "string") continue;
+    const cut = item.indexOf("|");
+    if (cut < 0) continue;
+    const date = item.slice(0, cut).trim();
+    const text = item.slice(cut + 1).trim();
+    if (ISO_DAY.test(date) && text) out.push({ date, text });
+  }
+  return out.toSorted((a, b) => b.date.localeCompare(a.date));
+}
+export function renderNoteEdited(frontmatter: Record<string, unknown>): string {
+  const updated = typeof frontmatter.updated === "string" ? frontmatter.updated.trim() : "";
+  if (!ISO_DAY.test(updated) || updated === frontmatter.date) return "";
+  const link = parseChangelog(frontmatter.changelog).length ? ` <a href="#changelog">What changed</a>` : "";
+  return `<p class="note-edited">Edited <time datetime="${updated}">${updated}</time>.${link}</p>`;
+}
+export function renderNoteChangelog(frontmatter: Record<string, unknown>): string {
+  const entries = parseChangelog(frontmatter.changelog);
+  if (!entries.length) return "";
+  const items = entries.map((e) => `<li><time datetime="${e.date}">${e.date}</time><span>${escapeHtml(e.text)}</span></li>`).join("");
+  return `<section class="note-changelog" id="changelog" aria-labelledby="changelog-head"><h2 class="note-changelog__head" id="changelog-head">Changelog</h2><ul class="note-changelog__list">${items}</ul></section>`;
+}
+/** The Share dialog: the note's address and a copy button, in the same card markup as the clear
+ *  dialog in site.js. Opened by the Share tab, which stays hidden until this script runs, so a
+ *  reader without JavaScript never sees a button that does nothing. */
+function renderShareDialog(title: string, href: string): string {
+  // Held in a <template> and only made a live dialog on click, the way site.js builds its clear
+  // dialog: a .crumb-pop sitting in every note page would be a second match for CRUMB's own card.
+  return `<template data-note-share-template><dialog class="crumb-pop clear-dialog note-share" data-share data-note-share-dialog aria-labelledby="note-share-title">
+  <form method="dialog" class="clear-dialog__form">
+  <div class="crumb-pop__head"><span id="note-share-title" class="crumb-pop__title">Share this note</span>
+  <button class="crumb-pop__x" value="" aria-label="Close">&times;</button></div>
+  <div class="crumb-pop__body"><p class="crumb-pop__say">${escapeHtml(title)}</p>
+  <p class="note-share__link" data-share-text>${escapeHtml(href)}</p></div>
+  <div class="crumb-pop__foot"><button class="btn" type="button" data-share-copy aria-live="polite" autofocus>Copy link</button>
+  <button class="btn" data-variant="soft" value="">Done</button></div></form></dialog></template>
+<script>(function(){var b=document.querySelector('[data-note-share]'),t=document.querySelector('[data-note-share-template]');if(!b||!t||typeof HTMLDialogElement!=='function')return;b.hidden=false;b.addEventListener('click',function(){var d=t.content.firstElementChild.cloneNode(true);document.body.appendChild(d);d.addEventListener('close',function(){d.remove();});window.dispatchEvent(new CustomEvent('note-share:open',{detail:d}));d.showModal();});})();</script>`;
 }
 
 function renderNoteCredits(frontmatter: Record<string, unknown>): string {
