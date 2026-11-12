@@ -328,7 +328,7 @@ body[data-desk-mode="browse"] .walk[data-run-showcase] { display: none; }
 
 /* On a phone Browse is the Desk's navigation: section tiles, an icon over a label three to a row
    with the current section in the accent colour, and recent updates as divided rows. */
-@media (max-width: 768px) {
+@container shell-frame (max-width: 768px) {
   .browse-chips, .browse-title--wide { display: none; }
   .browse-title--phone { display: inline; }
   .browse-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
@@ -468,7 +468,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
   .app-shell.app-window .app-dock { padding-bottom: env(safe-area-inset-bottom, 0px); }
 
   body[data-viewport="mobile"] > .app-shell.app-window { position: relative; }
-  body[data-viewport="mobile"] .app-shell.app-window :is(.app-shell__aside, .app-shell__rail, .app-shell__scrim) {
+  body[data-viewport="mobile"] .app-shell.app-window :is(.app-shell__aside, .app-shell__rail, .app-shell__scrim, .mobile-nav) {
     position: absolute;
   }
 }
@@ -637,7 +637,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
    the rail drawer: its toggle is hidden, the Browse sheet sits above the bar and stays out of sight
    until Menu raises it, and the sheet drops Catalog and Notepad, which are desktop tools. */
 .mobile-nav { display: none; }
-@media (max-width: 768px) {
+@container shell-frame (max-width: 768px) {
   .app-shell.app-window { --mobile-nav-h: calc(3.75rem + env(safe-area-inset-bottom, 0px)); }
   .mobile-nav {
     display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; inset: auto 0 0 0; z-index: 50;
@@ -661,6 +661,5 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   /* with Menu as the way in, the sheet's own tab row would only repeat it: keep the grab handle */
   .app-shell.app-window .assistant__modes { display: none; }
   .app-shell.app-window .assistant__head { min-height: 1.75rem; }
-  .app-shell__main { padding-bottom: var(--mobile-nav-h); }
-  html, .app-shell__main { scroll-padding-bottom: calc(var(--mobile-nav-h) + var(--space-4)); }
+  .app-shell__main { padding-bottom: var(--mobile-nav-h); scroll-padding-bottom: calc(var(--mobile-nav-h) + var(--space-4)); }
 }
