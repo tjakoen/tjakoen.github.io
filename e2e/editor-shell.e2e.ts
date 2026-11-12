@@ -93,24 +93,44 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     await expect(page.locator(".welcome__title")).toBeVisible();
   });
 
-  test("the 'Dark mode defaults to system' checkbox reflects the LIVE scheme (not stale after the ◐ toggle)", async ({ page }) => {
+  test("the 'Dark mode defaults to system' checkbox reflects the LIVE scheme (not stale after the scheme button)", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/");
     const box = page.locator("[data-scheme-auto-checkbox]");
+    const button = page.locator("[data-scheme-cycle]").first();
     const scheme = () => page.evaluate(() => document.documentElement.getAttribute("data-color-scheme"));
-    // fresh visit with no saved pref = "auto" (follow the OS) → the box reads checked
-    await expect(box).toBeChecked();
-    expect(await scheme()).toBeNull();
-    // clicking the ◐ light/dark toggle FORCES an explicit scheme → the box must un-tick (was stale before)
-    await page.locator("[data-toggle-scheme]").first().click();
-    expect(await scheme()).not.toBeNull();
+    // a first visit is pinned to light (scripts/theme-default.js), so the box starts unticked
+    expect(await scheme()).toBe("light");
     await expect(box).not.toBeChecked();
-    // ticking it again returns to following the system (clears the forced scheme)…
+    // the scheme button moves light → dark → match your device; the box follows the live state
+    await button.click();
+    expect(await scheme()).toBe("dark");
+    await expect(box).not.toBeChecked();
+    await button.click();
+    expect(await scheme()).toBeNull();
+    await expect(box).toBeChecked();
+    await expect(button).toHaveText("◐");
+    await button.click();
+    expect(await scheme()).toBe("light");
+    await expect(box).not.toBeChecked();
+    // ticking the box returns to following the system, and un-ticking pins a scheme again
     await box.check();
     expect(await scheme()).toBeNull();
-    // …and un-ticking it directly pins a scheme so the OS stops driving it
     await box.uncheck();
     expect(await scheme()).not.toBeNull();
+  });
+
+  test("a first visit opens in brioche light and keeps a later choice of the default flavor", async ({ page }) => {
+    await page.goto("/");
+    const html = page.locator("html");
+    await expect(html).toHaveAttribute("data-theme", "brioche");
+    await expect(html).toHaveAttribute("data-color-scheme", "light");
+    // picking sourdough (the bare default, which clears GRAIN's key) must survive a reload
+    await page.locator("[data-cycle-theme]").first().click();
+    await expect(page.locator("[data-theme-name]").first()).toHaveText("sourdough");
+    await page.reload();
+    await expect(page.locator("[data-theme-name]").first()).toHaveText("sourdough");
+    await expect(html).not.toHaveAttribute("data-theme", "brioche");
   });
 
   test("the Desk closes from its header and reopens from the editor tabs; the terminal expands from the title bar", async ({ page }) => {
@@ -145,9 +165,9 @@ test.describe("THE EDITOR — one window around the whole site", () => {
 
   test("the theme cycle shows the current flavor name", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("[data-theme-name]").first()).toHaveText("sourdough");
+    await expect(page.locator("[data-theme-name]").first()).toHaveText("brioche");
     await page.locator("[data-cycle-theme]").first().click();
-    await expect(page.locator("[data-theme-name]").first()).toHaveText("baguette");
+    await expect(page.locator("[data-theme-name]").first()).toHaveText("sourdough");
     await page.evaluate(() => localStorage.removeItem("grain-theme"));
   });
 
