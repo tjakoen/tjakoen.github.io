@@ -5,7 +5,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-13
-readingTime: "~7 min"
+readingTime: "~8 min"
 tags: [ai, claude-code, codex, workflow, tokens]
 summary: >
   Plan and orchestrate on Opus, implement with Sonnet subagents, and try low effort before assuming
@@ -124,8 +124,34 @@ setting can carry it, and the expensive one is free for the few calls that need 
 - Measure low against medium on your own work before you decide.
 - Fix a miss with a written rule before you reach for more thinking.
 
-What feels obvious to you after months of doing it is exactly the thing nobody told the person who
-started last week. Write it down.
+## Where this goes next
+
+Here is what I told that junior developer at the end, and what I would tell anyone starting out.
+The model split and the effort setting are the easy part. They save you tokens this week. What
+saves you tokens, time and frustration for the rest of your career is the thing underneath them.
+
+None of what I run today existed on day one. It started as one instruction file with three rules in
+it. Then a rule I kept repeating to the model became a line in that file. A mistake I kept catching
+in review became a check. A check I kept forgetting to run became a hook. Months of small additions
+later, I have a loop that orients every session, holds the work to a standard, and refuses to call
+something done before it is. That is why low effort works for me. I did not get a better model. I
+built a better floor for the model to stand on.
+
+You can build yours the same way, one rule at a time. Start with the word itself: I wrote about what
+a harness is, and why the machinery around the model matters more than the model, in
+[Everybody Wants the Agent. Somebody Has to Build the Floor.](build-the-floor.md) The story of how
+my own loop came together, and why I needed it, is in
+[I Was Shipping Faster Than I Could Understand It](one-loop-every-repo.md). When you are ready to
+set one up, [Set Up the Loop With One Prompt](loop-setup.md) gets you started in an afternoon. And
+once it runs, [The Loop Outlives the Model](one-loop-three-harnesses.md) shows why it keeps paying
+off long after the model you built it for has been replaced.
+
+Every model you use today will be retired. The loop you build around them stays, and it gets better
+every time you teach it something. That is the real skill in working with AI, and you can start on
+it today, with one file and the first rule you are tired of repeating.
+
+What feels obvious to me after months of doing this was news to someone last week. A year from now,
+your loop will be the obvious thing you forget you ever had to learn. Write it down, and pass it on.
 
 ---
 
