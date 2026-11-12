@@ -12,6 +12,10 @@
 // The same first visit queues a short CRUMB walk that points at the light and dark toggle. It
 // runs once, only where that toggle is on screen, never over a tour that is already running, and
 // never under automation, so the end-to-end suite keeps its cold pages.
+//
+// The welcome tour declares no route on purpose. A visitor who arrives on a shared link to a note
+// has to stay on that note after answering, and a tour with a route sends CRUMB to that route
+// before its first card. Every surface the walk points at lives in the shell, so it runs anywhere.
 (() => {
   "use strict";
   var MARK = "site-defaults-applied";
