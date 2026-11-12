@@ -111,8 +111,8 @@ test.describe("Projects presentation in the editor shell", () => {
     const example = page.getByRole("heading", { name: "What that looks like" });
     await expect(example).toBeVisible();
     await expect(page.locator("main")).toContainText("not a copy of a current assignment or a student submission");
-    await expect(page.locator('a[href="/badges"]').filter({ hasText: "Basic Programming in Web Development badge criteria" })).toBeVisible();
-    await expect(page.locator('[aria-label="Illustrative assessment evidence"]')).toContainText("Small screens");
+    await expect(page.locator('a[href="/badges/apsi-2203-midterm"]').filter({ hasText: "Full Stack Web Development badge criteria" })).toBeVisible();
+    await expect(page.locator('[aria-label="Illustrative assessment evidence"]')).toContainText("React client");
 
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(example).toBeVisible();
