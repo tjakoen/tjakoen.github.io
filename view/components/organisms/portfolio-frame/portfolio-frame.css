@@ -656,6 +656,19 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
     bottom: var(--mobile-nav-h); transform: translateY(calc(100% + var(--mobile-nav-h))); }
   /* the rail drawer stops at the bar, so its last dock rows are never under it */
   .app-shell.app-window .app-shell__rail { bottom: var(--mobile-nav-h); height: auto; }
+  /* Menu opens the rail in its narrow form, the same one the collapsed desktop nav uses: each
+     section an icon over a small label, with no brand row or file tree beside it. */
+  .app-shell.app-window .app-shell__rail { width: 4.5rem; }
+  .app-shell.app-window .app-shell__rail :is(.rail-head, .rail-explorer) { display: none; }
+  .app-shell.app-window .app-shell__rail .rail-body { justify-content: flex-start; }
+  .app-shell.app-window .app-dock { border-top: 0; padding-top: var(--space-2); }
+  .app-shell.app-window .app-dock__item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem;
+    height: 3.6rem; padding: 0; }
+  .app-shell.app-window .app-dock__icon { border-right: 0; flex: none; }
+  .app-shell.app-window .app-dock__item .file-tree__close { display: none; }
+  .app-shell.app-window .app-dock__label {
+    flex: none; max-width: 100%; padding-inline: 0; font-size: 0.6rem; letter-spacing: -0.03em; text-align: center; }
   .app-shell.app-window[data-aside-open] .app-shell__aside { transform: none; }
   .app-shell.app-window[data-aside-open] .app-shell__aside:has(.assistant[data-mode="browse"]) {
     height: calc(100dvh - var(--mobile-nav-h) - max(var(--space-3), env(safe-area-inset-top, 0px))); }
