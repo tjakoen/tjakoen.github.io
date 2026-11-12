@@ -1864,8 +1864,8 @@ export function peopleEntries(): Map<string, CreditEntry> {
 export function readingEntries(): Map<string, CreditEntry> {
   const out = new Map<string, CreditEntry>();
   const html = readFileSync(join(PAGES_DIR, "reading.html"), "utf8");
-  const re = /<article class="book-card" id="([a-z0-9-]+)"[^>]*>\s*<p class="book-card__meta">([^<]*)<\/p>\s*<h3 class="book-card__title">([^<]+)<\/h3>/g;
-  for (const m of html.matchAll(re)) out.set(m[1], { id: m[1], label: m[3], detail: m[2] });
+  const re = /<article class="book-card" id="([a-z0-9-]+)"[^>]*>\s*<p class="book-card__meta">([\s\S]*?)<\/p>\s*<h3 class="book-card__title">([^<]+)<\/h3>/g;
+  for (const m of html.matchAll(re)) out.set(m[1], { id: m[1], label: m[3], detail: m[2].replace(/<[^>]+>/g, "") });
   return out;
 }
 
