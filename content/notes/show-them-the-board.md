@@ -342,6 +342,12 @@ Kercwin's checker is the example. I hooked it into my reviewer, so **my reviews 
 deviations from an epic were decided on purpose.** Before that, the reviewer flagged a deliberate
 change the same way it flagged a mistake.
 
+Kyle and Cyrus are the other example, and nobody planned that one either. They built their boards
+together. Kyle picked Obsidian because he did not want his own board tied to Claude and how much of
+his plan it used. That worry is why Cyrus's desk fetches the way it does: a script on his laptop does
+the pulling, so the dashboard runs without spending a single token. One junior's constraint became the
+other junior's design.
+
 > **One person's tool made another person's tool better, and the whole team gets the sharper
 > review.** That is the lesson I would keep from all of this: share what helps you, because it
 > rarely stops at helping only you.
