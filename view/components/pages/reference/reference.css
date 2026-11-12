@@ -10,7 +10,7 @@
 
 [data-screen="reference"] .reference-scroll-hint { display: none; }
 
-@media (max-width: 42rem) {
+@container shell-frame (max-width: 42rem) {
   [data-screen="reference"] .reference-scroll-hint {
     display: block;
     margin: calc(-1 * var(--space-4)) 0 var(--space-3);

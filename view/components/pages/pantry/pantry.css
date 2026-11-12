@@ -18,7 +18,7 @@
   word-break: break-word;
 }
 
-@media (max-width: 38rem) {
+@container shell-frame (max-width: 38rem) {
   [data-screen="pantry"] .pantry-first-run .docs-list__item {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-1);

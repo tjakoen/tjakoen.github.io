@@ -57,9 +57,14 @@
       '<button class="btn" data-variant="soft" value="light" autofocus>Light</button>' +
       '<button class="btn" data-variant="soft" value="dark">Dark</button>' +
       '<button class="btn" value="auto">Match my device</button></div></form>';
+    // Only a real choice goes on to the tour. The close button, Escape and a click on the backdrop
+    // all close with an empty value, which keeps light and skips the walk.
+    dlg.addEventListener("click", function (event) { if (event.target === dlg) dlg.close(""); });
     dlg.addEventListener("close", function () {
-      if (dlg.returnValue) window.grain.theme.setScheme(dlg.returnValue);
+      var choice = dlg.returnValue;
       dlg.remove();
+      if (!choice) return;
+      window.grain.theme.setScheme(choice);
       then();
     });
     document.body.appendChild(dlg);

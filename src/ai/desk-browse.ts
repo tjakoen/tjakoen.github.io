@@ -13,20 +13,57 @@ export function mountDeskBrowse({
   downloadNote: string;
   mobile: MediaQueryList;
 }) {
-  const phone = isMobileDevice();
+  // A phone, a viewport at phone width, or the shell's preview toggle set to mobile all count as
+  // mobile, and the Desk re-renders whenever the last two change.
+  const device = isMobileDevice();
+  const phoneView = () => device || mobile.matches || document.body.dataset.viewport === "mobile";
   let preferred: "browse" | "local" = "local";
   try { if (sessionStorage.getItem(MODE_KEY) === "browse") preferred = "browse"; } catch { /* storage may be blocked */ }
   let failed = false;
-  const allowsModel = () => !phone && canRun && !failed && preferred === "local";
-  const note = document.querySelector<HTMLElement>("[data-desk-download]");
+  const allowsModel = () => !phoneView() && canRun && !failed && preferred === "local";
   const panel = document.querySelector<HTMLElement>("#desk-browse");
+  // Browse lists the same sections as the rail's app dock, copied from it so the two never drift.
+  const tiles = document.querySelector<HTMLElement>("[data-browse-tiles]");
+  if (tiles && !tiles.childElementCount) {
+    for (const item of document.querySelectorAll<HTMLAnchorElement>(".app-dock a.app-dock__item")) {
+      const tile = document.createElement("a");
+      tile.className = "browse-tile";
+      tile.href = item.getAttribute("href") ?? "/";
+      const current = item.getAttribute("aria-current");
+      if (current) tile.setAttribute("aria-current", current);
+      const icon = item.querySelector(".app-dock__icon")?.cloneNode(true);
+      if (icon) tile.append(icon);
+      const label = document.createElement("span");
+      label.textContent = item.querySelector(".app-dock__label")?.textContent?.trim() ?? "";
+      tile.append(label);
+      tiles.append(tile);
+    }
+  }
   const intro = document.querySelector<HTMLElement>("[data-browse-intro]");
   const assistant = document.querySelector<HTMLElement>(".assistant");
   const chatTab = assistant?.querySelector<HTMLButtonElement>('[data-shell-mode="chat"]');
   const browseTab = assistant?.querySelector<HTMLButtonElement>('[data-shell-mode="browse"]');
   const log = assistant?.querySelector<HTMLElement>(".assistant__log");
-  const hasMessages = () => !!log && !!log.querySelector('.chat-message[data-role="you"]');
-  if (log) new MutationObserver(() => { if (note && hasMessages()) note.hidden = true; }).observe(log, { childList: true, subtree: true });
+  // The download cost is said in the chat itself: a second desk bubble under the greeting, shown
+  // only while the conversation has not started, because the first message starts the download.
+  const showModelNotice = (local: boolean) => {
+    if (!log) return;
+    log.querySelectorAll("[data-model-notice]").forEach((notice) => notice.remove());
+    if (!local || log.querySelector('.chat-message[data-role="you"]')) return;
+    const message = document.createElement("div");
+    message.className = "chat-message";
+    message.dataset.role = "ai";
+    message.dataset.modelNotice = "";
+    message.dataset.surface = "desk-model-notice";
+    const who = document.createElement("span");
+    who.className = "chat-message__who";
+    who.textContent = "Desk";
+    const body = document.createElement("span");
+    body.className = "chat-message__body";
+    body.textContent = `I run on your device. ${downloadNote}`;
+    message.append(who, body);
+    log.append(message);
+  };
   const selectDeskPane = () => {
     if (!assistant || !panel) return;
     const browse = !allowsModel();
@@ -39,22 +76,17 @@ export function mountDeskBrowse({
   const entryLabels = [...document.querySelectorAll<HTMLElement>("[data-desk-browse-label]")]
     .map((element) => ({ element, local: element.textContent, browse: element.dataset.deskBrowseLabel }));
   const render = () => {
+    const phone = phoneView();
     const local = allowsModel();
     document.body.dataset.deskMode = local ? "local" : "browse";
     if (chatTab) chatTab.hidden = phone || !canRun || failed;
     if (browseTab) browseTab.hidden = false;
     for (const label of entryLabels) label.element.textContent = local ? label.local : label.browse ?? "";
-    // The download cost sits on the control that triggers it: a tooltip on the Chat tab, and fine
-    // print above the composer until the first message, which is the moment the download starts.
-    if (chatTab) chatTab.title = local ? `Runs on your device. ${downloadNote}` : "";
-    if (note) {
-      note.hidden = !local || hasMessages();
-      note.textContent = `Runs on your device. ${downloadNote}`;
-    }
+    showModelNotice(local);
     if (assistant?.dataset.mode === "chat" || assistant?.dataset.mode === "browse") selectDeskPane();
     if (intro) {
       intro.textContent = phone
-        ? "On mobile, Browse shows recent updates and shortcuts. No AI model is downloaded."
+        ? "Pick a section or open a recent update. No AI model runs on mobile."
         : failed || !canRun
           ? "Local AI is unavailable here. You can still open recent updates and shortcuts."
           : "Open a recent update or jump to a section.";
@@ -68,6 +100,8 @@ export function mountDeskBrowse({
   }
   chatTab?.addEventListener("click", () => choose("local"));
   browseTab?.addEventListener("click", () => choose("browse"));
+  mobile.addEventListener("change", render);
+  new MutationObserver(render).observe(document.body, { attributes: true, attributeFilter: ["data-viewport"] });
   render();
 
   // The shared shell's focus links target the chat composer. In Browse, open the same panel
