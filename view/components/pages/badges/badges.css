@@ -33,10 +33,10 @@
   font: var(--text-xs) var(--font-mono); }
 [data-screen="badges"] .badge-design__sections span { color: var(--color-muted); }
 
-@media (max-width: 56rem) {
+@container shell-frame (max-width: 56rem) {
   [data-screen="badges"] .badge-designs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (max-width: 36rem) {
+@container shell-frame (max-width: 36rem) {
   [data-screen="badges"] .badge-designs { grid-template-columns: minmax(0, 1fr); }
   [data-screen="badges"] .badge-stats { gap: var(--space-4); }
 }

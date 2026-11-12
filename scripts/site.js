@@ -575,14 +575,70 @@
         if (ev.key === "Escape" && shell.hasAttribute("data-aside-open")) closeSheet();
       });
 
+      // ---- the phone's bottom nav: Menu slides the rail in or out, and Browse raises or lowers the
+      // Browse sheet. Each closes the other first, so only one drawer is ever open. Grain's own
+      // Browse tab already opens the sheet in that mode, so Browse presses it rather than repeating it.
+      const mobileNav = document.querySelector(".mobile-nav");
+      if (mobileNav) {
+        for (const link of document.querySelectorAll(".mobile-menu__item")) {
+          const href = link.getAttribute("href");
+          if (href === "/" ? location.pathname === "/" : location.pathname.startsWith(href)) link.setAttribute("aria-current", "page");
+        }
+        const railButton = mobileNav.querySelector("[data-mobile-rail]");
+        const browseButton = mobileNav.querySelector("[data-mobile-browse]");
+        const browseTab = shell.querySelector('[data-shell-mode="browse"]');
+        const sync = () => {
+          railButton?.setAttribute("aria-expanded", String(shell.getAttribute("data-rail-open") === "true"));
+          browseButton?.setAttribute("aria-expanded", String(shell.hasAttribute("data-aside-open")));
+        };
+        railButton?.addEventListener("click", () => {
+          shell.removeAttribute("data-aside-open");
+          if (shell.getAttribute("data-rail-open") === "true") shell.removeAttribute("data-rail-open");
+          else shell.setAttribute("data-rail-open", "true");
+          sync();
+        });
+        browseButton?.addEventListener("click", () => {
+          shell.removeAttribute("data-rail-open");
+          if (shell.hasAttribute("data-aside-open")) shell.removeAttribute("data-aside-open");
+          else browseTab?.click();
+          sync();
+        });
+        new MutationObserver(sync).observe(shell, { attributeFilter: ["data-aside-open", "data-rail-open"] });
+        // Tour closes whichever drawer is open before CRUMB starts, so the first card lights the
+        // page and the bar rather than a drawer. Capture phase runs ahead of CRUMB's own listener.
+        mobileNav.querySelector("[data-crumb-start]")?.addEventListener("click", () => {
+          shell.removeAttribute("data-rail-open");
+          shell.removeAttribute("data-aside-open");
+        }, { capture: true });
+      }
+
       const viewportToggle = shell.querySelector('[data-shell="viewport-toggle"]');
       const viewportLabel = viewportToggle?.querySelector("[data-viewport-name]");
       if (viewportLabel) {
+        // On a tablet the nav is collapsed, so the page gets the width, and it opens again on
+        // desktop, whether the width changed or the preview toggle did. It only follows the width
+        // until the visitor uses the collapse button, which grain remembers under its own key.
+        const collapseOnTablet = () => {
+          let chosen = null;
+          try { chosen = localStorage.getItem("grain.shell.rail-collapsed"); } catch { /* private mode */ }
+          if (chosen !== null) return;
+          const tablet = viewportLabel.textContent === "tablet";
+          if ((shell.getAttribute("data-rail-collapsed") === "true") !== tablet)
+            shell.setAttribute("data-rail-collapsed", tablet ? "true" : "false");
+        };
         const updateViewportLabel = () => {
           const width = document.body.getBoundingClientRect().width;
           viewportLabel.textContent = width <= 768 ? "mobile" : width <= 1100 ? "tablet" : "desktop";
+          collapseOnTablet();
         };
         updateViewportLabel();
+        // remember the preview width for the next page in this tab (restored inline in the frame)
+        new MutationObserver(() => {
+          try {
+            const v = document.body.getAttribute("data-viewport");
+            if (v) sessionStorage.setItem("portfolio:viewport", v); else sessionStorage.removeItem("portfolio:viewport");
+          } catch { /* private mode */ }
+        }).observe(document.body, { attributeFilter: ["data-viewport"] });
         new ResizeObserver(updateViewportLabel).observe(document.body);
         new MutationObserver(updateViewportLabel).observe(document.body, { attributeFilter: ["data-viewport"] });
         viewportToggle.addEventListener("click", () => {

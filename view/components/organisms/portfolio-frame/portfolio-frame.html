@@ -26,6 +26,8 @@
     <button type="button" data-window-refresh title="Refresh"><svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#loop"></use></svg></button>
     <button type="button" data-window-forward title="Forward"><svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#chevron-right"></use></svg></button>
   </span>
+  <!-- the site name, shown only on a phone, where the window bar is the page's only header -->
+  <a class="window-bar__brand" href="/">TJ's Desk</a>
   <!-- CENTER: the search field -->
   <button class="window-bar__search" type="button" data-cmdk-open aria-label="portfolio.tjakoen.com, search the site" title="Search the site (⌘K)">
     <svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#search"></use></svg><span class="window-bar__search-label">portfolio.tjakoen.com</span>
@@ -52,13 +54,25 @@
        (.rail-explorer + .app-dock, in .rail-body) starts on its own line below it. -->
   <div class="rail-head"><b-icon sym="/assets/sprite.svg#spark"></b-icon><span>TJ's Desk</span></div>
   <div class="rail-body">
+    <!-- Shown only in the phone's Menu drawer. Browse already lists the sections, so Menu leads with
+         the pages a visitor most often wants by name; the file tree below it reaches the rest. -->
+    <nav class="mobile-menu" aria-label="Key pages">
+      <a class="mobile-menu__item" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></svg><span>Home</span></a>
+      <a class="mobile-menu__item" href="/resume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><circle cx="12" cy="11" r="2"/><path d="M9 17c.6-1.6 1.7-2.5 3-2.5s2.4.9 3 2.5"/></svg><span>Résumé</span></a>
+      <a class="mobile-menu__item" href="/mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="m4 7 8 6 8-6"/></svg><span>Contact</span></a>
+      <a class="mobile-menu__item" href="/about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.6 3.8-5.5 7-5.5s6 1.9 7 5.5"/></svg><span>About</span></a>
+      <a class="mobile-menu__item" href="/bread"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 10a6 4 0 0 1 12 0v9H6z"/><path d="M10 13v3M14 13v3"/></svg><span>BREAD</span></a>
+      <a class="mobile-menu__item" href="/teaching"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 9l9-4 9 4-9 4z"/><path d="M7 11v4.5c1.4 1.3 3 2 5 2s3.6-.7 5-2V11"/></svg><span>Teaching</span></a>
+      <a class="mobile-menu__item" href="/leading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span>Leading</span></a>
+      <a class="mobile-menu__item" href="/talks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg><span>Talks</span></a>
+    </nav>
     <div class="rail-explorer">
       <nav class="activity-bar" aria-label="Activity">
         <!-- the explorer toggle reuses the existing rail-toggle binding (collapses/reveals the
              tree). No aria-current here — the ACTIVE signal now belongs to the app dock below
              (site.js marks the matching .app-dock__item), not this icon-only toggle. -->
         <button class="activity-bar__item" type="button" data-shell="rail-toggle"
-                title="Explorer" aria-label="Explorer"><b-icon sym="/assets/sprite.svg#files"></b-icon></button>
+                title="Explorer" aria-label="Explorer"><b-icon sym="/assets/sprite.svg#files"></b-icon><span class="activity-bar__label" aria-hidden="true">Menu</span></button>
       </nav>
       <div class="side-rail" data-variant="explorer">
         <!-- the tree mirrors the real repo shape: portfolio/ (this site itself) at the top, the
@@ -320,7 +334,6 @@
           <button type="button" class="suggest-chip" data-suggest-ask>Summarize this page</button>
         </div>
       </div>
-      <p class="assistant__model-note" data-desk-download data-surface="desk-choice" hidden></p>
       <div class="assistant__composer">
         <!-- New chat: clears the persisted conversation + the desk's memory and re-greets (site.js). -->
         <button type="button" class="icon-btn assistant__newchat" data-size="sm" data-variant="ghost" data-desk-newchat title="New chat" aria-label="New chat">
@@ -336,14 +349,21 @@
       <p class="assistant__offline">The desk did not load. You can still open <a href="/notes">Notes</a> or <a href="/projects">Projects</a>.</p>
     </div>
     <section class="assistant__pane assistant__browse" data-pane="browse" id="desk-browse" data-surface="desk-browse" aria-label="Browse the portfolio" hidden>
-      <h2>Explore the portfolio</h2>
+      <h2 class="browse-heading">Explore the portfolio</h2>
       <p data-browse-intro>Open a recent update or jump to a section.</p>
+      <!-- Desktop shows the chips. On a phone desk-browse.ts's tile grid, filled from the rail's app
+           dock, replaces them with the dock's sections and icons, and the line after it keeps the
+           two pages the dock does not carry. -->
       <nav class="assistant__shortcuts" aria-label="Portfolio shortcuts">
-        <a class="suggest-chip" href="/projects">Projects</a>
-        <a class="suggest-chip" href="/resume">Résumé</a>
-        <a class="suggest-chip" href="/notes">Notes</a>
-        <a class="suggest-chip" href="/bread">BREAD stack</a>
-        <a class="suggest-chip" href="/about">About TJ</a>
+        <div class="browse-chips">
+          <a class="suggest-chip" href="/projects">Projects</a>
+          <a class="suggest-chip" href="/resume">Résumé</a>
+          <a class="suggest-chip" href="/notes">Notes</a>
+          <a class="suggest-chip" href="/bread">BREAD stack</a>
+          <a class="suggest-chip" href="/about">About TJ</a>
+        </div>
+        <div class="browse-tiles" data-browse-tiles></div>
+        <p class="browse-more"><a href="/resume">Résumé</a> · <a href="/bread">BREAD stack</a></p>
       </nav>
       <section class="assistant__recent" aria-labelledby="desk-recent-title">
         <div class="assistant__recent-head">
@@ -392,6 +412,10 @@
      page as it first paints, so a mode restored later (DOMContentLoaded) showed Chat for a frame and
      then flipped. site.js saves the mode on each tab click; shell.js still owns the switch itself. -->
 <script>(function(){try{var m=localStorage.getItem("portfolio:aside-mode");var a=document.querySelector(".app-shell__aside .assistant");if(!m||m==="chat"||!a||!a.querySelector('.assistant__pane[data-pane="'+m+'"]'))return;a.setAttribute("data-mode",m);a.querySelectorAll(".assistant__pane").forEach(function(p){p.hidden=p.getAttribute("data-pane")!==m});a.querySelectorAll("[data-shell-mode]").forEach(function(b){b.setAttribute("aria-selected",b.getAttribute("data-shell-mode")===m?"true":"false")})}catch(e){}})();</script>
+
+<!-- Keeps the preview width the view toggle chose (tablet or mobile) across page loads in this tab,
+     applied before first paint so the next page opens at that width. site.js saves it on change. -->
+<script>(function(){try{var v=sessionStorage.getItem("portfolio:viewport");if(v==="tablet"||v==="mobile")document.body.setAttribute("data-viewport",v)}catch(e){}})();</script>
 
 <section class="app-shell__console">
   <!-- data-terminal="interactive": grain/scripts/terminal.js injects a command line here and the
@@ -451,3 +475,11 @@
 </footer>
 
 <div class="app-shell__scrim"></div>
+<!-- On a phone this bar is the way around the site, with three buttons: Menu slides in the rail with
+     the usual sections, Browse raises the Browse sheet, and Tour starts the phone's own tour
+     (content/tours/mobile.md). site.js wires Menu and Browse; CRUMB handles Tour's data-crumb-start. -->
+<nav class="mobile-nav" aria-label="Main">
+  <button class="mobile-nav__item" type="button" data-mobile-rail aria-expanded="false" data-surface="mobile-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menu</span></button>
+  <button class="mobile-nav__item" type="button" data-mobile-browse aria-expanded="false" aria-controls="desk-browse" data-surface="mobile-browse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="4" width="7" height="7" rx="1"/><rect x="13.5" y="4" width="7" height="7" rx="1"/><rect x="3.5" y="13" width="7" height="7" rx="1"/><rect x="13.5" y="13" width="7" height="7" rx="1"/></svg><span>Browse</span></button>
+  <button class="mobile-nav__item" type="button" data-crumb-start="mobile" data-crumb-mode="demo" data-surface="mobile-tour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span>Tour</span></button>
+</nav>

@@ -1,81 +1,69 @@
-// tjakoen.github.io/e2e/mobile.e2e.ts — the mobile (<768px) assistant. On a phone the assistant column
-// is dropped; it re-appears as a bottom SHEET, collapsed to its header as a grab bar. Tapping
-// the header raises the full chat (composer reachable). Covers what only a browser shows.
+// tjakoen.github.io/e2e/mobile.e2e.ts — the phone layout (<768px). On a phone the bottom bar holds
+// Menu, Browse and Tour: Menu raises a drawer of key pages and the file tree, Browse raises the Browse
+// sheet, and Tour starts the phone's own tour. Covers what only a browser shows.
 import { test, expect } from "@playwright/test";
 
-test.describe("mobile — the assistant bottom sheet", () => {
+test.describe("mobile — the bottom bar", () => {
   test.use({ viewport: { width: 375, height: 720 } });
 
-  test("collapsed to a grab bar; tapping the header raises the chat", async ({ page }) => {
+  test("Menu raises a drawer of key pages above the bar, and its links navigate", async ({ page }) => {
+    await page.goto("/");
+    const shell = page.locator(".app-shell");
+    const bar = page.getByRole("navigation", { name: "Main" });
+    await expect(bar).toBeInViewport();
+    await expect(page.locator('.app-shell__topbar [data-shell="rail-toggle"]')).toBeHidden();
+
+    const menu = bar.getByRole("button", { name: "Menu" });
+    await menu.click();
+    await expect(shell).toHaveAttribute("data-rail-open", "true");
+    await expect(menu).toHaveAttribute("aria-expanded", "true");
+    const keyPages = page.getByRole("navigation", { name: "Key pages" });
+    await expect(keyPages).toBeInViewport();
+    // the drawer ends where the bar starts, so no page link sits under it
+    const barTop = Math.round((await bar.boundingBox())?.y ?? 0);
+    await expect.poll(async () => {
+      const drawer = await page.locator(".app-shell__rail").boundingBox();
+      return Math.round((drawer?.y ?? 0) + (drawer?.height ?? 0));
+    }).toBeLessThanOrEqual(barTop + 1);
+
+    await keyPages.getByRole("link", { name: "Résumé" }).click();
+    await expect(page).toHaveURL(/\/resume\/?$/);
+  });
+
+  test("Browse raises the Browse sheet above the bar and lowers it again", async ({ page }) => {
     await page.goto("/");
     const shell = page.locator(".app-shell");
     const aside = page.locator(".app-shell__aside");
+    const browse = page.getByRole("navigation", { name: "Main" }).getByRole("button", { name: "Browse" });
 
-    // collapsed: the sheet is translated down (only its header peeks), so its top sits low
     await expect(shell).not.toHaveAttribute("data-aside-open", "");
-    const closed = await aside.boundingBox();
-    expect(closed && closed.y).toBeGreaterThan(400);           // near the bottom of a 720-tall viewport
+    await expect(aside).not.toBeInViewport();
 
-    // tap the header (the grab bar) to raise the full sheet. Click the bar itself (its left grab
-    // area over the title), NOT its centre — the head also hosts the Chat/Catalog mode buttons, and
-    // a dead-centre click lands on "Catalog", which flips the panel to catalog mode (its own handler
-    // stops propagation so the sheet toggle never fires) and hides the composer.
-    await page.locator(".assistant__head").click({ position: { x: 12, y: 20 } });
+    await browse.click();
     await expect(shell).toHaveAttribute("data-aside-open", "");
-    await expect.poll(async () => (await aside.boundingBox())?.y ?? 9999).toBeLessThan(closed?.y ?? 0);  // slid up
-    await expect(page.locator('[data-surface="chat-input"]')).toBeInViewport();   // the composer is reachable
+    await expect(browse).toHaveAttribute("aria-expanded", "true");
+    await expect(page.locator(".assistant")).toHaveAttribute("data-mode", "browse");
+    await expect(page.locator("#desk-browse")).toBeInViewport();
+    const barTop = Math.round((await page.getByRole("navigation", { name: "Main" }).boundingBox())?.y ?? 0);
+    await expect.poll(async () => {
+      const sheet = await aside.boundingBox();
+      return Math.round((sheet?.y ?? 0) + (sheet?.height ?? 0));
+    }).toBeLessThanOrEqual(barTop + 1);
 
-    const close = aside.getByRole("button", { name: "Close the assistant panel" });
-    const toggle = page.locator(".app-shell__topbar").getByRole("button", { name: "Toggle the assistant panel" });
-    await expect(close).toBeHidden();
-    await expect(toggle).toBeHidden();
-    await page.keyboard.press("Escape");
-    await expect(shell).not.toHaveAttribute("data-aside-open");
-    await expect(shell).not.toHaveAttribute("data-aside-hidden");
+    await browse.click();
+    await expect(shell).not.toHaveAttribute("data-aside-open", "");
+    await expect(browse).toHaveAttribute("aria-expanded", "false");
   });
 
-  test("the rail rides the off-canvas drawer; its app links (in the app dock) are reachable", async ({ page }) => {
+  test("the sheet carries no Catalog or Notepad, and Tour starts the phone tour", async ({ page }) => {
     await page.goto("/");
-    const shell = page.locator(".app-shell");
-    const activity = page.locator(".activity-bar");
-    const dock = page.locator(".app-dock");
-    // closed drawer: the rail (with the activity bar + side-rail + app dock) is translated off-canvas
-    await expect(shell).not.toHaveAttribute("data-rail-open", "");
-    // open the drawer via the topbar menu button (the activity-bar's own toggle is off-canvas)
-    await page.locator('.app-shell__topbar [data-shell="rail-toggle"]').click();
-    await expect(shell).toHaveAttribute("data-rail-open", "true");
-    await expect(activity).toBeInViewport();                                   // the strip is part of the drawer
-    await expect(dock).toBeInViewport();                                       // the app dock rides along too
-    // a Calendar row (the app dock, pinned to the rail's bottom) is present + clickable (also dismisses the drawer)
-    await page.locator('.app-dock a[href="/calendar"]').click();
-    await expect(page).toHaveURL(/\/calendar$/);
-  });
-
-  test("with the drawer open, NO dock row is covered by the assistant sheet's peeking grab bar", async ({ page }) => {
-    // the assistant bottom-sheet sits at a higher z-index than grain's off-canvas rail, so before the
-    // modal-layering fix its peeking grab bar poked up through the open drawer and hid the dock's
-    // lowest rows (About, half of Mail). Open the drawer; every dock row must be the topmost element
-    // at its own centre (nothing painted over it).
-    await page.goto("/");
-    await page.locator('.app-shell__topbar [data-shell="rail-toggle"]').click();
-    await expect(page.locator(".app-shell")).toHaveAttribute("data-rail-open", "true");
-    await page.waitForTimeout(400);   // let the 0.3s slide-in settle before hit-testing positions
-    const items = page.locator(".app-dock__item");
-    const n = await items.count();
-    expect(n).toBeGreaterThanOrEqual(4);   // Notes / Calendar / Mail / About — the last is the one that hid
-    for (let i = 0; i < n; i++) {
-      const covered = await items.nth(i).evaluate((el) => {
-        const r = el.getBoundingClientRect();
-        const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-        return !el.contains(hit);   // true = something else is painted over this row's centre
-      });
-      const label = (await items.nth(i).locator(".app-dock__label").textContent())?.trim();
-      expect(covered, `dock row "${label}" is covered by an overlay`).toBe(false);
-    }
-    // the open drawer is the topmost layer: its scrim sits above the assistant sheet, the rail above the scrim.
-    const z = async (sel: string) => Number(await page.locator(sel).evaluate((el) => getComputedStyle(el).zIndex));
-    expect(await z(".app-shell__rail")).toBeGreaterThan(await z(".app-shell__scrim"));
-    expect(await z(".app-shell__scrim")).toBeGreaterThan(await z(".app-shell__aside"));
+    const bar = page.getByRole("navigation", { name: "Main" });
+    await bar.getByRole("button", { name: "Browse" }).click();
+    await expect(page.locator('.assistant__modes [data-shell-mode="catalog"]')).toBeHidden();
+    await expect(page.locator('.assistant__modes [data-shell-mode="notepad"]')).toBeHidden();
+    await expect(bar.getByRole("button", { name: "Tour" })).toHaveAttribute("data-crumb-start", "mobile");
+    const tour = await page.request.get("/crumb/tours/mobile.json");
+    expect(tour.ok()).toBe(true);
   });
 });
 

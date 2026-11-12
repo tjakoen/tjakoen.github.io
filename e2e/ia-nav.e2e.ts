@@ -45,7 +45,7 @@ test.describe("Phase 4 — IA/navigation correctness", () => {
         "/docs", "/reference", "/notes", "/resume", "/about",
       ]));
     });
-    await page.setViewportSize({ width: 390, height: 800 });   // narrow enough that the strip overflows
+    await page.setViewportSize({ width: 800, height: 800 });   // a tablet: the tab strip shows and overflows
     await page.goto("/mill");   // site.js scrollIntoView("nearest")s this tab into view on load
     const pinned = page.locator('[data-open-tabs] a[data-pinned]');
     await expect(pinned).toContainText("Welcome");

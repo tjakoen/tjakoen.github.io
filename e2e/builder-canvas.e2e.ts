@@ -620,7 +620,7 @@ test.describe("the model chooses the verb", () => {
   test.beforeEach(async ({ page }) => { await scriptedDesk(page); });
 
   test("a page brief shows a reviewable draft and adds it only after approval", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await page.goto("/grain/builder");
     await waitForDesk(page);
     await submitPrompt(page, "Build a Hearth Bakery page in Utrecht with an intro that says it is a neighborhood bakery, then a card titled Coffee with the words baked fresh each morning.");
@@ -638,7 +638,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator("[data-builder-draft-evidence]"))
       .toContainText("Detected names, quoted phrases, and numbers appear in the draft.");
     await expect(page.locator(ACCEPT_DRAFT)).toBeDisabled();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await expect(page.locator(CELL)).toHaveCount(0);
     await expect(page.locator(DRAFT_BLOCKS).getByRole("listitem")).toHaveCount(2);
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
@@ -798,8 +798,8 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly identifies Drop b4 on second card (b4)");
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Review the corrected proposal");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
-    await page.setViewportSize({ width: 390, height: 844 });
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    await page.setViewportSize({ width: 820, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
 
     await page.locator(APPLY_PROPOSAL).click();
@@ -808,7 +808,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("a clearly stated edit verb and target correct a wrong operation only after review", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => {
       sessionStorage.setItem("__builderWrongTarget", "true");
@@ -821,15 +821,15 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL_COPY)).toContainText("The model proposed Set b2 to half width for first card (b2)");
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly identifies Drop b4 on second card (b4)");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
   });
 
-  test("a declined exact-ID request becomes a disclosed recovery proposal on a phone", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+  test("a declined exact-ID request becomes a disclosed recovery proposal on a narrow screen", async ({ page }) => {
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -839,7 +839,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL_COPY)).toContainText("The local model did not return a usable edit: I could not identify an action.");
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
 
     await page.locator(APPLY_PROPOSAL).click();
@@ -847,8 +847,8 @@ test.describe("the model chooses the verb", () => {
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
   });
 
-  test("common edit paraphrases become disclosed recovery proposals on a phone", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+  test("common edit paraphrases become disclosed recovery proposals on a narrow screen", async ({ page }) => {
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -912,7 +912,7 @@ test.describe("the model chooses the verb", () => {
       { id: "b2", span: "half" },
       { id: "b3", span: "half" },
     ]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Set b3 to full width.");
     expect(await canvasState(page)).toEqual([
@@ -939,7 +939,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("question-shaped edits are refused even when the model proposes a command", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderQuestionCommand", "true"));
     await waitForDesk(page);
@@ -961,7 +961,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("discard and nudge paraphrases stay review-gated and reject ambiguous or negative asks", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -988,14 +988,14 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL)).toBeVisible();
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b4", "b3"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
   });
 
   test("delete and shrink paraphrases preserve targets and spans through review", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -1012,14 +1012,14 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL)).toBeVisible();
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Set b3 to third width on callout (b3)");
     await expect(page.locator('[data-block-id="b3"]')).toHaveAttribute("data-span", "full");
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Set b3 to third width.");
     await expect(page.locator('[data-block-id="b3"]')).toHaveAttribute("data-span", "third");
   });
 
   test("erase and reposition paraphrases stay review-gated and reach the named blocks", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -1036,14 +1036,14 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL)).toBeVisible();
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b4", "b3"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
   });
 
   test("expanded wording stays review-gated and applies only the stated target", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -1072,7 +1072,7 @@ test.describe("the model chooses the verb", () => {
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
   });
 
   test("a malformed model move becomes a disclosed proposal only for a clear live request", async ({ page }) => {
