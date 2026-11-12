@@ -65,12 +65,37 @@
       }
     } catch { /* no IndexedDB.databases (Safari < 14) — the Cache API clear already freed the model */ }
   }
-  // are-you-sure → wipe → reload. `window.confirm` is the platform's own confirm primitive
-  // (native-first: no library, no bespoke modal). Exposed on window so desk-commands.js's `clearcache`
-  // runs the exact same flow. Returns false on cancel (nothing touched).
-  const CLEAR_MSG = "Clear everything saved on this device — chat history, notes, open tabs, your welcome setting, and the downloaded AI model? You'll start clean.";
+  // are-you-sure → wipe → reload. The question is asked in a native <dialog>, not window.confirm:
+  // embedded browsers (an app's preview pane, some in-app webviews) suppress window.confirm, so it
+  // returns false on its own and the button looks dead. Exposed on window so desk-commands.js's
+  // `clearcache` runs the exact same flow. Resolves false on cancel (nothing touched).
+  const CLEAR_TITLE = "Start this site fresh?";
+  const CLEAR_MSG = "This clears everything the site saved on this device: your chat history, notes, open tabs, theme and welcome setting, and the downloaded AI model. The page then reloads as if it were your first visit, welcome tour included.";
+  function askClear() {
+    if (typeof HTMLDialogElement !== "function") return Promise.resolve(window.confirm(CLEAR_TITLE + " " + CLEAR_MSG));
+    return new Promise((resolve) => {
+      // Built from the CRUMB card's own markup and GRAIN's buttons, so the question reads as the
+      // same family as the tour cards rather than a one-off box.
+      const dlg = document.createElement("dialog");
+      dlg.className = "crumb-pop clear-dialog";
+      dlg.setAttribute("aria-labelledby", "clear-dialog-title");
+      dlg.innerHTML =
+        '<form method="dialog" class="clear-dialog__form">' +
+        '<div class="crumb-pop__head"><span id="clear-dialog-title" class="crumb-pop__title"></span>' +
+        '<button class="crumb-pop__x" value="cancel" aria-label="Cancel">&times;</button></div>' +
+        '<div class="crumb-pop__body"><p class="crumb-pop__say"></p></div>' +
+        '<div class="crumb-pop__foot"><button class="btn" data-variant="soft" value="cancel" autofocus>Cancel</button>' +
+        '<button class="btn" value="clear">Clear and reload</button></div></form>';
+      dlg.querySelector(".crumb-pop__title").textContent = CLEAR_TITLE;
+      dlg.querySelector(".crumb-pop__say").textContent = CLEAR_MSG;
+      dlg.addEventListener("close", () => { resolve(dlg.returnValue === "clear"); dlg.remove(); });
+      dlg.addEventListener("click", (ev) => { if (ev.target === dlg) dlg.close("cancel"); });   // backdrop click
+      document.body.appendChild(dlg);
+      dlg.showModal();
+    });
+  }
   async function clearEverything() {
-    if (!window.confirm(CLEAR_MSG)) return false;
+    if (!(await askClear())) return false;
     await wipeAll();
     location.reload();
     return true;
@@ -266,6 +291,38 @@
         }
       });
     }
+
+    // ---- the ◐ button cycles three states: light, dark, then match the device. GRAIN's own
+    // [data-toggle-scheme] only flips light and dark, which left following the device reachable
+    // only from a checkbox at the foot of the welcome page. A person's click is caught here in the
+    // capture phase, before theme.js's delegated listener sees it. A scripted .click() (the desk
+    // driving the same button) is not trusted input and falls through to GRAIN's plain toggle, so
+    // "switch to dark" from the assistant keeps meaning exactly that.
+    const SCHEME_ORDER = ["light", "dark", "auto"];
+    const SCHEME_FACE = {
+      light: { icon: "☀", name: "Light" },
+      dark: { icon: "☾", name: "Dark" },
+      auto: { icon: "◐", name: "Match your device" },
+    };
+    const schemeNow = () => (window.grain && window.grain.theme ? window.grain.theme.scheme() : get("grain-color-scheme") || "auto");
+    const paintSchemeButtons = () => {
+      const cur = schemeNow();
+      const next = SCHEME_ORDER[(SCHEME_ORDER.indexOf(cur) + 1) % SCHEME_ORDER.length];
+      for (const btn of document.querySelectorAll("[data-scheme-cycle]")) {
+        btn.textContent = SCHEME_FACE[cur].icon;
+        btn.title = `Color scheme: ${SCHEME_FACE[cur].name}. Click for ${SCHEME_FACE[next].name.toLowerCase()}.`;
+        btn.setAttribute("aria-label", btn.title);
+      }
+    };
+    document.addEventListener("click", (ev) => {
+      const btn = ev.target.closest && ev.target.closest("[data-scheme-cycle]");
+      if (!btn || !ev.isTrusted || !(window.grain && window.grain.theme)) return;
+      ev.stopPropagation();
+      const cur = schemeNow();
+      window.grain.theme.setScheme(SCHEME_ORDER[(SCHEME_ORDER.indexOf(cur) + 1) % SCHEME_ORDER.length]);
+    }, { capture: true });
+    paintSchemeButtons();
+    new MutationObserver(paintSchemeButtons).observe(document.documentElement, { attributes: true, attributeFilter: ["data-color-scheme"] });
 
     // ---- offline degradation: if the door never came up (body[data-ai-online="false"], set
     // by ai-dispatch by OUTCOME), the chat composer disables honestly instead of pretending.
@@ -544,6 +601,40 @@
           closeSheet();
         });
       }
+
+      // ---- a lit surface inside a closed drawer opens that drawer. On a narrow layout the dock
+      // lives in the rail and the chat input in the aside sheet, both closed, so a tour step or the
+      // desk lighting either one would put the lamp on something off screen. The spotlight marks
+      // whatever it lights with .ai-spotlit, so watching for that class covers CRUMB and the desk
+      // alike without either one knowing about drawers. A drawer opened this way closes again when
+      // the lamp moves outside it or goes out, so the page is left the way the visitor had it.
+      const narrow = () => matchMedia("(max-width: 768px)").matches || document.body.getBoundingClientRect().width <= 768;
+      let autoOpened = null;   // "rail" | "aside" | null
+      const closeAuto = () => {
+        if (autoOpened === "rail") shell.removeAttribute("data-rail-open");
+        if (autoOpened === "aside") closeSheet();
+        autoOpened = null;
+      };
+      const reveal = (el) => {
+        const drawer = el.closest(".app-shell__rail") ? "rail" : el.closest(".app-shell__aside") ? "aside" : null;
+        if (autoOpened && autoOpened !== drawer) closeAuto();
+        if (!drawer || !narrow()) return;
+        const open = drawer === "rail" ? shell.getAttribute("data-rail-open") === "true" : shell.hasAttribute("data-aside-open");
+        if (open) return;
+        if (drawer === "rail") shell.setAttribute("data-rail-open", "true");
+        else shell.setAttribute("data-aside-open", "");
+        autoOpened = drawer;
+        // the drawer slides in; once it lands, bring the surface into view and let the lamp follow
+        setTimeout(() => { el.scrollIntoView({ block: "center" }); window.dispatchEvent(new Event("resize")); }, 320);
+      };
+      new MutationObserver((records) => {
+        for (const r of records) {
+          const was = (r.oldValue || "").includes("ai-spotlit");
+          const is = r.target.classList.contains("ai-spotlit");
+          if (is && !was) return reveal(r.target);
+        }
+        if (autoOpened && !document.querySelector(".ai-spotlit")) closeAuto();
+      }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ["class"], attributeOldValue: true });
     }
 
     // ---- the toast favicon follows the theme. A browser renders a favicon in isolation, so it

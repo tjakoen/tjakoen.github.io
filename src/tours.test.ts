@@ -11,9 +11,9 @@ test("visitor demos stay distinct from direct-link implementation reviews", asyn
   }));
 
   const demos = tours.filter((tour) => tour.mode === "demo").map((tour) => tour.id).sort();
-  expect(demos).toEqual(["portfolio", "say-hello"]);
+  expect(demos).toEqual(["portfolio", "say-hello", "welcome"]);
 
-  for (const tour of tours.filter((entry) => entry.id !== "portfolio" && entry.id !== "say-hello")) {
+  for (const tour of tours.filter((entry) => entry.id !== "portfolio" && entry.id !== "say-hello" && entry.id !== "welcome")) {
     expect(tour.file).toMatch(/^review-[a-z0-9-]+\.md$/);
     expect(tour.mode).toBe("dev");
     expect(tour.title).toMatch(/^Review:/);

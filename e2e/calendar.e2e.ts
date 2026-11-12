@@ -332,7 +332,7 @@ test.describe("the /calendar event page (JS on)", () => {
     await expect(page.locator(".feed-photos")).not.toContainText("repository.jpg");
     await expect(page.locator(".feed-photos img")).toHaveAttribute("alt", /workshop/);
     // and the MILL-rendered body is below it
-    await expect(page.locator("h2").first()).toBeVisible();
+    await expect(page.locator("main h2").first()).toBeVisible();   // main: the desk's hidden Browse pane carries an h2 of its own
     // it is a real MILL entry (carries the Rendered/Source toggle)
     await expect(page.locator(".content-source")).toBeVisible();
     await page.setViewportSize({ width: 390, height: 844 });

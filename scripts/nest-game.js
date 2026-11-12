@@ -537,7 +537,7 @@ import {
       <div class="nest-meter"><span class="lbl muted">meals to egg</span><span class="lbl" data-k="bar-val">0/3</span>
         <div class="nest-meter__bar" data-k="bar-bar" role="progressbar" aria-label="Meals to the next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="bar"></span><span class="rest" data-k="bar-rest"></span></div>
         <i class="hint">three meals lay an egg</i></div>
-      <div class="nest-meter"><span class="lbl muted">next worship</span><span class="lbl" data-k="worship-val">0/20</span>
+      <div class="nest-meter"><span class="lbl muted">next worship</span><span class="lbl" data-k="worship-val">0/${getWorshipTarget(TUNING.party[0])}</span>
         <div class="nest-meter__bar" data-k="worship-bar" role="progressbar" aria-label="Next worship" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="worship"></span><span class="rest" data-k="worship-rest"></span></div>
         <i class="hint">the queen dances</i></div>
     </div>
