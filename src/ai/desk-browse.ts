@@ -13,11 +13,14 @@ export function mountDeskBrowse({
   downloadNote: string;
   mobile: MediaQueryList;
 }) {
-  const phone = isMobileDevice();
+  // A phone, a viewport at phone width, or the shell's preview toggle set to mobile all count as
+  // mobile, and the Desk re-renders whenever the last two change.
+  const device = isMobileDevice();
+  const phoneView = () => device || mobile.matches || document.body.dataset.viewport === "mobile";
   let preferred: "browse" | "local" = "local";
   try { if (sessionStorage.getItem(MODE_KEY) === "browse") preferred = "browse"; } catch { /* storage may be blocked */ }
   let failed = false;
-  const allowsModel = () => !phone && canRun && !failed && preferred === "local";
+  const allowsModel = () => !phoneView() && canRun && !failed && preferred === "local";
   const panel = document.querySelector<HTMLElement>("#desk-browse");
   const intro = document.querySelector<HTMLElement>("[data-browse-intro]");
   const assistant = document.querySelector<HTMLElement>(".assistant");
@@ -56,6 +59,7 @@ export function mountDeskBrowse({
   const entryLabels = [...document.querySelectorAll<HTMLElement>("[data-desk-browse-label]")]
     .map((element) => ({ element, local: element.textContent, browse: element.dataset.deskBrowseLabel }));
   const render = () => {
+    const phone = phoneView();
     const local = allowsModel();
     document.body.dataset.deskMode = local ? "local" : "browse";
     if (chatTab) chatTab.hidden = phone || !canRun || failed;
@@ -79,6 +83,8 @@ export function mountDeskBrowse({
   }
   chatTab?.addEventListener("click", () => choose("local"));
   browseTab?.addEventListener("click", () => choose("browse"));
+  mobile.addEventListener("change", render);
+  new MutationObserver(render).observe(document.body, { attributes: true, attributeFilter: ["data-viewport"] });
   render();
 
   // The shared shell's focus links target the chat composer. In Browse, open the same panel
