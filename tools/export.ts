@@ -22,7 +22,7 @@ import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
 import { rewriteOrigin } from "@tjakoen/batch/export/rewrite.ts";
 import {
   listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes,
-  listPortfolioDraftRoutes, listPortfolioDraftRawRoutes, FOLDED_NOTES, COLLECTION_DIRS,
+  listPortfolioDraftRoutes, listPortfolioDraftRawRoutes, listPublishedDraftRedirectRoutes, FOLDED_NOTES, COLLECTION_DIRS,
 } from "../src/content.ts";
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 
@@ -152,7 +152,10 @@ async function pageRoutes(): Promise<string[]> {
   // The unlisted drafts travel the same way and for the same reason: frozen so they can be read on
   // the deployed site, noindex on the page, and absent from the sitemap because they never enter it.
   const drafts = await listPortfolioDraftRoutes();
-  const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, ...drafts, ...badgeShortlinkRoutes(), "/catalog", "/reference", "/cv", "/kickstart"]);
+  // A published note's old draft address stays alive as a stub with the note's own card, so a draft
+  // link shared before publishing unfurls as the published note and lands on it (server.ts).
+  const publishedDrafts = await listPublishedDraftRedirectRoutes();
+  const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, ...drafts, ...publishedDrafts, ...badgeShortlinkRoutes(), "/catalog", "/reference", "/cv", "/kickstart"]);
   return [...all].filter((r) => !OPERABLE.has(r) && !REVIEW_ONLY.has(r)).toSorted();
 }
 
