@@ -1,6 +1,7 @@
 ---
 title: "The Check Ran Once in 165 Sessions, and I Got the Reason Wrong"
 audience: build
+level: deep
 subtitle: "Three weeks after I published a note saying every one of my repos runs the same workflow, I finally measured it. It was living in one. I spent most of a day building a thoughtful theory about why, and the real answer was a relative file path."
 author: "Tjakoen Stolk"
 status: PUBLISHED

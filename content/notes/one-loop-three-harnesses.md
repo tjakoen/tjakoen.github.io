@@ -1,6 +1,7 @@
 ---
 title: "The Loop Outlives the Model."
 audience: build
+level: deep
 subtitle: "Three models, one loop: how I use Claude, Codex and DeepSeek at the same time with almost no friction."
 author: "Tjakoen Stolk"
 status: PUBLISHED

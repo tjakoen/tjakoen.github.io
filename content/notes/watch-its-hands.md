@@ -1,6 +1,7 @@
 ---
 title: "Watch Its Hands"
 audience: build
+level: deep
 subtitle: "I wrote a research paper about letting an AI press the same buttons I press. This is the version I would say out loud, to someone who has no intention of reading a research paper."
 author: "Tjakoen Stolk"
 status: PUBLISHED
