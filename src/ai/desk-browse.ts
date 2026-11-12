@@ -22,6 +22,23 @@ export function mountDeskBrowse({
   let failed = false;
   const allowsModel = () => !phoneView() && canRun && !failed && preferred === "local";
   const panel = document.querySelector<HTMLElement>("#desk-browse");
+  // Browse lists the same sections as the rail's app dock, copied from it so the two never drift.
+  const tiles = document.querySelector<HTMLElement>("[data-browse-tiles]");
+  if (tiles && !tiles.childElementCount) {
+    for (const item of document.querySelectorAll<HTMLAnchorElement>(".app-dock a.app-dock__item")) {
+      const tile = document.createElement("a");
+      tile.className = "browse-tile";
+      tile.href = item.getAttribute("href") ?? "/";
+      const current = item.getAttribute("aria-current");
+      if (current) tile.setAttribute("aria-current", current);
+      const icon = item.querySelector(".app-dock__icon")?.cloneNode(true);
+      if (icon) tile.append(icon);
+      const label = document.createElement("span");
+      label.textContent = item.querySelector(".app-dock__label")?.textContent?.trim() ?? "";
+      tile.append(label);
+      tiles.append(tile);
+    }
+  }
   const intro = document.querySelector<HTMLElement>("[data-browse-intro]");
   const assistant = document.querySelector<HTMLElement>(".assistant");
   const chatTab = assistant?.querySelector<HTMLButtonElement>('[data-shell-mode="chat"]');
@@ -69,7 +86,7 @@ export function mountDeskBrowse({
     if (assistant?.dataset.mode === "chat" || assistant?.dataset.mode === "browse") selectDeskPane();
     if (intro) {
       intro.textContent = phone
-        ? "On mobile, Browse shows recent updates and shortcuts. No AI model is downloaded."
+        ? "Pick a section or open a recent update. No AI model runs on mobile."
         : failed || !canRun
           ? "Local AI is unavailable here. You can still open recent updates and shortcuts."
           : "Open a recent update or jump to a section.";
