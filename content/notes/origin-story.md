@@ -1,6 +1,6 @@
 ---
 title: "I Built a Whole Stack Because No To-Do App Would Have Me"
-audience: build
+audience: [build]
 level: intro
 subtitle: "The honest story of how trying to get my own life organized turned into a no-build web stack, a design system, a little content engine, and an AI whose entire job is to manage me"
 author: "Tjakoen Stolk"

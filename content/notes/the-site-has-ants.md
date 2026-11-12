@@ -1,6 +1,6 @@
 ---
 title: "I put bugs on my website. On purpose."
-audience: build
+audience: [build]
 level: intro
 subtitle: "A small, self-growing ant colony hidden on a professional site. It has rules, rival colonies, and no win screen, because it is a simulation more than a game."
 author: "Tjakoen Stolk"

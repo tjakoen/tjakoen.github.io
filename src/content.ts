@@ -798,7 +798,7 @@ export interface NoteFeedEntry {
   readingTime: string;
   score: number;
   tags: string[];
-  audience: string;
+  audience: string[];
   level: string;
   sections: number;
 }
@@ -830,7 +830,9 @@ async function computeSortedNoteEntries(): Promise<NoteFeedEntry[]> {
       readingTime,
       score: scoreMatch ? Number(scoreMatch[0]) : 0,
       tags: Array.isArray(fm.tags) ? fm.tags : [],
-      audience: typeof fm.audience === "string" ? fm.audience : "",
+      // One reader group or several, written like tags: \`audience: [learn, build]\`.
+      audience: Array.isArray(fm.audience) ? fm.audience.map(String)
+        : typeof fm.audience === "string" ? [fm.audience] : [],
       level: fm.level === "deep" ? "deep" : fm.level === "intro" ? "intro" : "",
       sections: (body.match(/^## /gm) ?? []).length,
     });
@@ -906,7 +908,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     const levelTag = e.level === "intro" ? `<span class="note-card__level" data-level="intro">Start here</span> · `
       : e.level === "deep" ? `<span class="note-card__level" data-level="deep">Deep dive</span> · ` : "";
     const pinTag = pinned ? `<span class="note-card__pin">📌 Pinned</span> · ` : "";
-    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}" data-audience="${escapeHtml(e.audience)}" data-level="${e.level}">
+    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}" data-audience="${escapeHtml(e.audience.join(" "))}" data-level="${e.level}">
         <div class="note-card__vote" aria-hidden="true" title="Reading minutes, from the note's own frontmatter. Not votes.">&#9650;<span class="note-card__score">${e.score}</span></div>
         <div class="note-card__main">
           <p class="note-card__byline">${pinTag}${levelTag}${byline}</p>
@@ -984,11 +986,30 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
           var tags = (card.getAttribute("data-tags") || "").split(" ");
           var tagOk = wanted.length === 0 || wanted.some(function (t) { return tags.indexOf(t) !== -1; });
           var textOk = q === "" || (card.textContent || "").toLowerCase().indexOf(q) !== -1;
-          var audOk = audience === "" || card.getAttribute("data-audience") === audience;
+          var audOk = audience === "" || (card.getAttribute("data-audience") || "").split(" ").indexOf(audience) !== -1;
           var levelOk = level === "" || card.getAttribute("data-level") === level;
           card.hidden = !(tagOk && textOk && audOk && levelOk);
         });
         if (empty && !(wanted.length === 0 && q === "" && audience === "" && level === "")) empty.hidden = true;
+        recountTags(audience);
+      }
+
+      // The tag row follows the open tab: each count is the notes in that tab carrying the tag,
+      // and a tag with none there is hidden (unless it is checked, so a reader can still uncheck it).
+      function recountTags(audience) {
+        var inTab = cards.filter(function (card) {
+          return audience === "" || (card.getAttribute("data-audience") || "").split(" ").indexOf(audience) !== -1;
+        });
+        Array.prototype.forEach.call(form.querySelectorAll(".notes-tag"), function (chip) {
+          var box = chip.querySelector("input");
+          var n = inTab.filter(function (card) {
+            return box.name === "level" ? card.getAttribute("data-level") === box.value
+              : (card.getAttribute("data-tags") || "").split(" ").indexOf(box.value) !== -1;
+          }).length;
+          var out = chip.querySelector(".notes-tag__n");
+          if (out) out.textContent = "(" + n + ")";
+          chip.hidden = n === 0 && !box.checked;
+        });
       }
 
       // Mirror the current tag filter into the URL so a filtered view is shareable (replaceState,
@@ -1057,6 +1078,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       // Keep the familiar chip row on desktop. On phones, the disclosure stays closed until a
       // reader asks for it, so the first essay is not buried under the filter controls.
       if (tagFilters && window.matchMedia && window.matchMedia("(min-width: 40.001rem)").matches) tagFilters.open = true;
+      recountTags((form.querySelector('input[name="audience"]:checked') || {}).value || "");
       form.hidden = false;   // reveal the controls only once the island is live
     })();
   </script>`;
@@ -1066,7 +1088,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     <form class="notes-toolbar" data-feed-controls hidden>
       <div class="notes-audience" role="radiogroup" aria-label="Show notes for">
         <label class="notes-audience__tab"><input type="radio" name="audience" value="" checked><span>All</span><span class="notes-audience__n">${entries.length}</span></label>
-        ${NOTE_AUDIENCES.map((a) => `<label class="notes-audience__tab"><input type="radio" name="audience" value="${a.id}"><span>${a.label}</span><span class="notes-audience__n">${entries.filter((e) => e.audience === a.id).length}</span></label>`).join("\n        ")}
+        ${NOTE_AUDIENCES.map((a) => `<label class="notes-audience__tab"><input type="radio" name="audience" value="${a.id}"><span>${a.label}</span><span class="notes-audience__n">${entries.filter((e) => e.audience.includes(a.id)).length}</span></label>`).join("\n        ")}
       </div>
       <div class="notes-toolbar__bar">
         <input class="notes-search" type="search" placeholder="Search notes" aria-label="Search notes"

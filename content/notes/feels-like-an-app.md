@@ -1,6 +1,6 @@
 ---
 title: "This Site Feels Like an App. It's a Stack of Full Page Loads."
-audience: build
+audience: [build]
 level: deep
 subtitle: "Every click here loads a whole new document, the old-fashioned way. It still feels like a single-page app, because the browser now does the part I used to ship a framework for. Here is the actual machinery, seams and all."
 author: "Tjakoen Stolk"

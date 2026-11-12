@@ -1,6 +1,6 @@
 ---
 title: "I Nearly Quit Teaching. So I Automated the Part That Was Killing Me."
-audience: learn
+audience: [learn, lead]
 level: intro
 subtitle: "I teach 150 to 300 students a semester, part-time, for a fraction of what my day job pays, and last term it almost broke me. Here's why I do it anyway, how I actually run a classroom, and the GitHub-native platform I built so I could stop drowning and start teaching again."
 author: "Tjakoen Stolk"

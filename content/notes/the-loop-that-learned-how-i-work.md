@@ -1,6 +1,6 @@
 ---
 title: "I Kept Telling My AI the Same Thing. So I Taught the Loop to Notice."
-audience: build
+audience: [build]
 level: deep
 subtitle: "My review bot learned to be wrong because every comment it left got a score. My working sessions never did. Every correction I typed died at the end of the chat, so I started writing them down and grading what the loop does with them."
 author: "Tjakoen Stolk"

@@ -1,6 +1,6 @@
 ---
 title: "Ten Times Zero Is Still Zero"
-audience: learn
+audience: [learn, build]
 level: intro
 subtitle: >
   "Vibe coder" gets used as an insult: prompt and pray, ship a house of cards. I claim it anyway,

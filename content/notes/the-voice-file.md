@@ -1,6 +1,6 @@
 ---
 title: "Write for the Person Who Has to Read It"
-audience: lead
+audience: [lead, learn]
 level: intro
 subtitle: "A short VOICE.md gives your AI examples of what an instructor or teammate needs to see first."
 author: "Tjakoen Stolk"
