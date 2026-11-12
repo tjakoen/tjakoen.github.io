@@ -992,6 +992,8 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         });
         if (empty && !(wanted.length === 0 && q === "" && audience === "" && level === "")) empty.hidden = true;
         recountTags(audience);
+        var clearBtn = form.querySelector("[data-tags-clear]");
+        if (clearBtn) clearBtn.hidden = form.querySelectorAll('input[type="checkbox"]:checked').length === 0;
       }
 
       // The tag row follows the open tab: each count is the notes in that tab carrying the tag,
@@ -1034,6 +1036,11 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
         moreBtn.textContent = open ? "fewer" : "+" + rest.querySelectorAll(".chip").length + " more";
       }
+      var clearTags = form.querySelector("[data-tags-clear]");
+      if (clearTags) clearTags.addEventListener("click", function () {
+        Array.prototype.forEach.call(form.querySelectorAll('input[type="checkbox"]:checked'), function (b) { b.checked = false; });
+        applyFilters(); syncUrl();
+      });
       if (moreBtn) moreBtn.addEventListener("click", function () { revealRest(rest.hidden); });
 
       // Honor a ?tag= deep link on boot: check every chip that matches (comma list ok) and filter.
@@ -1103,7 +1110,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       </div>
       <details class="notes-tag-filters" data-tag-filters>
         <summary>Filter by tag</summary>
-        <div class="chips notes-tags" aria-label="Filter by tag"><label class="chip notes-tag notes-tag--level"><input type="checkbox" name="level" value="intro"><span>Start here</span><span class="notes-tag__n">(${entries.filter((e) => e.level === "intro").length})</span></label>${headChips}${restChips}</div>
+        <div class="chips notes-tags" aria-label="Filter by tag"><label class="chip notes-tag notes-tag--level"><input type="checkbox" name="level" value="intro"><span>Start here</span><span class="notes-tag__n">(${entries.filter((e) => e.level === "intro").length})</span></label>${headChips}${restChips}<button type="button" class="notes-tags__clear" data-tags-clear hidden>× clear</button></div>
       </details>
     </form>
     <p class="feed-empty" data-feed-empty hidden></p>
