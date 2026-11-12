@@ -285,8 +285,6 @@ body[data-desk="offline"]:not([data-desk-mode]) .assistant__offline {
 body[data-desk="offline"]:not([data-desk-mode]) :is(.assistant__composer, .assistant__suggest, .assistant__log, .chat-thinking, .assistant__newchat),
 body[data-desk-mode="browse"] .walk[data-run-showcase] { display: none; }
 
-.assistant__model-note { margin: 0; padding: 0 var(--space-4) var(--space-2);
-  font-size: var(--text-xs); color: var(--color-muted); }
 .assistant__browse:not([hidden]) {
   display: grid; align-content: start; gap: var(--space-3); min-height: 0; flex: 1; overflow-y: auto;
   overscroll-behavior: contain; padding: var(--space-4);

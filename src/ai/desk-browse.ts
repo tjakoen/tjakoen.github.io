@@ -18,15 +18,11 @@ export function mountDeskBrowse({
   try { if (sessionStorage.getItem(MODE_KEY) === "browse") preferred = "browse"; } catch { /* storage may be blocked */ }
   let failed = false;
   const allowsModel = () => !phone && canRun && !failed && preferred === "local";
-  const note = document.querySelector<HTMLElement>("[data-desk-download]");
   const panel = document.querySelector<HTMLElement>("#desk-browse");
   const intro = document.querySelector<HTMLElement>("[data-browse-intro]");
   const assistant = document.querySelector<HTMLElement>(".assistant");
   const chatTab = assistant?.querySelector<HTMLButtonElement>('[data-shell-mode="chat"]');
   const browseTab = assistant?.querySelector<HTMLButtonElement>('[data-shell-mode="browse"]');
-  const log = assistant?.querySelector<HTMLElement>(".assistant__log");
-  const hasMessages = () => !!log && !!log.querySelector('.chat-message[data-role="you"]');
-  if (log) new MutationObserver(() => { if (note && hasMessages()) note.hidden = true; }).observe(log, { childList: true, subtree: true });
   const selectDeskPane = () => {
     if (!assistant || !panel) return;
     const browse = !allowsModel();
@@ -44,13 +40,8 @@ export function mountDeskBrowse({
     if (chatTab) chatTab.hidden = phone || !canRun || failed;
     if (browseTab) browseTab.hidden = false;
     for (const label of entryLabels) label.element.textContent = local ? label.local : label.browse ?? "";
-    // The download cost sits on the control that triggers it: a tooltip on the Chat tab, and fine
-    // print above the composer until the first message, which is the moment the download starts.
+    // The download cost sits on the control that triggers it, as a tooltip on the Chat tab.
     if (chatTab) chatTab.title = local ? `Runs on your device. ${downloadNote}` : "";
-    if (note) {
-      note.hidden = !local || hasMessages();
-      note.textContent = `Runs on your device. ${downloadNote}`;
-    }
     if (assistant?.dataset.mode === "chat" || assistant?.dataset.mode === "browse") selectDeskPane();
     if (intro) {
       intro.textContent = phone
