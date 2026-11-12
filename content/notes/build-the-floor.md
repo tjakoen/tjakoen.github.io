@@ -5,10 +5,13 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-08-18
-readingTime: "~27 min"
+updated: 2026-11-12
+changelog:
+  - "2026-11-12 | Three months on: one skill has now been scored on a real team, so the limits section says what that does and does not show. Added what happened when I demoed instead of mandating, a rule about counting a check that cannot start, and model choice as a routing decision."
+readingTime: "~28 min"
 deck: "Build the floor | Talk | /talks/build-the-floor | 33 slides · runs in the browser, no download"
 tags: [ai, workflow, standards, developer-tools, architecture]
-people: [cole-medin, addy-osmani]
+people: [cole-medin, addy-osmani, kercwin, kyle]
 sources: [book-loop-engineering]
 summary: >
   Most organizations have bought AI subscriptions and are hoping the automation arrives on its own.
@@ -141,9 +144,15 @@ that.
 This is an organization-scale roadmap, not a claim that my own work is already at stage four. You
 can inspect the first pieces here: [Kickstart](/kickstart) makes repository setup explicit, and the
 [standards and skills](/standards) make working rules readable. The [Builder's five-case audit](/grain/builder)
-is a small browser demo, not a team-level skill outcome log; its latest run scored two of five. I do
-not have scored team-wide outcomes or unattended engineering loops to show here. Those remain later
-stages of the proposal.
+is a small browser demo, not a team-level skill outcome log; its latest run scored two of five.
+
+When this note was first published I had no scored team outcomes to show, and it said so. One skill
+has since walked the first three stages where I work. A pull request reviewer I ran by hand in
+August now fires on triggers, and every comment it posts is scored by what happened next.
+[The Reviewer That Learned to Be Wrong](the-reviewer-that-learned-to-be-wrong.md) tells that from
+its git history, including the production break it let through. That is one skill on one team. I
+have not shown that it makes the codebase better, and I still have no chained unattended engineering
+loop to show. Stage four remains a proposal.
 
 ### What we can do now
 
@@ -413,6 +422,11 @@ individual-level metrics never feed a performance review. Roll up to team. Say i
 then honour it, because the moment people suspect otherwise you are measuring the gaming rather than
 the work.
 
+One more, which I learned after publishing this. **Before you read any of these numbers as adoption,
+confirm the thing being counted can start.** A zero on a dashboard has two possible causes, and only
+one of them is people. I got that wrong about a check of my own, and the first failure mode further
+down is that story.
+
 ### Making a repository legible
 
 A context file at the repo root, read automatically at the start of every session. Architecture,
@@ -557,6 +571,13 @@ tell you whether a skill got better or you just got used to it.
 Adoption is political as much as it is technical here. Do not mandate usage. A skill that has to be
 required is a skill that is not good enough yet, and mandating it costs you the signal that would
 have told you so.
+
+I have since watched the other half of that. I demoed a dashboard I had built to my team and
+required nothing. Two weeks later [Kercwin](/people#kercwin), the tech lead of my team, had built an
+epic checker for his projects, and [Kyle](/people#kyle), a junior on my team, had built his own work board.
+[I Showed My Team a Dashboard](show-them-the-board.md) has the detail. Two people on one team is an
+anecdote, and I would not size a programme on it. It is the direction I expected, though, and a
+mandate would have told me nothing about whether either tool was wanted.
 
 **Done when** each skill has its agreed count of scored runs behind it, the catalog has a
 maintainer and grows by contribution, and you can name which skills are working rather than which
@@ -824,6 +845,13 @@ marker on every agent-authored change are not compensations for a weak model. Th
 out what happened, and a better model makes them more valuable rather than less. Anthropic put the
 same point the optimistic way round: the better the models get, the more room there is for harnesses
 that reach past what the model does alone.
+
+The model itself turned out to be on the list of things that expire. I now run the same loop on
+Claude, Codex and DeepSeek, and moving a task between them changes no instruction, because the
+standards are the contract and the model is a routing decision.
+[One Loop, Three Harnesses](one-loop-three-harnesses.md) covers the wiring. For an organization the
+consequence is practical. Write the floor against the work and keep it out of any one vendor's
+harness, and a price change or an outage becomes a routing change.
 
 ## Where to start, concretely
 
