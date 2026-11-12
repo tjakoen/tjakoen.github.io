@@ -26,13 +26,11 @@ social: |
   repo, not in the model's head. Models get retired. The loop you build around them stays, and
   it is the real skill to start on.
 socialImage:
-  - "/media/notes/plan-big-type-small-social-1-question.png"
-  - "/media/notes/plan-big-type-small-social-2-split.png"
-  - "/media/notes/plan-big-type-small-social-3-loop.png"
+  - "/media/notes/plan-big-type-small-social-5-split.png"
+  - "/media/notes/plan-big-type-small-social-4-files.png"
 socialImageAlt:
-  - "Card one of three, a question set large: Why do I keep running out of tokens before lunch? Below it, the answer was advice I thought was obvious."
-  - "Card two of three: plan on the big model, type on the small one. Opus plans, Sonnet types each piece, Opus reviews, with a tier above for research on Fable."
-  - "Card three of three: a rule written once, read by every session after it. One file grows into instructions, checks and hooks. Models get retired; the loop you build stays."
+  - "Plan on the big model, type on the small one. In the top lane Opus plans and sends a brief to two Sonnet subagents in the bottom lane, which read the files and type. Only the result goes back up to Opus, which reviews it and either sends it back or marks it done. The expensive model thinks at both ends; the cheap one types in between."
+  - "Low effort works when the repo already knows. Four boxes, instructions, skills, hooks and a plan file, each feed one dark box: the session on low effort, which starts already knowing how I work. Models get retired; the files you write around them stay."
 ---
 
 ## The question that made me write this
@@ -56,7 +54,12 @@ this note exists.
 
 Most of a build task is not hard. Deciding what to change, in which files, in what order, and what
 done looks like is hard. Writing the function once all of that is decided is mostly typing. Paying
-the most capable model to do the typing is paying a senior engineer to retype a spec.
+the most capable model to do the typing is like paying a senior engineer to retype a spec.
+
+**Treat the big model as the senior engineer and the subagents as subroutines.** You would not ask
+your best engineer to retype a spec. You would ask them to write it, hand the pieces out, and read
+what comes back. A subroutine takes a clear input, does one job, and returns a result without
+dragging its working notes into the caller. That is exactly what a good subagent is.
 
 So the work splits in two. The main session runs on Opus. It reads the code, asks the questions,
 writes the plan, and cuts the work into pieces small enough that each one has a settled answer.
@@ -177,6 +180,44 @@ work. On low effort the model does not have to work out from nothing how I like 
 because the repo tells it. The thinking that high effort would spend rediscovering the context is
 already written down.
 
+<svg viewBox="0 0 460 200" width="100%" role="img"
+     aria-label="Four things in the repo feed every session. Instruction files say how each repo works. Skills carry the standards. Hooks check the work at session start and before it is called done. A plan file says what this piece of work is. All four flow into the session, so the model on low effort starts already knowing how I work instead of rediscovering it."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-planbig3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="12" y="16" width="100" height="52" rx="6"/>
+    <rect x="124" y="16" width="100" height="52" rx="6"/>
+    <rect x="236" y="16" width="100" height="52" rx="6"/>
+    <rect x="348" y="16" width="100" height="52" rx="6"/>
+  </g>
+  <rect x="60" y="132" width="340" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <path d="M62,68 C62,100 130,100 130,128" marker-end="url(#fl-planbig3)"/>
+    <line x1="174" y1="68" x2="200" y2="128" marker-end="url(#fl-planbig3)"/>
+    <line x1="286" y1="68" x2="260" y2="128" marker-end="url(#fl-planbig3)"/>
+    <path d="M398,68 C398,100 330,100 330,128" marker-end="url(#fl-planbig3)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="62" y="38" style="fill:var(--color-fg)">Instructions</text>
+    <text x="62" y="56" style="fill:var(--color-muted);font-size:11.5px">how the repo works</text>
+    <text x="174" y="38" style="fill:var(--color-fg)">Skills</text>
+    <text x="174" y="56" style="fill:var(--color-muted);font-size:11.5px">the standards</text>
+    <text x="286" y="38" style="fill:var(--color-fg)">Hooks</text>
+    <text x="286" y="56" style="fill:var(--color-muted);font-size:11.5px">checks, start and end</text>
+    <text x="398" y="38" style="fill:var(--color-fg)">Plan file</text>
+    <text x="398" y="56" style="fill:var(--color-muted);font-size:11.5px">what this work is</text>
+    <text x="230" y="154" style="fill:var(--color-bg)">The session, on low effort</text>
+    <text x="230" y="172" style="fill:var(--color-bg);font-size:11.5px">starts already knowing how I work</text>
+  </g>
+</svg>
+
+*The thinking high effort would spend on context is already sitting in four files.*
+
 A fresh setup does not have that, so low effort may cost you something there. Do not take my word
 for it either way. Run a trial:
 
@@ -262,6 +303,36 @@ in review became a check. A check I kept forgetting to run became a hook. Months
 later, I have a loop that orients every session, holds the work to a standard, and refuses to call
 something done before it is. That is why low effort works for me. The model is the same one everyone
 else gets. The floor it stands on took me months.
+
+<svg viewBox="0 0 520 262" width="100%" role="img"
+     aria-label="A staircase that rises from left to right over months. The first step, on day one, is one instruction file with three rules. The next step is a line added for a rule I had said twice. The next is a check for a mistake I had caught twice. The next is a hook for a check I had forgotten twice. The top step is the loop itself, the floor every session now stands on. Each step rests on the ones before it."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <rect x="10" y="180" width="100" height="40" rx="4" style="fill:none;stroke:var(--color-line);stroke-width:1"/>
+  <rect x="112" y="140" width="100" height="80" rx="4" style="fill:none;stroke:var(--color-line);stroke-width:1"/>
+  <rect x="214" y="100" width="100" height="120" rx="4" style="fill:none;stroke:var(--color-line);stroke-width:1"/>
+  <rect x="316" y="60" width="100" height="160" rx="4" style="fill:none;stroke:var(--color-line);stroke-width:1"/>
+  <rect x="418" y="20" width="100" height="200" rx="4" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <line x1="10" y1="236" x2="510" y2="236" style="stroke:var(--color-muted);stroke-width:1"/>
+  <g text-anchor="middle">
+    <text x="60" y="198" style="fill:var(--color-fg)">One file</text>
+    <text x="60" y="213" style="fill:var(--color-muted);font-size:11.5px">three rules</text>
+    <text x="162" y="158" style="fill:var(--color-fg)">A line</text>
+    <text x="162" y="173" style="fill:var(--color-muted);font-size:11.5px">said twice</text>
+    <text x="264" y="118" style="fill:var(--color-fg)">A check</text>
+    <text x="264" y="133" style="fill:var(--color-muted);font-size:11.5px">caught twice</text>
+    <text x="366" y="78" style="fill:var(--color-fg)">A hook</text>
+    <text x="366" y="93" style="fill:var(--color-muted);font-size:11.5px">forgot twice</text>
+    <text x="468" y="38" style="fill:var(--color-bg)">The loop</text>
+    <text x="468" y="53" style="fill:var(--color-bg);font-size:11.5px">the floor</text>
+  </g>
+  <g style="fill:var(--color-muted);font-size:12px">
+    <text x="10" y="254">day one</text>
+    <text x="510" y="254" text-anchor="end">months later</text>
+  </g>
+</svg>
+
+*Every step is something I got tired of saying twice, and each one stands on the last.*
 
 You can build yours the same way, one rule at a time. Start with the word itself: I wrote about what
 a harness is, and why the machinery around the model matters more than the model, in
