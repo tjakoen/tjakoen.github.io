@@ -1,53 +1,64 @@
-// tjakoen.github.io/e2e/mobile.e2e.ts — the phone layout (<768px). On a phone the bottom nav is the
-// site's navigation: Home, Notes, Projects, Calendar and Menu. The rail drawer and its topbar toggle
-// are gone, and Menu raises the Browse sheet above the bar. Covers what only a browser shows.
+// tjakoen.github.io/e2e/mobile.e2e.ts — the phone layout (<768px). On a phone the bottom bar holds
+// Menu, Browse and Tour: Menu slides in the rail with the usual sections, Browse raises the Browse
+// sheet, and Tour starts the phone's own tour. Covers what only a browser shows.
 import { test, expect } from "@playwright/test";
 
-test.describe("mobile — the bottom nav", () => {
+test.describe("mobile — the bottom bar", () => {
   test.use({ viewport: { width: 375, height: 720 } });
 
-  test("the bottom nav replaces the drawer and its links navigate", async ({ page }) => {
+  test("Menu slides in the rail, whose sections navigate", async ({ page }) => {
     await page.goto("/");
-    const nav = page.getByRole("navigation", { name: "Main" });
-    await expect(nav).toBeInViewport();
+    const shell = page.locator(".app-shell");
+    const bar = page.getByRole("navigation", { name: "Main" });
+    await expect(bar).toBeInViewport();
     await expect(page.locator('.app-shell__topbar [data-shell="rail-toggle"]')).toBeHidden();
-    await expect(nav.getByRole("link", { name: "Home" })).toHaveAttribute("aria-current", "page");
-    await nav.getByRole("link", { name: "Calendar" }).click();
+
+    const menu = bar.getByRole("button", { name: "Menu" });
+    await menu.click();
+    await expect(shell).toHaveAttribute("data-rail-open", "true");
+    await expect(menu).toHaveAttribute("aria-expanded", "true");
+    await expect(page.locator(".app-dock")).toBeInViewport();
+    // the rail stops at the bar, so its last row is not covered by it
+    const dock = await page.locator(".app-dock").boundingBox();
+    const barBox = await bar.boundingBox();
+    expect(Math.round((dock?.y ?? 0) + (dock?.height ?? 0))).toBeLessThanOrEqual(Math.round(barBox?.y ?? 0) + 1);
+
+    await page.locator('.app-dock a[href="/calendar"]').click();
     await expect(page).toHaveURL(/\/calendar\/?$/);
-    await expect(page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Calendar" }))
-      .toHaveAttribute("aria-current", "page");
   });
 
-  test("Menu raises the Browse sheet above the bar and lowers it again", async ({ page }) => {
+  test("Browse raises the Browse sheet above the bar and lowers it again", async ({ page }) => {
     await page.goto("/");
     const shell = page.locator(".app-shell");
     const aside = page.locator(".app-shell__aside");
-    const menu = page.getByRole("navigation", { name: "Main" }).getByRole("button", { name: "Menu" });
+    const browse = page.getByRole("navigation", { name: "Main" }).getByRole("button", { name: "Browse" });
 
-    // closed: the sheet is fully below the viewport, with no header peeking over the page
     await expect(shell).not.toHaveAttribute("data-aside-open", "");
     await expect(aside).not.toBeInViewport();
 
-    await menu.click();
+    await browse.click();
     await expect(shell).toHaveAttribute("data-aside-open", "");
-    await expect(menu).toHaveAttribute("aria-expanded", "true");
+    await expect(browse).toHaveAttribute("aria-expanded", "true");
     await expect(page.locator(".assistant")).toHaveAttribute("data-mode", "browse");
     await expect(page.locator("#desk-browse")).toBeInViewport();
-    // the sheet ends where the bar starts, so the bar stays tappable
     const sheet = await aside.boundingBox();
     const bar = await page.getByRole("navigation", { name: "Main" }).boundingBox();
     expect(Math.round((sheet?.y ?? 0) + (sheet?.height ?? 0))).toBeLessThanOrEqual(Math.round(bar?.y ?? 0) + 1);
 
-    await menu.click();
+    await browse.click();
     await expect(shell).not.toHaveAttribute("data-aside-open", "");
-    await expect(menu).toHaveAttribute("aria-expanded", "false");
+    await expect(browse).toHaveAttribute("aria-expanded", "false");
   });
 
-  test("the sheet carries no Catalog or Notepad on a phone", async ({ page }) => {
+  test("the sheet carries no Catalog or Notepad, and Tour starts the phone tour", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("navigation", { name: "Main" }).getByRole("button", { name: "Menu" }).click();
+    const bar = page.getByRole("navigation", { name: "Main" });
+    await bar.getByRole("button", { name: "Browse" }).click();
     await expect(page.locator('.assistant__modes [data-shell-mode="catalog"]')).toBeHidden();
     await expect(page.locator('.assistant__modes [data-shell-mode="notepad"]')).toBeHidden();
+    await expect(bar.getByRole("button", { name: "Tour" })).toHaveAttribute("data-crumb-start", "mobile");
+    const tour = await page.request.get("/crumb/tours/mobile.json");
+    expect(tour.ok()).toBe(true);
   });
 });
 

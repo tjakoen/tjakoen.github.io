@@ -461,12 +461,11 @@
 </footer>
 
 <div class="app-shell__scrim"></div>
-<!-- On a phone this bar is the site's navigation. The rail drawer and its toggle are hidden there,
-     and Menu raises the Browse sheet with every section and the recent updates (site.js). -->
+<!-- On a phone this bar is the way around the site, with three buttons: Menu slides in the rail with
+     the usual sections, Browse raises the Browse sheet, and Tour starts the phone's own tour
+     (content/tours/mobile.md). site.js wires Menu and Browse; CRUMB handles Tour's data-crumb-start. -->
 <nav class="mobile-nav" aria-label="Main">
-  <a class="mobile-nav__item" href="/" data-mobile-nav-match="^/$"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></svg><span>Home</span></a>
-  <a class="mobile-nav__item" href="/notes" data-mobile-nav-match="^/notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9.5 9h2M9.5 12.5h5M9.5 16h5"/></svg><span>Notes</span></a>
-  <a class="mobile-nav__item" href="/projects" data-mobile-nav-match="^/projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="4" width="7" height="7" rx="1"/><rect x="13.5" y="4" width="7" height="7" rx="1"/><rect x="3.5" y="13" width="7" height="7" rx="1"/><rect x="13.5" y="13" width="7" height="7" rx="1"/></svg><span>Projects</span></a>
-  <a class="mobile-nav__item" href="/calendar" data-mobile-nav-match="^/calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="16" rx="1.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span>Calendar</span></a>
-  <button class="mobile-nav__item" type="button" data-mobile-menu aria-expanded="false" aria-controls="desk-browse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menu</span></button>
+  <button class="mobile-nav__item" type="button" data-mobile-rail aria-expanded="false" data-surface="mobile-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menu</span></button>
+  <button class="mobile-nav__item" type="button" data-mobile-browse aria-expanded="false" aria-controls="desk-browse" data-surface="mobile-browse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="4" width="7" height="7" rx="1"/><rect x="13.5" y="4" width="7" height="7" rx="1"/><rect x="3.5" y="13" width="7" height="7" rx="1"/><rect x="13.5" y="13" width="7" height="7" rx="1"/></svg><span>Browse</span></button>
+  <button class="mobile-nav__item" type="button" data-crumb-start="mobile" data-crumb-mode="demo" data-surface="mobile-tour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span>Tour</span></button>
 </nav>
