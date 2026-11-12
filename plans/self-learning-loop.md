@@ -45,6 +45,10 @@ improve, without being told explicitly.
 5. **Scores are read per kind, per project and per harness**, never as one average, so a noisy
    detector cannot hide behind a good one. A kind with low precision gets a stricter threshold or a
    rewritten prompt.
+6. **Fire rate is scored next to precision.** Each kind reports how many signals it logged per
+   session. "The check ran once in 165 sessions" showed that a check which never fires looks exactly
+   like one with nothing to find, so a kind that falls silent for two weeks is itself a finding on
+   the Signals surface, not a sign that all is calm.
 
 ## Signal kinds
 
@@ -127,6 +131,8 @@ The test: if any one harness disappeared, everything except its adapter keeps wo
 
 ## The note this earns
 
-"The loop that learned how I work", paired with "The reviewer that learned to be wrong", with
-precision per kind as its figure. It is written only after a few weeks of scores. The honest limit
+"The loop that learned how I work", framed as the third in a series: the reviewer learned to be
+wrong, the check never ran, and now the loop learns from the person using it. Its figure is
+precision and fire rate per kind. A draft can exist now; it publishes only after a few weeks of
+scores replace the placeholders. The honest limit
 is already known: an accepted proposal is a proxy, not proof that the loop got better.
