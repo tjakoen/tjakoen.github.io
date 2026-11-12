@@ -12,16 +12,27 @@ summary: >
   you need high. Why the split works, why the biggest models rarely pay for themselves in my daily
   work, how to run a trial instead of taking my word for it, and the same pattern in Codex.
 social: |
-  A junior developer asked me why they kept running out of tokens before lunch. Everything they did
-  ran on the biggest model at the highest effort: the planning, the renames, the one-line fixes.
+  "Why do I keep running out of tokens before lunch?"
 
-  My advice: plan and orchestrate on Opus, implement with Sonnet subagents, and try low effort
-  before you assume you need high. I thought that was obvious. It is only obvious after months.
+  A junior developer asked me that this week. Every turn they ran, the planning, the renames, the
+  one-line fixes, went to the biggest model at the highest effort.
 
-  The bigger lesson is underneath it. Low effort works for me because my loop holds the context in
-  files, not in the model. Models get retired. The loop you build around them stays.
-socialImage: "/media/notes/plan-big-type-small-social.png"
-socialImageAlt: "Plan on the big model, type on the small one: Opus plans, Sonnet types each piece, Opus reviews, all standing on your loop."
+  What I told them, which I had stopped noticing I do:
+
+  Plan and orchestrate on Opus. Hand the typing to Sonnet subagents. Try low effort before you
+  assume you need high, and run ten tasks on each to find out.
+
+  The part that matters more: low effort only works for me because months of small rules live in my
+  repo, not in the model's head. Models get retired. The loop you build around them stays, and
+  it is the real skill to start on.
+socialImage:
+  - "/media/notes/plan-big-type-small-social-1-question.png"
+  - "/media/notes/plan-big-type-small-social-2-split.png"
+  - "/media/notes/plan-big-type-small-social-3-loop.png"
+socialImageAlt:
+  - "Card one of three, a question set large: Why do I keep running out of tokens before lunch? Below it, the answer was advice I thought was obvious."
+  - "Card two of three: plan on the big model, type on the small one. Opus plans, Sonnet types each piece, Opus reviews, with a tier above for research on Fable."
+  - "Card three of three: a rule written once, read by every session after it. One file grows into instructions, checks and hooks. Models get retired; the loop you build stays."
 ---
 
 ## The question that made me write this
@@ -117,6 +128,36 @@ has been a godsend for that. But notice that even then it does not replace the p
 layer on top of it. Plan on Fable, orchestrate on Opus, implement with Sonnet subagents. The
 expensive model does the one job only it does well, and then hands off.
 
+<svg viewBox="-1 0 362 236" width="100%" role="img"
+     aria-label="Three tiers, top to bottom. Fable plans: research, audits and the big questions, used rarely. Opus orchestrates: it cuts the plan into briefs and reviews every result. Sonnet subagents implement: they type each settled piece. Each tier hands down to the one below, and the cheapest tier does the most work."
+     style="display:block;width:100%;max-width:420px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-planbig1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="110" y="16" width="140" height="44" rx="6"/>
+    <rect x="70" y="96" width="220" height="44" rx="6"/>
+  </g>
+  <rect x="10" y="176" width="340" height="44" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="180" y1="60" x2="180" y2="92" marker-end="url(#fl-planbig1)"/>
+    <line x1="180" y1="140" x2="180" y2="172" marker-end="url(#fl-planbig1)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="180" y="36" style="fill:var(--color-fg)">Fable plans</text>
+    <text x="180" y="52" style="fill:var(--color-muted);font-size:11.5px">research and audits, rarely</text>
+    <text x="180" y="116" style="fill:var(--color-fg)">Opus orchestrates</text>
+    <text x="180" y="132" style="fill:var(--color-muted);font-size:11.5px">briefs every piece, reviews every result</text>
+    <text x="180" y="196" style="fill:var(--color-bg)">Sonnet subagents implement</text>
+    <text x="180" y="212" style="fill:var(--color-bg);font-size:11.5px">most of the tokens, at the lowest rate</text>
+  </g>
+</svg>
+
+*The wider the box, the more of the work it does. The narrowest box costs the most per token.*
+
 ## Try low effort before you assume high
 
 The second piece of advice surprised them more. I run Opus on low effort almost all of the time.
@@ -142,6 +183,40 @@ this, or would one line in my instruction file have fixed it? Usually it is the 
 and every session after that gets it for free, at any effort level. Raise the effort for the turns
 that earn it, a hard design call, a bug that has already beaten one attempt, a plan for a large
 change, and then drop it again.
+
+<svg viewBox="-36 0 377 262" width="100%" role="img"
+     aria-label="How a miss becomes part of the loop. A session on low effort gets something wrong. Ask whether more thinking or one written rule would have fixed it. Usually the rule: write it into the instruction file. Every later session reads that file, at any effort level, so the next session starts smarter, and the cycle repeats with the next miss."
+     style="display:block;width:100%;max-width:400px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-planbig2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="70" y="16" width="200" height="36" rx="6"/>
+    <rect x="40" y="88" width="260" height="36" rx="6"/>
+    <rect x="70" y="208" width="200" height="36" rx="6"/>
+  </g>
+  <rect x="70" y="148" width="200" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="170" y1="52" x2="170" y2="84" marker-end="url(#fl-planbig2)"/>
+    <line x1="170" y1="124" x2="170" y2="144" marker-end="url(#fl-planbig2)"/>
+    <line x1="170" y1="184" x2="170" y2="204" marker-end="url(#fl-planbig2)"/>
+    <path d="M70,226 C10,226 10,34 66,34" marker-end="url(#fl-planbig2)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="170" y="38.3" style="fill:var(--color-fg)">Low effort gets it wrong</text>
+    <text x="170" y="110.3" style="fill:var(--color-fg)">More thinking, or one written rule?</text>
+    <text x="170" y="170.3" style="fill:var(--color-bg)">Write the rule down</text>
+    <text x="170" y="230.3" style="fill:var(--color-fg)">Every session reads it</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="22" y="134">next miss</text>
+  </g>
+</svg>
+
+*A miss fixed with thinking is paid for again tomorrow. A miss fixed with a rule is paid for once.*
 
 ## The same pattern in Codex
 
