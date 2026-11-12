@@ -198,3 +198,8 @@
 /* Start here leads the tag row in the accent colour: the one token that says where a newcomer begins. */
 .chip.notes-tag--level { color: var(--color-accent); margin-right: var(--space-2); }
 .chip.notes-tag[hidden] { display: none; }
+/* clear: shown only while a tag is checked, it unchecks them all in one click. */
+.notes-tags__clear { all: unset; cursor: pointer; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-accent); }
+.notes-tags__clear:hover { text-decoration: underline; }
+.notes-tags__clear:focus-visible { outline: 1px solid var(--color-accent); outline-offset: 2px; }
+.notes-tags__clear[hidden] { display: none; }
