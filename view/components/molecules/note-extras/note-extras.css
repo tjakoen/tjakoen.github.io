@@ -1,0 +1,24 @@
+/* note-extras — the small furniture a note page carries around its body.
+ *
+ * All four are emitted by src/content.ts: the draft banner (shellChrome, on /drafts only), the
+ * edited line under the masthead (renderNoteEdited), the changelog at the foot
+ * (renderNoteChangelog), and the Share tab with its dialog (renderShareDialog). */
+.draft-flag { margin: 0 0 var(--space-4); padding: var(--space-3) var(--space-4); max-width: 40rem;
+  border: 1px dashed var(--line-soft); border-radius: var(--radius-md); font-size: 0.9rem; color: var(--ink-muted); }
+.draft-flag strong { color: var(--ink); font-family: var(--font-mono); text-transform: uppercase;
+  letter-spacing: 0.04em; font-size: 0.8rem; margin-right: var(--space-1); }
+
+.note-edited { margin: var(--space-2) 0 var(--space-4); font-size: 0.85rem; font-family: var(--font-mono);
+  color: var(--ink-muted); }
+
+.note-changelog { margin: var(--space-6) 0 var(--space-4); padding: var(--space-4); max-width: 40rem;
+  border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
+.note-changelog__head { margin: 0 0 var(--space-2); font-size: 0.85rem; font-family: var(--font-mono);
+  text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-muted); }
+.note-changelog__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.note-changelog__list li { display: grid; grid-template-columns: 6.5rem 1fr; gap: var(--space-3); font-size: 0.9rem; }
+.note-changelog__list time { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); padding-top: 0.15em; }
+
+.content-source__share { cursor: pointer; background: none; font: inherit; }
+.note-share__link { margin: var(--space-2) 0 0; padding: var(--space-2) var(--space-3); border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.8rem; overflow-wrap: anywhere; user-select: all; }

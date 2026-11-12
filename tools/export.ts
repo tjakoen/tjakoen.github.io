@@ -21,7 +21,8 @@ import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
 import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
 import { rewriteOrigin } from "@tjakoen/batch/export/rewrite.ts";
 import {
-  listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes, FOLDED_NOTES, COLLECTION_DIRS,
+  listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes,
+  listPortfolioDraftRoutes, listPortfolioDraftRawRoutes, FOLDED_NOTES, COLLECTION_DIRS,
 } from "../src/content.ts";
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 
@@ -125,7 +126,7 @@ async function crumbTourRoutes(): Promise<string[]> {
 // bytes, no chrome), never a page: freezing it here (not `pages`) keeps the export honest and
 // lets the entry chrome's Rendered/Source toggle resolve under the export's dead-link check.
 async function dataRoutes(): Promise<string[]> {
-  return [...DATA_ROUTES, ...await listPortfolioRawContentRoutes(), ...await crumbTourRoutes(), ...badgeObJsonRoutes()];
+  return [...DATA_ROUTES, ...await listPortfolioRawContentRoutes(), ...await listPortfolioDraftRawRoutes(), ...await crumbTourRoutes(), ...badgeObJsonRoutes()];
 }
 
 
@@ -148,7 +149,10 @@ async function pageRoutes(): Promise<string[]> {
   // it out of search; it stays out of the sitemap for the same reason, which is why it is added here
   // rather than travelling in with `content`.
   const folded = Object.keys(FOLDED_NOTES);
-  const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, ...badgeShortlinkRoutes(), "/catalog", "/reference", "/cv", "/kickstart"]);
+  // The unlisted drafts travel the same way and for the same reason: frozen so they can be read on
+  // the deployed site, noindex on the page, and absent from the sitemap because they never enter it.
+  const drafts = await listPortfolioDraftRoutes();
+  const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, ...drafts, ...badgeShortlinkRoutes(), "/catalog", "/reference", "/cv", "/kickstart"]);
   return [...all].filter((r) => !OPERABLE.has(r) && !REVIEW_ONLY.has(r)).toSorted();
 }
 

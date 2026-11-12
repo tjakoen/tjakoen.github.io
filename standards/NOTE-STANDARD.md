@@ -57,6 +57,9 @@ social: |
   Optional post copy. When included, supply the image and alt text below.
 socialImage: "/media/notes/example-social.png"
 socialImageAlt: "What the card shows."
+updated: 2026-11-12      # optional, only after a major change (see below)
+changelog:               # optional, newest first, one line per major change
+  - "2026-11-12 | What changed, in a sentence a returning reader can act on."
 ---
 ```
 
@@ -74,6 +77,24 @@ socialImageAlt: "What the card shows."
 | `social` | Ready-to-post copy | Optional. A short post, not the summary. The page renders it at the bottom with the canonical link. |
 | `socialImage` | Social image path | Required with `social`. Supply a 1200×1200 PNG the reader can download and attach to the post. |
 | `socialImageAlt` | Social image alt | Required for every social image. Describe what the card shows. |
+| `updated` | The day of the last major change | Optional. ISO date. Renders as an edited line under the masthead. `date` never moves. |
+| `changelog` | What changed, and when | Optional. A list of `"YYYY-MM-DD \| sentence"` strings. Renders as a block at the foot of the note. |
+
+### Edited notes and the changelog
+
+`date` is the day a note was first published and it stays put, so the feed keeps its order and a
+reader's memory of when they read a piece still holds. A note that changes later says so with
+`updated` and a `changelog` line, and only when the change is one a returning reader would want to
+know about:
+
+- a claim revised, withdrawn or newly supported
+- a section added or cut
+- a number corrected
+- an honest limit that no longer holds, or a new one
+
+A typo, a grammar fix, a reworded sentence or a repaired link gets neither. A changelog that logs
+commas stops being read, and then the one entry that mattered goes unread with it. Write each line
+for the reader who came back: say what is different, and leave out how the edit was made.
 
 ## Structure
 
