@@ -883,7 +883,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
   const tagCount = (t: string) => entries.filter((e) => e.tags.includes(t)).length;
   const chipHtml = (t: string) => {
     const tag = escapeHtml(t);
-    return `<label class="chip notes-tag"><input type="checkbox" value="${tag}"><span>#${tag}</span><span class="notes-tag__n">${tagCount(t)}</span></label>`;
+    return `<label class="chip notes-tag"><input type="checkbox" value="${tag}"><span>#${tag}</span><span class="notes-tag__n">(${tagCount(t)})</span></label>`;
   };
   const headChips = allTags.slice(0, CHIP_HEAD).map(chipHtml).join("");
   const restTags = allTags.slice(CHIP_HEAD);
