@@ -8,6 +8,8 @@ date: 2026-08-18
 readingTime: "~27 min"
 deck: "Build the floor | Talk | /talks/build-the-floor | 33 slides · runs in the browser, no download"
 tags: [ai, workflow, standards, developer-tools, architecture]
+people: [cole-medin, addy-osmani]
+sources: [book-loop-engineering]
 summary: >
   Most organizations have bought AI subscriptions and are hoping the automation arrives on its own.
   This is the roadmap that actually gets there, and the implementation behind each stage. Instrument
@@ -201,7 +203,7 @@ achievable. It is not faster.
 
 Five stages is a build order, not a description. Somebody asked me what the thing being built
 actually *is*, as one artifact rather than as a list of parts, and the answer took me longer to say
-than it should have. The clearest drawing of it I have seen is in [Cole Medin's AI-native starter
+than it should have. The clearest drawing of it I have seen is in [Cole Medin](/people#cole-medin)'s [AI-native starter
 pack](https://github.com/coleam00/ai-native-starter-pack), and I have borrowed its cross-section
 here because it is better than the one I was carrying around in my head.
 
@@ -681,7 +683,7 @@ That split is the design decision worth stealing from Stripe's minions, and it i
 one-person project on day one. Git operations, linting, formatting, running the tests, filling in the
 pull request template: all plain code that executes the same way forever. Only the judgement-bearing
 steps call a model. It buys reliability and cuts cost in the same move, which is a combination you
-almost never get. Addy Osmani calls the general shape loop engineering: you stop being the person who
+almost never get. [Addy Osmani](/people#addy-osmani) calls the general shape loop engineering: you stop being the person who
 prompts the agent and design the system that does it instead.
 
 Four things around it that are not negotiable, and three of them I learned by not having them:

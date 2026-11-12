@@ -1,0 +1,13 @@
+/* note-credits — the people and sources block at the end of a note.
+ *
+ * Emitted by src/content.ts (renderNoteCredits) for any /notes entry whose frontmatter lists
+ * people or sources. Each name links to its entry on /people and each work to its card on
+ * /reading, so the block is a map back into the site rather than a row of outbound links. */
+.note-credits { margin: var(--space-6) 0 var(--space-4); padding: var(--space-4); border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md); max-width: 40rem; }
+.note-credits__head { margin: 0 0 var(--space-2); font-size: 0.85rem; font-family: var(--font-mono);
+  text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-muted); }
+.note-credits__list { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; gap: var(--space-1); }
+.note-credits__list a { font-weight: 600; }
+.note-credits__detail { margin-left: var(--space-2); font-size: 0.85rem; color: var(--ink-muted); }
+.note-credits__more { margin: 0; font-size: 0.85rem; color: var(--ink-muted); }
