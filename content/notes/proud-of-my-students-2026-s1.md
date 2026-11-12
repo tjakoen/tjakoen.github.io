@@ -1,12 +1,14 @@
 ---
 title: "Two Hundred Final Projects, and the Ones I Didn't See Coming"
+audience: [learn]
+level: intro
 subtitle: "Seven sections, three subjects, more than 200 final projects, all of them public. I told my students to build for themselves instead of a made-up client, and some of what came back is better than apps I've paid for."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-06
 readingTime: "~5 min"
-tags: [teaching, students, portfolio, ai, github]
+tags: [teaching, automation]
 summary: >
   A look back at semester one of 2026: seven sections, three subjects, more than 200 public final
   projects and 594 badges. The one rule that shaped them was to build something you actually need,

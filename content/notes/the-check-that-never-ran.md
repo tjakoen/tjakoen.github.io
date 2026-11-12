@@ -1,12 +1,14 @@
 ---
 title: "The Check Ran Once in 165 Sessions, and I Got the Reason Wrong"
+audience: [build]
+level: deep
 subtitle: "Three weeks after I published a note saying every one of my repos runs the same workflow, I finally measured it. It was living in one. I spent most of a day building a thoughtful theory about why, and the real answer was a relative file path."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-08-20
 readingTime: "~7 min"
-tags: [ai, workflow, measurement, process, standards]
+tags: [ai, workflow, measurement, standards]
 summary: >
   I built a check that fires when I sit down to work, rolled it across a dozen repositories, and
   wrote a note about it. Three weeks later my session store said it had run exactly once outside the

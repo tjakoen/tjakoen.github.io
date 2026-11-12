@@ -1,12 +1,14 @@
 ---
 title: "I Nearly Quit Teaching. So I Automated the Part That Was Killing Me."
+audience: [learn, lead]
+level: intro
 subtitle: "I teach 150 to 300 students a semester, part-time, for a fraction of what my day job pays, and last term it almost broke me. Here's why I do it anyway, how I actually run a classroom, and the GitHub-native platform I built so I could stop drowning and start teaching again."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-07-03
 readingTime: "~8 min"
-tags: [teaching, education, automation, github-actions, portfolio, ai]
+tags: [teaching, automation]
 summary: >
   Why I teach when the math says I shouldn't, how I run a classroom (treat adults like adults, lean
   into self-study, skip the fluff, go straight at the hard parts), and how, after a semester that

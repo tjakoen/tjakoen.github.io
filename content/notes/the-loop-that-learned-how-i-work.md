@@ -1,12 +1,14 @@
 ---
 title: "I Kept Telling My AI the Same Thing. So I Taught the Loop to Notice."
+audience: [build]
+level: deep
 subtitle: "My review bot learned to be wrong because every comment it left got a score. My working sessions never did. Every correction I typed died at the end of the chat, so I started writing them down and grading what the loop does with them."
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-12
 readingTime: "~7 min"
-tags: [ai, workflow, measurement, process, standards]
+tags: [ai, workflow, measurement, standards]
 summary: >
   The loop I work in only got better when I told it to. The one part that improved on its own was my
   pull request reviewer, and the reason was boring: every comment it posted got scored by what

@@ -101,10 +101,10 @@ test.describe("the /notes feed (JS on)", () => {
     const filters = page.locator("[data-tag-filters]");
     await expect(filters).toBeVisible();
     await expect(filters).not.toHaveAttribute("open", "");
-    await expect(filters.locator("summary")).toHaveText("Filter by topic");
+    await expect(filters.locator("summary")).toHaveText("Filter by tag");
     await filters.locator("summary").click();
     await expect(filters).toHaveAttribute("open", "");
-    await expect(page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first()).toBeVisible();
+    await expect(page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]:not([name="level"])').first()).toBeVisible();
   });
 
   test("the feed controls reveal once the island is live", async ({ page }) => {
@@ -133,7 +133,7 @@ test.describe("the /notes feed (JS on)", () => {
     await page.goto("/notes");
     await page.locator("[data-tag-filters]").evaluate((el) => { (el as HTMLDetailsElement).open = true; });
 
-    const firstTagCheckbox = page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first();
+    const firstTagCheckbox = page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]:not([name="level"])').first();
     const tag = await firstTagCheckbox.getAttribute("value");
     await firstTagCheckbox.check();
 
@@ -150,7 +150,7 @@ test.describe("the /notes feed (JS on)", () => {
   test("a ?tag= deep link pre-checks the matching chip and filters the feed (résumé → tagged notes)", async ({ page }) => {
     // discover a real tag from the rendered chips, then arrive at the shareable filtered URL
     await page.goto("/notes");
-    const tag = await page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first().getAttribute("value");
+    const tag = await page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]:not([name="level"])').first().getAttribute("value");
     expect(tag).toBeTruthy();
 
     await page.goto(`/notes?tag=${tag}`);
@@ -179,7 +179,7 @@ test.describe("the /notes feed (JS on)", () => {
   test("changing the tag filter mirrors the selection into the URL (shareable ?tag=)", async ({ page }) => {
     await page.goto("/notes");
     await page.locator("[data-tag-filters]").evaluate((el) => { (el as HTMLDetailsElement).open = true; });
-    const box = page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first();
+    const box = page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]:not([name="level"])').first();
     const tag = await box.getAttribute("value");
     await box.check();
     await expect(page).toHaveURL(new RegExp(`\\?tag=${tag}$`));

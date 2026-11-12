@@ -1,5 +1,7 @@
 ---
 title: "One Vocabulary, Two Operators"
+audience: [build]
+level: deep
 subtitle: "An alternative modality for human–AI interaction: one shared vocabulary, operated as peers (the GRAIN design system)"
 author: "Tjakoen Stolk"
 status: PUBLISHED
@@ -7,7 +9,7 @@ type: whitepaper
 date: 2026-07-02
 updated: 2026-07-17
 readingTime: "~28 min"
-tags: [ai, design-systems, hci, provenance, grain]
+tags: [ai, design-systems, stack]
 summary: >
   A research-style positioning of GRAIN, an AI-interaction design system: a UI where a human click and
   an AI decision resolve to the same closed, semantic action-vocabulary through one write door, with the

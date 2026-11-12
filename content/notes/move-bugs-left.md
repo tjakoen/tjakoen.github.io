@@ -1,12 +1,14 @@
 ---
 title: "Our CTO Said Move Bugs to the Left. My Tech Lead Built the Tool."
+audience: [lead]
+level: intro
 subtitle: "Matt's standing rule is that a wrong assumption gets cheaper the earlier you catch it. Kercwin turned that rule into an epic checker that reads every ticket and pull request against the plan before the drift sets in."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-10
 readingTime: "~5 min"
-tags: [ai, leadership, claude, dashboards, team]
+tags: [ai, leadership, tooling]
 people: [matt-monroe, kercwin]
 summary: >
   Kercwin, the tech lead of my team, built an epic checker that keeps a busy project aligned to its

@@ -1,12 +1,14 @@
 ---
 title: "The Loop Outlives the Model."
+audience: [build]
+level: deep
 subtitle: "Three models, one loop: how I use Claude, Codex and DeepSeek at the same time with almost no friction."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-08
 readingTime: "~11 min"
-tags: [ai, workflow, standards, developer-tools, process]
+tags: [ai, workflow, standards, tooling]
 people: [addy-osmani, alfonso-graziano, cole-medin]
 sources: [book-beyond-vibe-coding, book-loop-engineering, book-ai-native-engineering]
 summary: >

@@ -1,12 +1,14 @@
 ---
 title: "I Trust the Number. I Do Not Trust What I Say About It."
+audience: [lead, build]
+level: deep
 subtitle: "I manage a team and I measure a lot of things. The counting has never been what went wrong. Every time I got hurt, it was by the sentence I attached to the count."
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-12
 readingTime: "~4 min"
-tags: [measurement, leadership, ai, process, team]
+tags: [measurement, leadership, workflow]
 summary: >
   What metrics mean to me, from measuring my team, my AI workflow and myself. A number
   tells me what happened and never why, so I treat it as the place to start asking. Individual numbers

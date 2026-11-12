@@ -1,12 +1,14 @@
 ---
 title: "I Was Shipping Faster Than I Could Understand It"
+audience: [build]
+level: deep
 subtitle: "I run about a dozen repositories with an AI, and one week I realized I could no longer explain half of what had shipped. So I stopped adding features and built one workflow every repo runs the same way: a doctor that fires when I sit down, a contract that keeps an unattended run honest, and a rule that nothing lands until a human who still understands it says so."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-07-30
 readingTime: "~10 min"
-tags: [ai, workflow, process, developer-tools, standards, planning]
+tags: [ai, workflow, tooling, standards]
 people: [addy-osmani]
 sources: [book-loop-engineering]
 summary: >

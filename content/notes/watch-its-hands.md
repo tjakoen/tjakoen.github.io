@@ -1,12 +1,14 @@
 ---
 title: "Watch Its Hands"
+audience: [build]
+level: deep
 subtitle: "I wrote a research paper about letting an AI press the same buttons I press. This is the version I would say out loud, to someone who has no intention of reading a research paper."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-08-06
 readingTime: "~7 min"
-tags: [ai, hci, grain, design-systems]
+tags: [ai, design-systems, stack]
 summary: >
   Most AI works offstage. You ask, it disappears, it comes back with a result and a summary of itself.
   I built the opposite: the AI operates the same controls I do, enters through the same single door,

@@ -1,5 +1,7 @@
 ---
 title: "Everybody Wants the Agent. Somebody Has to Build the Floor."
+audience: [lead, build]
+level: intro
 subtitle: "How an organization goes from developers with AI subscriptions to real automation, in five stages over eighteen months. Skills first, used by hand, then triggered, then unattended. The agent is the last thing you build, not the first."
 author: "Tjakoen Stolk"
 status: PUBLISHED
@@ -10,7 +12,7 @@ changelog:
   - "2026-11-12 | Three months on: one skill has now been scored on a real team, so the limits section says what that does and does not show. Added what happened when I demoed instead of mandating, a rule about counting a check that cannot start, and model choice as a routing decision."
 readingTime: "~28 min"
 deck: "Build the floor | Talk | /talks/build-the-floor | 33 slides · runs in the browser, no download"
-tags: [ai, workflow, standards, developer-tools, architecture]
+tags: [ai, workflow, standards, tooling, web-platform]
 people: [cole-medin, addy-osmani, kercwin, kyle]
 sources: [book-loop-engineering]
 summary: >

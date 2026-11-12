@@ -1,12 +1,14 @@
 ---
 title: "I Showed My Team a Dashboard. Two Weeks Later They Showed Me Theirs."
+audience: [lead]
+level: intro
 subtitle: "I spent a month building a people app the slow way, then replaced it in an afternoon with a Claude dashboard. The better part came after I demoed it: my team went and built their own."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-10
 readingTime: "~7 min"
-tags: [ai, leadership, claude, dashboards, team]
+tags: [ai, leadership, tooling]
 people: [kercwin, kyle, cyrus]
 summary: >
   I stalled for a month building a people app the way a developer would, screen by screen, then
