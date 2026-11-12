@@ -26,13 +26,9 @@ social: |
   repo, not in the model's head. Models get retired. The loop you build around them stays, and
   it is the real skill to start on.
 socialImage:
-  - "/media/notes/plan-big-type-small-social-1-question.png"
-  - "/media/notes/plan-big-type-small-social-2-split.png"
-  - "/media/notes/plan-big-type-small-social-3-loop.png"
+  - "/media/notes/plan-big-type-small-social-4-files.png"
 socialImageAlt:
-  - "Card one of three, a question set large: Why do I keep running out of tokens before lunch? Below it, the answer was advice I thought was obvious."
-  - "Card two of three: plan on the big model, type on the small one. Opus plans, Sonnet types each piece, Opus reviews, with a tier above for research on Fable."
-  - "Card three of three: a rule written once, read by every session after it. One file grows into instructions, checks and hooks. Models get retired; the loop you build stays."
+  - "Low effort works when the repo already knows. Four boxes, instructions, skills, hooks and a plan file, each feed one dark box: the session on low effort, which starts already knowing how I work. Models get retired; the files you write around them stay."
 ---
 
 ## The question that made me write this
@@ -306,39 +302,35 @@ later, I have a loop that orients every session, holds the work to a standard, a
 something done before it is. That is why low effort works for me. The model is the same one everyone
 else gets. The floor it stands on took me months.
 
-<svg viewBox="-1 0 362 324" width="100%" role="img"
-     aria-label="How the loop grew, top to bottom. It started as one instruction file with three rules. A rule I kept repeating became a line in that file. A mistake I kept catching in review became a check. A check I kept forgetting to run became a hook. Months of these small additions became a loop that orients every session and refuses to call work done before it is."
-     style="display:block;width:100%;max-width:420px;height:auto;margin:0 auto 1.5rem;
+<svg viewBox="0 0 520 262" width="100%" role="img"
+     aria-label="A staircase that rises from left to right over months. The first step, on day one, is one instruction file with three rules. The next step is a line added for a rule I had said twice. The next is a check for a mistake I had caught twice. The next is a hook for a check I had forgotten twice. The top step is the loop itself, the floor every session now stands on. Each step rests on the ones before it."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;
             font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
-  <defs>
-    <marker id="fl-planbig4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-    </marker>
-  </defs>
-  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="100" y="16" width="160" height="36" rx="6"/>
-    <rect x="70" y="78" width="220" height="36" rx="6"/>
-    <rect x="50" y="140" width="260" height="36" rx="6"/>
-    <rect x="30" y="202" width="300" height="36" rx="6"/>
-  </g>
-  <rect x="10" y="264" width="340" height="44" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
-  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="180" y1="52" x2="180" y2="74" marker-end="url(#fl-planbig4)"/>
-    <line x1="180" y1="114" x2="180" y2="136" marker-end="url(#fl-planbig4)"/>
-    <line x1="180" y1="176" x2="180" y2="198" marker-end="url(#fl-planbig4)"/>
-    <line x1="180" y1="238" x2="180" y2="260" marker-end="url(#fl-planbig4)"/>
-  </g>
+  <rect x="10" y="180" width="100" height="40" rx="4" style="fill:none;stroke:var(--color-line);stroke-width:1"/>
+  <rect x="112" y="140" width="100" height="80" rx="4" style="fill:none;stroke:var(--color-line);stroke-width:1"/>
+  <rect x="214" y="100" width="100" height="120" rx="4" style="fill:none;stroke:var(--color-line);stroke-width:1"/>
+  <rect x="316" y="60" width="100" height="160" rx="4" style="fill:none;stroke:var(--color-line);stroke-width:1"/>
+  <rect x="418" y="20" width="100" height="200" rx="4" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <line x1="10" y1="236" x2="510" y2="236" style="stroke:var(--color-muted);stroke-width:1"/>
   <g text-anchor="middle">
-    <text x="180" y="38.3" style="fill:var(--color-fg)">One file, three rules</text>
-    <text x="180" y="100.3" style="fill:var(--color-fg)">A repeated rule becomes a line</text>
-    <text x="180" y="162.3" style="fill:var(--color-fg)">A repeated catch becomes a check</text>
-    <text x="180" y="224.3" style="fill:var(--color-fg)">A forgotten check becomes a hook</text>
-    <text x="180" y="284" style="fill:var(--color-bg)">A loop that orients every session</text>
-    <text x="180" y="300" style="fill:var(--color-bg);font-size:11.5px">months of small additions, never designed up front</text>
+    <text x="60" y="198" style="fill:var(--color-fg)">One file</text>
+    <text x="60" y="213" style="fill:var(--color-muted);font-size:11.5px">three rules</text>
+    <text x="162" y="158" style="fill:var(--color-fg)">A line</text>
+    <text x="162" y="173" style="fill:var(--color-muted);font-size:11.5px">said twice</text>
+    <text x="264" y="118" style="fill:var(--color-fg)">A check</text>
+    <text x="264" y="133" style="fill:var(--color-muted);font-size:11.5px">caught twice</text>
+    <text x="366" y="78" style="fill:var(--color-fg)">A hook</text>
+    <text x="366" y="93" style="fill:var(--color-muted);font-size:11.5px">forgot twice</text>
+    <text x="468" y="38" style="fill:var(--color-bg)">The loop</text>
+    <text x="468" y="53" style="fill:var(--color-bg);font-size:11.5px">the floor</text>
+  </g>
+  <g style="fill:var(--color-muted);font-size:12px">
+    <text x="10" y="254">day one</text>
+    <text x="510" y="254" text-anchor="end">months later</text>
   </g>
 </svg>
 
-*Every layer is something I got tired of saying twice.*
+*Every step is something I got tired of saying twice, and each one stands on the last.*
 
 You can build yours the same way, one rule at a time. Start with the word itself: I wrote about what
 a harness is, and why the machinery around the model matters more than the model, in
