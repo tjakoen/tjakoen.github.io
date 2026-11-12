@@ -40,7 +40,7 @@ import { renderCanvas, renderLibrary } from "./ai/canvas.ts";
 // comes from grain and the page parks the markup for the browser to read back.
 import { madeWith } from "@tjakoen/grain/scripts/made-with.js";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, createPortfolioDraftRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, invalidateRecentContent, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, invalidatePortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, shellPage, COLLECTION_DIRS, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, createPortfolioDraftRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, invalidateRecentContent, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, invalidatePortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, publishedDraftStub, shellPage, COLLECTION_DIRS, type CalendarEvent } from "./content.ts";
 const BADGES_DIR = COLLECTION_DIRS["/badges"];
 // Short share aliases: /b/<id> → the full cert. The generator writes this map on --emit. Loaded once
 // at boot (authoring a badge = a redeploy anyway). A miss is a 404, not a crash.
@@ -1011,6 +1011,18 @@ Bun.serve({
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
     if (fromContent) return finalizePage(req, fromContent);
+    // --- a draft that has since been published: its old /drafts/<slug> link answers with the
+    // published note's own Open Graph card and sends the reader on to /notes/<slug>. ---
+    const draftSlug = folded.match(/^\/drafts\/([^/]+)$/)?.[1];
+    if (draftSlug) {
+      const notePath = `/notes/${draftSlug}`;
+      const published = await serveContent(notePath);
+      if (published?.status === 200) {
+        const note = await finalizePage(new Request(new URL(notePath, req.url), req), published);
+        return new Response(publishedDraftStub(await note.text(), notePath),
+          { headers: { "Content-Type": "text/html; charset=utf-8" } });
+      }
+    }
     // --- the unlisted drafts: /drafts and /drafts/<slug>, for notes whose status is DRAFT ---
     const fromDrafts = await serveDrafts(p);
     if (fromDrafts) return finalizePage(req, fromDrafts);
