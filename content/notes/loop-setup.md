@@ -1,5 +1,6 @@
 ---
 title: "Set Up the Loop With One Prompt"
+audience: build
 subtitle: "The prompt, the loop, the harness, and the standards you write for yourself. Start thin; add the guards when they earn it."
 author: "Tjakoen Stolk"
 status: PUBLISHED

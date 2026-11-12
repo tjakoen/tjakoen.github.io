@@ -1,5 +1,6 @@
 ---
 title: "Write for the Person Who Has to Read It"
+audience: lead
 subtitle: "A short VOICE.md gives your AI examples of what an instructor or teammate needs to see first."
 author: "Tjakoen Stolk"
 status: PUBLISHED

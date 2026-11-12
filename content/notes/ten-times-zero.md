@@ -1,5 +1,6 @@
 ---
 title: "Ten Times Zero Is Still Zero"
+audience: build
 subtitle: >
   "Vibe coder" gets used as an insult: prompt and pray, ship a house of cards. I claim it anyway,
   with one word in front: professional. The receipt is the portfolio you're reading this on, where

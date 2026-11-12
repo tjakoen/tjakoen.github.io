@@ -1,5 +1,6 @@
 ---
 title: "Two Hundred Final Projects, and the Ones I Didn't See Coming"
+audience: learn
 subtitle: "Seven sections, three subjects, more than 200 final projects, all of them public. I told my students to build for themselves instead of a made-up client, and some of what came back is better than apps I've paid for."
 author: "Tjakoen Stolk"
 status: PUBLISHED
