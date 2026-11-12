@@ -11,6 +11,17 @@ summary: >
   Plan and orchestrate on Opus, implement with Sonnet subagents, and try low effort before assuming
   you need high. Why the split works, why the biggest models rarely pay for themselves in my daily
   work, how to run a trial instead of taking my word for it, and the same pattern in Codex.
+social: |
+  A junior developer asked me why they kept running out of tokens before lunch. Everything they did
+  ran on the biggest model at the highest effort: the planning, the renames, the one-line fixes.
+
+  My advice: plan and orchestrate on Opus, implement with Sonnet subagents, and try low effort
+  before you assume you need high. I thought that was obvious. It is only obvious after months.
+
+  The bigger lesson is underneath it. Low effort works for me because my loop holds the context in
+  files, not in the model. Models get retired. The loop you build around them stays.
+socialImage: "/media/notes/plan-big-type-small-social.png"
+socialImageAlt: "Plan on the big model, type on the small one: Opus plans, Sonnet types each piece, Opus reviews, all standing on your loop."
 ---
 
 ## The question that made me write this
@@ -42,16 +53,48 @@ Each piece goes to a Sonnet subagent with a short brief: the files, the contract
 The subagent works in its own context and hands back a result. Opus reads it, checks it against the
 plan, and either accepts it or sends it back.
 
-```mermaid label="Opus plans and reviews; Sonnet subagents implement each settled piece"
-flowchart LR
-  A[Opus: read and plan] --> B[Brief per piece]
-  B --> C[Sonnet subagent]
-  B --> D[Sonnet subagent]
-  C --> E[Opus: review against plan]
-  D --> E
-  E -->|accepted| F[Done]
-  E -->|sent back| B
-```
+<svg viewBox="-1 0 342 360" width="100%" role="img"
+     aria-label="Opus reads the code and plans. The plan becomes a short brief per piece. Each brief goes to its own Sonnet subagent, which does the typing. Opus reviews every result against the plan: what fails is sent back as a new brief, and what passes is done."
+     style="display:block;width:100%;max-width:400px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-planbig0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="60" y="16" width="180" height="36" rx="6"/>
+    <rect x="60" y="88" width="180" height="36" rx="6"/>
+    <rect x="10" y="160" width="130" height="36" rx="6"/>
+    <rect x="160" y="160" width="130" height="36" rx="6"/>
+    <rect x="30" y="232" width="240" height="36" rx="6"/>
+  </g>
+  <rect x="60" y="304" width="180" height="36" rx="6"
+        style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="150" y1="52" x2="150" y2="84" marker-end="url(#fl-planbig0)"/>
+    <line x1="125" y1="124" x2="82" y2="156" marker-end="url(#fl-planbig0)"/>
+    <line x1="175" y1="124" x2="218" y2="156" marker-end="url(#fl-planbig0)"/>
+    <line x1="82" y1="196" x2="125" y2="228" marker-end="url(#fl-planbig0)"/>
+    <line x1="218" y1="196" x2="175" y2="228" marker-end="url(#fl-planbig0)"/>
+    <line x1="150" y1="268" x2="150" y2="300" marker-end="url(#fl-planbig0)"/>
+    <path d="M270,250 C318,250 318,106 244,106" marker-end="url(#fl-planbig0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="150" y="38.3" style="fill:var(--color-fg)">Opus reads and plans</text>
+    <text x="150" y="110.3" style="fill:var(--color-fg)">A brief per piece</text>
+    <text x="75" y="182.3" style="fill:var(--color-fg)">Sonnet subagent</text>
+    <text x="225" y="182.3" style="fill:var(--color-fg)">Sonnet subagent</text>
+    <text x="150" y="254.3" style="fill:var(--color-fg)">Opus reviews against the plan</text>
+    <text x="150" y="326.3" style="fill:var(--color-bg)">Done</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
+       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="300" y="146">sent back</text>
+  </g>
+</svg>
+
+*The split: the expensive model thinks at both ends, and the cheap one does the typing in between.*
 
 There is a second saving hiding in that picture. Every file a subagent reads lives in the
 subagent's context, not the main one. The orchestrating session stays small, so every later turn in
@@ -112,8 +155,8 @@ in the other.
 
 ## The lesson
 
-The point I was trying to make to that junior developer was not really about models. It was about
-where the intelligence in a session lives. If it lives only in the model, you pay for it on every
+What I was really telling that junior developer is where the intelligence in a session should
+live. If it lives only in the model, you pay for it on every
 turn, at the highest rate, and you pay again tomorrow. If it lives in your files, the plan, the
 instructions, the rules you wrote down after something went wrong, then a cheaper model on a lower
 setting can carry it, and the expensive one is free for the few calls that need it.
@@ -134,8 +177,8 @@ None of what I run today existed on day one. It started as one instruction file 
 it. Then a rule I kept repeating to the model became a line in that file. A mistake I kept catching
 in review became a check. A check I kept forgetting to run became a hook. Months of small additions
 later, I have a loop that orients every session, holds the work to a standard, and refuses to call
-something done before it is. That is why low effort works for me. I did not get a better model. I
-built a better floor for the model to stand on.
+something done before it is. That is why low effort works for me. The model is the same one everyone
+else gets. The floor it stands on took me months.
 
 You can build yours the same way, one rule at a time. Start with the word itself: I wrote about what
 a harness is, and why the machinery around the model matters more than the model, in
