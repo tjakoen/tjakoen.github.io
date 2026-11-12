@@ -64,48 +64,56 @@ Each piece goes to a Sonnet subagent with a short brief: the files, the contract
 The subagent works in its own context and hands back a result. Opus reads it, checks it against the
 plan, and either accepts it or sends it back.
 
-<svg viewBox="-1 0 342 360" width="100%" role="img"
-     aria-label="Opus reads the code and plans. The plan becomes a short brief per piece. Each brief goes to its own Sonnet subagent, which does the typing. Opus reviews every result against the plan: what fails is sent back as a new brief, and what passes is done."
-     style="display:block;width:100%;max-width:400px;height:auto;margin:0 auto 1.5rem;
+<svg viewBox="0 0 620 290" width="100%" role="img"
+     aria-label="Two lanes. In the top lane, Opus runs the main session: it plans, then sends a short brief to each of two Sonnet subagents in the bottom lane. Each subagent reads its files and does the typing inside its own context, so those files never enter the main session. Only the result travels back up to Opus, which reviews it against the plan: a miss is sent back to planning as a new brief, and a pass is done. The main context stays small because the file reading happens below."
+     style="display:block;width:100%;max-width:620px;height:auto;margin:0 auto 1.5rem;
             font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
   <defs>
     <marker id="fl-planbig0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
     </marker>
   </defs>
-  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="60" y="16" width="180" height="36" rx="6"/>
-    <rect x="60" y="88" width="180" height="36" rx="6"/>
-    <rect x="10" y="160" width="130" height="36" rx="6"/>
-    <rect x="160" y="160" width="130" height="36" rx="6"/>
-    <rect x="30" y="232" width="240" height="36" rx="6"/>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:4 4">
+    <rect x="6" y="28" width="608" height="64" rx="8"/>
+    <rect x="6" y="150" width="608" height="134" rx="8"/>
   </g>
-  <rect x="60" y="304" width="180" height="36" rx="6"
-        style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="20" y="42" width="110" height="36" rx="6"/>
+    <rect x="360" y="42" width="150" height="36" rx="6"/>
+    <rect x="150" y="166" width="100" height="100" rx="6"/>
+    <rect x="270" y="166" width="100" height="100" rx="6"/>
+  </g>
+  <g style="fill:none;stroke:var(--color-muted);stroke-width:1"><rect x="172" y="214" width="14" height="18" rx="2"/><rect x="192" y="214" width="14" height="18" rx="2"/><rect x="212" y="214" width="14" height="18" rx="2"/><rect x="292" y="214" width="14" height="18" rx="2"/><rect x="312" y="214" width="14" height="18" rx="2"/><rect x="332" y="214" width="14" height="18" rx="2"/></g>
+  <rect x="528" y="42" width="72" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
   <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="150" y1="52" x2="150" y2="84" marker-end="url(#fl-planbig0)"/>
-    <line x1="125" y1="124" x2="82" y2="156" marker-end="url(#fl-planbig0)"/>
-    <line x1="175" y1="124" x2="218" y2="156" marker-end="url(#fl-planbig0)"/>
-    <line x1="82" y1="196" x2="125" y2="228" marker-end="url(#fl-planbig0)"/>
-    <line x1="218" y1="196" x2="175" y2="228" marker-end="url(#fl-planbig0)"/>
-    <line x1="150" y1="268" x2="150" y2="300" marker-end="url(#fl-planbig0)"/>
-    <path d="M270,250 C318,250 318,106 244,106" marker-end="url(#fl-planbig0)"/>
+    <path d="M60,78 C60,130 180,118 180,162" marker-end="url(#fl-planbig0)"/>
+    <path d="M90,78 C90,128 300,112 300,162" marker-end="url(#fl-planbig0)"/>
+    <path d="M225,166 C225,120 410,128 410,82" marker-end="url(#fl-planbig0)"/>
+    <path d="M345,166 C345,130 440,128 440,82" marker-end="url(#fl-planbig0)"/>
+    <line x1="510" y1="60" x2="524" y2="60" marker-end="url(#fl-planbig0)"/>
+    <path d="M400,42 C400,4 75,4 75,38" marker-end="url(#fl-planbig0)"/>
   </g>
   <g text-anchor="middle">
-    <text x="150" y="38.3" style="fill:var(--color-fg)">Opus reads and plans</text>
-    <text x="150" y="110.3" style="fill:var(--color-fg)">A brief per piece</text>
-    <text x="75" y="182.3" style="fill:var(--color-fg)">Sonnet subagent</text>
-    <text x="225" y="182.3" style="fill:var(--color-fg)">Sonnet subagent</text>
-    <text x="150" y="254.3" style="fill:var(--color-fg)">Opus reviews against the plan</text>
-    <text x="150" y="326.3" style="fill:var(--color-bg)">Done</text>
+    <text x="75" y="64.3" style="fill:var(--color-fg)">Opus plans</text>
+    <text x="435" y="64.3" style="fill:var(--color-fg)">Opus reviews</text>
+    <text x="564" y="64.3" style="fill:var(--color-bg)">Done</text>
+    <text x="200" y="196" style="fill:var(--color-fg)">Sonnet</text>
+    <text x="320" y="196" style="fill:var(--color-fg)">Sonnet</text>
+    <text x="200" y="254" style="fill:var(--color-muted);font-size:11.5px">reads, types</text>
+    <text x="320" y="254" style="fill:var(--color-muted);font-size:11.5px">reads, types</text>
   </g>
-  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
-       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
-    <text x="300" y="146">sent back</text>
+  <g style="fill:var(--color-muted);font-size:11.5px">
+    <text x="190" y="110" style="stroke:var(--color-bg);stroke-width:3;paint-order:stroke">main session: its context stays small</text>
+    <text x="390" y="230">subagents: the files they</text><text x="390" y="246">read stay down here</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="118" y="132">brief</text>
+    <text x="470" y="132">result only</text>
+    <text x="238" y="16">sent back</text>
   </g>
 </svg>
 
-*The split: the expensive model thinks at both ends, and the cheap one does the typing in between.*
+*The split: the expensive model thinks at both ends, the cheap one types in between, and the files it reads never reach the top lane.*
 
 There is a second saving hiding in that picture. Every file a subagent reads lives in the
 subagent's context, not the main one. The orchestrating session stays small, so every later turn in
