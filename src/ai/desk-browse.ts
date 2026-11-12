@@ -23,6 +23,27 @@ export function mountDeskBrowse({
   const assistant = document.querySelector<HTMLElement>(".assistant");
   const chatTab = assistant?.querySelector<HTMLButtonElement>('[data-shell-mode="chat"]');
   const browseTab = assistant?.querySelector<HTMLButtonElement>('[data-shell-mode="browse"]');
+  const log = assistant?.querySelector<HTMLElement>(".assistant__log");
+  // The download cost is said in the chat itself: a second desk bubble under the greeting, shown
+  // only while the conversation has not started, because the first message starts the download.
+  const showModelNotice = (local: boolean) => {
+    if (!log) return;
+    log.querySelectorAll("[data-model-notice]").forEach((notice) => notice.remove());
+    if (!local || log.querySelector('.chat-message[data-role="you"]')) return;
+    const message = document.createElement("div");
+    message.className = "chat-message";
+    message.dataset.role = "ai";
+    message.dataset.modelNotice = "";
+    message.dataset.surface = "desk-model-notice";
+    const who = document.createElement("span");
+    who.className = "chat-message__who";
+    who.textContent = "Desk";
+    const body = document.createElement("span");
+    body.className = "chat-message__body";
+    body.textContent = `I run on your device. ${downloadNote}`;
+    message.append(who, body);
+    log.append(message);
+  };
   const selectDeskPane = () => {
     if (!assistant || !panel) return;
     const browse = !allowsModel();
@@ -40,8 +61,7 @@ export function mountDeskBrowse({
     if (chatTab) chatTab.hidden = phone || !canRun || failed;
     if (browseTab) browseTab.hidden = false;
     for (const label of entryLabels) label.element.textContent = local ? label.local : label.browse ?? "";
-    // The download cost sits on the control that triggers it, as a tooltip on the Chat tab.
-    if (chatTab) chatTab.title = local ? `Runs on your device. ${downloadNote}` : "";
+    showModelNotice(local);
     if (assistant?.dataset.mode === "chat" || assistant?.dataset.mode === "browse") selectDeskPane();
     if (intro) {
       intro.textContent = phone
