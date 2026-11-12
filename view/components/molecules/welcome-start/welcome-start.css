@@ -5,3 +5,9 @@
   color: var(--color-accent, var(--ink)); text-decoration: none; font-size: var(--text-base); }
 .start__item:hover { text-decoration: underline; }
 .start__item .icon { color: var(--ink-muted); }
+
+/* The desk chat is a side panel, which a phone does not have room for, so the link that opens it
+   is hidden on narrow screens rather than leading to a cramped drawer. */
+@media (max-width: 40rem) {
+  .start__item--desk { display: none; }
+}

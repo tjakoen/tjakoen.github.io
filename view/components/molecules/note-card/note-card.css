@@ -145,3 +145,64 @@
    dashed terminal edge, same vocabulary as content-index's own [data-commit="pending"] rule. */
 .note-card[data-commit="pending"],
 [data-grade="grain"] .note-card { border-bottom-style: dashed; }
+
+/* ---- reader tabs: All / How I build / How I lead / Learning to build. Drawn like the desk's own
+   editor tab strip (mono label, hairline cells, the open tab lifted onto the page colour with an
+   accent rule on top), so choosing a reader reads as switching to another open file. The radio
+   stays in the DOM for keyboard and form semantics; only its dot is hidden. */
+.notes-audience {
+  display: flex; overflow-x: auto; scrollbar-width: none;
+  border-bottom: 1px solid var(--color-line);
+  font-family: var(--font-mono); font-size: var(--text-sm);
+}
+.notes-audience::-webkit-scrollbar { display: none; }
+.notes-audience__tab {
+  position: relative; flex: none; display: inline-flex; align-items: center; gap: var(--space-2);
+  font-family: var(--font-mono);
+  padding: var(--space-2) var(--space-4);
+  border-right: 1px solid var(--color-line);
+  color: var(--color-muted); cursor: pointer; white-space: nowrap;
+  margin-bottom: -1px; border-bottom: 1px solid transparent;
+}
+.notes-audience__tab:first-child { border-left: 1px solid var(--color-line); }
+.notes-audience__tab input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.notes-audience__tab:hover { color: var(--color-fg); }
+.notes-audience__tab:has(input:checked) {
+  color: var(--color-fg); background: var(--color-bg);
+  border-bottom-color: var(--color-bg);
+  box-shadow: inset 0 2px 0 var(--color-accent);
+}
+.notes-audience__tab:has(input:focus-visible) { outline: 1px solid var(--color-accent); outline-offset: -2px; }
+.notes-audience__n, .notes-tag__n { font-size: var(--text-xs); color: var(--color-muted); }
+
+/* ---- tag tokens: `#tag 5`, mono and borderless like an identifier in the editor, not a form
+   control. The checkbox stays for semantics and is visually hidden; a checked tag takes the accent. */
+.notes-tags { gap: var(--space-1) var(--space-3); }
+.chip.notes-tag {
+  border: 0; padding: 0; background: none; gap: var(--space-1);
+  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted);
+  position: relative; cursor: pointer;
+}
+.chip.notes-tag input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.chip.notes-tag:hover { color: var(--color-fg); }
+.chip.notes-tag:has(input:checked) { color: var(--color-accent); }
+.chip.notes-tag:has(input:checked) span:first-of-type { text-decoration: underline; text-underline-offset: 3px; }
+.chip.notes-tag:has(input:focus-visible) { outline: 1px solid var(--color-accent); outline-offset: 2px; }
+.note-card__tag { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted); margin-right: var(--space-2); }
+
+/* ---- depth label on each card: Start here for an approachable read, Deep dive for one that
+   assumes the loop and its vocabulary. Accent for the way in, muted for the deep end. */
+.note-card__level { font-weight: var(--font-weight-medium, 600); white-space: nowrap; }
+.note-card__level[data-level="intro"] { color: var(--color-accent); }
+.note-card__level[data-level="deep"] { color: var(--color-muted); }
+/* Start here leads the tag row in the accent colour: the one token that says where a newcomer begins. */
+.chip.notes-tag--level { color: var(--color-accent); margin-right: var(--space-2); }
+.chip.notes-tag[hidden] { display: none; }
+/* clear: shown only while a tag is checked, it unchecks them all in one click. */
+.notes-tags__clear { all: unset; cursor: pointer; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-accent); }
+.notes-tags__clear:hover { text-decoration: underline; }
+.notes-tags__clear:focus-visible { outline: 1px solid var(--color-accent); outline-offset: 2px; }
+.notes-tags__clear[hidden] { display: none; }
+/* the reading column: the minutes over a min label, so the number reads as length, not votes. */
+.note-card__unit { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted); line-height: 1; }
+.note-card__vote .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

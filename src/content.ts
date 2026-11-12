@@ -798,6 +798,8 @@ export interface NoteFeedEntry {
   readingTime: string;
   score: number;
   tags: string[];
+  audience: string[];
+  level: string;
   sections: number;
 }
 // Memoized. The note corpus is read and parsed from disk in here, and one page render asks for it
@@ -828,6 +830,10 @@ async function computeSortedNoteEntries(): Promise<NoteFeedEntry[]> {
       readingTime,
       score: scoreMatch ? Number(scoreMatch[0]) : 0,
       tags: Array.isArray(fm.tags) ? fm.tags : [],
+      // One reader group or several, written like tags: \`audience: [learn, build]\`.
+      audience: Array.isArray(fm.audience) ? fm.audience.map(String)
+        : typeof fm.audience === "string" ? [fm.audience] : [],
+      level: fm.level === "deep" ? "deep" : fm.level === "intro" ? "intro" : "",
       sections: (body.match(/^## /gm) ?? []).length,
     });
   }
@@ -852,6 +858,14 @@ async function computeSortedNoteEntries(): Promise<NoteFeedEntry[]> {
  *  tree keep showing genuinely-recent notes first. */
 export const FLAGSHIP_NOTE_SLUG = "ten-times-zero";
 
+/** The three reader groups a note is written for, set by each note's \`audience\` frontmatter.
+ *  They render as the tabs at the top of /notes, with All first and checked by default. */
+export const NOTE_AUDIENCES: ReadonlyArray<{ id: string; label: string }> = [
+  { id: "build", label: "How I build" },
+  { id: "lead", label: "How I lead" },
+  { id: "learn", label: "Learning to build" },
+];
+
 export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise<string> {
   const notes = collections[0]!;                     // the "/notes" collection above
   const dated = await sortedNoteEntries();
@@ -868,10 +882,12 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
   // Reduce the chip pile: show a handful up front, tuck the rest behind a "+N more" toggle (all
   // checkboxes stay in the DOM either way, so a ?tag= deep link can still check an overflow tag and
   // the island reveals the rest when it does).
-  const CHIP_HEAD = 6;
+  const CHIP_HEAD = 12;
+  // Published notes per tag, shown on the chip so a reader sees how deep a topic goes.
+  const tagCount = (t: string) => entries.filter((e) => e.tags.includes(t)).length;
   const chipHtml = (t: string) => {
     const tag = escapeHtml(t);
-    return `<label class="chip"><input type="checkbox" value="${tag}"> ${tag}</label>`;
+    return `<label class="chip notes-tag"><input type="checkbox" value="${tag}"><span>#${tag}</span><span class="notes-tag__n">(${tagCount(t)})</span></label>`;
   };
   const headChips = allTags.slice(0, CHIP_HEAD).map(chipHtml).join("");
   const restTags = allTags.slice(CHIP_HEAD);
@@ -886,14 +902,16 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     const time = e.date ? `<time datetime="${date}">${date}</time>` : "";
     const byline = `Tjakoen Stolk · the desk${time ? ` · ${time}` : ""}`;
     const summary = escapeHtml(e.summary || e.subtitle);
-    const tags = e.tags.map((t) => `<span class="badge" data-status="active">${escapeHtml(t)}</span>`).join("");
+    const tags = e.tags.map((t) => `<span class="note-card__tag">#${escapeHtml(t)}</span>`).join("");
     const dataTags = escapeHtml(e.tags.join(" "));
     const pinned = e.slug === FLAGSHIP_NOTE_SLUG;
+    const levelTag = e.level === "intro" ? `<span class="note-card__level" data-level="intro">Start here</span> · `
+      : e.level === "deep" ? `<span class="note-card__level" data-level="deep">Deep dive</span> · ` : "";
     const pinTag = pinned ? `<span class="note-card__pin">📌 Pinned</span> · ` : "";
-    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}">
-        <div class="note-card__vote" aria-hidden="true" title="Reading minutes, from the note's own frontmatter. Not votes.">&#9650;<span class="note-card__score">${e.score}</span></div>
+    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}" data-audience="${escapeHtml(e.audience.join(" "))}" data-level="${e.level}">
+        <div class="note-card__vote" title="${e.score} minute read"><span class="note-card__score">${e.score}</span><span class="note-card__unit">min</span><span class="visually-hidden"> minute read</span></div>
         <div class="note-card__main">
-          <p class="note-card__byline">${pinTag}${byline}</p>
+          <p class="note-card__byline">${pinTag}${levelTag}${byline}</p>
           <h2 class="note-card__title"><a href="/notes/${slug}">${escapeHtml(e.title)}</a></h2>
           <p class="note-card__summary">${summary}</p>
           <p class="note-card__foot"><span class="note__tags">${tags}</span>
@@ -957,25 +975,58 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       // one filter pass over BOTH controls: the checked tag chips (a card must carry one) AND the
       // free-text search (matched against the card's own text). Either empty means "don't constrain".
       function applyFilters() {
-        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
+        var aud = form.querySelector('input[name="audience"]:checked');
+        var audience = aud ? aud.value : "";
+        var lvl = form.querySelector('input[name="level"]:checked');
+        var level = lvl ? lvl.value : "";
+        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked:not([name="level"])'));
         var wanted = boxes.map(function (b) { return b.value; });
         var q = (search && search.value || "").trim().toLowerCase();
         cards.forEach(function (card) {
           var tags = (card.getAttribute("data-tags") || "").split(" ");
           var tagOk = wanted.length === 0 || wanted.some(function (t) { return tags.indexOf(t) !== -1; });
           var textOk = q === "" || (card.textContent || "").toLowerCase().indexOf(q) !== -1;
-          card.hidden = !(tagOk && textOk);
+          var audOk = audience === "" || (card.getAttribute("data-audience") || "").split(" ").indexOf(audience) !== -1;
+          var levelOk = level === "" || card.getAttribute("data-level") === level;
+          card.hidden = !(tagOk && textOk && audOk && levelOk);
         });
-        if (empty && !(wanted.length === 0 && q === "")) empty.hidden = true;
+        if (empty && !(wanted.length === 0 && q === "" && audience === "" && level === "")) empty.hidden = true;
+        recountTags(audience);
+        var clearBtn = form.querySelector("[data-tags-clear]");
+        if (clearBtn) clearBtn.hidden = form.querySelectorAll('input[type="checkbox"]:checked').length === 0;
+      }
+
+      // The tag row follows the open tab: each count is the notes in that tab carrying the tag,
+      // and a tag with none there is hidden (unless it is checked, so a reader can still uncheck it).
+      function recountTags(audience) {
+        var inTab = cards.filter(function (card) {
+          return audience === "" || (card.getAttribute("data-audience") || "").split(" ").indexOf(audience) !== -1;
+        });
+        Array.prototype.forEach.call(form.querySelectorAll(".notes-tag"), function (chip) {
+          var box = chip.querySelector("input");
+          var n = inTab.filter(function (card) {
+            return box.name === "level" ? card.getAttribute("data-level") === box.value
+              : (card.getAttribute("data-tags") || "").split(" ").indexOf(box.value) !== -1;
+          }).length;
+          var out = chip.querySelector(".notes-tag__n");
+          if (out) out.textContent = "(" + n + ")";
+          chip.hidden = n === 0 && !box.checked;
+        });
       }
 
       // Mirror the current tag filter into the URL so a filtered view is shareable (replaceState,
       // not push — filtering isn't navigation). Search text stays out of the URL. Empty tag set
       // drops the query entirely.
       function syncUrl() {
-        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
+        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked:not([name="level"])'));
         var wanted = boxes.map(function (b) { return b.value; });
-        var url = location.pathname + (wanted.length ? "?tag=" + wanted.join(",") : "") + location.hash;
+        var aud = form.querySelector('input[name="audience"]:checked');
+        var params = [];
+        if (aud && aud.value) params.push("for=" + aud.value);
+        var lvl = form.querySelector('input[name="level"]:checked');
+        if (lvl && lvl.value) params.push("level=" + lvl.value);
+        if (wanted.length) params.push("tag=" + wanted.join(","));
+        var url = location.pathname + (params.length ? "?" + params.join("&") : "") + location.hash;
         try { history.replaceState(null, "", url); } catch { /* file:// — leave the URL be */ }
       }
 
@@ -985,6 +1036,11 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
         moreBtn.textContent = open ? "fewer" : "+" + rest.querySelectorAll(".chip").length + " more";
       }
+      var clearTags = form.querySelector("[data-tags-clear]");
+      if (clearTags) clearTags.addEventListener("click", function () {
+        Array.prototype.forEach.call(form.querySelectorAll('input[type="checkbox"]:checked'), function (b) { b.checked = false; });
+        applyFilters(); syncUrl();
+      });
       if (moreBtn) moreBtn.addEventListener("click", function () { revealRest(rest.hidden); });
 
       // Honor a ?tag= deep link on boot: check every chip that matches (comma list ok) and filter.
@@ -992,6 +1048,12 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       // and leave the full list visible (an unknown tag filters nothing). A matched tag in the
       // collapsed overflow reveals it, so the checked chip is visible.
       function applyQueryTags() {
+        var forParam = new URLSearchParams(location.search).get("for");
+        var audBox = forParam && form.querySelector('input[name="audience"][value="' + forParam.replace(/[^a-z]/g, "") + '"]');
+        if (audBox) { audBox.checked = true; applyFilters(); }
+        var levelParam = new URLSearchParams(location.search).get("level");
+        var levelBox = levelParam && form.querySelector('input[name="level"][value="' + levelParam.replace(/[^a-z]/g, "") + '"]');
+        if (levelBox) { levelBox.checked = true; applyFilters(); }
         var q = new URLSearchParams(location.search).get("tag");
         if (!q) return;
         if (tagFilters) tagFilters.open = true;
@@ -1015,7 +1077,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var target = ev.target;
         if (!target) return;
         if (target.name === "sort") sortCards();
-        else if (target.type === "checkbox") { applyFilters(); syncUrl(); }
+        else if (target.type === "checkbox" || target.name === "audience" || target.name === "level") { applyFilters(); syncUrl(); }
       });
       if (search) search.addEventListener("input", function () { applyFilters(); });
 
@@ -1023,6 +1085,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       // Keep the familiar chip row on desktop. On phones, the disclosure stays closed until a
       // reader asks for it, so the first essay is not buried under the filter controls.
       if (tagFilters && window.matchMedia && window.matchMedia("(min-width: 40.001rem)").matches) tagFilters.open = true;
+      recountTags((form.querySelector('input[name="audience"]:checked') || {}).value || "");
       form.hidden = false;   // reveal the controls only once the island is live
     })();
   </script>`;
@@ -1030,20 +1093,24 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
   const deskTrigger = `<button class="btn notes-toolbar__ai" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ See what's new</button>`;
   const body = `<h1 class="masthead">Notes</h1>
     <form class="notes-toolbar" data-feed-controls hidden>
+      <div class="notes-audience" role="radiogroup" aria-label="Show notes for">
+        <label class="notes-audience__tab"><input type="radio" name="audience" value="" checked><span>All</span><span class="notes-audience__n">${entries.length}</span></label>
+        ${NOTE_AUDIENCES.map((a) => `<label class="notes-audience__tab"><input type="radio" name="audience" value="${a.id}"><span>${a.label}</span><span class="notes-audience__n">${entries.filter((e) => e.audience.includes(a.id)).length}</span></label>`).join("\n        ")}
+      </div>
       <div class="notes-toolbar__bar">
         <input class="notes-search" type="search" placeholder="Search notes" aria-label="Search notes"
                autocomplete="off" data-notes-search>
         <div class="notes-toolbar__actions">
           <div class="chips notes-sort" role="radiogroup" aria-label="Sort">
             <label class="chip"><input type="radio" name="sort" value="new" checked> New</label>
-            <label class="chip"><input type="radio" name="sort" value="top"> Top</label>
+            <label class="chip"><input type="radio" name="sort" value="top"> Longest</label>
           </div>
           ${deskTrigger}
         </div>
       </div>
       <details class="notes-tag-filters" data-tag-filters>
-        <summary>Filter by topic</summary>
-        <div class="chips notes-tags" aria-label="Filter by tag">${headChips}${restChips}</div>
+        <summary>Filter by tag</summary>
+        <div class="chips notes-tags" aria-label="Filter by tag"><label class="chip notes-tag notes-tag--level"><input type="checkbox" name="level" value="intro"><span>Start here</span><span class="notes-tag__n">(${entries.filter((e) => e.level === "intro").length})</span></label>${headChips}${restChips}<button type="button" class="notes-tags__clear" data-tags-clear hidden>× clear</button></div>
       </details>
     </form>
     <p class="feed-empty" data-feed-empty hidden></p>

@@ -1,5 +1,7 @@
 ---
 title: "Seven Hundred Commits to Teach a Reviewer It Was Wrong"
+audience: [lead, build]
+level: deep
 subtitle: "In August I wrote one Claude skill to review pull requests in my voice. Three months later it runs on a schedule, borrows Codex when Claude runs dry, builds on teammates' reviews, and most of its commits are the reviewer being corrected."
 author: "Tjakoen Stolk"
 status: PUBLISHED
@@ -7,7 +9,7 @@ type: note
 layout: timeline
 date: 2026-11-09
 readingTime: "~12 min"
-tags: [ai, claude, code-review, leadership, codex]
+tags: [ai, leadership]
 people: [kaither-holiway, kercwin, addy-osmani]
 sources: [book-loop-engineering]
 summary: >

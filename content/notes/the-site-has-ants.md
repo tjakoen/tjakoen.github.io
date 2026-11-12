@@ -1,5 +1,7 @@
 ---
 title: "I put bugs on my website. On purpose."
+audience: [build]
+level: intro
 subtitle: "A small, self-growing ant colony hidden on a professional site. It has rules, rival colonies, and no win screen, because it is a simulation more than a game."
 author: "Tjakoen Stolk"
 status: PUBLISHED
@@ -7,7 +9,7 @@ type: note
 date: 2026-11-07
 updated: 2026-11-12
 readingTime: "~16 min"
-tags: [games, interactive, vanilla, simulation, grain, ai]
+tags: [web-platform, stack]
 summary: >
   My portfolio has ants now. They read the page, take real letters home, feed a queen, build more
   mounds, and meet a rival colony that grows on its own rules. It is a handful of plain JavaScript

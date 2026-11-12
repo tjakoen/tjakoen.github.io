@@ -1,12 +1,14 @@
 ---
 title: "I Built a Whole Stack Because No To-Do App Would Have Me"
+audience: [build]
+level: intro
 subtitle: "The honest story of how trying to get my own life organized turned into a no-build web stack, a design system, a little content engine, and an AI whose entire job is to manage me"
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-07-02
 readingTime: "~9 min"
-tags: [origin-story, batch, grain, mill, native-first, ai]
+tags: [stack, web-platform]
 people: [brad-frost, coding2go]
 sources: [book-atomic-design]
 summary: >

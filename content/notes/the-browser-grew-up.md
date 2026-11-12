@@ -1,12 +1,14 @@
 ---
 title: "The Browser Grew Up While I Was Busy With Frameworks"
+audience: [build, learn]
+level: intro
 subtitle: "For years I built inside frameworks because the native platform genuinely couldn't keep up. Prepping a class, I looked again. It can now. So I bet a whole stack on vanilla HTML and CSS, and this is the honest ledger of what that bought me."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-07-04
 readingTime: "~16 min"
-tags: [native-first, css, no-build, batch, web-platform, performance]
+tags: [web-platform, stack]
 summary: >
   I spent years inside frameworks because the native web platform couldn't do the job. It can now.
   Here is the specific, mildly technical account of the browser features (View Transitions, the dialog

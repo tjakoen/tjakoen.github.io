@@ -1,12 +1,14 @@
 ---
 title: "The Console I Built to Stop Drowning"
+audience: [learn, build]
+level: deep
 subtitle: "I went from four classes to seven in one term. The first thing I built to survive it was a QR attendance scanner. It taught me a shape, a data-free page that reads my teacher repos live and only writes back through one door, and that shape grew into the whole console: attendance on one tab, and every AI-proposed grade held grainy until I sign it on the other."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-07-31
 readingTime: "~10 min"
-tags: [teaching, ai, grain, attendance, github, assessment]
+tags: [teaching, stack, automation]
 summary: >
   The story of the Course Console, and how it grew out of a scaling problem. Going from four classes
   to seven made attendance alone unmanageable, so I built a data-free QR scanner: signed codes a

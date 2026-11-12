@@ -1,12 +1,14 @@
 ---
 title: "This Site Feels Like an App. It's a Stack of Full Page Loads."
+audience: [build]
+level: deep
 subtitle: "Every click here loads a whole new document, the old-fashioned way. It still feels like a single-page app, because the browser now does the part I used to ship a framework for. Here is the actual machinery, seams and all."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-07-05
 readingTime: "~13 min"
-tags: [batch, grain, mill, no-build, view-transitions, architecture]
+tags: [stack, web-platform]
 summary: >
   A technical tour of how portfolio.tjakoen.com is built, and why it is a different way of doing things:
   the single-page feel is a cross-document View Transition, not an SPA; there is no build step,
