@@ -121,6 +121,14 @@ body.app-window-backdrop[data-viewport="mobile"] { padding-block: 0; }
   height: 3.4rem; padding: 0; }
 [data-rail-collapsed="true"] .app-dock__icon { border-right: 0; flex: none; }
 [data-rail-collapsed="true"] .app-dock__item .file-tree__close { display: none; }
+/* the explorer toggle above the dock gets the same treatment: a Menu label under its icon, shown
+   only while the rail is collapsed. */
+.activity-bar__label { display: none; }
+[data-rail-collapsed="true"] .activity-bar__item[data-shell="rail-toggle"] {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem;
+  height: auto; padding-block: 0.4rem; }
+[data-rail-collapsed="true"] .activity-bar__label {
+  display: block; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: -0.03em; }
 [data-rail-collapsed="true"] .app-dock__label {
   flex: none; max-width: 100%; padding-inline: 0; font-size: 0.6rem; letter-spacing: -0.03em; text-align: center; }
 
