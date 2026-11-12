@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-07-04
 readingTime: "~16 min"
-tags: [native-first, css, no-build, batch, web-platform, performance]
+tags: [web-platform, stack]
 summary: >
   I spent years inside frameworks because the native web platform couldn't do the job. It can now.
   Here is the specific, mildly technical account of the browser features (View Transitions, the dialog

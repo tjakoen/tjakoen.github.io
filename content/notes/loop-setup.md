@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-08
 readingTime: "~12 min"
-tags: [ai, workflow, setup, developer-tools, process]
+tags: [workflow, tooling]
 people: [addy-osmani, alfonso-graziano, cole-medin]
 sources: [book-beyond-vibe-coding, book-loop-engineering, book-ai-native-engineering]
 summary: >

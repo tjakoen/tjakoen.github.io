@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-07-03
 readingTime: "~7 min"
-tags: [teaching, github-actions, automation, native-first, ai]
+tags: [teaching, automation, web-platform]
 summary: >
   The maker's story of a GitHub-native course platform: GitHub is the LMS, a repo is the coursework,
   a push is a submission, and grading is an Action. How the "repo is the platform" reframe fell out

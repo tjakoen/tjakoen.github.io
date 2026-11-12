@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-07-30
 readingTime: "~10 min"
-tags: [ai, workflow, process, developer-tools, standards, planning]
+tags: [workflow, tooling, standards]
 people: [addy-osmani]
 sources: [book-loop-engineering]
 summary: >

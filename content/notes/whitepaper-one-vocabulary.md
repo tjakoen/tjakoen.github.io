@@ -8,7 +8,7 @@ type: whitepaper
 date: 2026-07-02
 updated: 2026-07-17
 readingTime: "~28 min"
-tags: [ai, design-systems, hci, provenance, grain]
+tags: [design-systems, stack]
 summary: >
   A research-style positioning of GRAIN, an AI-interaction design system: a UI where a human click and
   an AI decision resolve to the same closed, semantic action-vocabulary through one write door, with the

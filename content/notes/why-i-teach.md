@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-07-03
 readingTime: "~8 min"
-tags: [teaching, education, automation, github-actions, portfolio, ai]
+tags: [teaching, automation]
 summary: >
   Why I teach when the math says I shouldn't, how I run a classroom (treat adults like adults, lean
   into self-study, skip the fluff, go straight at the hard parts), and how, after a semester that

@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-07-31
 readingTime: "~10 min"
-tags: [teaching, ai, grain, attendance, github, assessment]
+tags: [teaching, stack, automation]
 summary: >
   The story of the Course Console, and how it grew out of a scaling problem. Going from four classes
   to seven made attendance alone unmanageable, so I built a data-free QR scanner: signed codes a

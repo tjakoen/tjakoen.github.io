@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-11
 readingTime: "~6 min"
-tags: [ai, standards, communication, team, workflow, teaching]
+tags: [standards, leadership, workflow, teaching]
 people: [kercwin, ege-vusal-chelebi]
 sources: [book-cure-for-ai-slop]
 summary: >

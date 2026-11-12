@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-06
 readingTime: "~5 min"
-tags: [teaching, students, portfolio, ai, github]
+tags: [teaching, automation]
 summary: >
   A look back at semester one of 2026: seven sections, three subjects, more than 200 public final
   projects and 594 badges. The one rule that shaped them was to build something you actually need,

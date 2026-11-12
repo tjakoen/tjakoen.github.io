@@ -8,7 +8,7 @@ type: note
 layout: timeline
 date: 2026-11-09
 readingTime: "~12 min"
-tags: [ai, claude, code-review, leadership, codex]
+tags: [agents, leadership]
 people: [kaither-holiway, kercwin, addy-osmani]
 sources: [book-loop-engineering]
 summary: >

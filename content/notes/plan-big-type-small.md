@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-13
 readingTime: "~8 min"
-tags: [ai, claude-code, codex, workflow, tokens]
+tags: [agents, workflow]
 summary: >
   Plan and orchestrate on Opus, implement with Sonnet subagents, and try low effort before assuming
   you need high. Why the split works, why the biggest models rarely pay for themselves in my daily
