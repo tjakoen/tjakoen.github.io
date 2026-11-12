@@ -56,7 +56,12 @@ this note exists.
 
 Most of a build task is not hard. Deciding what to change, in which files, in what order, and what
 done looks like is hard. Writing the function once all of that is decided is mostly typing. Paying
-the most capable model to do the typing is paying a senior engineer to retype a spec.
+the most capable model to do the typing is like paying a senior engineer to retype a spec.
+
+**Treat the big model as the senior engineer and the subagents as subroutines.** You would not ask
+your best engineer to retype a spec. You would ask them to write it, hand the pieces out, and read
+what comes back. A subroutine takes a clear input, does one job, and returns a result without
+dragging its working notes into the caller. That is exactly what a good subagent is.
 
 So the work splits in two. The main session runs on Opus. It reads the code, asks the questions,
 writes the plan, and cuts the work into pieces small enough that each one has a settled answer.
@@ -177,6 +182,44 @@ work. On low effort the model does not have to work out from nothing how I like 
 because the repo tells it. The thinking that high effort would spend rediscovering the context is
 already written down.
 
+<svg viewBox="0 0 460 200" width="100%" role="img"
+     aria-label="Four things in the repo feed every session. Instruction files say how each repo works. Skills carry the standards. Hooks check the work at session start and before it is called done. A plan file says what this piece of work is. All four flow into the session, so the model on low effort starts already knowing how I work instead of rediscovering it."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-planbig3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="12" y="16" width="100" height="52" rx="6"/>
+    <rect x="124" y="16" width="100" height="52" rx="6"/>
+    <rect x="236" y="16" width="100" height="52" rx="6"/>
+    <rect x="348" y="16" width="100" height="52" rx="6"/>
+  </g>
+  <rect x="60" y="132" width="340" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <path d="M62,68 C62,100 130,100 130,128" marker-end="url(#fl-planbig3)"/>
+    <line x1="174" y1="68" x2="200" y2="128" marker-end="url(#fl-planbig3)"/>
+    <line x1="286" y1="68" x2="260" y2="128" marker-end="url(#fl-planbig3)"/>
+    <path d="M398,68 C398,100 330,100 330,128" marker-end="url(#fl-planbig3)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="62" y="38" style="fill:var(--color-fg)">Instructions</text>
+    <text x="62" y="56" style="fill:var(--color-muted);font-size:11.5px">how the repo works</text>
+    <text x="174" y="38" style="fill:var(--color-fg)">Skills</text>
+    <text x="174" y="56" style="fill:var(--color-muted);font-size:11.5px">the standards</text>
+    <text x="286" y="38" style="fill:var(--color-fg)">Hooks</text>
+    <text x="286" y="56" style="fill:var(--color-muted);font-size:11.5px">checks, start and end</text>
+    <text x="398" y="38" style="fill:var(--color-fg)">Plan file</text>
+    <text x="398" y="56" style="fill:var(--color-muted);font-size:11.5px">what this work is</text>
+    <text x="230" y="154" style="fill:var(--color-bg)">The session, on low effort</text>
+    <text x="230" y="172" style="fill:var(--color-bg);font-size:11.5px">starts already knowing how I work</text>
+  </g>
+</svg>
+
+*The thinking high effort would spend on context is already sitting in four files.*
+
 A fresh setup does not have that, so low effort may cost you something there. Do not take my word
 for it either way. Run a trial:
 
@@ -262,6 +305,40 @@ in review became a check. A check I kept forgetting to run became a hook. Months
 later, I have a loop that orients every session, holds the work to a standard, and refuses to call
 something done before it is. That is why low effort works for me. The model is the same one everyone
 else gets. The floor it stands on took me months.
+
+<svg viewBox="-1 0 362 324" width="100%" role="img"
+     aria-label="How the loop grew, top to bottom. It started as one instruction file with three rules. A rule I kept repeating became a line in that file. A mistake I kept catching in review became a check. A check I kept forgetting to run became a hook. Months of these small additions became a loop that orients every session and refuses to call work done before it is."
+     style="display:block;width:100%;max-width:420px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-planbig4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="100" y="16" width="160" height="36" rx="6"/>
+    <rect x="70" y="78" width="220" height="36" rx="6"/>
+    <rect x="50" y="140" width="260" height="36" rx="6"/>
+    <rect x="30" y="202" width="300" height="36" rx="6"/>
+  </g>
+  <rect x="10" y="264" width="340" height="44" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="180" y1="52" x2="180" y2="74" marker-end="url(#fl-planbig4)"/>
+    <line x1="180" y1="114" x2="180" y2="136" marker-end="url(#fl-planbig4)"/>
+    <line x1="180" y1="176" x2="180" y2="198" marker-end="url(#fl-planbig4)"/>
+    <line x1="180" y1="238" x2="180" y2="260" marker-end="url(#fl-planbig4)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="180" y="38.3" style="fill:var(--color-fg)">One file, three rules</text>
+    <text x="180" y="100.3" style="fill:var(--color-fg)">A repeated rule becomes a line</text>
+    <text x="180" y="162.3" style="fill:var(--color-fg)">A repeated catch becomes a check</text>
+    <text x="180" y="224.3" style="fill:var(--color-fg)">A forgotten check becomes a hook</text>
+    <text x="180" y="284" style="fill:var(--color-bg)">A loop that orients every session</text>
+    <text x="180" y="300" style="fill:var(--color-bg);font-size:11.5px">months of small additions, never designed up front</text>
+  </g>
+</svg>
+
+*Every layer is something I got tired of saying twice.*
 
 You can build yours the same way, one rule at a time. Start with the word itself: I wrote about what
 a harness is, and why the machinery around the model matters more than the model, in
