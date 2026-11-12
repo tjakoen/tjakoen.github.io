@@ -46,7 +46,7 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     await viewportToggle.click();
     await expect(viewportToggle).toHaveText(/mobile/);
     await expect(asideToggle).toBeHidden();
-    await page.locator('.assistant__modes [data-shell-mode="chat"]').click();
+    await page.getByRole("navigation", { name: "Main" }).getByRole("button", { name: "Browse" }).click();
     await expect(shell).toHaveAttribute("data-aside-open", "");
     await page.keyboard.press("Escape");
 
@@ -57,7 +57,7 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     await expect(viewportToggle).toHaveText(/mobile/);
     await page.setViewportSize({ width: 768, height: 720 });
     await expect(viewportToggle).toHaveText(/mobile/);
-    await page.locator('.assistant__modes [data-shell-mode="chat"]').click();
+    await page.getByRole("navigation", { name: "Main" }).getByRole("button", { name: "Browse" }).click();
     await expect(shell).toHaveAttribute("data-aside-open", "");
     await page.setViewportSize({ width: 1280, height: 720 });
     await expect(viewportToggle).toHaveText(/desktop/);
