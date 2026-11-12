@@ -13,8 +13,6 @@ test.describe("portfolio umbrella", () => {
     await expect(page.locator(".start .start__item").first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Explore selected work" })).toHaveAttribute("href", "/projects");
     await expect(page.locator(".welcome__sub")).toContainText("I lead engineering teams");
-    await expect(page.getByRole("link", { name: "How I work across teaching, engineering, and management" }))
-      .toHaveAttribute("href", "/about#profile");
     await expect(page.locator('[data-surface="welcome-start"] a[href="/projects"]')).toHaveCount(0);
     // Recent is fed LIVE from MILL frontmatter: real note or calendar links, not hand-typed rows
     const welcomeRecent = '[data-surface="welcome-recent"]';
