@@ -7,7 +7,7 @@ type: note
 date: 2026-11-10
 readingTime: "~7 min"
 tags: [ai, leadership, claude, dashboards, team]
-people: [kercwin, kyle]
+people: [kercwin, kyle, cyrus]
 summary: >
   I stalled for a month building a people app the way a developer would, screen by screen, then
   rebuilt it in an afternoon as a Claude dashboard once I started thinking like an orchestrator. The
@@ -310,7 +310,7 @@ instead of carrying it.
 
 ### Cyrus's PR desk
 
-[Cyrus](https://www.linkedin.com/in/parcgm-work/) is a fresh graduate who joined the team about three
+[Cyrus](/people#cyrus) is a fresh graduate who joined the team about three
 months ago. He built My PR Desk so he would stop digging through GitHub to find out where his work
 stands. One page shows his open pull requests with how many approvals each has and still needs, who
 reviewed it, whether the checks pass, and which comments and threads are new since he last looked. Below
