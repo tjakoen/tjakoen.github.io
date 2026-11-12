@@ -69,6 +69,23 @@ import { nestDesktop } from "./nest-availability.js";
     return deskSubmit(ctx, text, `→ theme: ${ctx.arg} — watch the chat.`);
   }});
 
+  // ── unlisted commands ──────────────────────────────────────────────────────────────────────────
+  // A command registered with `hidden: true` runs like any other and is left out of `help`. GRAIN's
+  // registry has no such flag, so `help` is re-registered here to skip them; everything else about
+  // it matches GRAIN's own. This is a door the owner knows about, not a lock: the drafts section is
+  // unlisted and noindex, and the repository it is built from is public.
+  t.register({ name: "help", args: "", help: "list what the AI understands", run(ctx) {
+    const esc = (v) => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    for (const c of ctx.commands()) {
+      if (c.hidden) continue;
+      ctx.printHtml(`<b>${esc(c.name)}</b>${c.args ? " " + esc(c.args) : ""} — ${esc(c.help)}`);
+    }
+  }});
+  t.register({ name: "drafts", args: "", help: "open the unlisted drafts", hidden: true, run(ctx) {
+    ctx.print("→ opening the drafts. Unlisted, unfinished, and not for sharing yet.");
+    location.assign("/drafts");
+  }});
+
   // ── whoami: the short version ───────────────────────────────────────────────────────────────────
   t.register({ name: "whoami", args: "", help: "who built this", run(ctx) {
     ctx.print("Tjakoen Stolk — I teach software engineering and build AI-first interfaces.");

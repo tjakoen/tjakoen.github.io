@@ -40,7 +40,7 @@ import { renderCanvas, renderLibrary } from "./ai/canvas.ts";
 // comes from grain and the page parks the markup for the browser to read back.
 import { madeWith } from "@tjakoen/grain/scripts/made-with.js";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, invalidateRecentContent, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, invalidatePortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, shellPage, COLLECTION_DIRS, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, createPortfolioDraftRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, invalidateRecentContent, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, invalidatePortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, shellPage, COLLECTION_DIRS, type CalendarEvent } from "./content.ts";
 const BADGES_DIR = COLLECTION_DIRS["/badges"];
 // Short share aliases: /b/<id> → the full cert. The generator writes this map on --emit. Loaded once
 // at boot (authoring a badge = a redeploy anyway). A miss is a 404, not a crash.
@@ -457,6 +457,11 @@ async function finalizePage(req: Request, res: Response | Promise<Response>): Pr
   return new Response(html, { status: r.status, headers: r.headers });
 }
 const serveContent = createPortfolioContentRoutes(
+  async (html: string) => stampDevDoor(await renderPage(html)),
+  PAGE_ASSETS, PAGE_HEAD,
+);
+// The unlisted drafts section (content.ts draftCollections): same shell, plus a noindex of its own.
+const serveDrafts = createPortfolioDraftRoutes(
   async (html: string) => stampDevDoor(await renderPage(html)),
   PAGE_ASSETS, PAGE_HEAD,
 );
@@ -1006,6 +1011,9 @@ Bun.serve({
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
     if (fromContent) return finalizePage(req, fromContent);
+    // --- the unlisted drafts: /drafts and /drafts/<slug>, for notes whose status is DRAFT ---
+    const fromDrafts = await serveDrafts(p);
+    if (fromDrafts) return finalizePage(req, fromDrafts);
     // --- the deck viewer: /decks/<file> renders a PDF this site serves INSIDE the shell, so a deck
     // is an ordinary page and therefore an ordinary open tab, instead of the browser's viewer
     // swallowing the window. Mounted after content so a collection route always wins. ---

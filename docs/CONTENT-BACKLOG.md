@@ -9,6 +9,21 @@
 > the repo is **public**. The events-platform exit is told **neutrally, no names, lessons-forward**.
 > Company name is **Career Team**. People name-drops = public professional info + LinkedIn only.
 
+## The metrics note (drafted 2026-11-12)
+
+**I Trust the Number. I Do Not Trust What I Say About It.** (content/notes/what-a-number-is-for.md,
+**DRAFT**). A personal note on what metrics mean to him, asked for in chat on 2026-11-12 with no
+brief beyond the topic. Every claim in the draft is taken from a note already published: the check
+that ran once in 165 sessions, the DevLake definitions that became a spec, the review kit's outcome
+log and what it has not shown, and the rule in Build the Floor that individual numbers never feed a
+performance review.
+
+**What it still owes before it can leave DRAFT.** Two bracketed passages only he can write: whether
+that rule is written down for his own team and what it has cost him, and whether he keeps any number
+on himself. The figure is a prose placeholder and has to be drawn to the FIGURES scaffold. It must
+not name a teammate against a number, and it must not claim the review kit improved the codebase,
+which the kit's own note says is unshown.
+
 ## The semester-one student note (published 2026-11-06)
 
 [proud-of-my-students-2026-s1](../content/notes/proud-of-my-students-2026-s1.md) started as a LinkedIn
