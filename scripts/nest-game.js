@@ -54,14 +54,20 @@ import {
     rivalTrailIdle: 18,   // seconds a rival trail may sit empty before it fades
     trailFade: 1600,      // ms a spent trail takes to leave the page
     staff: 12,            // guards and flyers the mini hills may keep, on top of the colony
-    party: [20, 50, 90, 140, 200, 280, 380], // letters stolen at each colony dance
-    rivalWorshipEvery: 5, // after the first four, a rival returns every fifth worship
+    // Letters stolen at each colony dance. The gaps widen so worships stay an event rather than
+    // a rhythm, and after the last fixed one the colony dances every partyAfter letters.
+    party: [25, 70, 130, 210, 310, 430, 580],
+    partyAfter: 180,
+    rivalFirst: 2,        // the worship that brings the first rival
+    rivalGap: 2,          // worships after a rival falls before the next one comes
+    rivalRepop: 8000,     // ms between replacement ants once every rival ant is dead
+    rivalRetarget: 15000, // ms a rival waits before opening another trail
   };
   const LINE = TUNING.line, MAX_ANTS = TUNING.maxAnts, SPEED = TUNING.speed;
   const MAX_STAFF = TUNING.staff;
-  // The first four rivals answer worships two, three, four and five. After that the page sends
-  // one every fifth worship, so the schedule never runs out.
-  const latestRivalWorship = (n) => n <= 5 ? n : n - n % TUNING.rivalWorshipEvery;
+  // Rivals come one at a time. The first answers an early worship, and each later one is counted
+  // from the fall of the last, so a long fight never leaves a rival owed and the player always
+  // gets some quiet worships between them.
   const GAP = TUNING.gap, NEST_SPEED = TUNING.nestSpeed;
 
   const style = document.createElement("style");
@@ -73,7 +79,7 @@ import {
     #nest-mock > * { min-width: 0; max-width: 100%; }
     #nest-mock .head { min-width: 0; }
     #nest-mock .head .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #nest-mock .muted { color: var(--ink-muted); }
+    #nest-mock .muted, .nest-confirms .muted { color: var(--ink-muted); }
     #nest-mock .lbl { font-size: var(--text-3xs); text-transform: uppercase; letter-spacing: .08em; display: flex; justify-content: space-between; gap: 8px; }
     #nest-mock .well { position: relative; flex: 1 1 0; min-height: 8em; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
       display: flex; align-items: stretch; justify-content: center; }
@@ -94,17 +100,21 @@ import {
     #nest-mock .log li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .log li:first-child { color: var(--ink); }
     #nest-mock .log li::before { content: "› "; color: var(--ink-faint); }
-    #nest-mock .row { display: flex; gap: 6px; }
-    #nest-mock button { flex: 1; padding: 6px; background: none; border: 1px solid currentColor; color: inherit; font: inherit; cursor: pointer; }
-    #nest-mock button:hover { background: var(--paper-2); }
+    #nest-mock .row, .nest-confirms .row { display: flex; gap: 6px; }
+    #nest-mock button, .nest-confirms button { flex: 1; padding: 6px; background: none; border: 1px solid currentColor; color: inherit; font: inherit; cursor: pointer; }
+    #nest-mock button:hover, .nest-confirms button:hover { background: var(--paper-2); }
     #nest-mock .tools button { position: relative; display: grid; place-items: center; min-width: 0; min-height: 40px; }
     #nest-mock .tools button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
     #nest-mock .tools button[data-cooldown]::after { content: attr(data-cooldown); position: absolute; right: 2px; bottom: 0; font-size: var(--text-3xs); }
     #nest-mock .tool-help { min-height: 2.8em; margin: 0; font-size: var(--text-3xs); line-height: 1.4; }
     #nest-mock { position: relative; }
-    #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
-      background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
-    #nest-mock .confirm p { margin: 0 0 8px; }
+    /* A confirm sits low in the middle of the window, where the other Nest popups appear. Tucked
+       into the sidebar it went unnoticed when a link click asked whether to leave the page. */
+    .nest-confirms { font: var(--text-2xs)/1.4 var(--font-mono); color: var(--ink); }
+    .nest-confirms .confirm { position: fixed; left: 50%; bottom: 48px; transform: translateX(-50%); z-index: 300;
+      width: min(92vw, 420px); padding: var(--space-3, 12px);
+      background: var(--paper); border: 1px solid var(--ink); box-shadow: 4px 4px 0 var(--color-line), 0 6px 24px rgba(0,0,0,.35); }
+    .nest-confirms .confirm p { margin: 0 0 8px; }
     .nest-layer { position: absolute; left: 0; top: 0; width: 100%; z-index: 50; pointer-events: none; overflow: hidden; user-select: none; -webkit-user-select: none; }
     [data-nest-tool="squash"], [data-nest-tool="squash"] *,
     [data-nest-tool="wipe"], [data-nest-tool="wipe"] * { user-select: none; -webkit-user-select: none; }
@@ -560,7 +570,14 @@ import {
       <div class="row"><button data-k="reset-go">reset the page</button><button data-k="reset-cancel" class="muted">keep playing</button></div>
     </div>`;
   aside.append(panel);
-  const $ = (k) => panel.querySelector(`[data-k="${k}"]`);
+  // The sidebar is its own stacking context, so a confirm inside it painted under the page text
+  // and the terminal bar. The confirms move to a host on the body, beside the other popups, and
+  // the lookup checks that host after the panel.
+  const confirmHost = document.createElement("div");
+  confirmHost.className = "nest-confirms";
+  confirmHost.append(...panel.querySelectorAll(".confirm"));
+  document.body.append(confirmHost);
+  const $ = (k) => panel.querySelector(`[data-k="${k}"]`) || confirmHost.querySelector(`[data-k="${k}"]`);
   const setAction = (key, glyph, label, help) => {
     const button = $(key);
     const text = button.querySelector("[data-label]")?.textContent || "";
@@ -626,7 +643,7 @@ import {
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0,
     lastForageAt: performance.now(), finale: false };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(colonyAnts().length / 3)));
-  const rival = { active: false, mound: null, founding: null, trails: [], minis: [], sites: [], exits: [], nextExit: 0, stolen: new Set(), returnAt: 0, hp: RIVAL_MOUND_HEALTH, war: false, lastMilestone: 0, lastBase: null, tier: 0, raidAt: 0, nextMiniAt: 0 };
+  const rival = { active: false, mound: null, founding: null, trails: [], minis: [], sites: [], exits: [], nextExit: 0, stolen: new Set(), returnAt: 0, nextWorship: TUNING.rivalFirst, hp: RIVAL_MOUND_HEALTH, war: false, lastMilestone: 0, lastBase: null, tier: 0, raidAt: 0, nextMiniAt: 0 };
   const mainAnts = () => state.ants.filter((a) => a.side !== "rival");
   // Guards and flyers live on the mini hills. They are kept on a separate roster so a busy mound
   // can never eat the colony's whole population and leave no workers to forage.
@@ -709,7 +726,15 @@ import {
   };
   const showChar = (L) => { if (L.span) L.span.style.visibility = ""; state.hiddenLetters.delete(L); };
   const blockOf = (n) => n.parentElement.closest("p, h1, h2, h3, h4, li, dd, blockquote, figcaption, a") || n.parentElement;
-  const needOf = (n) => { const fs = parseFloat(getComputedStyle(n.parentElement).fontSize); return fs >= 28 ? 3 : fs >= 20 ? 2 : 1; };
+  // Font size decides the crew, and it is the same for every letter in an element, so it is read
+  // once per element rather than once per letter.
+  const needCache = new WeakMap();
+  const needOf = (n) => {
+    const el = n.parentElement;
+    let need = needCache.get(el);
+    if (need === undefined) { const fs = parseFloat(getComputedStyle(el).fontSize); need = fs >= 28 ? 3 : fs >= 20 ? 2 : 1; needCache.set(el, need); }
+    return need;
+  };
 
   // The anthill on the page: the same dome, drawn in Braille, its entrance at the crown.
   const hill = document.createElement("div"); hill.className = "nest-hill"; hill.setAttribute("aria-hidden", "true");
@@ -1024,7 +1049,7 @@ import {
     ant.el.inert = state.tool === "wipe";
     const classes = antClasses(ant.role, ant.side).split(" ");
     ["scout", "soldier", "flyer", "builder", "rival"].forEach((name) => ant.el.classList.toggle(name, classes.includes(name)));
-    const rivalNames = { "rival-build": "Rival builder", "rival-guard": "Rival guard", "rival-defend": "Rival guard", "rival-flyer": "Rival flyer", "rival-flyer-home": "Rival flyer" };
+    const rivalNames = { "rival-build": "Rival builder", "rival-scout": "Rival scout", "rival-guard": "Rival guard", "rival-defend": "Rival guard", "rival-flyer": "Rival flyer", "rival-flyer-home": "Rival flyer" };
     const name = rivalNames[ant.job] || { scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival", "rival-worker": "Rival worker" }[ant.role];
     ant.el.setAttribute("aria-label", `${name} ant. Press to squash.`);
   };
@@ -1843,7 +1868,7 @@ import {
     log("the worship fills the stores");
     if (p.final) { state.nextParty = Infinity; return; }
     state.partyIndex++;
-    state.nextParty = TUNING.party[state.partyIndex] ?? state.nextParty + 120;
+    state.nextParty = TUNING.party[state.partyIndex] ?? state.nextParty + TUNING.partyAfter;
   };
 
   // ================================ mini hills ================================
@@ -2263,8 +2288,12 @@ import {
       rival.sites = rival.sites.filter((site) => site !== a.buildSite);
     }
     if (a.mini) { a.mini.guards?.delete(a); a.mini.flyers?.delete(a); }
-    if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); a.letter.glyph = null; a.letter.state = "spent"; a.letter.crew = []; a.letter = null; }
+    if (a.letter?.state === "rival-carry" && a.glyph && a.letter.home) {
+      const L = a.letter; L.glyph = a.glyph; L.glyph.classList.remove("rival-carry"); L.state = "carried"; L.crew = [];
+      a.glyph = null; a.letter = null; drop(L);
+    } else if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); a.letter.glyph = null; a.letter.state = "spent"; a.letter.crew = []; a.letter = null; }
     a.glyph?.remove(); a.glyph = null;
+    if (a.job === "rival-scout" && a.trail && !a.trail.ready) { const t = a.trail; a.trail = null; t.ants.delete(a); retireRivalTrail(t, false); log("the rival scout dies; its trail never opens"); }
     a.el?.remove(); a.el = null;
     a.trail?.ants.delete(a);
     state.ants = state.ants.filter((x) => x !== a);
@@ -2408,18 +2437,38 @@ import {
     }
     pts = mergeRoute(pts, pick.block, rival.trails, false);
     const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    halo.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); halo.classList.add("halo", "rival");
+    halo.setAttribute("points", pts[0].join(",")); halo.classList.add("halo", "rival", "scouting");
     const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    line.setAttribute("points", halo.getAttribute("points")); line.classList.add("rival");
+    line.setAttribute("points", halo.getAttribute("points")); line.classList.add("rival", "scouting");
     scent.append(halo, line);
     const born = performance.now() / 1000;
-    const t = { pts, block: pick.block, end: [pick.x, pick.y], ants: new Set(), line, halo, ready: true,
+    // The trail is not open until a rival scout has walked it. The scout draws the scent behind it
+    // as it goes, and the workers and guards wait in the mound until it reaches the letters.
+    const t = { pts, block: pick.block, end: [pick.x, pick.y], ants: new Set(), line, halo, ready: false, onReady: [],
       side: "rival", state: "ready", born, lastUse: born, ttl: born + TUNING.trailTtl };
     addEraser(t);
     state.trails.push(t); rival.trails.push(t);
+    const scoutAnt = spawnRivalUnit("rival-scout", rival.mound.hole, pts.slice(1));
+    scoutAnt.trail = t; scoutAnt.lane = 5; t.ants.add(scoutAnt);
     return t;
   };
+  const whenScouted = (t, fn) => { if (t.ready) fn(); else t.onReady.push(fn); };
+  const drawRivalScent = (t, upto, at) => {
+    const pts = at ? [...t.pts.slice(0, upto), at] : t.pts;
+    const points = pts.map((p) => p.join(",")).join(" ");
+    t.line.setAttribute("points", points); t.halo.setAttribute("points", points); t.hit?.setAttribute("points", points);
+  };
+  const openRivalTrail = (t) => {
+    if (t.ready || t.state === "gone") return;
+    t.ready = true; t.lastUse = performance.now() / 1000;
+    drawRivalScent(t);
+    t.line.classList.remove("scouting"); t.halo.classList.remove("scouting");
+    log("a rival scout reaches the letters; its trail opens");
+    const waiting = t.onReady; t.onReady = [];
+    waiting.forEach((fn) => fn());
+  };
   const spawnRival = (trail) => {
+    if (!trail.ready) return whenScouted(trail, () => { if (rival.trails.includes(trail)) spawnRival(trail); });
     if (rival.active && rival.ants.length >= rivalCaps().ants) return;
     const hole = rival.mound.hole;
     const a = { id: ++state.total, role: "rival-worker", side: "rival", where: "page", x: hole[0], y: hole[1], px: hole[0], py: hole[1],
@@ -2433,11 +2482,13 @@ import {
   };
   const stealRival = (trail, ant) => {
     if (!trail || !state.trails.includes(trail)) return false;
-    const options = freeIn(trail.block, trail.end);
-    if (!options.length) return false;
-    const L = options[0].L;
+    // A rival worker carries alone, so it follows the colony's crew rule: only a letter one ant
+    // can lift, and never one the colony is already gathering.
+    const option = freeIn(trail.block, trail.end).find((o) => o.L.state === "free" && needOf(o.L.n) === 1);
+    if (!option) return false;
+    const L = option.L;
     const r = rectOf(L.n, L.i); const [x, y] = local(r);
-    hideChar(L); L.state = "rival-carry"; L.crew = [];
+    hideChar(L); L.state = "rival-carry"; L.crew = []; L.home = [x, y];
     const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
     glyph.style.cssText += lookOf(L.n.parentElement); glyph.style.left = x + "px"; glyph.style.top = y + "px";
     layer.append(glyph); ant.letter = L; ant.glyph = glyph;
@@ -2472,6 +2523,9 @@ import {
   };
   const rivalRetarget = () => {
     if (!rival.active || rival.trails.length >= 3) return;
+    const now = performance.now();
+    if (now < (rival.retargetAt || 0)) return;
+    rival.retargetAt = now + TUNING.rivalRetarget;
     const pick = rivalTarget();
     if (!pick) return;
     const t = rivalTrail(pick); queueRivalWorkers(t, 2);
@@ -2510,19 +2564,26 @@ import {
       const arrived = move(a, g[0], g[1], dt, roleSpeed(a.role, a.job, SPEED)); a.px = a.x; a.py = a.y;
       if (!arrived) return;
       if (Math.random() < 0.55) {
-        const pool = [];
-        for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 2) {
-          if (!/\S/.test(n.data[i])) continue;
-          const L = letterOf(n, i);
-          if (L.state !== "free" || needOf(n) > 1) continue;
-          const r = rectOf(n, i);
-          if (reachableChar(n, i, r) && onScreen(r)) pool.push([L, r]);
-          if (pool.length > 300) break;
+        // Every flyer shares one scan of the page for two seconds. Measuring each letter forces a
+        // layout, and one scan per landing per flyer was the costliest thing the rival did.
+        const now = performance.now();
+        if (!rival.flyerPool || now > rival.flyerPool.until) {
+          const list = [];
+          for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 2) {
+            if (!/\S/.test(n.data[i])) continue;
+            if (letterOf(n, i).state !== "free" || needOf(n) > 1) continue;
+            const r = rectOf(n, i);
+            if (reachableChar(n, i, r) && onScreen(r)) list.push([n, i]);
+            if (list.length > 300) break;
+          }
+          rival.flyerPool = { list, until: now + 2000 };
         }
+        const pool = rival.flyerPool.list.filter(([n, i]) => letterOf(n, i).state === "free");
         if (pool.length) {
-          const [L, r] = pool[Math.floor(Math.random() * pool.length)];
+          const [n, i] = pool[Math.floor(Math.random() * pool.length)];
+          const L = letterOf(n, i), r = rectOf(n, i);
           const [x, y] = local(r);
-          hideChar(L); L.state = "rival-carry"; L.crew = [];
+          hideChar(L); L.state = "rival-carry"; L.crew = []; L.home = [x, y];
           const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
           glyph.style.cssText += lookOf(L.n.parentElement); glyph.style.left = x + "px"; glyph.style.top = y + "px";
           layer.append(glyph); a.letter = L; a.glyph = glyph;
@@ -2592,6 +2653,21 @@ import {
         removeRivalAnt(a); return;
       }
       a.job = "rival-follow"; a.path = lanePath(a.trail.pts, a.lane); a.k = 0;
+      return;
+    }
+    if (a.job === "rival-scout") {
+      const t = a.trail;
+      if (!t || t.state === "gone") { removeRivalAnt(a); return; }
+      t.lastUse = now / 1000;
+      const goal = a.path[a.k];
+      const arrived = !goal || move(a, goal[0], goal[1], dt, roleSpeed(a.role, "rival-follow", SPEED, { factor: 0.75 }));
+      a.px = a.x; a.py = a.y;
+      if (arrived && goal) a.k++;
+      if (a.k < a.path.length) { drawRivalScent(t, a.k + 1, [a.x, a.y]); return; }
+      openRivalTrail(t);
+      a.role = "rival-worker"; a.job = "rival-follow"; a.el.classList.remove("rival-scout"); label(a);
+      stealRival(t, a);
+      a.job = "rival-home"; a.path = lanePath(t.pts.toReversed(), a.lane); a.k = 0;
       return;
     }
     const g = a.path[a.k]; if (!g) return;
@@ -2961,20 +3037,18 @@ import {
       a.el?.classList.remove("marching");
     }
     rival.raidAt = 0; rival.nextMiniAt = 0;
-    rival.returnAt = performance.now() + 5000;
+    rival.nextWorship = state.partyIndex + TUNING.rivalGap;
     log("the rival colony falls; its stolen letters are gone");
     celebrate("the rival colony falls");
   };
   const foundRival = () => {
     if (rival.active || state.over || state.party) return;
-    // A rival that was still alive at a milestone leaves one return due after it falls.
-    const milestone = latestRivalWorship(state.partyIndex);
-    if (milestone < 2 || rival.lastMilestone >= milestone) return;
+    if (state.partyIndex < rival.nextWorship) return;
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
     mound.el.style.visibility = "hidden";
     rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = RIVAL_MOUND_HEALTH; rival.war = false;
-    rival.lastMilestone = milestone; rival.lastBase = mound.base.slice(); rival.tier = (rival.tier || 0) + 1; rival.activeAt = performance.now();
+    rival.nextWorship = Infinity; rival.lastBase = mound.base.slice(); rival.tier = (rival.tier || 0) + 1; rival.activeAt = performance.now();
     rival.raidAt = performance.now() + 12000;
     rival.nextMiniAt = performance.now() + 9000;
     rival.repopAt = 0;
@@ -3012,9 +3086,9 @@ import {
     const trail = rivalTrail(pick);
     spawnRival(trail);
     rival.nextExit = now + RIVAL_EXIT_GAP;
-    queueRivalExit(() => {
+    queueRivalExit(() => whenScouted(trail, () => {
       if (rival.trails.includes(trail)) spawnRivalUnit("rival-guard", rival.mound.hole, lanePath(trail.pts, 8));
-    });
+    }));
     queueRivalWorkers(trail, Math.min(rivalCaps().ants, 6 + rival.tier * 4) - 2);
     buildRivalMinis();
     rival.nextGrow = now + 3500;
@@ -3050,7 +3124,7 @@ import {
     }
   };
 
-  const startRival = () => { state.partyIndex = 2; rival.lastMilestone = 0; foundRival(); };
+  const startRival = () => { state.partyIndex = TUNING.rivalFirst; rival.nextWorship = TUNING.rivalFirst; foundRival(); };
 
   const RIVAL_EXIT_GAP = 650;
   const queueRivalExit = (launch) => {
@@ -3193,7 +3267,7 @@ import {
           if (made) spawnRival(made);
           else spawnRivalUnit("rival-guard", rival.mound.hole, []);
         }
-        rival.repopAt = now + 3500;
+        rival.repopAt = now + TUNING.rivalRepop;
         log("the rival mound sends another ant");
       }
       return;
@@ -3212,9 +3286,9 @@ import {
       if (pick) {
         const t = rivalTrail(pick);
         queueRivalWorkers(t, 2);
-        queueRivalExit(() => {
+        queueRivalExit(() => whenScouted(t, () => {
           if (rival.trails.includes(t)) spawnRivalUnit("rival-guard", rival.mound.hole, lanePath(t.pts, -8));
-        });
+        }));
         log("the rival opens another trail");
         if (rival.trails.length >= 2) buildRivalMinis();
       }
@@ -3760,7 +3834,7 @@ import {
     clearTimeout(soundHintTimer);
     document.body.classList.remove("nest-links-locked");
     delete window.__nest;
-    layer.remove(); panel.remove();
+    layer.remove(); panel.remove(); confirmHost.remove();
     hidden.forEach((el) => { el.style.display = el.dataset.nestDisplay; delete el.dataset.nestDisplay; });
     if (sidebarWasHidden) shell?.setAttribute("data-aside-hidden", "true");
     antBtn.setAttribute("aria-pressed", "false"); antBtn.setAttribute("aria-label", "Open the Nest");

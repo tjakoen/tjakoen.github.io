@@ -3,7 +3,7 @@ title: README-STANDARD.md — the README standard
 summary: How a README presents itself across every repo - the title emoji, the badge row, and the footer, plus a reusable prompt.
 when: >
   Read this BEFORE writing, restyling, or reviewing a README in any repo: the title emoji, the badge
-  row and which badges the repo has earned, the made-with-Claude badge, and the footer that links the
+  row and which badges the repo has earned, the made-with badge, and the footer that links the
   receipts. Don't skip because the repo is internal, half-finished, or already has a README - the
   badge row is the one part reliably left stale, and a repo shipping without the AI-use badge is the
   case this standard treats as a real miss rather than a nit.
@@ -35,17 +35,17 @@ same idea for notes/blog posts instead of READMEs).
 - A **title emoji**: one emoji right before the H1, chosen to fit the repo's identity/name/purpose
   (e.g. GRAIN → 🍞, BATCH → 🥖). One only, tasteful. My stack repos lean into a bread/baking family;
   unrelated repos just pick whatever genuinely fits.
-- The identity badge **Made with Claude** (coral `#D97757`, links to my AI post).
+- The identity badge **Made with Claude, Codex and DeepSeek** (coral `#D97757`, links to my AI post). It names the three harnesses the work actually runs in, and it carries no vendor logo because no single vendor owns the work.
 - The quirky **text footer** at the bottom (see snippet below); voice per [VOICE.md](VOICE.md).
 
 **Constants:**
 - Canonical AI post (badge + footer link target): `https://portfolio.tjakoen.com/notes/ten-times-zero`
   (use this absolute URL in every repo except this one, where the note lives locally).
-- Identity color: `#D97757` (Anthropic coral). "Good/true claim" green: `2ea44f`.
+- Identity color: `#D97757` (coral, kept from the first badge). "Good/true claim" green: `2ea44f`.
 
 ## Category menu (pick only what applies)
 
-**Identity** (always): `Made_with-Claude-D97757?logo=anthropic&logoColor=white`
+**Identity** (always): `Made_with-Claude_%C2%B7_Codex_%C2%B7_DeepSeek-D97757`
 **Tech stack** (real runtime/langs/framework only): Bun / TypeScript / htmx / React / Node / CSS …
 **Stance / thesis** (only if TRUE): `build_step-none`, `runtime_deps-0`, `client_framework-none`, `architecture-server--rendered_hypermedia`
 **Methodology** (only if actually practiced): `design-atomic`, `theming-design_tokens`, `a11y-semantic_HTML`, `tests-unit_·_integration_·_e2e`
@@ -58,7 +58,7 @@ If a `logo=` icon doesn't render, drop the logo params; the pill still works.
 
 ```markdown
 ---
-🤖 **Built with Claude. I don't prompt and pray, I prompt and prove.** Every commit here is co-authored with an AI, on purpose. [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)
+🤖 **Built with Claude, Codex and DeepSeek. I don't prompt and pray, I prompt and prove.** Every change here was made with an AI, on purpose, and every commit carries my name. [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)
 ```
 
 ---
@@ -90,7 +90,7 @@ STEP 3 — pick badges by these rules:
   coverage/license/version badge unless that thing actually exists and is wired up. If unsure, omit.
 - DON'T WEAR ALL OF THEM: curate to about 5–7 total. Each badge must earn its place. No badge fatigue.
 - ALWAYS include, first in the row, the identity badge:
-  [![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://portfolio.tjakoen.com/notes/ten-times-zero)
+  [![Made with Claude, Codex and DeepSeek](https://img.shields.io/badge/Made_with-Claude_%C2%B7_Codex_%C2%B7_DeepSeek-D97757)](https://portfolio.tjakoen.com/notes/ten-times-zero)
 - Then pick from, choosing only what THIS repo actually supports: tech stack (real ones only),
   stance/thesis (only if true — e.g. no build step, 0 runtime deps, no client framework), methodology
   (only if actually practiced), and dynamic status (only if set up). Skip categories that don't apply.
@@ -102,8 +102,8 @@ STEP 4 — output:
   slug won't render). Green 2ea44f for "true claim" stance badges; identity coral is D97757.
 - This footer at the very bottom of the README (voice: proud, a little quirky, NO backticks and NO em-dashes in prose):
   ---
-  🤖 **Built with Claude. I don't prompt and pray, I prompt and prove.** Every commit here is
-  co-authored with an AI, on purpose. [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)
+  🤖 **Built with Claude, Codex and DeepSeek. I don't prompt and pray, I prompt and prove.** Every change
+  here was made with an AI, on purpose, and every commit carries my name. [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)
 - A short reasoning list: one line per chosen badge on why it's TRUE (your evidence), one line on why
   you picked that emoji, and an explicit list of any badge you CONSIDERED but rejected — flagged as
   either honesty (not true / not verifiable) or curation (would've been badge #8+). Show the

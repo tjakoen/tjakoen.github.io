@@ -97,7 +97,7 @@ export const CLARIFY_CHOICES: Choice[] = [
 export const INTENT_PROMPT = "Hey! Who's visiting today? Pick one and I'll tailor the tour — or just keep chatting.";
 export const INTENT_CHOICES: Choice[] = [
   { label: "Recruiter or hiring", value: "I'm hiring" },
-  { label: "Developer curious about the stack", value: "I'm a developer" },
+  { label: "Developer", value: "I'm a developer" },
   { label: "Student of TJ's", value: "I'm a student of TJ's" },
 ];
 

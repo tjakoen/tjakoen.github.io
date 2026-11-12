@@ -6,7 +6,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-11
 readingTime: "~6 min"
-tags: [ai, standards, communication, team, workflow]
+tags: [ai, standards, communication, team, workflow, teaching]
 summary: >
   A practical guide for students and junior teammates on writing ticket comments, review
   comments and chat messages with AI. Put the reader's next action first, keep open questions

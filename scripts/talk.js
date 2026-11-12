@@ -96,13 +96,13 @@ if (deck) {
   }
   function revealRatio(on) {
     if (!ratio) return;
-    // 18,876 lines of code against 17,610 lines of Markdown: git-TRACKED files only, counted
-    // 7 August 2026 with the same commands the published post documents. Counting the working
+    // 57,341 lines of code against 75,534 lines of Markdown: git-TRACKED files only, counted
+    // 12 November 2026 with the same commands the published post documents. Counting the working
     // tree (plans and agent notes that are gitignored) runs past half, which is a friendlier
     // number and not one anybody in the room could check.
-    $('[data-ratio-code]', ratio).style.width = on ? '51.7%' : '100%';
-    $('[data-ratio-prose]', ratio).style.width = on ? '48.3%' : '0%';
-    $('[data-ratio-prose-val]', ratio).textContent = on ? '17,610' : '0';
+    $('[data-ratio-code]', ratio).style.width = on ? '43.2%' : '100%';
+    $('[data-ratio-prose]', ratio).style.width = on ? '56.8%' : '0%';
+    $('[data-ratio-prose-val]', ratio).textContent = on ? '75,534' : '0';
   }
 
   /* --- 17 · the overnight sprint ---------------------------------------------- */

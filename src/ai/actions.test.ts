@@ -371,7 +371,7 @@ describe("routeAction", () => {
     });
 
     test("every INTENT_CHOICES value round-trips through the router to its own intent", () => {
-      const expected = { "Recruiter or hiring": "recruiter", "Developer curious about the stack": "developer", "Student of TJ's": "student" } as const;
+      const expected = { "Recruiter or hiring": "recruiter", "Developer": "developer", "Student of TJ's": "student" } as const;
       for (const c of INTENT_CHOICES) {
         const a = routeAction(c.value);
         expect(a?.kind).toBe("intent-set");
