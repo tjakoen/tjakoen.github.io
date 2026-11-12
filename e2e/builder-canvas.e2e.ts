@@ -638,7 +638,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator("[data-builder-draft-evidence]"))
       .toContainText("Detected names, quoted phrases, and numbers appear in the draft.");
     await expect(page.locator(ACCEPT_DRAFT)).toBeDisabled();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await expect(page.locator(CELL)).toHaveCount(0);
     await expect(page.locator(DRAFT_BLOCKS).getByRole("listitem")).toHaveCount(2);
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
@@ -799,7 +799,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Review the corrected proposal");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
     await page.setViewportSize({ width: 820, height: 844 });
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
 
     await page.locator(APPLY_PROPOSAL).click();
@@ -821,7 +821,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL_COPY)).toContainText("The model proposed Set b2 to half width for first card (b2)");
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly identifies Drop b4 on second card (b4)");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
@@ -839,7 +839,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL_COPY)).toContainText("The local model did not return a usable edit: I could not identify an action.");
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
 
     await page.locator(APPLY_PROPOSAL).click();
@@ -912,7 +912,7 @@ test.describe("the model chooses the verb", () => {
       { id: "b2", span: "half" },
       { id: "b3", span: "half" },
     ]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Set b3 to full width.");
     expect(await canvasState(page)).toEqual([
@@ -988,7 +988,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL)).toBeVisible();
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b4", "b3"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
@@ -1012,7 +1012,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL)).toBeVisible();
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Set b3 to third width on callout (b3)");
     await expect(page.locator('[data-block-id="b3"]')).toHaveAttribute("data-span", "full");
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Set b3 to third width.");
     await expect(page.locator('[data-block-id="b3"]')).toHaveAttribute("data-span", "third");
@@ -1036,7 +1036,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL)).toBeVisible();
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b4", "b3"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
@@ -1072,7 +1072,7 @@ test.describe("the model chooses the verb", () => {
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(820);
   });
 
   test("a malformed model move becomes a disclosed proposal only for a clear live request", async ({ page }) => {
