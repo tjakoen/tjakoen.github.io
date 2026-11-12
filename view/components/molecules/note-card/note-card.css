@@ -195,3 +195,5 @@
 .note-card__level { font-weight: var(--font-weight-medium, 600); white-space: nowrap; }
 .note-card__level[data-level="intro"] { color: var(--color-accent); }
 .note-card__level[data-level="deep"] { color: var(--color-muted); }
+/* Start here leads the tag row in the accent colour: the one token that says where a newcomer begins. */
+.chip.notes-tag--level { color: var(--color-accent); margin-right: var(--space-2); }
