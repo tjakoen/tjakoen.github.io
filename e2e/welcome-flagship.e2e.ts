@@ -74,10 +74,9 @@ test.describe("welcome mobile layout", () => {
     await expect(featured.nth(0)).toHaveAttribute("href", "/notes/the-reviewer-that-learned-to-be-wrong");
     await expect(featured.nth(1)).toHaveAttribute("href", "/notes/show-them-the-board");
     await expect(featured.nth(2)).toHaveAttribute("href", "/native-github-classroom");
-    await expect(proofLinks.getByRole("link", { name: "Open the privacy-safe demo" }))
-      .toHaveAttribute("href", "https://portfolio.tjakoen.com/github-native-course-platform/?demo=1");
-    await expect(proofLinks.getByRole("link", { name: "Leadership experience" })).toHaveAttribute("href", "/about#role-manager");
-    await expect(proofLinks.getByRole("link", { name: "Courses and assessment" })).toHaveAttribute("href", "/teaching");
+    await expect(proofLinks.getByRole("link", { name: "Leadership" })).toHaveAttribute("href", "/leading");
+    await expect(proofLinks.getByRole("link", { name: "Teaching" })).toHaveAttribute("href", "/teaching");
+    await expect(featured).toHaveCount(5);
     expect(await proofLinks.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await proofLinks.evaluate((el) => el.clientWidth));
 
     await page.setViewportSize({ width: 390, height: 844 });
