@@ -909,7 +909,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       : e.level === "deep" ? `<span class="note-card__level" data-level="deep">Deep dive</span> · ` : "";
     const pinTag = pinned ? `<span class="note-card__pin">📌 Pinned</span> · ` : "";
     return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}" data-audience="${escapeHtml(e.audience.join(" "))}" data-level="${e.level}">
-        <div class="note-card__vote" aria-hidden="true" title="Reading minutes, from the note's own frontmatter. Not votes.">&#9650;<span class="note-card__score">${e.score}</span></div>
+        <div class="note-card__vote" title="${e.score} minute read"><svg class="note-card__read-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10.5 5.3 8.2 4.8 4 5v13c4.2-.2 6.5.3 8 1.5 1.5-1.2 3.8-1.7 8-1.5V5c-4.2-.2-6.5.3-8 1.5z"/><path d="M12 6.5v13"/></svg><span class="note-card__score">${e.score}</span><span class="note-card__unit">min</span><span class="visually-hidden"> minute read</span></div>
         <div class="note-card__main">
           <p class="note-card__byline">${pinTag}${levelTag}${byline}</p>
           <h2 class="note-card__title"><a href="/notes/${slug}">${escapeHtml(e.title)}</a></h2>
@@ -1103,7 +1103,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         <div class="notes-toolbar__actions">
           <div class="chips notes-sort" role="radiogroup" aria-label="Sort">
             <label class="chip"><input type="radio" name="sort" value="new" checked> New</label>
-            <label class="chip"><input type="radio" name="sort" value="top"> Top</label>
+            <label class="chip"><input type="radio" name="sort" value="top"> Longest</label>
           </div>
           ${deskTrigger}
         </div>
