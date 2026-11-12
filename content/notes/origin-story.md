@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-07-02
 readingTime: "~9 min"
-tags: [origin-story, batch, grain, mill, native-first, ai]
+tags: [stack, web-platform]
 people: [brad-frost, coding2go]
 sources: [book-atomic-design]
 summary: >

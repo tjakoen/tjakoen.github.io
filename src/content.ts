@@ -878,10 +878,12 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
   // Reduce the chip pile: show a handful up front, tuck the rest behind a "+N more" toggle (all
   // checkboxes stay in the DOM either way, so a ?tag= deep link can still check an overflow tag and
   // the island reveals the rest when it does).
-  const CHIP_HEAD = 6;
+  const CHIP_HEAD = 12;
+  // Published notes per tag, shown on the chip so a reader sees how deep a topic goes.
+  const tagCount = (t: string) => entries.filter((e) => e.tags.includes(t)).length;
   const chipHtml = (t: string) => {
     const tag = escapeHtml(t);
-    return `<label class="chip"><input type="checkbox" value="${tag}"> ${tag}</label>`;
+    return `<label class="chip notes-tag"><input type="checkbox" value="${tag}"><span>#${tag}</span><span class="notes-tag__n">${tagCount(t)}</span></label>`;
   };
   const headChips = allTags.slice(0, CHIP_HEAD).map(chipHtml).join("");
   const restTags = allTags.slice(CHIP_HEAD);
@@ -896,7 +898,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     const time = e.date ? `<time datetime="${date}">${date}</time>` : "";
     const byline = `Tjakoen Stolk · the desk${time ? ` · ${time}` : ""}`;
     const summary = escapeHtml(e.summary || e.subtitle);
-    const tags = e.tags.map((t) => `<span class="badge" data-status="active">${escapeHtml(t)}</span>`).join("");
+    const tags = e.tags.map((t) => `<span class="note-card__tag">#${escapeHtml(t)}</span>`).join("");
     const dataTags = escapeHtml(e.tags.join(" "));
     const pinned = e.slug === FLAGSHIP_NOTE_SLUG;
     const pinTag = pinned ? `<span class="note-card__pin">📌 Pinned</span> · ` : "";
@@ -1050,9 +1052,9 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
   const deskTrigger = `<button class="btn notes-toolbar__ai" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ See what's new</button>`;
   const body = `<h1 class="masthead">Notes</h1>
     <form class="notes-toolbar" data-feed-controls hidden>
-      <div class="chips notes-audience" role="radiogroup" aria-label="Show notes for">
-        <label class="chip"><input type="radio" name="audience" value="" checked> All</label>
-        ${NOTE_AUDIENCES.map((a) => `<label class="chip"><input type="radio" name="audience" value="${a.id}"> ${a.label}</label>`).join("\n        ")}
+      <div class="notes-audience" role="radiogroup" aria-label="Show notes for">
+        <label class="notes-audience__tab"><input type="radio" name="audience" value="" checked><span>All</span><span class="notes-audience__n">${entries.length}</span></label>
+        ${NOTE_AUDIENCES.map((a) => `<label class="notes-audience__tab"><input type="radio" name="audience" value="${a.id}"><span>${a.label}</span><span class="notes-audience__n">${entries.filter((e) => e.audience === a.id).length}</span></label>`).join("\n        ")}
       </div>
       <div class="notes-toolbar__bar">
         <input class="notes-search" type="search" placeholder="Search notes" aria-label="Search notes"

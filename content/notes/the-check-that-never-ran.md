@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-08-20
 readingTime: "~7 min"
-tags: [ai, workflow, measurement, process, standards]
+tags: [workflow, measurement, standards]
 summary: >
   I built a check that fires when I sit down to work, rolled it across a dozen repositories, and
   wrote a note about it. Three weeks later my session store said it had run exactly once outside the

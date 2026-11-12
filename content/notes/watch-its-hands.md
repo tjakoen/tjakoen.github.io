@@ -7,7 +7,7 @@ status: PUBLISHED
 type: note
 date: 2026-08-06
 readingTime: "~7 min"
-tags: [ai, hci, grain, design-systems]
+tags: [design-systems, stack]
 summary: >
   Most AI works offstage. You ask, it disappears, it comes back with a result and a summary of itself.
   I built the opposite: the AI operates the same controls I do, enters through the same single door,

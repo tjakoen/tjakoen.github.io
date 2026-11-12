@@ -11,7 +11,7 @@ type: note
 date: 2026-08-07
 readingTime: "~18 min"
 deck: "Ten times zero | Talk | /talks/ten-times-zero | 35 slides · runs in the browser, no download"
-tags: [ai, vibe-coding, workflow, fundamentals, native-first, batch, grain]
+tags: [agents, workflow, web-platform, stack]
 people: [alfonso-graziano, addy-osmani]
 sources: [book-ai-native-engineering, book-loop-engineering]
 summary: >

@@ -101,7 +101,7 @@ test.describe("the /notes feed (JS on)", () => {
     const filters = page.locator("[data-tag-filters]");
     await expect(filters).toBeVisible();
     await expect(filters).not.toHaveAttribute("open", "");
-    await expect(filters.locator("summary")).toHaveText("Filter by topic");
+    await expect(filters.locator("summary")).toHaveText("Filter by tag");
     await filters.locator("summary").click();
     await expect(filters).toHaveAttribute("open", "");
     await expect(page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first()).toBeVisible();
