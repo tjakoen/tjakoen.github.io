@@ -357,6 +357,8 @@ test.describe("GRAIN theming — token-only re-skin (color-scheme axis; flavor a
   // Accent doctrine: "full reach, one hue" — the default stays hueless (accent = ink), and an
   // accented flavor's one hue reaches the links (proof of full reach via a token override alone).
   test("accent: Sourdough is hueless (accent = ink); a flavor's hue reaches links + focus + primary", async ({ page }) => {
+    // this checks GRAIN's own bare default, so skip the portfolio's first-visit brioche default
+    await page.addInitScript(() => localStorage.setItem("site-defaults-applied", "1"));
     await page.goto("/grain");
     // keyboard modality so a programmatically-focused probe still matches :focus-visible
     await page.keyboard.press("Tab");

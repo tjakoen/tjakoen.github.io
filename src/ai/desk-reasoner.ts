@@ -87,6 +87,10 @@ interface Turn {
   setBodyRaw: (inner: string, commit: "pending" | "committed") => void;
   setChips: (list: string[]) => void;
   offline: () => Decision;
+  /** True while Browse mode keeps the model off (deps.modelAllowed). */
+  modelBlocked: () => boolean;
+  /** Settle the turn with the Browse pointer instead of loading the model; the desk stays online. */
+  declineModel: () => Promise<Decision>;
   narrate: (verb: string, desc: string) => void;
   minThink: () => Promise<void>;
   streamInto: (engine: DeskEngine, messages: ChatMessage[], maxTokens?: number) => Promise<string>;
@@ -207,6 +211,13 @@ export interface DeskDeps {
   profile: ModelProfile;
   /** WebGPU (+ memory) available? */
   probe: () => Promise<boolean>;
+  /** May this turn load the model? False while the desk is in Browse mode. Every model-free path
+   *  (navigation, choices, theme, the routed page actions) still runs; only the step that would load
+   *  the model declines, with `modelDeclinedLine`, and without marking the desk offline. Absent means
+   *  always allowed. */
+  modelAllowed?: () => boolean;
+  /** The reply when `modelAllowed` turns a model turn away. */
+  modelDeclinedLine?: string;
   /** Load + warm the engine for the profile, reporting download progress. */
   loadEngine: (profile: ModelProfile, onProgress: (p: EngineProgress) => void) => Promise<DeskEngine>;
   /** GRAIN's streaming chat transport (`@tjakoen/grain/ai/model-chat.ts` streamChat) — yields content
@@ -690,7 +701,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
     // profile, lastTarget, ensureEngine and runAgentTurns from the reasoner, the way runAgentTurns does.
     const deterministicTurn = async (turn: Turn): Promise<Decision | null> => {
       const { tools, log, text, action, getCatalog, tourWasActive, showcaseWasActive,
-        setBody, setBodyRaw, setChips, offline, narrate, minThink, typeOut, travelAndNavigate } = turn;
+        setBody, setBodyRaw, setChips, offline, modelBlocked, declineModel, narrate, minThink, typeOut, travelAndNavigate } = turn;
         if (action?.kind === "capabilities") {
           const where = deps.pageInfo?.().title;
           // the ONE catalog: everything this page's live manifest reports as operable/readable, plus
@@ -768,6 +779,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             await typeOut(line);
             return { ok: false, ops: [], reply: line, reason: "no navigate dep" };
           }
+          if (modelBlocked()) return declineModel();
           if (degraded) return offline();
           const { label, downloadNote } = profile;
           setBodyRaw(loadBar(0, label, downloadNote), "pending");
@@ -1417,7 +1429,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
     // model marks the desk offline.
     const modelTurn = async (turn: Turn): Promise<Decision> => {
       const { tools, log, text, action, getCatalog,
-        setBody, setBodyRaw, setChips, offline, narrate, streamInto, typeOut, travelAndNavigate } = turn;
+        setBody, setBodyRaw, setChips, offline, modelBlocked, declineModel, narrate, streamInto, typeOut, travelAndNavigate } = turn;
         // A feed's featured card already has an authored title and summary. Return that verified
         // content directly instead of asking a 0.5B model to paraphrase and invent unsupported claims.
         if (action?.kind === "summarize" && stripSlash(deps.pageInfo?.().route ?? "") === "/notes") {
@@ -1434,6 +1446,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
 
         // 4) needs the model. Load it (implicit opt-in on first send): a real progress bar, honest
         //    about the one-time cost. No stub fallback — unavailable/failed ⇒ Desk Offline.
+        if (modelBlocked()) return declineModel();
         if (degraded) return offline();
         const { label, downloadNote } = profile;
         setBodyRaw(loadBar(0, label, downloadNote), "pending");
@@ -1619,6 +1632,21 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       const text = String(intent.payload.text ?? "").trim();
       const log = intent.surface;
 
+      // Browse mode hides the chat and keeps the model off. A turn still runs, so a model-free verb
+      // ("take me to GRAIN", the choices, a theme switch) works, but the opening two bubbles are held
+      // until the turn shows it is one of those: the first op past them releases both. A turn that
+      // would need the model drops them unseen and declines, so a message slipped past the hidden
+      // composer leaves no trace in a chat nobody can see.
+      let held: unknown[] | null = deps.modelAllowed && !deps.modelAllowed() ? [] : null;
+      if (held) {
+        const direct = tools;
+        tools = { ...direct, emit: (op: Parameters<ReasonTools["emit"]>[0]) => {
+          if (held && held.length < 2) { held.push(op); return; }
+          if (held) { for (const h of held) direct.emit(h as Parameters<ReasonTools["emit"]>[0]); held = null; }
+          direct.emit(op);
+        } };
+      }
+
       // 1) your message — clean, committed. Committed on the chat-log target RELEASES the composer
       //    trigger immediately (dispatcher clearTrigger) and stands the op-silence watchdog down, so
       //    the long model load that follows can't trip it. GRAIN's own op-builder (reasoner-kit) —
@@ -1637,6 +1665,16 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       const setChips = (list: string[]) =>
         tools.emit({ target: "suggest-chips", op: "replace", provenance: "ai", commit: "committed", html: suggestChipsHtml(list) });
       const offline = (): Decision => { deps.markOffline(); setBody(esc(OFFLINE_LINE), "committed"); return { ok: true, ops: [], reply: OFFLINE_LINE }; };
+      // Browse mode: the model is off by the visitor's choice, not broken, so this settles the bubble
+      // with a pointer to Browse and leaves the desk online for every model-free verb.
+      const modelBlocked = (): boolean => !!deps.modelAllowed && !deps.modelAllowed();
+      const declineModel = async (): Promise<Decision> => {
+        const line = deps.modelDeclinedLine ?? "Use Browse to search the portfolio without local AI.";
+        if (held) { held = null; return { ok: false, ops: [], reason: line }; }   // nothing shown yet: leave no trace
+        await minThink();
+        setBody(esc(line), "committed");
+        return { ok: false, ops: [], reply: line, reason: line };
+      };
       const narrate = (verb: string, desc: string) => tools.emit(deps.kit.narrateOp(verb, desc));   // console feed if the page shows one (else a no-op find)
       // Even a deterministic, instant answer holds the "Thinking…" bubble for a human beat before it
       // settles — so the desk is never jarringly instant; it always visibly reasons (the owner's ask).
@@ -1769,7 +1807,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           (catalogPromise ??= deps.loadCatalog ? deps.loadCatalog().catch(() => [] as NavDest[]) : Promise.resolve([]));
         const turn: Turn = {
           tools, log, id, text, action, getCatalog, tourWasActive, showcaseWasActive,
-          setBody, setBodyRaw, setChips, offline, narrate, minThink, streamInto, typeOut, travelAndNavigate,
+          setBody, setBodyRaw, setChips, offline, modelBlocked, declineModel, narrate, minThink, streamInto, typeOut, travelAndNavigate,
         };
         const det = await deterministicTurn(turn);
         if (det) return det;

@@ -23,7 +23,6 @@ import { CONTACT_FIELD_SURFACE, CONTACT_SUBJECT_SURFACE, draftSubject } from "./
 import { buildCatalog, stripSlash, joinPhrases, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
 import { createKnowledgeCache } from "./knowledge-cache.ts";
-import { routeAction } from "./actions.ts";
 import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
 // A2 guided tour — the fixed stop list + the cursor codec (tour.ts). The door owns every leg of the
 // tour AFTER the first (no chat.send happens between stops, so the reasoner isn't in the loop then).
@@ -741,6 +740,10 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   const reasoner = makeDeskReasoner({
     profile,                                      // the page-selected local model and its tuning
     probe,
+    // Browse turns the model off, not the desk. The reasoner runs every model-free path (navigation,
+    // choices, theme, routed page actions) and declines only the step that would load the model.
+    modelAllowed: () => browse.allowsModel(),
+    modelDeclinedLine: "Use Browse to search the portfolio without local AI.",
     loadEngine,
     streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)
     // grain's one-shot JSON-mode adapter — /grain/builder's verb picking. The cast is the honest kind: one
@@ -820,13 +823,6 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   return grainDoor.createClientDoor(applyOp, {
     reasoner: {
       decide(intent, tools) {
-        // Browse turns the model off, not the deterministic verbs. A chat send whose text routes to a
-        // known action still runs model-free; only an open-ended question is turned away.
-        if (intent.action === "chat.send" && !browse.allowsModel()) {
-          const text = typeof intent.payload?.text === "string" ? intent.payload.text : "";
-          if (!routeAction(text))
-            return Promise.resolve({ ok: false, ops: [], reason: "Use Browse to search the portfolio without local AI." });
-        }
         return reasoner.decide(intent, tools);
       },
     },
