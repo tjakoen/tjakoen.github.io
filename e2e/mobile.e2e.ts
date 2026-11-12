@@ -20,9 +20,11 @@ test.describe("mobile — the bottom bar", () => {
     const keyPages = page.getByRole("navigation", { name: "Key pages" });
     await expect(keyPages).toBeInViewport();
     // the drawer ends where the bar starts, so no page link sits under it
-    const drawer = await page.locator(".app-shell__rail").boundingBox();
-    const barBox = await bar.boundingBox();
-    expect(Math.round((drawer?.y ?? 0) + (drawer?.height ?? 0))).toBeLessThanOrEqual(Math.round(barBox?.y ?? 0) + 1);
+    const barTop = Math.round((await bar.boundingBox())?.y ?? 0);
+    await expect.poll(async () => {
+      const drawer = await page.locator(".app-shell__rail").boundingBox();
+      return Math.round((drawer?.y ?? 0) + (drawer?.height ?? 0));
+    }).toBeLessThanOrEqual(barTop + 1);
 
     await keyPages.getByRole("link", { name: "Résumé" }).click();
     await expect(page).toHaveURL(/\/resume\/?$/);
@@ -42,9 +44,11 @@ test.describe("mobile — the bottom bar", () => {
     await expect(browse).toHaveAttribute("aria-expanded", "true");
     await expect(page.locator(".assistant")).toHaveAttribute("data-mode", "browse");
     await expect(page.locator("#desk-browse")).toBeInViewport();
-    const sheet = await aside.boundingBox();
-    const bar = await page.getByRole("navigation", { name: "Main" }).boundingBox();
-    expect(Math.round((sheet?.y ?? 0) + (sheet?.height ?? 0))).toBeLessThanOrEqual(Math.round(bar?.y ?? 0) + 1);
+    const barTop = Math.round((await page.getByRole("navigation", { name: "Main" }).boundingBox())?.y ?? 0);
+    await expect.poll(async () => {
+      const sheet = await aside.boundingBox();
+      return Math.round((sheet?.y ?? 0) + (sheet?.height ?? 0));
+    }).toBeLessThanOrEqual(barTop + 1);
 
     await browse.click();
     await expect(shell).not.toHaveAttribute("data-aside-open", "");

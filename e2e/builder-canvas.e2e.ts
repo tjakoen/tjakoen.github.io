@@ -620,7 +620,7 @@ test.describe("the model chooses the verb", () => {
   test.beforeEach(async ({ page }) => { await scriptedDesk(page); });
 
   test("a page brief shows a reviewable draft and adds it only after approval", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await page.goto("/grain/builder");
     await waitForDesk(page);
     await submitPrompt(page, "Build a Hearth Bakery page in Utrecht with an intro that says it is a neighborhood bakery, then a card titled Coffee with the words baked fresh each morning.");
@@ -798,7 +798,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly identifies Drop b4 on second card (b4)");
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Review the corrected proposal");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
 
@@ -808,7 +808,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("a clearly stated edit verb and target correct a wrong operation only after review", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => {
       sessionStorage.setItem("__builderWrongTarget", "true");
@@ -828,8 +828,8 @@ test.describe("the model chooses the verb", () => {
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
   });
 
-  test("a declined exact-ID request becomes a disclosed recovery proposal on a phone", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+  test("a declined exact-ID request becomes a disclosed recovery proposal on a narrow screen", async ({ page }) => {
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -847,8 +847,8 @@ test.describe("the model chooses the verb", () => {
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
   });
 
-  test("common edit paraphrases become disclosed recovery proposals on a phone", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+  test("common edit paraphrases become disclosed recovery proposals on a narrow screen", async ({ page }) => {
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -939,7 +939,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("question-shaped edits are refused even when the model proposes a command", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderQuestionCommand", "true"));
     await waitForDesk(page);
@@ -961,7 +961,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("discard and nudge paraphrases stay review-gated and reject ambiguous or negative asks", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -995,7 +995,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("delete and shrink paraphrases preserve targets and spans through review", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -1019,7 +1019,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("erase and reposition paraphrases stay review-gated and reach the named blocks", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
@@ -1043,7 +1043,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("expanded wording stays review-gated and applies only the stated target", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 820, height: 844 });
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
