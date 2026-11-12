@@ -27,13 +27,13 @@
     <button type="button" data-window-forward title="Forward"><svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#chevron-right"></use></svg></button>
   </span>
   <!-- CENTER: the search field -->
-  <button class="window-bar__search" type="button" data-cmdk-open aria-label="Search the site" title="Search the site (⌘K)">
+  <button class="window-bar__search" type="button" data-cmdk-open aria-label="portfolio.tjakoen.com, search the site" title="Search the site (⌘K)">
     <svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#search"></use></svg><span class="window-bar__search-label">portfolio.tjakoen.com</span>
   </button>
   <!-- RIGHT: theme + view controls -->
   <span class="window-bar__ctl">
-    <button type="button" data-cycle-theme title="Cycle theme"><span aria-hidden="true">◆</span><span data-theme-name>sourdough</span></button>
-    <button type="button" data-toggle-scheme title="Light / dark" aria-label="Light or dark">◐</button>
+    <button type="button" data-cycle-theme title="Cycle theme" data-surface="flavor"><span aria-hidden="true">◆</span><span data-theme-name>sourdough</span></button>
+    <button type="button" data-toggle-scheme data-scheme-cycle title="Color scheme" aria-label="Color scheme" data-surface="dark-mode">◐</button>
     <button type="button" data-shell="console-toggle" title="Expand or collapse the terminal" aria-label="Expand or collapse the terminal">▭</button>
     <button type="button" data-xray-toggle title="X-ray — see the page as the AI sees it" aria-label="X-ray, see the page as the AI sees it">⊹</button>
     <button type="button" data-shell="viewport-toggle" title="Preview width: desktop / tablet / mobile"><span aria-hidden="true">⬚</span><span data-viewport-name>desktop</span></button>
@@ -231,7 +231,7 @@
       </a>
       <!-- CRUMB tour launcher: an ACTION (starts the guided-tour overlay), not a route — a
            <button> styled as a dock item. crumb-live.js binds [data-crumb-start] site-wide. -->
-      <button type="button" class="app-dock__item app-dock__item--action" data-crumb-start="portfolio" data-crumb-mode="demo" data-crumb-frame title="Take a guided tour">
+      <button type="button" class="app-dock__item app-dock__item--action" data-crumb-start="portfolio" data-crumb-mode="demo" data-crumb-frame title="Take a guided tour" data-surface="guided-tour">
         <span class="app-dock__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>

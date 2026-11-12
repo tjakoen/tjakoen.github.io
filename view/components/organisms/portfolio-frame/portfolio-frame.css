@@ -553,3 +553,20 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
 .app-shell__aside { view-transition-name: app-aside; }
 ::view-transition-old(app-aside), ::view-transition-new(app-aside) { animation: none; }
 ::view-transition-old(app-aside) { display: none; }
+
+/* The "start fresh" question behind the window Refresh. A native modal <dialog> rather than
+   window.confirm, because embedded browsers suppress confirm and the button then looks dead. It
+   wears the CRUMB card (.crumb-pop) so it reads as the same family as the tour; these rules only
+   undo the card's tour placement, which is set inline by CRUMB and does not apply here. */
+.crumb-pop.clear-dialog { inset: 0; margin: auto; height: fit-content; }
+.crumb-pop.clear-dialog::backdrop { background: color-mix(in srgb, var(--ink) 35%, transparent); }
+.clear-dialog__form { display: contents; }
+
+/* A tour card that lights nothing, the intro card above all, dims the page behind it. CRUMB turns
+   its spotlight off for those cards, and that spotlight is the only thing that dims, so the first
+   card a visitor sees floated over a bright page with nothing pulling the eye to it. The frame
+   presentation draws its own chrome and is left alone. */
+body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):not(:has(.ai-spotlit))::after {
+  content: ""; position: fixed; inset: 0; z-index: 9000; pointer-events: none;
+  background: color-mix(in srgb, var(--ink) 35%, transparent);
+}
