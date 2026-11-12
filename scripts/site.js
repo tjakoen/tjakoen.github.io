@@ -580,6 +580,10 @@
       // Browse tab already opens the sheet in that mode, so Browse presses it rather than repeating it.
       const mobileNav = document.querySelector(".mobile-nav");
       if (mobileNav) {
+        for (const link of document.querySelectorAll(".mobile-menu__item")) {
+          const href = link.getAttribute("href");
+          if (href === "/" ? location.pathname === "/" : location.pathname.startsWith(href)) link.setAttribute("aria-current", "page");
+        }
         const railButton = mobileNav.querySelector("[data-mobile-rail]");
         const browseButton = mobileNav.querySelector("[data-mobile-browse]");
         const browseTab = shell.querySelector('[data-shell-mode="browse"]');
