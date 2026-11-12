@@ -172,7 +172,7 @@ test("desktop Browse persists across navigation and leaves the model optional", 
   await asClientDesk(page, "**/grain");
   await asClientDesk(page, "**/notes");
   await openClientDesk(page, "/grain");
-  await expect(page.locator("[data-desk-download]")).toContainText("About 350 MB");
+  await expect(page.getByRole("tab", { name: "Chat", exact: true })).toHaveAttribute("title", /About 350 MB/);
   await page.getByRole("tab", { name: "Browse", exact: true }).click();
   await page.getByRole("navigation", { name: "Portfolio shortcuts" }).getByRole("link", { name: "Notes", exact: true }).click();
   await expect(page.locator("body")).toHaveAttribute("data-desk-mode", "browse", { timeout: 25_000 });
