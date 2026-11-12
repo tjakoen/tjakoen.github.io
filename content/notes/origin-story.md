@@ -7,6 +7,8 @@ type: note
 date: 2026-07-02
 readingTime: "~9 min"
 tags: [origin-story, batch, grain, mill, native-first, ai]
+people: [brad-frost, coding2go]
+sources: [book-atomic-design]
 summary: >
   How trying to organize my own life turned into a no-build stack, a design system, a content engine,
   and an AI that manages me.
@@ -67,7 +69,7 @@ Which is why I do not really have hobbies. Some people decompress with the gym, 
 
 ## Then a class I did not ask for lit the fuse
 
-One of my teaching classes became INTROWEB: basic HTML and CSS. It was not supposed to be mine, but it got added to my load. Happy accident. Prepping lessons, I fell down a rabbit hole (shout-out to [Coding2GO](https://www.youtube.com/@coding2go)) and realized something I had stopped believing: **modern HTML, CSS, and JavaScript are genuinely good now.**
+One of my teaching classes became INTROWEB: basic HTML and CSS. It was not supposed to be mine, but it got added to my load. Happy accident. Prepping lessons, I fell down a rabbit hole (shout-out to [Coding2GO](/people#coding2go)) and realized something I had stopped believing: **modern HTML, CSS, and JavaScript are genuinely good now.**
 
 I had lived inside frameworks for years, because when I started, the native platform really was not enough for anything serious. But I have never *liked* frameworks. They bug me the same way a productivity app does: they make you do things their way. So it turned into a dare to myself: *build this as natively as possible.* No framework, no build step, just the platform. 
 
@@ -183,7 +185,7 @@ I landed on **Bun** for a concrete reason, not the usual hype: it is the one run
 
 ## GRAIN: making the machine visible
 
-The next step was enabling the thing I wanna build to be able to look and behave like something. I am a design-systems person to my core. After learning about it, [Brad Frost's atomic design](https://atomicdesign.bradfrost.com/) became more or less my love language when designing frontend. I am DRY (Do not repeat yourself) to a fault, and I would happily build fifty tiny parts before one big one. So as I was building, it grew up into [GRAIN](/grain), a design system built specifically around *AI interaction*, with one non-negotiable rule: What an AI did and what a human did must be clearly visible. The AI never gets to work in the dark.
+The next step was enabling the thing I wanna build to be able to look and behave like something. I am a design-systems person to my core. After learning about it, [Brad Frost](/people#brad-frost)'s [atomic design](https://atomicdesign.bradfrost.com/) became more or less my love language when designing frontend. I am DRY (Do not repeat yourself) to a fault, and I would happily build fifty tiny parts before one big one. So as I was building, it grew up into [GRAIN](/grain), a design system built specifically around *AI interaction*, with one non-negotiable rule: What an AI did and what a human did must be clearly visible. The AI never gets to work in the dark.
 
 Underneath the look is the part that keeps it honest. A human click and an AI decision resolve to the same intent, go through one write door, and come back as operations that redraw the surface. The AI gets no secret key I do not also hold. It plays the same piano I do, in the same room, where I can watch its hands.
 

@@ -8,6 +8,8 @@ layout: timeline
 date: 2026-11-09
 readingTime: "~12 min"
 tags: [ai, claude, code-review, leadership, codex]
+people: [kaither-holiway, kercwin, addy-osmani]
+sources: [book-loop-engineering]
 summary: >
   The story of my PR review kit at Career Team, told from its git history: one hand-run Claude skill
   in August, a talk that introduced it to the team in September, then an outcome log that scores
@@ -116,7 +118,7 @@ anything. I also sit in the architecture group, which means some pull requests c
 review them, and that summer, code review was a real bottleneck on the team. Architecture review
 was the worst of it, and a fair share of that queue was waiting on me.
 
-So in a manager meeting I raised it with [Kaither Holiway](https://www.linkedin.com/in/kaither-holiway/),
+So in a manager meeting I raised it with [Kaither Holiway](/people#kaither-holiway),
 our Director of Engineering. Before Career Team he was a Senior Software Engineering Manager at
 GoFundMe, where by his account the engineering teams went hard on AI and built it into how they
 actually worked, and that was the bar he wanted to bring here. I explained that I was still
@@ -137,7 +139,7 @@ From there it spread outward, and it turned into a habit. Whenever someone share
 could make the reviewer better, a teammate's tool, a post, a paper, I take what I can from it and
 put it in the kit. I read how other reviewers work and kept reading as new things came
 out. When I saw how Google writes down its standard for code review, how Alibaba moved the parts of
-its AI reviewer that must not go wrong out of the model and into plain code, and how Addy Osmani
+its AI reviewer that must not go wrong out of the model and into plain code, and how [Addy Osmani](/people#addy-osmani)
 describes the loop that agentic work runs on, each one went into the kit. The full list is in the
 sources at the end.
 
@@ -475,8 +477,8 @@ reviews while I measure whether the lenses that get it find more than the ones t
 
 The newest turns are the reviewer getting choosier about its inputs. On `Oct 26` it started
 reading the epic's decided rules and the decisions made in Jira comments, and on `Nov 3` it folded
-in the epic check that
-[Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/), a tech lead on my team, built as
+in the [epic check](move-bugs-left.md) that
+[Kercwin](/people#kercwin), a tech lead on my team, built as
 his own plugin after seeing my board (the story is in
 [I Showed My Team a Dashboard](show-them-the-board.md#kercwins-epic-checker)), so a deviation the team already agreed to
 stops being flagged as a defect. The same day risk intake arrived: a pull request from outside my
@@ -688,7 +690,7 @@ single rule:
   started from, and the PR
   fixer whose evaluation suite taught me to test whether a review is any good, not only whether the
   machinery runs.
-- [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/)'s epic check, which supplies the epic decisions and the collision check, and which
+- Kercwin's epic check, which supplies the epic decisions and the collision check, and which
   the kit runs as a plugin since `Nov 3`. How he came to build it is in
   [I Showed My Team a Dashboard](show-them-the-board.md#kercwins-epic-checker).
 

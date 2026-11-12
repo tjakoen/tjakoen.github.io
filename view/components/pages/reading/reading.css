@@ -62,25 +62,25 @@
               0.75rem 1.25rem 1.5rem 0 color-mix(in srgb, black 75%, transparent); }
 
 /* ── The people, as a feed ────────────────────────────────────────────────────────────────── */
-[data-screen="reading"] .people { list-style: none; margin: var(--space-4) 0 var(--space-6); padding: 0;
+:is([data-screen="reading"], [data-screen="people"]) .people { list-style: none; margin: var(--space-4) 0 var(--space-6); padding: 0;
   display: grid; gap: var(--space-4); max-width: 40rem; }
-[data-screen="reading"] .post { display: grid; grid-template-columns: 3rem 1fr; gap: var(--space-2) var(--space-4);
+:is([data-screen="reading"], [data-screen="people"]) .post { display: grid; grid-template-columns: 3rem 1fr; gap: var(--space-2) var(--space-4);
   padding: var(--space-4); border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
-[data-screen="reading"] .post__avatar { width: 3rem; height: 3rem; border-radius: 50%; display: grid;
+:is([data-screen="reading"], [data-screen="people"]) .post__avatar { width: 3rem; height: 3rem; border-radius: 50%; display: grid;
   place-items: center; font-weight: 700; color: var(--paper);
   background: color-mix(in srgb, var(--color-accent) 70%, var(--ink)); position: relative; overflow: hidden; }
-[data-screen="reading"] .post__avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-[data-screen="reading"] .post__main { min-width: 0; }
-[data-screen="reading"] .post__head { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-2); }
-[data-screen="reading"] .post__name { font-weight: 700; color: var(--ink); }
-[data-screen="reading"] .post__handle { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); }
-[data-screen="reading"] .post__body { margin: var(--space-2) 0 var(--space-4); }
-[data-screen="reading"] .post__embed { display: block; padding: var(--space-2) var(--space-4); border: 1px solid var(--line-soft);
+:is([data-screen="reading"], [data-screen="people"]) .post__avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+:is([data-screen="reading"], [data-screen="people"]) .post__main { min-width: 0; }
+:is([data-screen="reading"], [data-screen="people"]) .post__head { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-2); }
+:is([data-screen="reading"], [data-screen="people"]) .post__name { font-weight: 700; color: var(--ink); }
+:is([data-screen="reading"], [data-screen="people"]) .post__handle { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); }
+:is([data-screen="reading"], [data-screen="people"]) .post__body { margin: var(--space-2) 0 var(--space-4); }
+:is([data-screen="reading"], [data-screen="people"]) .post__embed { display: block; padding: var(--space-2) var(--space-4); border: 1px solid var(--line-soft);
   border-radius: var(--radius-md); text-decoration: none; color: inherit; }
-[data-screen="reading"] .post__embed:hover { border-color: var(--color-accent); }
-[data-screen="reading"] .post__embed-site { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted); }
-[data-screen="reading"] .post__embed-title { font-weight: 600; }
-[data-screen="reading"] .post__foot { margin: var(--space-2) 0 0; font-size: 0.85rem; color: var(--ink-muted);
+:is([data-screen="reading"], [data-screen="people"]) .post__embed:hover { border-color: var(--color-accent); }
+:is([data-screen="reading"], [data-screen="people"]) .post__embed-site { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted); }
+:is([data-screen="reading"], [data-screen="people"]) .post__embed-title { font-weight: 600; }
+:is([data-screen="reading"], [data-screen="people"]) .post__foot { margin: var(--space-2) 0 0; font-size: 0.85rem; color: var(--ink-muted);
   display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
 
 /* The category sits at the foot of each spine under a rule, the way a library label would. */
@@ -92,3 +92,11 @@
 [data-screen="reading"] .book__cat .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip-path: inset(50%); white-space: nowrap; }
 [data-screen="reading"] .book__title, [data-screen="reading"] .book__author, [data-screen="reading"] .book__cat { flex-shrink: 0; }
+
+/* ── The two groups on /people, as tabs ──────────────────────────────────────────────────────── */
+/* The script on /people un-hides the tab row; without it both groups show in order. */
+[data-screen="people"] .people-tabs { display: flex; gap: 0; margin: var(--space-4) 0 0; border-bottom: 1px solid var(--line-soft); }
+[data-screen="people"] .people-tabs[hidden] { display: none; }
+[data-screen="people"] .people-tabs [role="tab"] { font: inherit; font-size: 0.9rem; padding: var(--space-2) var(--space-4);
+  background: transparent; color: var(--ink-muted); border: 0; cursor: pointer; }
+[data-screen="people"] .people-tabs [aria-selected="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--color-accent); }

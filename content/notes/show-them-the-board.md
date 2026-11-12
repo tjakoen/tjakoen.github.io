@@ -7,6 +7,7 @@ type: note
 date: 2026-11-10
 readingTime: "~7 min"
 tags: [ai, leadership, claude, dashboards, team]
+people: [kercwin, kyle]
 summary: >
   I stalled for a month building a people app the way a developer would, screen by screen, then
   rebuilt it in an afternoon as a Claude dashboard once I started thinking like an orchestrator. The
@@ -267,7 +268,7 @@ built their own. I did not assign either one.
 
 ### Kercwin's epic checker
 
-[Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/) is the tech lead of my team,
+[Kercwin](/people#kercwin) is the tech lead of my team,
 and inspired by the review board, he built an epic checker. It reads every ticket and open pull request
 against the epic's architecture plan in Confluence, and puts each new decision or conflict in front of
 the person who owns it. The idea under it is our CTO's rule, move bugs as far left as possible, and it
@@ -285,7 +286,7 @@ epic check's decided deviations into its verdict. His tool now makes my reviews 
 
 ### Kyle's Obsidian board
 
-[Kyle](https://www.linkedin.com/in/kylealanmanayon/) is a junior on my team, and I see a lot of
+[Kyle](/people#kyle) is a junior on my team, and I see a lot of
 potential in him.
 
 In my one-on-one with him last week, he showed me a dashboard he had built

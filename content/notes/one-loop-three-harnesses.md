@@ -7,6 +7,8 @@ type: note
 date: 2026-11-08
 readingTime: "~11 min"
 tags: [ai, workflow, standards, developer-tools, process]
+people: [addy-osmani, alfonso-graziano, cole-medin]
+sources: [book-beyond-vibe-coding, book-loop-engineering, book-ai-native-engineering]
 summary: >
   How I run Claude, Codex and DeepSeek on one shared loop. The public standards are the contract, and
   a private agent-config repo wires them across my machines. Choosing a model is a routing decision,
@@ -422,9 +424,9 @@ when it does.
 ## The sources
 
 The people whose work this builds on are on the [reading page](/reading):
-[Addy Osmani](/reading#book-loop-engineering) for the loop and the comprehension-debt warning,
-[Alfonso Graziano](/reading#book-ai-native-engineering) for writing down what I meant, and
-[Cole Medin](/reading#cole-medin) for the project as one artifact. The standards are public; the
+[Addy Osmani](/people#addy-osmani) for the loop and the comprehension-debt warning,
+[Alfonso Graziano](/people#alfonso-graziano) for writing down what I meant, and
+[Cole Medin](/people#cole-medin) for the project as one artifact. The standards are public; the
 guide has the links.
 
 ## The part I keep

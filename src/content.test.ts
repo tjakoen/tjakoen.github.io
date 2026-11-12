@@ -4,7 +4,7 @@ import { test, expect } from "bun:test";
 import { readdir, unlink } from "node:fs/promises";
 import { join } from "node:path";
 import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
-import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, listLatestEvents, listEventCalendarEvents, renderNotesFeedPage, listPortfolioNotes, listPortfolioContentRoutes, listPortfolioRawContentRoutes, listNoteCalendarEvents, buildPortfolioKnowledge, isPublishedStatus, FLAGSHIP_NOTE_SLUG } from "./content.ts";
+import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, listLatestEvents, listEventCalendarEvents, renderNotesFeedPage, listPortfolioNotes, listPortfolioContentRoutes, listPortfolioRawContentRoutes, listNoteCalendarEvents, buildPortfolioKnowledge, isPublishedStatus, FLAGSHIP_NOTE_SLUG, peopleEntries, readingEntries } from "./content.ts";
 
 const serve = createPortfolioContentRoutes();
 
@@ -185,4 +185,30 @@ test("the gate takes nothing that is live off the site: every published note is 
   // The one the owner published on purpose, named rather than counted, because a gate that took it
   // down would have silently undone a decision made the same day the gate was written.
   expect((await serve("/notes/the-check-that-never-ran"))?.status).toBe(200);
+});
+
+// A note's people: and sources: slugs must name a real entry on /people or card on /reading, and
+// every note that lists a person must appear in that person's "Mentioned in" row, so the page and
+// the notes cannot drift apart. A person listed must also be linked to /people in the note body.
+test("note credits resolve to /people and /reading, and /people lists every note back", async () => {
+  const people = peopleEntries();
+  const reading = readingEntries();
+  const peopleHtml = await Bun.file(join("view", "pages", "people.html")).text();
+  const dir = join("content", "notes");
+  for (const f of await readdir(dir)) {
+    if (!f.endsWith(".md")) continue;
+    const slug = f.replace(/\.md$/, "");
+    const raw = await Bun.file(join(dir, f)).text();
+    const frontmatter = parseFrontmatter(raw).data as Record<string, unknown>;
+    const body = raw.slice(raw.indexOf("\n---", 3) + 4);
+    for (const id of (frontmatter.people as string[] | undefined) ?? []) {
+      expect(people.has(id), `${f}: person ${id} is not on /people`).toBe(true);
+      const entry = peopleHtml.slice(peopleHtml.indexOf(`id="${id}"`)).split("</li>")[0];
+      expect(entry.includes(`href="/notes/${slug}"`), `/people#${id} does not list ${slug}`).toBe(true);
+      expect(body.indexOf(`(/people#${id})`) >= 0, `${f}: never links /people#${id}`).toBe(true);
+    }
+    for (const id of (frontmatter.sources as string[] | undefined) ?? []) {
+      expect(reading.has(id), `${f}: source ${id} is not on /reading`).toBe(true);
+    }
+  }
 });

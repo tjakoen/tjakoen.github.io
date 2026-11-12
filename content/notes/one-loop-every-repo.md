@@ -7,6 +7,8 @@ type: note
 date: 2026-07-30
 readingTime: "~10 min"
 tags: [ai, workflow, process, developer-tools, standards, planning]
+people: [addy-osmani]
+sources: [book-loop-engineering]
 summary: >
   How I got back on top of AI-assisted work across a dozen repos: one shared workflow instead of a
   dozen improvised ones. Plan state moved out of chat and into markdown files the AI already edits,
@@ -60,7 +62,7 @@ first.
 
 Instead of adding more, I went and read the people who had thought about this harder than I had.
 
-The most useful was Addy Osmani's writing on what he calls
+The most useful was [Addy Osmani](/people#addy-osmani)'s writing on what he calls
 [loop engineering](https://addyosmani.com/blog/loop-engineering/): the case that durable AI work is
 built from a small set of reusable parts, not a clever prompt. His companion book carries the harder
 half, the "70 percent problem," where an AI gets you most of the way and the last stretch is exactly

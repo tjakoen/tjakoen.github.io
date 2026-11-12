@@ -7,6 +7,8 @@ type: note
 date: 2026-11-08
 readingTime: "~12 min"
 tags: [ai, workflow, setup, developer-tools, process]
+people: [addy-osmani, alfonso-graziano, cole-medin]
+sources: [book-beyond-vibe-coding, book-loop-engineering, book-ai-native-engineering]
 summary: >
   A prompt-first setup guide for the loop, the harness, and the standards you write for yourself:
   one instruction file, one plan, one checklist, one report, one human gate. It starts with the
@@ -159,7 +161,7 @@ the evidence. The human gate is the stop. The harness is the program that calls 
 adapter step is the only part that changes per harness. The model is the rented part.
 
 A contract is something both sides can check. The model can change; the contract stays.
-[Addy Osmani](/reading) calls the gap between the code you can generate and the code you can
+[Addy Osmani](/people#addy-osmani) calls the gap between the code you can generate and the code you can
 understand comprehension debt. The loop is how I keep that debt visible.
 
 The five pieces are the thin loop. The guards and the adapters are add-ons. You do not need them on
@@ -401,9 +403,9 @@ code, and code rots. The model will change.
 ## The sources
 
 **The people are on the reading page, not in a footnote.** [The reading page](/reading) has the work
-that shaped this: [Addy Osmani](/reading#book-loop-engineering) on the loop and the
-comprehension-debt warning, [Alfonso Graziano](/reading#book-ai-native-engineering) on writing down
-what you meant, and [Cole Medin](/reading#cole-medin) on the project as one artifact. The public
+that shaped this: [Addy Osmani](/people#addy-osmani) on the loop and the
+comprehension-debt warning, [Alfonso Graziano](/people#alfonso-graziano) on writing down
+what you meant, and [Cole Medin](/people#cole-medin) on the project as one artifact. The public
 standards are my own draft, not a universal; the reading page is the trail back to the people, and
 the standards are the shape I made from them. Write yours.
 

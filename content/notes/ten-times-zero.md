@@ -11,6 +11,8 @@ date: 2026-08-07
 readingTime: "~18 min"
 deck: "Ten times zero | Talk | /talks/ten-times-zero | 35 slides · runs in the browser, no download"
 tags: [ai, vibe-coding, workflow, fundamentals, native-first, batch, grain]
+people: [alfonso-graziano, addy-osmani]
+sources: [book-ai-native-engineering, book-loop-engineering]
 summary: >
   How I actually work with AI, and why it holds up. AI is a multiplier, not an addend; it
   multiplies what you already are, and ten times zero is still zero, so I made sure I wasn't zero
@@ -523,11 +525,11 @@ notes.
 There's a free test for this and it takes two minutes. Open a cold session, no chat history, give it
 one sentence of instruction, and watch what it does first. If it guesses the stack, invents a folder,
 or writes a framework into a project that has never had one, that gap is yours and not the model's.
-Alfonso Graziano's [Learning AI-Native Software Engineering](https://alfonsograziano.it/book) is
+[Alfonso Graziano](/people#alfonso-graziano)'s [Learning AI-Native Software Engineering](https://alfonsograziano.it/book) is
 where most of my thinking on this got sharpened, along with spec-driven work like
 [GitHub's Spec Kit](https://github.com/github/spec-kit).
 
-**Loop engineering** is the other one, and it's Addy Osmani's
+**Loop engineering** is the other one, and it's [Addy Osmani](/people#addy-osmani)'s
 [term and framing](https://addyosmani.com/blog/loop-engineering/): durable AI work is built out of a
 few reusable parts rather than one clever prompt. His [Beyond Vibe Coding](https://beyond.addy.ie)
 carries the harder half of it, the seventy percent problem, where the machine gets you most of the
