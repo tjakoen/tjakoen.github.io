@@ -165,7 +165,7 @@
   margin-bottom: -1px; border-bottom: 1px solid transparent;
 }
 .notes-audience__tab:first-child { border-left: 1px solid var(--color-line); }
-.notes-audience__tab input { position: absolute; opacity: 0; pointer-events: none; }
+.notes-audience__tab input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
 .notes-audience__tab:hover { color: var(--color-fg); }
 .notes-audience__tab:has(input:checked) {
   color: var(--color-fg); background: var(--color-bg);
@@ -183,7 +183,7 @@
   font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted);
   position: relative; cursor: pointer;
 }
-.chip.notes-tag input { position: absolute; opacity: 0; pointer-events: none; }
+.chip.notes-tag input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
 .chip.notes-tag:hover { color: var(--color-fg); }
 .chip.notes-tag:has(input:checked) { color: var(--color-accent); }
 .chip.notes-tag:has(input:checked) span:first-of-type { text-decoration: underline; text-underline-offset: 3px; }
