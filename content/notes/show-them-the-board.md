@@ -8,7 +8,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-10
 readingTime: "~7 min"
-tags: [leadership, agents, tooling]
+tags: [ai, leadership, tooling]
 people: [kercwin, kyle, cyrus]
 summary: >
   I stalled for a month building a people app the way a developer would, screen by screen, then

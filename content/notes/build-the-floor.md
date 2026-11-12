@@ -12,7 +12,7 @@ changelog:
   - "2026-11-12 | Three months on: one skill has now been scored on a real team, so the limits section says what that does and does not show. Added what happened when I demoed instead of mandating, a rule about counting a check that cannot start, and model choice as a routing decision."
 readingTime: "~28 min"
 deck: "Build the floor | Talk | /talks/build-the-floor | 33 slides · runs in the browser, no download"
-tags: [workflow, standards, tooling, web-platform]
+tags: [ai, workflow, standards, tooling, web-platform]
 people: [cole-medin, addy-osmani, kercwin, kyle]
 sources: [book-loop-engineering]
 summary: >
