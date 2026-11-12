@@ -1,6 +1,6 @@
 ---
 title: "Set Up the Loop With One Prompt"
-audience: build
+audience: learn
 level: intro
 subtitle: "The prompt, the loop, the harness, and the standards you write for yourself. Start thin; add the guards when they earn it."
 author: "Tjakoen Stolk"
@@ -8,7 +8,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-08
 readingTime: "~12 min"
-tags: [workflow, tooling]
+tags: [ai, workflow, tooling]
 people: [addy-osmani, alfonso-graziano, cole-medin]
 sources: [book-beyond-vibe-coding, book-loop-engineering, book-ai-native-engineering]
 summary: >

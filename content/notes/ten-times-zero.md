@@ -1,6 +1,6 @@
 ---
 title: "Ten Times Zero Is Still Zero"
-audience: build
+audience: learn
 level: intro
 subtitle: >
   "Vibe coder" gets used as an insult: prompt and pray, ship a house of cards. I claim it anyway,
@@ -12,7 +12,7 @@ type: note
 date: 2026-08-07
 readingTime: "~18 min"
 deck: "Ten times zero | Talk | /talks/ten-times-zero | 35 slides · runs in the browser, no download"
-tags: [agents, workflow, web-platform, stack]
+tags: [ai, workflow, web-platform, stack]
 people: [alfonso-graziano, addy-osmani]
 sources: [book-ai-native-engineering, book-loop-engineering]
 summary: >

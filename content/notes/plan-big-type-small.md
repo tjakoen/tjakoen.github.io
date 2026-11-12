@@ -1,6 +1,6 @@
 ---
 title: "Plan on the Big Model, Type on the Small One"
-audience: build
+audience: learn
 level: intro
 subtitle: "A junior developer kept running out of tokens before lunch. The fix was advice I had stopped thinking of as advice: let the expensive model think, hand the typing to cheaper subagents, and turn the effort dial down further than feels safe."
 author: "Tjakoen Stolk"
@@ -8,7 +8,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-13
 readingTime: "~8 min"
-tags: [agents, workflow]
+tags: [ai, workflow]
 summary: >
   Plan and orchestrate on Opus, implement with Sonnet subagents, and try low effort before assuming
   you need high. Why the split works, why the biggest models rarely pay for themselves in my daily

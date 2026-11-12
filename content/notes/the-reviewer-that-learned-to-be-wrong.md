@@ -9,7 +9,7 @@ type: note
 layout: timeline
 date: 2026-11-09
 readingTime: "~12 min"
-tags: [agents, leadership]
+tags: [ai, leadership]
 people: [kaither-holiway, kercwin, addy-osmani]
 sources: [book-loop-engineering]
 summary: >

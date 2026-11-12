@@ -8,7 +8,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-08
 readingTime: "~11 min"
-tags: [workflow, standards, tooling]
+tags: [ai, workflow, standards, tooling]
 people: [addy-osmani, alfonso-graziano, cole-medin]
 sources: [book-beyond-vibe-coding, book-loop-engineering, book-ai-native-engineering]
 summary: >

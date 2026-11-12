@@ -8,7 +8,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-10
 readingTime: "~5 min"
-tags: [leadership, agents, tooling]
+tags: [ai, leadership, tooling]
 people: [matt-monroe, kercwin]
 summary: >
   Kercwin, the tech lead of my team, built an epic checker that keeps a busy project aligned to its
