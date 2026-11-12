@@ -657,7 +657,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   /* Menu opens the rail as a bottom drawer, like Browse: it rises from the bar with the sections as
      a grid of icons over small labels, and drops the brand row and the file tree. */
   .app-shell.app-window .app-shell__rail {
-    inset: auto 0 var(--mobile-nav-h) 0; width: auto; height: auto; max-height: 70vh;
+    inset: auto 0 var(--mobile-nav-h) 0; width: auto; height: auto; max-height: 75vh; display: flex; flex-direction: column;
     border-top: 1px solid var(--color-line);
     border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md);
     background: var(--color-surface);
@@ -665,8 +665,17 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
     transform: translateY(calc(100% + var(--mobile-nav-h))); transition: transform 0.3s ease; }
   .app-shell.app-window[data-rail-open="true"] .app-shell__rail { transform: none; }
   @media (prefers-reduced-motion: reduce) { .app-shell.app-window .app-shell__rail { transition: none; } }
-  .app-shell.app-window .app-shell__rail :is(.rail-head, .rail-explorer) { display: none; }
-  .app-shell.app-window .app-shell__rail .rail-body { position: relative; padding-top: var(--space-4); }
+  /* under the section grid sits the site's file tree, so every page is reachable from Menu: the
+     home page, the résumé, each project such as the BREAD stack, experience and the docs */
+  .app-shell.app-window .app-shell__rail :is(.rail-head, .activity-bar) { display: none; }
+  .app-shell.app-window .app-shell__rail .rail-body {
+    position: relative; display: flex; flex-direction: column; min-height: 0; overflow-y: auto;
+    overscroll-behavior: contain; padding-top: var(--space-4); }
+  .app-shell.app-window .app-shell__rail .app-dock { order: -1; flex: none; }
+  .app-shell.app-window .app-shell__rail .rail-explorer {
+    display: block; flex: none; border-top: 1px solid var(--color-line);
+    padding: var(--space-2) var(--space-3) var(--space-3); }
+  .app-shell.app-window .app-shell__rail .side-rail { display: block; width: auto; border: 0; padding: 0; }
   .app-shell.app-window .app-shell__rail .rail-body::before {
     content: ""; position: absolute; top: var(--space-2); left: 50%; transform: translateX(-50%);
     width: 2.25rem; height: 0.25rem; border-radius: var(--radius-pill);
