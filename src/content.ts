@@ -1178,7 +1178,7 @@ const CONTENT_COPY_SCRIPT = `<script>
       field.remove();
       return copied;
     }
-    document.querySelectorAll('[data-share], [data-copy-template]').forEach(function (block) {
+    function wire(block) {
       var button = block.querySelector('[data-share-copy], [data-copy-template-button]');
       var text = block.querySelector('[data-share-text], pre code');
       if (!button || !text) return;
@@ -1206,7 +1206,9 @@ const CONTENT_COPY_SCRIPT = `<script>
           button.textContent = 'Copy failed, select it instead';
         }
       });
-    });
+    }
+    document.querySelectorAll('[data-share], [data-copy-template]').forEach(wire);
+    window.addEventListener('note-share:open', function (e) { wire(e.detail); });
   })();
 </script>`;
 
@@ -2032,15 +2034,17 @@ export function renderNoteChangelog(frontmatter: Record<string, unknown>): strin
  *  dialog in site.js. Opened by the Share tab, which stays hidden until this script runs, so a
  *  reader without JavaScript never sees a button that does nothing. */
 function renderShareDialog(title: string, href: string): string {
-  return `<dialog class="crumb-pop clear-dialog note-share" data-share data-note-share-dialog aria-labelledby="note-share-title">
+  // Held in a <template> and only made a live dialog on click, the way site.js builds its clear
+  // dialog: a .crumb-pop sitting in every note page would be a second match for CRUMB's own card.
+  return `<template data-note-share-template><dialog class="crumb-pop clear-dialog note-share" data-share data-note-share-dialog aria-labelledby="note-share-title">
   <form method="dialog" class="clear-dialog__form">
   <div class="crumb-pop__head"><span id="note-share-title" class="crumb-pop__title">Share this note</span>
   <button class="crumb-pop__x" value="" aria-label="Close">&times;</button></div>
   <div class="crumb-pop__body"><p class="crumb-pop__say">${escapeHtml(title)}</p>
   <p class="note-share__link" data-share-text>${escapeHtml(href)}</p></div>
   <div class="crumb-pop__foot"><button class="btn" type="button" data-share-copy aria-live="polite" autofocus>Copy link</button>
-  <button class="btn" data-variant="soft" value="">Done</button></div></form></dialog>
-<script>(function(){var b=document.querySelector('[data-note-share]'),d=document.querySelector('[data-note-share-dialog]');if(!b||!d||typeof d.showModal!=='function')return;b.hidden=false;b.addEventListener('click',function(){d.showModal();});})();</script>`;
+  <button class="btn" data-variant="soft" value="">Done</button></div></form></dialog></template>
+<script>(function(){var b=document.querySelector('[data-note-share]'),t=document.querySelector('[data-note-share-template]');if(!b||!t||typeof HTMLDialogElement!=='function')return;b.hidden=false;b.addEventListener('click',function(){var d=t.content.firstElementChild.cloneNode(true);document.body.appendChild(d);d.addEventListener('close',function(){d.remove();});window.dispatchEvent(new CustomEvent('note-share:open',{detail:d}));d.showModal();});})();</script>`;
 }
 
 function renderNoteCredits(frontmatter: Record<string, unknown>): string {
