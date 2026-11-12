@@ -12,7 +12,8 @@ summary: >
   I stalled for a month building a people app the way a developer would, screen by screen, then
   rebuilt it in an afternoon as a Claude dashboard once I started thinking like an orchestrator. The
   better story is what my team did after I demoed it: Kercwin, the tech lead of my team, built an
-  epic checker for his projects, and Kyle, a junior on my team, built his own work board in Obsidian. I lead with demos rather
+  epic checker for his projects, Kyle, a junior on my team, built his own work board in Obsidian, and
+  Cyrus, a fresh graduate three months into the team, built a desk for his own pull requests. I lead with demos rather
   than mandates, and I hold my team to the rule I hold my students to: own the output, or do not ship it.
 social: |
   I spent a month hand-building a people app for my team. Then I replaced it in an afternoon with a
@@ -20,9 +21,10 @@ social: |
 
   The better part came after I demoed it. Within two weeks, Kercwin (https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/) built an epic
   checker that keeps our work aligned with decisions as they change, and Kyle (https://www.linkedin.com/in/kylealanmanayon/) built
-  his own work board in Obsidian.
+  his own work board in Obsidian. Cyrus (https://www.linkedin.com/in/parcgm-work/), three months out
+  of school and three months on the team, built a desk that tracks his pull requests all the way to UAT.
 
-  Nobody was assigned either one. The demo was the whole policy.
+  Nobody was assigned any of them. The demo was the whole policy.
 
   If you lead people and you've built something, show them. The worst case is they nod.
 socialImage: "/media/notes/show-them-the-board-social.png"
@@ -261,8 +263,8 @@ if I were still a full-time developer I would have automated my whole process en
 the joke is doing a job: it tells them the tokens they have are for exactly this, and that making
 their own work easier is not a side project, it is the work.
 
-A couple of weeks ago I demoed the review board and Crew Watch. In that couple of weeks, two of them
-built their own. I did not assign either one.
+A couple of weeks ago I demoed the review board and Crew Watch. In that couple of weeks, three of them
+built their own. I did not assign any of them.
 
 > The best thing a demo can do is make someone else open their own session.
 
@@ -306,6 +308,30 @@ for me," picked Obsidian, and made it. That is the exact instinct I was hoping t
 demo would plant, and seeing it come from a junior made it land harder. It is also the habit that turns a junior into a senior: noticing the friction in your own work and fixing it
 instead of carrying it.
 
+### Cyrus's PR desk
+
+[Cyrus](https://www.linkedin.com/in/parcgm-work/) is a fresh graduate who joined the team about three
+months ago. He built My PR Desk so he would stop digging through GitHub to find out where his work
+stands. One page shows his open pull requests with how many approvals each has and still needs, who
+reviewed it, whether the checks pass, and which comments and threads are new since he last looked. Below
+that sits everything merged in the last two weeks, and whether each one has reached UAT yet. A separate
+tab lists the team's open pull requests, puts the ones waiting on him first, and lets him approve from
+the row. A small bar shows how much of his Claude plan he has used.
+
+The part I like most is how it runs. A script on his laptop pulls from GitHub every ten minutes and
+writes a file the dashboard reads, with a refresh button for when he cannot wait. The laptop does the
+fetching rather than the model, so keeping it current costs no tokens at all.
+
+<figure class="shot">
+  <img class="shot__img" src="/media/crew/cyrus-pr-desk.jpg" width="2880" height="1830" loading="lazy" data-lightbox
+       alt="Cyrus's PR desk as a mock with invented data, in a dark theme: counts of open, changes requested, needs approvals and ready to merge, one open pull request expanded to show one of two approvals, passing checks and its activity log, and a side column with recent merges marked in UAT or not yet, team reviews waiting on him, a usage bar, and the script's runs every ten minutes.">
+  <figcaption class="shot__cap">Cyrus's desk, redrawn with an invented repository, pull requests and reviewers: his own work on the left, what has reached UAT and what is waiting on him on the right.</figcaption>
+</figure>
+
+Three months in, he had noticed the thing that ate his day, checking GitHub over and over, and built
+his way out of it. He now knows the moment his work reaches UAT, and the reviews he owes are the first
+thing he sees.
+
 ### One person's tool made another's better
 
 That is also why I keep sharing and nudging. It is not only so each developer has an easier day,
@@ -337,11 +363,11 @@ now, for reasons I can show rather than a feeling, and how I got there is the wh
 
 That rule is why I am comfortable cheering them on. Kercwin's checker does not decide anything. It
 puts the decision in front of the person who owns it. Kyle's board does not do his work. It shows him
-where it is. The machine drafts, and someone with their name on it signs.
+where it is. Cyrus's desk does not approve anything on its own; the button is his to press. The machine drafts, and someone with their name on it signs.
 
 ## What I have not earned yet
 
-Two weeks and two tools is a good story, not a trend. I do not know yet whether this sticks, whether
+Two weeks and three tools is a good story, not a trend. I do not know yet whether this sticks, whether
 the rest of the team builds something, or whether the epic checker still gets opened in three months.
 Crew Watch replacing People Manager is my judgment after a short run, not a proven fact, and the app
 is parked rather than deleted in case I am wrong. And a dashboard is only as honest as the data under
