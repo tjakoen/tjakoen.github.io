@@ -600,6 +600,12 @@
           sync();
         });
         new MutationObserver(sync).observe(shell, { attributeFilter: ["data-aside-open", "data-rail-open"] });
+        // Tour closes whichever drawer is open before CRUMB starts, so the first card lights the
+        // page and the bar rather than a drawer. Capture phase runs ahead of CRUMB's own listener.
+        mobileNav.querySelector("[data-crumb-start]")?.addEventListener("click", () => {
+          shell.removeAttribute("data-rail-open");
+          shell.removeAttribute("data-aside-open");
+        }, { capture: true });
       }
 
       const viewportToggle = shell.querySelector('[data-shell="viewport-toggle"]');

@@ -636,7 +636,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
 /* The phone's own navigation (portfolio-frame.html, .mobile-nav). On a phone the bottom bar holds
    Menu, Browse and Tour: the topbar's rail toggle is hidden because Menu opens the rail, the rail and
    the Browse sheet both stop at the bar, and the sheet drops Catalog and Notepad, which are desktop tools. */
-.mobile-nav { display: none; }
+.mobile-nav, .window-bar__brand { display: none; }
 @container shell-frame (max-width: 768px) {
   .app-shell.app-window { --mobile-nav-h: calc(3.75rem + env(safe-area-inset-bottom, 0px)); }
   .mobile-nav {
@@ -691,4 +691,17 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   .app-shell.app-window .assistant__modes { display: none; }
   .app-shell.app-window .assistant__head { min-height: 1.75rem; }
   .app-shell__main { padding-bottom: var(--mobile-nav-h); scroll-padding-bottom: calc(var(--mobile-nav-h) + var(--space-4)); }
+
+  /* The top of a phone is one row: the site name, then search and the light and dark switch. The
+     desktop tab strip and the flavor name go, since the bottom bar now does the navigating, and the
+     view toggle shows only inside the mobile preview, where it is the way back to desktop. */
+  .app-shell.app-window .app-shell__topbar { display: none; }
+  .app-shell.app-window .window-bar { gap: var(--space-2); padding-inline: var(--space-3); }
+  .app-shell.app-window .window-bar__brand {
+    display: block; margin-inline-end: auto; color: var(--color-fg); text-decoration: none;
+    font-family: var(--font-display, inherit); font-size: var(--text-base); white-space: nowrap; }
+  .app-shell.app-window .window-bar__search { order: 2; margin-inline: 0; }
+  .app-shell.app-window .window-bar__ctl { order: 3; }
+  .app-shell.app-window .window-bar__ctl [data-cycle-theme] { display: none; }
+  body:not([data-viewport]) .app-shell.app-window .window-bar__ctl [data-shell="viewport-toggle"] { display: none; }
 }
