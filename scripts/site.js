@@ -614,6 +614,13 @@
           collapseOnTablet();
         };
         updateViewportLabel();
+        // remember the preview width for the next page in this tab (restored inline in the frame)
+        new MutationObserver(() => {
+          try {
+            const v = document.body.getAttribute("data-viewport");
+            if (v) sessionStorage.setItem("portfolio:viewport", v); else sessionStorage.removeItem("portfolio:viewport");
+          } catch { /* private mode */ }
+        }).observe(document.body, { attributeFilter: ["data-viewport"] });
         new ResizeObserver(updateViewportLabel).observe(document.body);
         new MutationObserver(updateViewportLabel).observe(document.body, { attributeFilter: ["data-viewport"] });
         viewportToggle.addEventListener("click", () => {
