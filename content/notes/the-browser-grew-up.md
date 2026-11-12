@@ -1,6 +1,7 @@
 ---
 title: "The Browser Grew Up While I Was Busy With Frameworks"
 audience: build
+level: intro
 subtitle: "For years I built inside frameworks because the native platform genuinely couldn't keep up. Prepping a class, I looked again. It can now. So I bet a whole stack on vanilla HTML and CSS, and this is the honest ledger of what that bought me."
 author: "Tjakoen Stolk"
 status: PUBLISHED

@@ -1,6 +1,7 @@
 ---
 title: "I Trust the Number. I Do Not Trust What I Say About It."
 audience: lead
+level: deep
 subtitle: "I manage a team and I measure a lot of things. The counting has never been what went wrong. Every time I got hurt, it was by the sentence I attached to the count."
 author: "Tjakoen Stolk"
 status: DRAFT

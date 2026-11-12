@@ -1,6 +1,7 @@
 ---
 title: "How I Turned a GitHub Org Into My Whole Classroom"
 audience: learn
+level: intro
 subtitle: "No hosted app, no server to babysit, no budget. Just a GitHub org, a pile of Actions, and one rule I refused to break: the machine never writes to a student's own work. Here's the build, and everything that broke on the way."
 author: "Tjakoen Stolk"
 status: PUBLISHED

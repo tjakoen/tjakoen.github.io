@@ -799,6 +799,7 @@ export interface NoteFeedEntry {
   score: number;
   tags: string[];
   audience: string;
+  level: string;
   sections: number;
 }
 // Memoized. The note corpus is read and parsed from disk in here, and one page render asks for it
@@ -830,6 +831,7 @@ async function computeSortedNoteEntries(): Promise<NoteFeedEntry[]> {
       score: scoreMatch ? Number(scoreMatch[0]) : 0,
       tags: Array.isArray(fm.tags) ? fm.tags : [],
       audience: typeof fm.audience === "string" ? fm.audience : "",
+      level: fm.level === "deep" ? "deep" : fm.level === "intro" ? "intro" : "",
       sections: (body.match(/^## /gm) ?? []).length,
     });
   }
@@ -901,11 +903,13 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     const tags = e.tags.map((t) => `<span class="note-card__tag">#${escapeHtml(t)}</span>`).join("");
     const dataTags = escapeHtml(e.tags.join(" "));
     const pinned = e.slug === FLAGSHIP_NOTE_SLUG;
+    const levelTag = e.level === "intro" ? `<span class="note-card__level" data-level="intro">Start here</span> · `
+      : e.level === "deep" ? `<span class="note-card__level" data-level="deep">Deep dive</span> · ` : "";
     const pinTag = pinned ? `<span class="note-card__pin">📌 Pinned</span> · ` : "";
-    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}" data-audience="${escapeHtml(e.audience)}">
+    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}" data-audience="${escapeHtml(e.audience)}" data-level="${e.level}">
         <div class="note-card__vote" aria-hidden="true" title="Reading minutes, from the note's own frontmatter. Not votes.">&#9650;<span class="note-card__score">${e.score}</span></div>
         <div class="note-card__main">
-          <p class="note-card__byline">${pinTag}${byline}</p>
+          <p class="note-card__byline">${pinTag}${levelTag}${byline}</p>
           <h2 class="note-card__title"><a href="/notes/${slug}">${escapeHtml(e.title)}</a></h2>
           <p class="note-card__summary">${summary}</p>
           <p class="note-card__foot"><span class="note__tags">${tags}</span>
@@ -971,6 +975,8 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       function applyFilters() {
         var aud = form.querySelector('input[name="audience"]:checked');
         var audience = aud ? aud.value : "";
+        var lvl = form.querySelector('input[name="level"]:checked');
+        var level = lvl ? lvl.value : "";
         var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
         var wanted = boxes.map(function (b) { return b.value; });
         var q = (search && search.value || "").trim().toLowerCase();
@@ -979,9 +985,10 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
           var tagOk = wanted.length === 0 || wanted.some(function (t) { return tags.indexOf(t) !== -1; });
           var textOk = q === "" || (card.textContent || "").toLowerCase().indexOf(q) !== -1;
           var audOk = audience === "" || card.getAttribute("data-audience") === audience;
-          card.hidden = !(tagOk && textOk && audOk);
+          var levelOk = level === "" || card.getAttribute("data-level") === level;
+          card.hidden = !(tagOk && textOk && audOk && levelOk);
         });
-        if (empty && !(wanted.length === 0 && q === "" && audience === "")) empty.hidden = true;
+        if (empty && !(wanted.length === 0 && q === "" && audience === "" && level === "")) empty.hidden = true;
       }
 
       // Mirror the current tag filter into the URL so a filtered view is shareable (replaceState,
@@ -993,6 +1000,8 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var aud = form.querySelector('input[name="audience"]:checked');
         var params = [];
         if (aud && aud.value) params.push("for=" + aud.value);
+        var lvl = form.querySelector('input[name="level"]:checked');
+        if (lvl && lvl.value) params.push("level=" + lvl.value);
         if (wanted.length) params.push("tag=" + wanted.join(","));
         var url = location.pathname + (params.length ? "?" + params.join("&") : "") + location.hash;
         try { history.replaceState(null, "", url); } catch { /* file:// — leave the URL be */ }
@@ -1014,6 +1023,9 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var forParam = new URLSearchParams(location.search).get("for");
         var audBox = forParam && form.querySelector('input[name="audience"][value="' + forParam.replace(/[^a-z]/g, "") + '"]');
         if (audBox) { audBox.checked = true; applyFilters(); }
+        var levelParam = new URLSearchParams(location.search).get("level");
+        var levelBox = levelParam && form.querySelector('input[name="level"][value="' + levelParam.replace(/[^a-z]/g, "") + '"]');
+        if (levelBox) { levelBox.checked = true; applyFilters(); }
         var q = new URLSearchParams(location.search).get("tag");
         if (!q) return;
         if (tagFilters) tagFilters.open = true;
@@ -1037,7 +1049,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var target = ev.target;
         if (!target) return;
         if (target.name === "sort") sortCards();
-        else if (target.type === "checkbox" || target.name === "audience") { applyFilters(); syncUrl(); }
+        else if (target.type === "checkbox" || target.name === "audience" || target.name === "level") { applyFilters(); syncUrl(); }
       });
       if (search) search.addEventListener("input", function () { applyFilters(); });
 
@@ -1060,6 +1072,11 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         <input class="notes-search" type="search" placeholder="Search notes" aria-label="Search notes"
                autocomplete="off" data-notes-search>
         <div class="notes-toolbar__actions">
+          <div class="chips notes-sort" role="radiogroup" aria-label="Depth">
+            <label class="chip"><input type="radio" name="level" value="" checked> Any depth</label>
+            <label class="chip"><input type="radio" name="level" value="intro"> Start here</label>
+            <label class="chip"><input type="radio" name="level" value="deep"> Deep dive</label>
+          </div>
           <div class="chips notes-sort" role="radiogroup" aria-label="Sort">
             <label class="chip"><input type="radio" name="sort" value="new" checked> New</label>
             <label class="chip"><input type="radio" name="sort" value="top"> Top</label>
