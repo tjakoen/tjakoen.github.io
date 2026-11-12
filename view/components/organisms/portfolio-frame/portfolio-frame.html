@@ -54,6 +54,18 @@
        (.rail-explorer + .app-dock, in .rail-body) starts on its own line below it. -->
   <div class="rail-head"><b-icon sym="/assets/sprite.svg#spark"></b-icon><span>TJ's Desk</span></div>
   <div class="rail-body">
+    <!-- Shown only in the phone's Menu drawer. Browse already lists the sections, so Menu leads with
+         the pages a visitor most often wants by name; the file tree below it reaches the rest. -->
+    <nav class="mobile-menu" aria-label="Key pages">
+      <a class="mobile-menu__item" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></svg><span>Home</span></a>
+      <a class="mobile-menu__item" href="/resume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><circle cx="12" cy="11" r="2"/><path d="M9 17c.6-1.6 1.7-2.5 3-2.5s2.4.9 3 2.5"/></svg><span>Résumé</span></a>
+      <a class="mobile-menu__item" href="/mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="m4 7 8 6 8-6"/></svg><span>Contact</span></a>
+      <a class="mobile-menu__item" href="/about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.6 3.8-5.5 7-5.5s6 1.9 7 5.5"/></svg><span>About</span></a>
+      <a class="mobile-menu__item" href="/bread"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 10a6 4 0 0 1 12 0v9H6z"/><path d="M10 13v3M14 13v3"/></svg><span>BREAD</span></a>
+      <a class="mobile-menu__item" href="/teaching"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 9l9-4 9 4-9 4z"/><path d="M7 11v4.5c1.4 1.3 3 2 5 2s3.6-.7 5-2V11"/></svg><span>Teaching</span></a>
+      <a class="mobile-menu__item" href="/leading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span>Leading</span></a>
+      <a class="mobile-menu__item" href="/talks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg><span>Talks</span></a>
+    </nav>
     <div class="rail-explorer">
       <nav class="activity-bar" aria-label="Activity">
         <!-- the explorer toggle reuses the existing rail-toggle binding (collapses/reveals the

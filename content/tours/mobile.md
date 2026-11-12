@@ -7,9 +7,10 @@ This is my portfolio, laid out for a phone. Everything you need sits in the bar 
 the screen, and this short tour shows what each button does. Close it at any point.
 
 ## mobile-menu
-- verify: Tap Menu; a drawer should rise above the bar with Projects, Notes, Calendar, Mail, Plans, About and Tour, and tapping it again should lower it.
-Menu raises a drawer with the sections the desktop keeps in its sidebar: projects, notes, the
-calendar, mail, plans and the about page. Tap a section to go there, or tap Menu again to close it.
+- verify: Tap Menu; a drawer should rise above the bar with Home, Résumé, Contact, About, BREAD, Teaching, Leading and Talks over the site's file tree, and tapping it again should lower it.
+Menu raises a drawer with the pages people ask for by name: the résumé, a way to get in touch, the
+about page, the BREAD stack, teaching, leading and talks. Every other page sits in the file tree
+under them. Tap Menu again to close it.
 
 ## mobile-browse
 - verify: Tap Browse; the sheet should rise above the bar with section tiles and recent updates, and tapping it again should lower it.

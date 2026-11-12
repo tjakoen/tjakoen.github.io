@@ -636,7 +636,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
 /* The phone's own navigation (portfolio-frame.html, .mobile-nav). On a phone the bottom bar holds
    Menu, Browse and Tour: the topbar's rail toggle is hidden because Menu opens the rail, the rail and
    the Browse sheet both stop at the bar, and the sheet drops Catalog and Notepad, which are desktop tools. */
-.mobile-nav, .window-bar__brand { display: none; }
+.mobile-nav, .window-bar__brand, .mobile-menu { display: none; }
 @container shell-frame (max-width: 768px) {
   .app-shell.app-window { --mobile-nav-h: calc(3.75rem + env(safe-area-inset-bottom, 0px)); }
   .mobile-nav {
@@ -671,7 +671,18 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   .app-shell.app-window .app-shell__rail .rail-body {
     position: relative; display: flex; flex-direction: column; min-height: 0; overflow-y: auto;
     overscroll-behavior: contain; padding-top: var(--space-4); }
-  .app-shell.app-window .app-shell__rail .app-dock { order: -1; flex: none; }
+  .app-shell.app-window .app-shell__rail .app-dock { display: none; }
+  .app-shell.app-window .mobile-menu {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-1); flex: none;
+    padding: var(--space-2) var(--space-3) var(--space-3); }
+  .app-shell.app-window .mobile-menu__item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem;
+    height: 4rem; border-radius: var(--radius-md); color: var(--color-muted); text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.65rem; }
+  .app-shell.app-window .mobile-menu__item svg { width: 1.25rem; height: 1.25rem; }
+  .app-shell.app-window .mobile-menu__item .file-tree__close { display: none; }
+  .app-shell.app-window .mobile-menu__item:hover { color: var(--color-fg); }
+  .app-shell.app-window .mobile-menu__item[aria-current="page"] { color: var(--color-accent); }
   .app-shell.app-window .app-shell__rail .rail-explorer {
     display: block; flex: none; border-top: 1px solid var(--color-line);
     padding: var(--space-2) var(--space-3) var(--space-3); }

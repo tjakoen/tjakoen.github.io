@@ -1,12 +1,12 @@
 // tjakoen.github.io/e2e/mobile.e2e.ts — the phone layout (<768px). On a phone the bottom bar holds
-// Menu, Browse and Tour: Menu raises a drawer with the usual sections, Browse raises the Browse
+// Menu, Browse and Tour: Menu raises a drawer of key pages and the file tree, Browse raises the Browse
 // sheet, and Tour starts the phone's own tour. Covers what only a browser shows.
 import { test, expect } from "@playwright/test";
 
 test.describe("mobile — the bottom bar", () => {
   test.use({ viewport: { width: 375, height: 720 } });
 
-  test("Menu raises the sections drawer above the bar, and its sections navigate", async ({ page }) => {
+  test("Menu raises a drawer of key pages above the bar, and its links navigate", async ({ page }) => {
     await page.goto("/");
     const shell = page.locator(".app-shell");
     const bar = page.getByRole("navigation", { name: "Main" });
@@ -17,14 +17,15 @@ test.describe("mobile — the bottom bar", () => {
     await menu.click();
     await expect(shell).toHaveAttribute("data-rail-open", "true");
     await expect(menu).toHaveAttribute("aria-expanded", "true");
-    await expect(page.locator(".app-dock")).toBeInViewport();
-    // the drawer ends where the bar starts, so no section sits under it
-    const dock = await page.locator(".app-dock").boundingBox();
+    const keyPages = page.getByRole("navigation", { name: "Key pages" });
+    await expect(keyPages).toBeInViewport();
+    // the drawer ends where the bar starts, so no page link sits under it
+    const drawer = await page.locator(".app-shell__rail").boundingBox();
     const barBox = await bar.boundingBox();
-    expect(Math.round((dock?.y ?? 0) + (dock?.height ?? 0))).toBeLessThanOrEqual(Math.round(barBox?.y ?? 0) + 1);
+    expect(Math.round((drawer?.y ?? 0) + (drawer?.height ?? 0))).toBeLessThanOrEqual(Math.round(barBox?.y ?? 0) + 1);
 
-    await page.locator('.app-dock a[href="/calendar"]').click();
-    await expect(page).toHaveURL(/\/calendar\/?$/);
+    await keyPages.getByRole("link", { name: "Résumé" }).click();
+    await expect(page).toHaveURL(/\/resume\/?$/);
   });
 
   test("Browse raises the Browse sheet above the bar and lowers it again", async ({ page }) => {
