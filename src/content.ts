@@ -718,7 +718,7 @@ ${injectHead}</head>
     <portfolio-frame />
     <main class="app-shell__main" id="main-content">
       <div class="board">
-        <p class="eyebrow">📝 <span class="name">Notes</span> · this one moved</p>
+        <p class="eyebrow"><span class="name">Notes</span> · this one moved</p>
         <h1 class="masthead">This note was folded into a longer one.</h1>
         <hr class="rule">
         <p class="lede">It said one part of a bigger argument, so it now lives inside that argument
