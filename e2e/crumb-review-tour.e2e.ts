@@ -24,7 +24,7 @@ test.describe("crumb — the review tour over the live figures", () => {
     await expect(page).toHaveURL(/\/$/);
     await expect(page.locator(".crumb-frame__bar").last()).toBeVisible();
     await page.getByRole("button", { name: "Start" }).last().click();
-    await expect(page.locator(".crumb-frame__count")).toHaveText("1 / 5");
+    await expect(page.locator(".crumb-frame__count")).toHaveText("1 / 6");
   });
 
   test("every live figure is an addressable surface", async ({ page }) => {

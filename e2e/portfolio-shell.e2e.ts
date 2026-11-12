@@ -30,11 +30,13 @@ test.describe("the portfolio workspace shell (BREAD frame, on /)", () => {
   test("topbar toggles cycle theme + flip light/dark site-wide (tokens on <html>)", async ({ page }) => {
     await page.goto("/");
     const html = page.locator("html");
-    // theme-cycle rotates the data-themes list: sourdough (default, no attr) → baguette → brioche
+    // a first visit opens in brioche (scripts/theme-default.js); the cycle wraps to sourdough, the
+    // list's bare default with no attribute, then on to baguette
+    await expect(html).toHaveAttribute("data-theme", "brioche");
+    await page.locator("[data-cycle-theme]").click();
+    await expect(html).not.toHaveAttribute("data-theme", /./);
     await page.locator("[data-cycle-theme]").click();
     await expect(html).toHaveAttribute("data-theme", "baguette");
-    await page.locator("[data-cycle-theme]").click();
-    await expect(html).toHaveAttribute("data-theme", "brioche");
     // light/dark toggle sets data-color-scheme
     await page.locator("[data-toggle-scheme]").click();
     await expect(html).toHaveAttribute("data-color-scheme", /^(light|dark)$/);

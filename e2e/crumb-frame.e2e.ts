@@ -34,7 +34,7 @@ test.describe("crumb — the guided-tour frame + demo|dev flip", () => {
 
     // jump straight to step 2 (index 1 = nav:/notes), the step with review + status + verify
     await page.locator('[data-crumb-goto="1"]').click();
-    await expect(page.locator(".crumb-frame__count")).toHaveText("2 / 5");
+    await expect(page.locator(".crumb-frame__count")).toHaveText("2 / 6");
     await expect(page.locator(".crumb-sidebar__step[data-current] .crumb-sidebar__label")).toHaveText("notes");
 
     // DEMO mode (the default): narration only — no review note, no status chips in the rail
@@ -46,7 +46,7 @@ test.describe("crumb — the guided-tour frame + demo|dev flip", () => {
     // FLIP to Review (dev) — SAME step index, re-rendered in place (no navigation)
     await page.locator('[data-crumb-mode-set="dev"]').click();
     await expect(frame).toHaveAttribute("data-mode", "dev");
-    await expect(page.locator(".crumb-frame__count")).toHaveText("2 / 5");              // still the same step
+    await expect(page.locator(".crumb-frame__count")).toHaveText("2 / 6");              // still the same step
     await expect(page.locator(".crumb-sidebar__review")).toContainText("The dock gained a Plans row");
     await expect(page.locator(".crumb-sidebar__verify")).toContainText("Hover each row");
     // the rail now carries status chips (nav:/notes is `changed`)
@@ -71,11 +71,11 @@ test.describe("crumb — the guided-tour frame + demo|dev flip", () => {
     await page.goto("/");
     await page.evaluate(() => (window as unknown as CrumbWin).crumb.start("portfolio", { frame: true, mode: "demo" }));
 
-    // step to note:ten-times-zero (index 3, at:/notes) — a real cross-page navigation
-    await page.locator('[data-crumb-goto="3"]').click();
+    // step to note:ten-times-zero (index 4, at:/notes; index 2 is the dark-mode step) — a real cross-page navigation
+    await page.locator('[data-crumb-goto="4"]').click();
     await expect(page).toHaveURL(/\/notes$/);                            // real navigation, not an SPA fake
     await expect(page.locator(".crumb-frame__bar")).toBeVisible();       // frame resumed after the load
-    await expect(page.locator(".crumb-frame__count")).toHaveText("4 / 5");
+    await expect(page.locator(".crumb-frame__count")).toHaveText("5 / 6");
     await expect(page.locator(".crumb-sidebar__step[data-current] .crumb-sidebar__label")).toHaveText("ten-times-zero");
 
     // NOTE: we release the tour via the API rather than clicking a control here. After a
