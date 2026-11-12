@@ -1,39 +1,46 @@
 ---
 title: "Plan on the Big Model, Type on the Small One"
-subtitle: "Advice I gave a junior developer this week, which I had assumed everyone already knew: let the expensive model think and orchestrate, hand the typing to cheaper subagents, and turn the effort dial down further than feels safe."
+subtitle: "A junior developer kept running out of tokens before lunch. The fix was advice I had stopped thinking of as advice: let the expensive model think, hand the typing to cheaper subagents, and turn the effort dial down further than feels safe."
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-13
-readingTime: "~5 min"
+readingTime: "~7 min"
 tags: [ai, claude-code, codex, workflow, tokens]
 summary: >
-  Plan and orchestrate on Opus, implement with Sonnet subagents, and try Opus on low effort before
-  assuming you need high. Why the split works, why low effort works for me only because the loop
-  around it does the remembering, and the same pattern in Codex.
+  Plan and orchestrate on Opus, implement with Sonnet subagents, and try low effort before assuming
+  you need high. Why the split works, why the biggest models rarely pay for themselves in my daily
+  work, how to run a trial instead of taking my word for it, and the same pattern in Codex.
 ---
 
-## The thing I thought was obvious
+## The question that made me write this
 
-A junior developer asked me this week why their sessions kept burning through their limit before
-lunch. I looked at how they worked and gave them two pieces of advice. The first was to plan and
-orchestrate on Opus and let Sonnet subagents do the implementing. The second was to put Opus on low
-effort and see whether they missed anything.
+A junior developer came to me this week with a simple complaint. Their sessions kept hitting the
+limit before lunch, and they wanted to know what I was doing differently.
 
-They had not heard either one. I had stopped thinking of them as advice at all, which is usually a
-sign something is worth writing down.
+I watched how they worked for a few minutes. Everything ran on the biggest model at the highest
+effort setting: the planning, the file reads, the one-line fixes, the renames. Every turn was paying
+top rate, including the turns that were just typing.
+
+I told them two things. Plan and orchestrate on Opus, and let Sonnet subagents do the implementing.
+And put Opus on low effort for a while and see whether you miss anything.
+
+They had not heard either one. I was honestly surprised, and then I realised why. I have been knee
+deep in this for months. Somewhere along the way these stopped being decisions and became habits,
+and a habit is the easiest thing in the world to forget you ever had to learn. That is the reason
+this note exists.
 
 ## Thinking and typing are different jobs
 
 Most of a build task is not hard. Deciding what to change, in which files, in what order, and what
-done looks like is hard. Writing the function once that is decided is mostly typing. Paying the
-most capable model to do the typing is paying a senior engineer to retype a spec.
+done looks like is hard. Writing the function once all of that is decided is mostly typing. Paying
+the most capable model to do the typing is paying a senior engineer to retype a spec.
 
-So the split goes like this. The main session runs on Opus. It reads the code, asks the questions,
-writes the plan, and breaks the work into pieces small enough that each one has a settled answer.
-Each piece then goes to a subagent on Sonnet with a short brief: the files, the contract, the
-finish line. The subagent does the work in its own context and hands back a result. Opus reads the
-result, checks it against the plan, and either accepts it or sends it back.
+So the work splits in two. The main session runs on Opus. It reads the code, asks the questions,
+writes the plan, and cuts the work into pieces small enough that each one has a settled answer.
+Each piece goes to a Sonnet subagent with a short brief: the files, the contract, the finish line.
+The subagent works in its own context and hands back a result. Opus reads it, checks it against the
+plan, and either accepts it or sends it back.
 
 ```mermaid label="Opus plans and reviews; Sonnet subagents implement each settled piece"
 flowchart LR
@@ -48,45 +55,77 @@ flowchart LR
 
 There is a second saving hiding in that picture. Every file a subagent reads lives in the
 subagent's context, not the main one. The orchestrating session stays small, so every later turn in
-it is cheaper, and it does not lose the plan under a pile of file dumps.
+it is cheaper, and the plan does not get buried under a pile of file dumps.
 
-The split has limits. A piece of work that is still being designed should not go to a subagent,
-because the subagent will design it for you, quietly. Hand off only what is decided. If you cannot
-write the brief in a few lines, the piece is not ready.
+The split has one rule that matters more than the rest. Only hand off work that is already decided.
+A subagent given a piece that is still being designed will design it for you, quietly, and you will
+find out in review. If you cannot write the brief in a few lines, the piece is not ready to leave.
+
+## The biggest model is not the default
+
+I almost never reach for the very top tier, Fable on the Claude side or Astra on the Codex side. I
+have played with both, and they are impressive. For what I do day to day, the tokenomics just do
+not work. Opus and Sol have built nearly everything I have shipped this year, and the gap between
+them and the top tier rarely shows up in a pull request.
+
+Where Fable has earned its place is research and audits: reading a whole project and telling me
+what I got wrong, or working through a question where breadth and depth matter more than speed. It
+has been a godsend for that. But notice that even then it does not replace the pattern. It adds a
+layer on top of it. Plan on Fable, orchestrate on Opus, implement with Sonnet subagents. The
+expensive model does the one job only it does well, and then hands off.
 
 ## Try low effort before you assume high
 
-The second piece of advice surprised them more. I run Opus on low effort almost all the time.
+The second piece of advice surprised them more. I run Opus on low effort almost all of the time.
 
 That works for me, and I want to be honest about why. Over the past months I built a loop around
-the model: instruction files that say how each repo works, standards installed as skills, hooks that
-check the work at session start and before it is called done, a plan file for every piece of work.
-The model on low effort does not have to work out from nothing how I like things done, because the
-repo tells it. The thinking that high effort would spend rediscovering the context is already
-written down.
+the model: instruction files that say how each repo works, standards installed as skills, hooks
+that check the work at session start and before it is called done, a plan file for every piece of
+work. On low effort the model does not have to work out from nothing how I like things done,
+because the repo tells it. The thinking that high effort would spend rediscovering the context is
+already written down.
 
-A fresh setup does not have that, so low effort may cost you something there. But it is cheap to
-find out. Run a week on low. Notice where it gets something wrong, and ask whether more thinking
-would have fixed it or whether a line in your instruction file would have. Usually it is the line.
-Write it, and the next session gets it for free, at any effort level.
+A fresh setup does not have that, so low effort may cost you something there. Do not take my word
+for it either way. Run a trial:
 
-Raise the effort for the turns that earn it: a hard design call, a bug that has already beaten one
-attempt, a plan for a large change. Then drop it again.
+1. Pick twenty ordinary tasks from your backlog, the kind you do every week.
+2. Do ten on medium effort and ten on low.
+3. Have your agent log each one as it finishes: the task, the effort setting, the tokens used,
+   whether it needed a second attempt, and what you had to correct.
+4. Compare the two halves at the end.
+
+When low effort gets something wrong, ask one question about it. Would more thinking have fixed
+this, or would one line in my instruction file have fixed it? Usually it is the line. Write it,
+and every session after that gets it for free, at any effort level. Raise the effort for the turns
+that earn it, a hard design call, a bug that has already beaten one attempt, a plan for a large
+change, and then drop it again.
 
 ## The same pattern in Codex
 
-None of this is specific to Claude. In Codex the shape is the same: plan in the main session on the
-strongest model with reasoning effort set higher, and hand the implementation to subagents on a
-smaller, cheaper model at low or medium reasoning effort. Codex reads an AGENTS.md the way Claude
-Code reads a CLAUDE.md, so the instruction file that makes low effort safe in one tool makes it safe
-in the other. In my setup they are the same file.
+None of this is specific to Claude. I run Claude, Codex and DeepSeek side by side, and I wrote
+about why the loop matters more than any one of them in
+[The Loop Outlives the Model](one-loop-three-harnesses.md). In Codex my setup is Sol 6.1 on light
+for the main session and Luna on medium for the subagents. Same shape: the stronger model plans and
+reviews, the cheaper one types. Codex reads an AGENTS.md the way Claude Code reads a CLAUDE.md, and
+in my setup they are the same file, so the rules that make low effort safe in one tool make it safe
+in the other.
 
-## What to take from it
+## The lesson
+
+The point I was trying to make to that junior developer was not really about models. It was about
+where the intelligence in a session lives. If it lives only in the model, you pay for it on every
+turn, at the highest rate, and you pay again tomorrow. If it lives in your files, the plan, the
+instructions, the rules you wrote down after something went wrong, then a cheaper model on a lower
+setting can carry it, and the expensive one is free for the few calls that need it.
 
 - Plan and review on the big model. Implement on the small one.
 - Only delegate work that is already decided, with a brief of a few lines.
-- Start on low effort, and fix what goes wrong with a written rule before you reach for more thinking.
-- The cheap setting is cheap because the context lives in files, not in the model's head.
+- Save the top tier for research and audits, and put it above the pattern, not in place of it.
+- Measure low against medium on your own work before you decide.
+- Fix a miss with a written rule before you reach for more thinking.
+
+What feels obvious to you after months of doing it is exactly the thing nobody told the person who
+started last week. Write it down.
 
 ---
 
