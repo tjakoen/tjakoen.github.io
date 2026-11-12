@@ -575,6 +575,25 @@
         if (ev.key === "Escape" && shell.hasAttribute("data-aside-open")) closeSheet();
       });
 
+      // ---- the phone's bottom nav: mark the section the visitor is in, and let Menu raise or lower
+      // the Browse sheet. Grain's own Browse tab already opens the sheet in that mode, so Menu
+      // presses it rather than repeating the sheet logic.
+      const mobileNav = document.querySelector(".mobile-nav");
+      if (mobileNav) {
+        for (const link of mobileNav.querySelectorAll("[data-mobile-nav-match]")) {
+          if (new RegExp(link.dataset.mobileNavMatch).test(location.pathname)) link.setAttribute("aria-current", "page");
+        }
+        const menu = mobileNav.querySelector("[data-mobile-menu]");
+        const browseTab = shell.querySelector('[data-shell-mode="browse"]');
+        const syncMenu = () => menu?.setAttribute("aria-expanded", String(shell.hasAttribute("data-aside-open")));
+        menu?.addEventListener("click", () => {
+          if (shell.hasAttribute("data-aside-open")) shell.removeAttribute("data-aside-open");
+          else browseTab?.click();
+          syncMenu();
+        });
+        new MutationObserver(syncMenu).observe(shell, { attributeFilter: ["data-aside-open"] });
+      }
+
       const viewportToggle = shell.querySelector('[data-shell="viewport-toggle"]');
       const viewportLabel = viewportToggle?.querySelector("[data-viewport-name]");
       if (viewportLabel) {
