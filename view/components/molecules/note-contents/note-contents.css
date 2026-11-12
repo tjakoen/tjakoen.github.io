@@ -90,3 +90,11 @@
 @media (prefers-reduced-motion: reduce) {
   .note-contents__toggle::before { transition: none; }
 }
+
+/* The bionic reading toggle sits in the Rendered/Source row, pushed to the far end, and reads as a
+   tab rather than a button. The bold it adds is one weight step, not a heavy black, so a paragraph
+   still reads as prose. Script: scripts/bionic-reading.js. */
+.content-source__bionic { margin-left: auto; font: inherit; background: none; border: 0; cursor: pointer; color: inherit; }
+.content-source__bionic[aria-pressed="true"] { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.content-source__bionic:disabled { opacity: .5; cursor: not-allowed; }
+.note.is-bionic .bionic b { font-weight: 700; color: var(--ink); }

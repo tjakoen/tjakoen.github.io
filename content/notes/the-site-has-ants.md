@@ -5,7 +5,7 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-07
-updated: 2026-11-11
+updated: 2026-11-12
 readingTime: "~16 min"
 tags: [games, interactive, vanilla, simulation, grain, ai]
 summary: >
@@ -40,6 +40,10 @@ I did not need to put ants on my portfolio. That was the point.
 The site is where I show the serious work: the systems, the standards, the writing, the way I build. An ant colony is not serious. But I kept thinking about how much of the interesting part of software is behavior, the part you cannot see in a screenshot, and a portfolio that only shows finished surfaces felt a little flat.
 
 So I hid a small living thing under the copy. You can ignore it forever. If you find it, it should feel like finding a door in a wall.
+
+The door is an ant. On a desktop, every so often, one wanders across whatever page you're reading. Click it and it runs for the small ant button at the bottom of the screen. That button starts the colony on the page you're on.
+
+It's rare on purpose. The first ant turns up after two to four minutes of reading, counted across the pages you visit, and the next one can take ten to twenty. It works on every page except this one. The figures below need this page for themselves, so no stray ant crosses it, and the button here sends you to the home page instead.
 
 ## Why I built this
 
@@ -194,7 +198,7 @@ That is the real advertisement. Not that an AI can write a game. That I can see 
 
 I also wanted the portfolio to stay professional. The easter egg is small on purpose. It is behind a status-bar ant, a terminal word and a button in a note. It does not interrupt a recruiter reading the résumé, and it does not turn the home page into a game landing page. If you find it, you get a surprise. If you do not, the site is still the site.
 
-If you see a lone ant crossing the page while you read, click it. It runs to the ant button at the bottom of the screen. That button opens the colony on whichever page you are reading. This note keeps the page for its figures, so the button below opens the colony on the home page.
+The lone ant from the top of this note is the fourth way in, and the only one that comes looking for you. It will not find you here, so the button below opens the colony on the home page.
 
 <p class="nest-start" hidden><a href="/?nest=play" data-nest-start>Open the full colony</a></p>
 

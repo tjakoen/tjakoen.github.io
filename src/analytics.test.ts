@@ -115,7 +115,7 @@ describe("injectViews", () => {
   });
 
   test("only the views span is touched — the rest of the bar is untouched", () => {
-    const extra = `<a class="status-bar__contact" href="/about#contact">Contact</a>`;
+    const extra = `<a class="status-bar__contact" href="/mail">Contact</a>`;
     expect(injectViews(bar(extra), "/about", DATA)).toContain(extra);
   });
 });

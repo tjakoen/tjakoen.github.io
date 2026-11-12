@@ -1,4 +1,4 @@
-import { firstStrayDelay, nestDesktop, strayConsumed } from "./nest-availability.js";
+import { nestDesktop, strayClock, strayConsumed } from "./nest-availability.js";
 
 // Page-specific enhancements stay off routes that have no matching content.
 const tasks = [];
@@ -60,7 +60,9 @@ if (nestModes && nestAside && nestMain && nestBar) {
   nestDesktop.addEventListener("change", syncNestLauncher);
 
   let nestGamePromise = null;
+  let stopFirstStray = () => {};
   const ensureNestGame = () => {
+    stopFirstStray();
     if (!nestGamePromise) nestGamePromise = import("/site/nest-game.js").catch((err) => {
       nestGamePromise = null;
       throw err;
@@ -109,15 +111,16 @@ if (nestModes && nestAside && nestMain && nestBar) {
     void openNest();
   }
   if (!document.querySelector('[data-live-figure="nest"]')) {
-    let firstStrayTimer;
+    // The game module is not loaded until it is needed, so the first countdown runs here. Once the
+    // module is in, it owns the countdown and this one stands down.
+    const firstStray = strayClock(() => {
+      if (!nestGamePromise && !document.hidden && !strayConsumed()) void nestPlaceholderStray.spawn();
+    });
+    stopFirstStray = firstStray.stop;
     const scheduleFirstStray = () => {
-      clearTimeout(firstStrayTimer);
+      firstStray.stop();
       if (nestGamePromise || document.hidden || !nestDesktop.matches || strayConsumed()) return;
-      firstStrayTimer = setTimeout(() => {
-        if (!nestGamePromise && !document.hidden && !strayConsumed()) {
-          void nestPlaceholderStray.spawn();
-        }
-      }, firstStrayDelay());
+      firstStray.start();
     };
     nestDesktop.addEventListener("change", scheduleFirstStray);
     document.addEventListener("visibilitychange", scheduleFirstStray);
@@ -126,5 +129,6 @@ if (nestModes && nestAside && nestMain && nestBar) {
 }
 if (document.querySelector('[data-surface="chat-log"]')) tasks.push(import("/site/desk-consent.js"));
 if (document.querySelector("[data-note-progress]")) tasks.push(import("/site/note-progress.js"));
+if (document.querySelector("[data-bionic-toggle]")) tasks.push(import("/site/bionic-reading.js"));
 
 await Promise.all(tasks);
