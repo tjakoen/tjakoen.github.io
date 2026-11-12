@@ -182,6 +182,12 @@ body.app-window-backdrop[data-viewport="mobile"] { padding-block: 0; }
   pointer-events: none;
   background: linear-gradient(to right, transparent, var(--color-bg));
 }
+/* With many tabs open the strip also shows the same thin scrollbar as the chat's suggestion chips,
+   so it reads as scrollable and can be dragged. It overrides grain's hidden scrollbar here only. */
+.app-shell__tabs.tab-bar { scrollbar-width: thin; scrollbar-color: var(--color-line) transparent; }
+.app-shell__tabs.tab-bar::-webkit-scrollbar { display: block; height: 6px; }
+.app-shell__tabs.tab-bar::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 999px; }
+.app-shell__tabs.tab-bar::-webkit-scrollbar-track { background: transparent; }
 
 /* Chat⇄Catalog modes are available sitewide (no per-section gating). */
 

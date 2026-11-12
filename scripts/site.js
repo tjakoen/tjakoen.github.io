@@ -584,6 +584,15 @@
         };
         updateViewportLabel();
         new ResizeObserver(updateViewportLabel).observe(document.body);
+        // On a tablet the nav starts collapsed, so the page gets the width. It only applies until
+        // the visitor uses the collapse button, which grain remembers under its own key.
+        const collapseOnTablet = () => {
+          let chosen = null;
+          try { chosen = localStorage.getItem("grain.shell.rail-collapsed"); } catch { /* private mode */ }
+          if (chosen === null && viewportLabel.textContent === "tablet") shell.setAttribute("data-rail-collapsed", "true");
+        };
+        collapseOnTablet();
+        new MutationObserver(collapseOnTablet).observe(document.body, { attributeFilter: ["data-viewport"] });
         new MutationObserver(updateViewportLabel).observe(document.body, { attributeFilter: ["data-viewport"] });
         viewportToggle.addEventListener("click", () => {
           // Let Grain start its preview cycle from the current width on a tablet.
