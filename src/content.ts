@@ -244,7 +244,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     const sourceToggle = kind === "entry" && slug
       ? `<nav class="content-source" aria-label="${isCalendarEntry ? "Event page navigation" : "View"}">
       <a class="tab" aria-current="page" href="${escapeHtml(`${collection.prefix}/${slug}`)}">Rendered</a>
-      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>${shareDialog ? '\n      <button class="tab content-source__share" type="button" data-note-share hidden>Share</button>' : ""}${isCalendarEntry ? '\n      <a class="tab" href="/calendar">Calendar feed</a>' : ""}
+      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>${collection.prefix === "/notes" ? '\n      <button class="tab content-source__bionic" type="button" data-bionic-toggle aria-pressed="false" title="Bold the start of each word" hidden>Bionic</button>' : ""}${shareDialog ? '\n      <button class="tab content-source__share" type="button" data-note-share hidden>Share</button>' : ""}${isCalendarEntry ? '\n      <a class="tab" href="/calendar">Calendar feed</a>' : ""}
       </nav>`
       : "";
     // NOTE: the /notes index's "See what's new" AI trigger (data-ai-run demo.run) used to render
