@@ -2,7 +2,6 @@
 id: welcome
 mode: demo
 title: "Welcome to the desk"
-route: /
 ---
 Welcome! This is my portfolio, built as a small desk you can poke at: notes, projects, a calendar
 and an assistant that answers questions about my work. Before you start, here is where the choice you
