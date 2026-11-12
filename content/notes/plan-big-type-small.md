@@ -26,8 +26,10 @@ social: |
   repo, not in the model's head. Models get retired. The loop you build around them stays, and
   it is the real skill to start on.
 socialImage:
+  - "/media/notes/plan-big-type-small-social-5-split.png"
   - "/media/notes/plan-big-type-small-social-4-files.png"
 socialImageAlt:
+  - "Plan on the big model, type on the small one. In the top lane Opus plans and sends a brief to two Sonnet subagents in the bottom lane, which read the files and type. Only the result goes back up to Opus, which reviews it and either sends it back or marks it done. The expensive model thinks at both ends; the cheap one types in between."
   - "Low effort works when the repo already knows. Four boxes, instructions, skills, hooks and a plan file, each feed one dark box: the session on low effort, which starts already knowing how I work. Models get retired; the files you write around them stay."
 ---
 
