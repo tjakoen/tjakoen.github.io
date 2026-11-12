@@ -129,5 +129,6 @@ if (nestModes && nestAside && nestMain && nestBar) {
 }
 if (document.querySelector('[data-surface="chat-log"]')) tasks.push(import("/site/desk-consent.js"));
 if (document.querySelector("[data-note-progress]")) tasks.push(import("/site/note-progress.js"));
+if (document.querySelector("[data-bionic-toggle]")) tasks.push(import("/site/bionic-reading.js"));
 
 await Promise.all(tasks);
