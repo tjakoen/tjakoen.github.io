@@ -26,6 +26,7 @@ import { servedDiagramRenderer } from "./diagrams.ts";
 import { highlightedCodeBlock } from "./content-code.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
 import { createKnowledgeCache } from "./ai/knowledge-cache.ts";
 import { SITE } from "./seo.ts";
@@ -228,6 +229,10 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // A note may open with its own start button. That call to action belongs directly under the
     // subtitle, above the generated contents block, not below it.
     const leadingStart = body.match(/<p class="nest-start"(?: hidden)?>[\s\S]*?<\/p>/)?.[0] ?? "";
+    // …and the people and sources the note names (`people:` and `sources:`), at the very end, each
+    // linking to its entry on /people or its card on /reading rather than straight off the site.
+    const credits = kind === "entry" && collection.prefix === "/notes" && frontmatter
+      ? renderNoteCredits(frontmatter) : "";
     let readable = body;
     if (contents) {
       if (leadingStart) readable = readable.replace(leadingStart, "");
@@ -244,7 +249,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
       title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}`,
-      board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${videoCard}${gallery}${shareBlock}${copyScript}`,
+      board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${credits}${videoCard}${gallery}${shareBlock}${copyScript}`,
     });
   };
 }
@@ -1837,4 +1842,47 @@ export async function listNoteRoutesByDate(): Promise<string[]> {
  *  visitor's topic against the REAL tag set instead of guessing one (notes-tags.ts, law #2). */
 export async function listPortfolioNotes(): Promise<Array<{ slug: string; title: string; route: string; tags: string[] }>> {
   return (await sortedNoteEntries()).map((e) => ({ slug: e.slug, title: e.title, route: `/notes/${e.slug}`, tags: e.tags }));
+}
+
+// ---- people and sources at the end of a note -------------------------------------------------
+// /people and /reading are hand-written pages, and they stay the one home of each name and title.
+// A note lists slugs in its frontmatter; the name, the role and the title are read off those pages,
+// so a person renamed on /people is renamed under every note at once. content.test.ts fails a note
+// that lists a slug neither page carries.
+const PAGES_DIR = join(import.meta.dir, "..", "view", "pages");
+
+export type CreditEntry = { id: string; label: string; detail: string };
+
+export function peopleEntries(): Map<string, CreditEntry> {
+  const out = new Map<string, CreditEntry>();
+  const html = readFileSync(join(PAGES_DIR, "people.html"), "utf8");
+  const re = /<li class="post" id="([a-z0-9-]+)">[\s\S]*?class="post__name"[^>]*>([^<]+)<\/a><span class="post__handle">([^<]*)<\/span>/g;
+  for (const m of html.matchAll(re)) out.set(m[1], { id: m[1], label: m[2], detail: m[3] });
+  return out;
+}
+
+export function readingEntries(): Map<string, CreditEntry> {
+  const out = new Map<string, CreditEntry>();
+  const html = readFileSync(join(PAGES_DIR, "reading.html"), "utf8");
+  const re = /<article class="book-card" id="([a-z0-9-]+)"[^>]*>\s*<p class="book-card__meta">([^<]*)<\/p>\s*<h3 class="book-card__title">([^<]+)<\/h3>/g;
+  for (const m of html.matchAll(re)) out.set(m[1], { id: m[1], label: m[3], detail: m[2] });
+  return out;
+}
+
+function slugList(raw: unknown): string[] {
+  return Array.isArray(raw) ? raw.filter((v): v is string => typeof v === "string" && v.trim() !== "").map((v) => v.trim()) : [];
+}
+
+function renderNoteCredits(frontmatter: Record<string, unknown>): string {
+  const people = slugList(frontmatter.people);
+  const sources = slugList(frontmatter.sources);
+  if (!people.length && !sources.length) return "";
+  const list = (ids: string[], entries: Map<string, CreditEntry>, base: string) => ids
+    .map((id) => entries.get(id))
+    .filter((e): e is CreditEntry => Boolean(e))
+    .map((e) => `<li><a href="${base}#${escapeHtml(e.id)}">${escapeHtml(e.label)}</a>${e.detail ? `<span class="note-credits__detail">${escapeHtml(e.detail)}</span>` : ""}</li>`)
+    .join("");
+  const peopleHtml = people.length ? `<h2 class="note-credits__head">People in this note</h2><ul class="note-credits__list">${list(people, peopleEntries(), "/people")}</ul>` : "";
+  const sourcesHtml = sources.length ? `<h2 class="note-credits__head">Sources</h2><ul class="note-credits__list">${list(sources, readingEntries(), "/reading")}</ul>` : "";
+  return `<aside class="note-credits" aria-label="People and sources in this note">${peopleHtml}${sourcesHtml}<p class="note-credits__more">Everyone the notes name is on <a href="/people">People</a>, and the works are on <a href="/reading">Reading</a>.</p></aside>`;
 }

@@ -7,6 +7,8 @@ type: note
 date: 2026-11-11
 readingTime: "~6 min"
 tags: [ai, standards, communication, team, workflow, teaching]
+people: [kercwin, ege-vusal-chelebi]
+sources: [book-cure-for-ai-slop]
 summary: >
   A practical guide for students and junior teammates on writing ticket comments, review
   comments and chat messages with AI. Put the reader's next action first, keep open questions
@@ -137,7 +139,7 @@ The rules worth writing down are about where things go, not about taste:
 - **Keep what you have not tested in view.** If a claim rests on something untested, say so next to the claim, never inside the fold.
 - **A one-line comment stays one line.** Structure is for comments with more than one thing to say.
 
-Write them as rules, not as a list of banned words. [Ege Vusal Chelebi](https://www.chele.bi/videos/the-cure-for-ai-slop) tried a writing skill derived from Simplified Technical English on six tasks. The linter counted 74 percent fewer violations per hundred words on Claude Sonnet and 50 percent fewer on GPT-5.5. A banned-word list cut violations by 3 percent and 40 percent, respectively. The linter scored the writing against a set of rules. The test did not measure whether readers found the ask faster.
+Write them as rules, not as a list of banned words. [Ege Vusal Chelebi](/people#ege-vusal-chelebi) [tried a writing skill](https://www.chele.bi/videos/the-cure-for-ai-slop) a writing skill derived from Simplified Technical English on six tasks. The linter counted 74 percent fewer violations per hundred words on Claude Sonnet and 50 percent fewer on GPT-5.5. A banned-word list cut violations by 3 percent and 40 percent, respectively. The linter scored the writing against a set of rules. The test did not measure whether readers found the ask faster.
 
 My own standard is public at [portfolio.tjakoen.com/standards/voice](https://portfolio.tjakoen.com/standards/voice). It is longer than a team needs because it is also a guide to one person's prose. Take its structure, not its length: the registers, the scan rule, the list of shapes it refuses.
 
@@ -247,7 +249,7 @@ The examples are the part to replace first. A comment that made someone scroll a
 
 **A voice file can also describe how you want the AI to talk to you.**
 
-Everything above is about how the AI should sound when it writes as you. [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/), the tech lead on my team, went the other direction. Before he [built his epic checker](move-bugs-left.md), he showed the team how he makes Claude talk to him: tables, diagrams, specific wording, a format his brain reads fast. His file is about the reader at his own desk.
+Everything above is about how the AI should sound when it writes as you. [Kercwin](/people#kercwin), the tech lead on my team, went the other direction. Before he [built his epic checker](move-bugs-left.md), he showed the team how he makes Claude talk to him: tables, diagrams, specific wording, a format his brain reads fast. His file is about the reader at his own desk.
 
 Both files rest on the same idea. Someone has to read what the model writes, and the file tells the model who that is. If you lose the point of a long AI answer halfway down, write down the shape you read fastest and put it beside your VOICE.md. One file shapes what you send your team, and the other shapes what comes back to you.
 

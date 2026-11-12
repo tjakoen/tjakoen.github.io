@@ -7,6 +7,7 @@ type: note
 date: 2026-11-10
 readingTime: "~5 min"
 tags: [ai, leadership, claude, dashboards, team]
+people: [matt-monroe, kercwin]
 summary: >
   Kercwin, the tech lead of my team, built an epic checker that keeps a busy project aligned to its
   architecture plan. It reads each ticket and open pull request against the plan in Confluence, flags new
@@ -31,18 +32,18 @@ leads from potentially more than one team, and the developers doing the work. De
 moving, and the code written last sprint can quietly drift from the decision made this sprint. Nobody
 notices until review, or testing, or a customer.
 
-Kercwin built the thing that notices first. This note is about that tool and the rule it came from.
+[Kercwin](/people#kercwin), the tech lead on my team, built the thing that notices first. This note is about that tool and the rule it came from.
 How it started, with a demo of my own dashboards, is in
 [I Showed My Team a Dashboard. Two Weeks Later They Showed Me Theirs.](show-them-the-board.md)
 
 ## Matt's rule
 
-The idea underneath it is not his or mine. It comes from [Matt](https://www.linkedin.com/in/matt-monroe-a3728593/), our CTO, and it is his standing
+The idea underneath it is not his or mine. It comes from [Matt](/people#matt-monroe), our CTO, and it is his standing
 rule:
 
 > Move bugs as far to the left in the process as possible.
 >
-> *My interpretation, from what I remember of a knowledge-sharing session by [Matt Monroe](https://www.linkedin.com/in/matt-monroe-a3728593/), CTO at [Career Team](https://careerteam.com). Not his exact words.*
+> *My interpretation, from what I remember of a knowledge-sharing session by [Matt Monroe](/people#matt-monroe), CTO at [Career Team](https://careerteam.com). Not his exact words.*
 
 A wrong assumption caught on a ticket is
 cheaper than one caught in review, which is cheaper than one caught in production. The epic checker
@@ -77,7 +78,7 @@ delivery between product, leads and developers, in any order the cycle runs.
 
 ## Who built it
 
-Full credit goes to [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/). He went from developer to tech lead in about a year, which is fast for
+Full credit goes to Kercwin. He went from developer to tech lead in about a year, which is fast for
 anyone. I pushed him into the role because I saw something in him before he did, which is a feeling I
 know from the other side. A lot of my job with him is
 the stuff nobody puts on a ticket: the inner voice in your head that says you are not ready, learning to hand work off
@@ -87,7 +88,7 @@ amount of figured out for anyone.
 
 Before he built anything, he showed the team how he makes Claude talk to him. Tables, diagrams,
 specific wording, a format his brain reads fast. I laughed, because mine went the opposite way. Every
-rule I have written is about how the AI should sound when it writes as me. His is about how it should
+rule [I have written](the-voice-file.md) is about how the AI should sound when it writes as me. His is about how it should
 sound when it writes *to* him. Same tool, opposite direction, and both of them right.
 
 
