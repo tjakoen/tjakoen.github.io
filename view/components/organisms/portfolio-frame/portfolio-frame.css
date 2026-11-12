@@ -114,9 +114,15 @@ body.app-window-backdrop[data-viewport="mobile"] { padding-block: 0; }
   width: 2px; background: var(--color-accent);
 }
 .app-dock__item:focus-visible { outline-offset: -3px; }
-/* collapsed rail: labels are noise at icon-only width (mirrors the file-tree's own collapsed rule
-   in grain's file-tree.css) */
-[data-rail-collapsed="true"] .app-dock__label { display: none; }
+/* collapsed rail: each item stacks its icon over a small label, so the narrow rail still says what
+   every icon opens. The gutter border goes, since there is no label column beside it. */
+[data-rail-collapsed="true"] .app-dock__item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem;
+  height: 3.4rem; padding: 0; }
+[data-rail-collapsed="true"] .app-dock__icon { border-right: 0; flex: none; }
+[data-rail-collapsed="true"] .app-dock__item .file-tree__close { display: none; }
+[data-rail-collapsed="true"] .app-dock__label {
+  flex: none; max-width: 100%; padding-inline: 0; font-size: 0.6rem; letter-spacing: -0.03em; text-align: center; }
 
 /* Project pages share a compact set of next steps below the introduction. Long case studies add a
    separate jump list, so the useful paths stay near the top without turning every page into a card. */
