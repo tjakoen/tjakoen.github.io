@@ -376,7 +376,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
   /* the aside is a fixed sheet; when closed it's pushed down so only the header peeks (a grab
      bar), instead of vanishing (grain's display:none can't animate and left no way back in). */
   .app-shell.app-window .app-shell__aside {
-    --sheet-peek: 3.5rem;
+    --sheet-peek: 4.5rem;
     display: flex; flex-direction: column;
     position: fixed; inset: auto 0 0 0; z-index: 44;
     height: min(85vh, 40rem); max-height: 85vh;
@@ -402,11 +402,32 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
   /* the head IS the grab bar: a pill handle + a clear, full-width tap target that raises/lowers
      the sheet (wired in grain's shell.js). Extra top padding leaves room for the handle. */
   .app-shell.app-window .assistant__head { position: relative; cursor: pointer;
-    min-height: var(--sheet-peek); padding-top: var(--space-4); }
+    min-height: var(--sheet-peek); padding-top: var(--space-3); }
   .app-shell.app-window .assistant__head::before {
     content: ""; position: absolute; top: var(--space-2); left: 50%; transform: translateX(-50%);
     width: 2.25rem; height: 0.25rem; border-radius: var(--radius-pill);
     background: color-mix(in srgb, var(--ink) 24%, transparent); }
+
+  /* the mode tabs read as a phone tab bar: equal columns across the sheet, each an icon over a
+     small label, the selected one in the accent colour with a short bar above it. The icons are
+     masks over currentColor, so they follow the theme like the text does. */
+  .app-shell.app-window .assistant__modes { flex: 1; display: flex; align-items: stretch; }
+  .app-shell.app-window .assistant__modes [data-shell-mode]:not([hidden]) {
+    flex: 1; position: relative; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 0.2rem; min-height: 2.75rem; padding: var(--space-1) 0;
+    border: 0; background: transparent; color: var(--color-muted);
+    font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.02em; }
+  .app-shell.app-window .assistant__modes [data-shell-mode]::before {
+    content: ""; width: 1.25rem; height: 1.25rem; background: currentColor;
+    -webkit-mask: var(--mode-icon) center / contain no-repeat; mask: var(--mode-icon) center / contain no-repeat; }
+  .app-shell.app-window .assistant__modes [data-shell-mode][aria-selected="true"] { color: var(--color-accent); }
+  .app-shell.app-window .assistant__modes [data-shell-mode][aria-selected="true"]::after {
+    content: ""; position: absolute; top: 0; left: 30%; right: 30%; height: 2px;
+    border-radius: var(--radius-pill); background: var(--color-accent); }
+  [data-shell-mode="chat"] { --mode-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linejoin='round'%3E%3Cpath d='M4 5h16v11H9l-5 4z'/%3E%3C/svg%3E"); }
+  [data-shell-mode="browse"] { --mode-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M15.5 8.5l-2 5-5 2 2-5z'/%3E%3C/svg%3E"); }
+  [data-shell-mode="catalog"] { --mode-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linejoin='round'%3E%3Crect x='4' y='4' width='7' height='7'/%3E%3Crect x='13' y='4' width='7' height='7'/%3E%3Crect x='4' y='13' width='7' height='7'/%3E%3Crect x='13' y='13' width='7' height='7'/%3E%3C/svg%3E"); }
+  [data-shell-mode="notepad"] { --mode-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M6 3h9l3 3v15H6z'/%3E%3Cpath d='M9 10h6M9 14h6M9 18h3'/%3E%3C/svg%3E"); }
   /* the shared mobile scrim (grain sets its base rules) also veils behind the open sheet. */
   .app-shell.app-window[data-aside-open] .app-shell__scrim { opacity: 1; pointer-events: auto; }
 
@@ -562,7 +583,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
 /* WCAG 2.4.11 (focus not obscured): on a phone the assistant sheet peeks over the bottom of the
    page, so whichever element scrolls the page keeps its focus target clear of that strip. */
 @media (max-width: 768px) {
-  html, .app-shell__main { scroll-padding-bottom: 4.5rem; }
+  html, .app-shell__main { scroll-padding-bottom: 5.5rem; }
 }
 
 /* The sidebar is the same on every page, so it holds still across a page change rather than
