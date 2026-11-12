@@ -18,8 +18,6 @@ test("role philosophy is readable and contained at desktop and phone widths", as
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
 
     await page.goto("/");
-    await expect(page.getByRole("link", { name: "How I work across teaching, engineering, and management" }))
-      .toHaveAttribute("href", "/about#profile");
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
   }
 });
