@@ -1,12 +1,12 @@
 // tjakoen.github.io/e2e/mobile.e2e.ts — the phone layout (<768px). On a phone the bottom bar holds
-// Menu, Browse and Tour: Menu slides in the rail with the usual sections, Browse raises the Browse
+// Menu, Browse and Tour: Menu raises a drawer with the usual sections, Browse raises the Browse
 // sheet, and Tour starts the phone's own tour. Covers what only a browser shows.
 import { test, expect } from "@playwright/test";
 
 test.describe("mobile — the bottom bar", () => {
   test.use({ viewport: { width: 375, height: 720 } });
 
-  test("Menu slides in the rail, whose sections navigate", async ({ page }) => {
+  test("Menu raises the sections drawer above the bar, and its sections navigate", async ({ page }) => {
     await page.goto("/");
     const shell = page.locator(".app-shell");
     const bar = page.getByRole("navigation", { name: "Main" });
@@ -18,7 +18,7 @@ test.describe("mobile — the bottom bar", () => {
     await expect(shell).toHaveAttribute("data-rail-open", "true");
     await expect(menu).toHaveAttribute("aria-expanded", "true");
     await expect(page.locator(".app-dock")).toBeInViewport();
-    // the rail stops at the bar, so its last row is not covered by it
+    // the drawer ends where the bar starts, so no section sits under it
     const dock = await page.locator(".app-dock").boundingBox();
     const barBox = await bar.boundingBox();
     expect(Math.round((dock?.y ?? 0) + (dock?.height ?? 0))).toBeLessThanOrEqual(Math.round(barBox?.y ?? 0) + 1);
