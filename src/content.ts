@@ -490,6 +490,19 @@ export async function listPortfolioDraftRoutes(): Promise<string[]> {
   if (!routes.includes(DRAFTS_PREFIX)) routes.push(DRAFTS_PREFIX);
   return routes;
 }
+/**
+ * A draft's address outlives the draft. Once a note is published its /drafts/<slug> URL stops
+ * resolving as a draft, but that URL may already be out in the world as a shared link with an Open
+ * Graph card behind it. So every published note keeps a /drafts/<slug> route that serves a stub
+ * carrying the published note's own card and sending the reader on to it (server.ts). Listed here
+ * so the static export freezes those stubs too.
+ */
+export async function listPublishedDraftRedirectRoutes(): Promise<string[]> {
+  const routes = await listMillRoutes(collections);
+  return routes
+    .filter((r) => /^\/notes\/[^/]+$/.test(r))
+    .map((r) => DRAFTS_PREFIX + r.slice("/notes".length));
+}
 /** Each draft's raw `.md` twin, so the Source tab on a draft works on the deployed site too. */
 export function listPortfolioDraftRawRoutes(): Promise<string[]> {
   return listMillRawRoutes(draftCollections);
@@ -650,6 +663,34 @@ export const FOLDED_NOTES: Record<string, { to: string; title: string }> = {
     title: "The Browser Grew Up While I Was Busy With Frameworks",
   },
 };
+
+/**
+ * The stub served at a published note's old draft address. It is built from the published note's
+ * own finished page: the title, description, canonical and every Open Graph and Twitter tag are
+ * lifted from that head, so a link preview of the draft URL shows the published note's card and
+ * og:url names the published address. The body is one line, and a zero-second refresh moves a
+ * real reader on. A page rather than a 301 for the reason FOLDED_NOTES gives: the export freezes
+ * bodies, and only a served page carries tags a link-preview crawler can read.
+ */
+export function publishedDraftStub(noteHtml: string, notePath: string): string {
+  const head = noteHtml.match(/<head[^>]*>([\s\S]*?)<\/head>/i)?.[1] ?? "";
+  const keep = [
+    ...(head.match(/<title>[\s\S]*?<\/title>/i) ?? []),
+    ...(head.match(/<meta\s+(?:name|property)="(?:description|og:[^"]+|twitter:[^"]+)"[^>]*>/gi) ?? []),
+    ...(head.match(/<link\s+rel="canonical"[^>]*>/i) ?? []),
+  ];
+  const dest = `${notePath}/`;
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  ${keep.join("\n  ")}
+  <meta name="robots" content="noindex, follow">
+  <meta http-equiv="refresh" content="0; url=${dest}">
+</head>
+<body><p>This draft has been published. <a href="${dest}">Read the published note</a>.</p></body>
+</html>`;
+}
 
 /** The stub page served at a folded note's old URL. Plain, short, and honest about what happened:
  *  a reader who followed an old link should understand it in one sentence and land in one click. */
