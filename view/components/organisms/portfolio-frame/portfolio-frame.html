@@ -335,12 +335,19 @@
       <p class="assistant__offline">The desk did not load. You can still open <a href="/notes">Notes</a> or <a href="/projects">Projects</a>.</p>
     </div>
     <section class="assistant__pane assistant__browse" data-pane="browse" id="desk-browse" data-surface="desk-browse" aria-label="Browse the portfolio" hidden>
-      <h2>Go to</h2>
+      <h2><span class="browse-title--wide">Explore the portfolio</span><span class="browse-title--phone">Go to</span></h2>
       <p data-browse-intro>Open a recent update or jump to a section.</p>
-      <!-- desk-browse.ts fills the tile grid from the rail's app dock, so Browse and the rail list
-           the same sections with the same icons. The two links after it are the pages the dock
-           does not carry. -->
+      <!-- Desktop shows the chips. On a phone desk-browse.ts's tile grid, filled from the rail's app
+           dock, replaces them with the dock's sections and icons, and the line after it keeps the
+           two pages the dock does not carry. -->
       <nav class="assistant__shortcuts" aria-label="Portfolio shortcuts">
+        <div class="browse-chips">
+          <a class="suggest-chip" href="/projects">Projects</a>
+          <a class="suggest-chip" href="/resume">Résumé</a>
+          <a class="suggest-chip" href="/notes">Notes</a>
+          <a class="suggest-chip" href="/bread">BREAD stack</a>
+          <a class="suggest-chip" href="/about">About TJ</a>
+        </div>
         <div class="browse-tiles" data-browse-tiles></div>
         <p class="browse-more"><a href="/resume">Résumé</a> · <a href="/bread">BREAD stack</a></p>
       </nav>

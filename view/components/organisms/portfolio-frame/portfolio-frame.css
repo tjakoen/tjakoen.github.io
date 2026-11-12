@@ -311,29 +311,41 @@ body[data-desk-mode="browse"] .walk[data-run-showcase] { display: none; }
 }
 .assistant__browse h2 { font-size: var(--text-lg); margin: 0; }
 .assistant__browse p { margin: 0; color: var(--color-muted); font-size: var(--text-sm); }
-/* Browse is the Desk's navigation, so its sections are tiles: an icon over a label, three to a
-   row, the current section in the accent colour. */
 .assistant__shortcuts { display: grid; gap: var(--space-2); }
-.browse-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
-.browse-tile { display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: var(--space-1); min-height: 4.25rem; padding: var(--space-2);
-  border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-bg);
-  color: var(--color-fg); text-decoration: none; font-family: var(--font-mono); font-size: var(--text-xs); }
-.browse-tile .app-dock__icon { border-right: 0; }
-.browse-tile svg { width: 1.35rem; height: 1.35rem; }
-.browse-tile:hover { border-color: var(--color-muted); }
-.browse-tile[aria-current="page"] { color: var(--color-accent); border-color: var(--color-accent); }
-.browse-more { font-size: var(--text-sm); }
+.browse-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.browse-chips a { display: inline-flex; align-items: center; min-height: 2.25rem; text-decoration: none; }
+.browse-tiles, .browse-more, .browse-title--phone { display: none; }
 .assistant__recent { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
 .assistant__recent-head { display: flex; justify-content: space-between; align-items: baseline;
   flex-wrap: wrap; gap: var(--space-2); }
 .assistant__recent h3 { margin: 0; font-size: var(--text-base); }
 .assistant__recent-more { font-size: var(--text-sm); white-space: nowrap; }
 .assistant__recent .recent { gap: var(--space-2); }
-.assistant__recent .recent { gap: 0; }
 .assistant__recent .recent__item { display: flex; flex-direction: column; align-items: start;
-  gap: var(--space-1); padding: var(--space-2) 0; border-top: 1px solid var(--color-line); }
-.assistant__recent .recent__item:hover .recent__name { text-decoration: underline; }
+  gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--color-line);
+  border-radius: var(--radius-md); background: var(--color-bg); }
+.assistant__recent .recent__item:hover { border-color: var(--color-muted); }
+
+/* On a phone Browse is the Desk's navigation: section tiles, an icon over a label three to a row
+   with the current section in the accent colour, and recent updates as divided rows. */
+@media (max-width: 768px) {
+  .browse-chips, .browse-title--wide { display: none; }
+  .browse-title--phone { display: inline; }
+  .browse-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
+  .browse-more { display: block; font-size: var(--text-sm); }
+  .browse-tile { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--space-1); min-height: 4.25rem; padding: var(--space-2);
+    border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-bg);
+    color: var(--color-fg); text-decoration: none; font-family: var(--font-mono); font-size: var(--text-xs); }
+  .browse-tile .app-dock__icon { border-right: 0; }
+  .browse-tile svg { width: 1.35rem; height: 1.35rem; }
+  .browse-tile:hover { border-color: var(--color-muted); }
+  .browse-tile[aria-current="page"] { color: var(--color-accent); border-color: var(--color-accent); }
+  .assistant__recent .recent { gap: 0; }
+  .assistant__recent .recent__item { padding: var(--space-2) 0; border: 0;
+    border-top: 1px solid var(--color-line); border-radius: 0; background: none; }
+  .assistant__recent .recent__item:hover .recent__name { text-decoration: underline; }
+}
 .assistant__recent .recent__name { overflow-wrap: anywhere; }
 .assistant__recent .recent__type { display: inline-block; padding: 0 var(--space-2);
   border: 1px solid var(--color-line); border-radius: var(--radius-sm);
