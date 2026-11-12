@@ -19,8 +19,13 @@ the assistant can point at.
 - status: changed
 - review: The dock gained a Plans row and split into an apps group and a meta group, so navigation reads like a set of small apps rather than one list.
 - verify: Hover each row; every one is a real link with its own destination.
-This is the app dock. Notes, Calendar, Mail, About, and now Plans are separate little apps inside
-the one shell. Each row is an addressable navigation surface, so the AI can open any of them for you.
+This is the app dock. Projects, Notes, Calendar, Mail, Plans and About are separate little apps
+inside the one shell. Each row is an addressable navigation surface, so the AI can open any of them for you.
+
+## dark-mode
+- verify: Click the highlighted button three times; it should go light, dark, then match the device, and a reload should keep the choice.
+The site opens in brioche, the light flavor. This button moves through light, dark and match your
+device, and the flavor name beside it cycles the palette. Both choices are saved in this browser.
 
 ## chat-input
 - verify: Type an intent and watch the lamp travel to whatever the assistant touches.
@@ -37,11 +42,11 @@ Now we have moved for real. The tour did not fake a transition, it navigated to 
 same way clicking the dock would. This is the flagship post, on how the whole stack got built with
 AI doing most of the typing.
 
-## nav:/plans
-- at: /notes
+## projects
+- at: /projects
 - status: changed
-- review: Plans moved out of a buried link and into the dock as a first-class app, so the board is reachable in one click.
-- verify: Open Plans; the board renders straight from the markdown files, which the tour never writes to.
-Last stop. Plans is the project board, rendered straight from markdown files that never get written
-back to. It used to be reachable only from a buried link. It now lives in the dock, where you would
-expect to find it.
+- review: The tour ends by navigating to Projects and lighting the page itself, rather than the dock link, because the dock is collapsed on narrow screens and a link it cannot see is no stop at all.
+- verify: Walk the tour at a phone width and at a desktop width; both should land on the Projects page with this card showing.
+Last stop, and the one worth your time. This is Projects, the work itself: what got built, for whom,
+and what it cost to get right. Stay and read once the tour ends. If something here is close to what
+you need, the Mail app reaches me directly.

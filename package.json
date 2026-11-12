@@ -23,6 +23,7 @@
     "test": "bun test",
     "coverage": "bun test --coverage",
     "test:e2e": "playwright test",
+    "e2e:local": "bash tools/e2e-local.sh",
     "test:all": "bun test && playwright test",
     "shots": "bun tools/screenshots.ts",
     "og:card": "bun tools/og-card.ts",
