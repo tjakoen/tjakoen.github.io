@@ -76,7 +76,7 @@
 [data-screen="grain"] .surface__compose { display: flex; align-items: flex-end; gap: var(--space-3); flex-wrap: wrap;
   border-top: 1px solid var(--color-line); padding-top: var(--space-4); }
 [data-screen="grain"] .surface__compose .field { flex: 1; }
-@media (max-width: 34rem) {
+@container shell-frame (max-width: 34rem) {
   [data-screen="grain"] .surface { grid-template-columns: 1fr; }
   [data-screen="grain"] .surface__rail { flex-direction: row; flex-wrap: wrap; border-right: 0; padding-right: 0;
     border-bottom: 1px solid var(--color-line); padding-bottom: var(--space-3); }

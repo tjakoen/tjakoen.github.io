@@ -314,7 +314,7 @@
 /* Narrow: the rail goes under the canvas rather than beside it, and the whole thing stops trying to
    be one screen tall. A workbench that scrolls is fine; a workbench squeezed into a phone-height
    grid is two panes of nothing. */
-@media (max-width: 60rem) {
+@container shell-frame (max-width: 60rem) {
   [data-screen="builder"] .wb { grid-template-columns: 1fr; height: auto; min-height: 0; }
   [data-screen="builder"] .wb-bar .field { min-width: 0; }
   [data-screen="builder"] .wb-bar > .btn { flex: 0 0 auto; white-space: nowrap; }
