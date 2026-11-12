@@ -977,7 +977,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var audience = aud ? aud.value : "";
         var lvl = form.querySelector('input[name="level"]:checked');
         var level = lvl ? lvl.value : "";
-        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
+        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked:not([name="level"])'));
         var wanted = boxes.map(function (b) { return b.value; });
         var q = (search && search.value || "").trim().toLowerCase();
         cards.forEach(function (card) {
@@ -995,7 +995,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       // not push — filtering isn't navigation). Search text stays out of the URL. Empty tag set
       // drops the query entirely.
       function syncUrl() {
-        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
+        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked:not([name="level"])'));
         var wanted = boxes.map(function (b) { return b.value; });
         var aud = form.querySelector('input[name="audience"]:checked');
         var params = [];
@@ -1072,11 +1072,6 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         <input class="notes-search" type="search" placeholder="Search notes" aria-label="Search notes"
                autocomplete="off" data-notes-search>
         <div class="notes-toolbar__actions">
-          <div class="chips notes-sort" role="radiogroup" aria-label="Depth">
-            <label class="chip"><input type="radio" name="level" value="" checked> Any depth</label>
-            <label class="chip"><input type="radio" name="level" value="intro"> Start here</label>
-            <label class="chip"><input type="radio" name="level" value="deep"> Deep dive</label>
-          </div>
           <div class="chips notes-sort" role="radiogroup" aria-label="Sort">
             <label class="chip"><input type="radio" name="sort" value="new" checked> New</label>
             <label class="chip"><input type="radio" name="sort" value="top"> Top</label>
@@ -1086,7 +1081,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       </div>
       <details class="notes-tag-filters" data-tag-filters>
         <summary>Filter by tag</summary>
-        <div class="chips notes-tags" aria-label="Filter by tag">${headChips}${restChips}</div>
+        <div class="chips notes-tags" aria-label="Filter by tag"><label class="chip notes-tag notes-tag--level"><input type="checkbox" name="level" value="intro"><span>Start here</span><span class="notes-tag__n">(${entries.filter((e) => e.level === "intro").length})</span></label>${headChips}${restChips}</div>
       </details>
     </form>
     <p class="feed-empty" data-feed-empty hidden></p>
