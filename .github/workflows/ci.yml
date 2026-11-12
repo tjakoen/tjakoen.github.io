@@ -63,7 +63,17 @@ jobs:
         with:
           bun-version: 1.3.14
       - run: bun install --frozen-lockfile
-      - run: bunx playwright install --with-deps chromium
+            # The --with-deps half pulls fonts and libraries from the Ubuntu mirrors, and on 2026-11-11 the
+      # runner lost DNS for those mirrors twice in a row, failing the job before a single test ran.
+      # Three tries with a pause between them ride out a blip; a real outage still fails, on the third.
+      - name: install chromium and its system libraries
+        run: |
+          for attempt in 1 2 3; do
+            bunx playwright install --with-deps chromium && exit 0
+            echo "playwright install failed (attempt $attempt of 3), retrying in 30 seconds"
+            sleep 30
+          done
+          exit 1
       # --ignore-snapshots because the committed baselines are darwin-only: every file in
       # e2e/visual.e2e.ts-snapshots ends -darwin.png, so a linux runner would look for names that do
       # not exist and fail nine assertions for the wrong reason. The rest of visual.e2e.ts still
