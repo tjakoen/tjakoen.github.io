@@ -798,6 +798,7 @@ export interface NoteFeedEntry {
   readingTime: string;
   score: number;
   tags: string[];
+  audience: string;
   sections: number;
 }
 // Memoized. The note corpus is read and parsed from disk in here, and one page render asks for it
@@ -828,6 +829,7 @@ async function computeSortedNoteEntries(): Promise<NoteFeedEntry[]> {
       readingTime,
       score: scoreMatch ? Number(scoreMatch[0]) : 0,
       tags: Array.isArray(fm.tags) ? fm.tags : [],
+      audience: typeof fm.audience === "string" ? fm.audience : "",
       sections: (body.match(/^## /gm) ?? []).length,
     });
   }
@@ -851,6 +853,14 @@ async function computeSortedNoteEntries(): Promise<NoteFeedEntry[]> {
  *  FEED only: sortedNoteEntries stays date-ordered so the Welcome "Recent" list and the sidebar
  *  tree keep showing genuinely-recent notes first. */
 export const FLAGSHIP_NOTE_SLUG = "ten-times-zero";
+
+/** The three reader groups a note is written for, set by each note's \`audience\` frontmatter.
+ *  They render as the tabs at the top of /notes, with All first and checked by default. */
+export const NOTE_AUDIENCES: ReadonlyArray<{ id: string; label: string }> = [
+  { id: "build", label: "How I build" },
+  { id: "lead", label: "How I lead" },
+  { id: "learn", label: "Learning to build" },
+];
 
 export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise<string> {
   const notes = collections[0]!;                     // the "/notes" collection above
@@ -890,7 +900,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     const dataTags = escapeHtml(e.tags.join(" "));
     const pinned = e.slug === FLAGSHIP_NOTE_SLUG;
     const pinTag = pinned ? `<span class="note-card__pin">📌 Pinned</span> · ` : "";
-    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}">
+    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}" data-audience="${escapeHtml(e.audience)}">
         <div class="note-card__vote" aria-hidden="true" title="Reading minutes, from the note's own frontmatter. Not votes.">&#9650;<span class="note-card__score">${e.score}</span></div>
         <div class="note-card__main">
           <p class="note-card__byline">${pinTag}${byline}</p>
@@ -957,6 +967,8 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       // one filter pass over BOTH controls: the checked tag chips (a card must carry one) AND the
       // free-text search (matched against the card's own text). Either empty means "don't constrain".
       function applyFilters() {
+        var aud = form.querySelector('input[name="audience"]:checked');
+        var audience = aud ? aud.value : "";
         var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
         var wanted = boxes.map(function (b) { return b.value; });
         var q = (search && search.value || "").trim().toLowerCase();
@@ -964,9 +976,10 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
           var tags = (card.getAttribute("data-tags") || "").split(" ");
           var tagOk = wanted.length === 0 || wanted.some(function (t) { return tags.indexOf(t) !== -1; });
           var textOk = q === "" || (card.textContent || "").toLowerCase().indexOf(q) !== -1;
-          card.hidden = !(tagOk && textOk);
+          var audOk = audience === "" || card.getAttribute("data-audience") === audience;
+          card.hidden = !(tagOk && textOk && audOk);
         });
-        if (empty && !(wanted.length === 0 && q === "")) empty.hidden = true;
+        if (empty && !(wanted.length === 0 && q === "" && audience === "")) empty.hidden = true;
       }
 
       // Mirror the current tag filter into the URL so a filtered view is shareable (replaceState,
@@ -975,7 +988,11 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       function syncUrl() {
         var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
         var wanted = boxes.map(function (b) { return b.value; });
-        var url = location.pathname + (wanted.length ? "?tag=" + wanted.join(",") : "") + location.hash;
+        var aud = form.querySelector('input[name="audience"]:checked');
+        var params = [];
+        if (aud && aud.value) params.push("for=" + aud.value);
+        if (wanted.length) params.push("tag=" + wanted.join(","));
+        var url = location.pathname + (params.length ? "?" + params.join("&") : "") + location.hash;
         try { history.replaceState(null, "", url); } catch { /* file:// — leave the URL be */ }
       }
 
@@ -992,6 +1009,9 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       // and leave the full list visible (an unknown tag filters nothing). A matched tag in the
       // collapsed overflow reveals it, so the checked chip is visible.
       function applyQueryTags() {
+        var forParam = new URLSearchParams(location.search).get("for");
+        var audBox = forParam && form.querySelector('input[name="audience"][value="' + forParam.replace(/[^a-z]/g, "") + '"]');
+        if (audBox) { audBox.checked = true; applyFilters(); }
         var q = new URLSearchParams(location.search).get("tag");
         if (!q) return;
         if (tagFilters) tagFilters.open = true;
@@ -1015,7 +1035,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var target = ev.target;
         if (!target) return;
         if (target.name === "sort") sortCards();
-        else if (target.type === "checkbox") { applyFilters(); syncUrl(); }
+        else if (target.type === "checkbox" || target.name === "audience") { applyFilters(); syncUrl(); }
       });
       if (search) search.addEventListener("input", function () { applyFilters(); });
 
@@ -1030,6 +1050,10 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
   const deskTrigger = `<button class="btn notes-toolbar__ai" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ See what's new</button>`;
   const body = `<h1 class="masthead">Notes</h1>
     <form class="notes-toolbar" data-feed-controls hidden>
+      <div class="chips notes-audience" role="radiogroup" aria-label="Show notes for">
+        <label class="chip"><input type="radio" name="audience" value="" checked> All</label>
+        ${NOTE_AUDIENCES.map((a) => `<label class="chip"><input type="radio" name="audience" value="${a.id}"> ${a.label}</label>`).join("\n        ")}
+      </div>
       <div class="notes-toolbar__bar">
         <input class="notes-search" type="search" placeholder="Search notes" aria-label="Search notes"
                autocomplete="off" data-notes-search>
@@ -1042,7 +1066,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         </div>
       </div>
       <details class="notes-tag-filters" data-tag-filters>
-        <summary>Filter by topic</summary>
+        <summary>Filter by tag</summary>
         <div class="chips notes-tags" aria-label="Filter by tag">${headChips}${restChips}</div>
       </details>
     </form>
