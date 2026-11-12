@@ -578,21 +578,24 @@
       const viewportToggle = shell.querySelector('[data-shell="viewport-toggle"]');
       const viewportLabel = viewportToggle?.querySelector("[data-viewport-name]");
       if (viewportLabel) {
-        const updateViewportLabel = () => {
-          const width = document.body.getBoundingClientRect().width;
-          viewportLabel.textContent = width <= 768 ? "mobile" : width <= 1100 ? "tablet" : "desktop";
-        };
-        updateViewportLabel();
-        new ResizeObserver(updateViewportLabel).observe(document.body);
-        // On a tablet the nav starts collapsed, so the page gets the width. It only applies until
-        // the visitor uses the collapse button, which grain remembers under its own key.
+        // On a tablet the nav is collapsed, so the page gets the width, and it opens again on
+        // desktop, whether the width changed or the preview toggle did. It only follows the width
+        // until the visitor uses the collapse button, which grain remembers under its own key.
         const collapseOnTablet = () => {
           let chosen = null;
           try { chosen = localStorage.getItem("grain.shell.rail-collapsed"); } catch { /* private mode */ }
-          if (chosen === null && viewportLabel.textContent === "tablet") shell.setAttribute("data-rail-collapsed", "true");
+          if (chosen !== null) return;
+          const tablet = viewportLabel.textContent === "tablet";
+          if ((shell.getAttribute("data-rail-collapsed") === "true") !== tablet)
+            shell.setAttribute("data-rail-collapsed", tablet ? "true" : "false");
         };
-        collapseOnTablet();
-        new MutationObserver(collapseOnTablet).observe(document.body, { attributeFilter: ["data-viewport"] });
+        const updateViewportLabel = () => {
+          const width = document.body.getBoundingClientRect().width;
+          viewportLabel.textContent = width <= 768 ? "mobile" : width <= 1100 ? "tablet" : "desktop";
+          collapseOnTablet();
+        };
+        updateViewportLabel();
+        new ResizeObserver(updateViewportLabel).observe(document.body);
         new MutationObserver(updateViewportLabel).observe(document.body, { attributeFilter: ["data-viewport"] });
         viewportToggle.addEventListener("click", () => {
           // Let Grain start its preview cycle from the current width on a tablet.
