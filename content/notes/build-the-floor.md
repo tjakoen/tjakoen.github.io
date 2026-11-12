@@ -1,6 +1,6 @@
 ---
 title: "Everybody Wants the Agent. Somebody Has to Build the Floor."
-audience: lead
+audience: [lead, build]
 level: intro
 subtitle: "How an organization goes from developers with AI subscriptions to real automation, in five stages over eighteen months. Skills first, used by hand, then triggered, then unattended. The agent is the last thing you build, not the first."
 author: "Tjakoen Stolk"
