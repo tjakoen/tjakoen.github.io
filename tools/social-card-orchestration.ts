@@ -57,9 +57,21 @@ ${[0,1,2].map(i=>`<line x1="${330+i*258}" y1="555" x2="${350+i*258}" y2="555" st
 <text x="96" y="940" style="fill:${INK};font-size:34px">Start today with one file, and the first rule</text>
 <text x="96" y="990" style="fill:${INK};font-size:34px">you are tired of repeating.</text>`);
 
+// 4: the single card, after the note's four-files figure: what the repo carries into every session
+const files=[["Instructions","how the repo works"],["Skills","the standards"],["Hooks","start and end checks"],["Plan file","what this work is"]] as const;
+const small=(x:number,y:number,a:string,b:string)=>`<rect x="${x}" y="${y}" width="228" height="150" rx="10" style="fill:none;stroke:${INK};stroke-width:2.5"/>
+<text x="${x+114}" y="${y+68}" text-anchor="middle" style="fill:${INK};font-size:36px">${a}</text>
+<text x="${x+114}" y="${y+108}" text-anchor="middle" style="fill:${MUTED};font-size:22px;font-style:italic">${b}</text>`;
+const D=frame(`<text x="96" y="240" style="fill:${INK};font-size:72px;letter-spacing:-1.5px">Low effort works</text>
+<text x="96" y="325" style="fill:${INK};font-size:72px;letter-spacing:-1.5px;font-style:italic">when the repo already knows.</text>
+${files.map(([a,b],i)=>small(96+i*258,430,a,b)).join("")}
+${[0,1,2,3].map(i=>{const x=210+i*258,tx=360+i*160;return `<path d="M${x},580 C${x},640 ${tx},640 ${tx},714" style="fill:none;stroke:${MUTED};stroke-width:2.5" marker-end="url(#arr)"/>`}).join("")}
+${box(250,724,700,150,"The session, on low effort","starts already knowing how I work",true)}
+<text x="96" y="1010" style="fill:${MUTED};font-size:28px;font-style:italic">Models get retired. The files you write around them stay.</text>`);
+
 const b=await chromium.launch();
 try{const pg=await b.newPage({viewport:{width:W,height:H}});
 const OUT=join(import.meta.dir,"..","content","media","notes");await mkdir(OUT,{recursive:true});
-for(const [n,h] of [["1-question",A],["2-split",B],["3-loop",C]] as const){await pg.setContent(h,{waitUntil:"networkidle"});await writeFile(join(OUT,`plan-big-type-small-social-${n}.png`),await pg.screenshot({clip:{x:0,y:0,width:W,height:H}}));}
+for(const [n,h] of [["1-question",A],["2-split",B],["3-loop",C],["4-files",D]] as const){await pg.setContent(h,{waitUntil:"networkidle"});await writeFile(join(OUT,`plan-big-type-small-social-${n}.png`),await pg.screenshot({clip:{x:0,y:0,width:W,height:H}}));}
 }finally{await b.close();}
-console.log("[social:card:orchestration] wrote three cards to content/media/notes");
+console.log("[social:card:orchestration] wrote four cards to content/media/notes");
