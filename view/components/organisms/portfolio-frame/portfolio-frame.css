@@ -633,14 +633,14 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   background: color-mix(in srgb, var(--ink) 35%, transparent);
 }
 
-/* The phone's own navigation (portfolio-frame.html, .mobile-nav). On a phone the bottom bar replaces
-   the rail drawer: its toggle is hidden, the Browse sheet sits above the bar and stays out of sight
-   until Menu raises it, and the sheet drops Catalog and Notepad, which are desktop tools. */
+/* The phone's own navigation (portfolio-frame.html, .mobile-nav). On a phone the bottom bar holds
+   Menu, Browse and Tour: the topbar's rail toggle is hidden because Menu opens the rail, the rail and
+   the Browse sheet both stop at the bar, and the sheet drops Catalog and Notepad, which are desktop tools. */
 .mobile-nav { display: none; }
 @container shell-frame (max-width: 768px) {
   .app-shell.app-window { --mobile-nav-h: calc(3.75rem + env(safe-area-inset-bottom, 0px)); }
   .mobile-nav {
-    display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; inset: auto 0 0 0; z-index: 50;
+    display: grid; grid-template-columns: repeat(3, 1fr); position: fixed; inset: auto 0 0 0; z-index: 50;
     height: var(--mobile-nav-h, 3.75rem); padding-bottom: env(safe-area-inset-bottom, 0px);
     background: var(--color-surface); border-top: 1px solid var(--color-line); }
   .mobile-nav__item {
@@ -648,12 +648,14 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
     border: 0; background: transparent; color: var(--color-muted); text-decoration: none; cursor: pointer;
     font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.02em; }
   .mobile-nav__item svg { width: 1.35rem; height: 1.35rem; }
-  .mobile-nav__item[aria-current="page"], .mobile-nav__item[aria-expanded="true"] { color: var(--color-accent); }
+  .mobile-nav__item[aria-expanded="true"] { color: var(--color-accent); }
   .mobile-nav__item:focus-visible { outline: 2px solid var(--ink); outline-offset: -4px; }
 
   .app-shell__topbar [data-shell="rail-toggle"] { display: none; }
   .app-shell.app-window .app-shell__aside {
     bottom: var(--mobile-nav-h); transform: translateY(calc(100% + var(--mobile-nav-h))); }
+  /* the rail drawer stops at the bar, so its last dock rows are never under it */
+  .app-shell.app-window .app-shell__rail { bottom: var(--mobile-nav-h); height: auto; }
   .app-shell.app-window[data-aside-open] .app-shell__aside { transform: none; }
   .app-shell.app-window[data-aside-open] .app-shell__aside:has(.assistant[data-mode="browse"]) {
     height: calc(100dvh - var(--mobile-nav-h) - max(var(--space-3), env(safe-area-inset-top, 0px))); }

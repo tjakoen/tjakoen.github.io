@@ -575,23 +575,31 @@
         if (ev.key === "Escape" && shell.hasAttribute("data-aside-open")) closeSheet();
       });
 
-      // ---- the phone's bottom nav: mark the section the visitor is in, and let Menu raise or lower
-      // the Browse sheet. Grain's own Browse tab already opens the sheet in that mode, so Menu
-      // presses it rather than repeating the sheet logic.
+      // ---- the phone's bottom nav: Menu slides the rail in or out, and Browse raises or lowers the
+      // Browse sheet. Each closes the other first, so only one drawer is ever open. Grain's own
+      // Browse tab already opens the sheet in that mode, so Browse presses it rather than repeating it.
       const mobileNav = document.querySelector(".mobile-nav");
       if (mobileNav) {
-        for (const link of mobileNav.querySelectorAll("[data-mobile-nav-match]")) {
-          if (new RegExp(link.dataset.mobileNavMatch).test(location.pathname)) link.setAttribute("aria-current", "page");
-        }
-        const menu = mobileNav.querySelector("[data-mobile-menu]");
+        const railButton = mobileNav.querySelector("[data-mobile-rail]");
+        const browseButton = mobileNav.querySelector("[data-mobile-browse]");
         const browseTab = shell.querySelector('[data-shell-mode="browse"]');
-        const syncMenu = () => menu?.setAttribute("aria-expanded", String(shell.hasAttribute("data-aside-open")));
-        menu?.addEventListener("click", () => {
+        const sync = () => {
+          railButton?.setAttribute("aria-expanded", String(shell.getAttribute("data-rail-open") === "true"));
+          browseButton?.setAttribute("aria-expanded", String(shell.hasAttribute("data-aside-open")));
+        };
+        railButton?.addEventListener("click", () => {
+          shell.removeAttribute("data-aside-open");
+          if (shell.getAttribute("data-rail-open") === "true") shell.removeAttribute("data-rail-open");
+          else shell.setAttribute("data-rail-open", "true");
+          sync();
+        });
+        browseButton?.addEventListener("click", () => {
+          shell.removeAttribute("data-rail-open");
           if (shell.hasAttribute("data-aside-open")) shell.removeAttribute("data-aside-open");
           else browseTab?.click();
-          syncMenu();
+          sync();
         });
-        new MutationObserver(syncMenu).observe(shell, { attributeFilter: ["data-aside-open"] });
+        new MutationObserver(sync).observe(shell, { attributeFilter: ["data-aside-open", "data-rail-open"] });
       }
 
       const viewportToggle = shell.querySelector('[data-shell="viewport-toggle"]');
