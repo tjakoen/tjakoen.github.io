@@ -100,11 +100,29 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     const stray = page.locator(".nest-stray");
     await page.clock.fastForward(110_000);
     await expect(stray).toHaveCount(0);
-    await page.clock.fastForward(75_000);
+    await page.clock.fastForward(135_000);
     await expect(stray).toHaveCount(1);
 
     await page.goto("/notes/the-site-has-ants");
-    await page.clock.fastForward(185_000);
+    await page.clock.fastForward(245_000);
+    await expect(stray).toHaveCount(0);
+  });
+
+  test("the wait for a stray carries from one page to the next", async ({ page }) => {
+    await page.clock.install();
+    await page.goto("/");
+    const stray = page.locator(".nest-stray");
+    await page.clock.fastForward(110_000);
+    await expect(stray).toHaveCount(0);
+
+    // A second page inside the first wait: the ant is due on the time already read, not on a new count.
+    await page.goto("/notes");
+    await page.clock.fastForward(135_000);
+    await expect(stray).toHaveCount(1);
+
+    // Once it has crossed, the next one is at least ten minutes of reading away, on any page.
+    await page.goto("/about");
+    await page.clock.fastForward(540_000);
     await expect(stray).toHaveCount(0);
   });
 

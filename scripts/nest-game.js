@@ -10,7 +10,7 @@
 // side by side. A carried letter keeps its own colour, face and underline, and drifts home slowly
 // when a carrier is squashed. If the whole colony dies, the queen sends out one new scout.
 // Every colour is a theme token, so each flavor recolours the nest.
-import { firstStrayDelay, nestDesktop, STRAY_KEY, strayConsumed } from "./nest-availability.js";
+import { nestDesktop, nextStrayDelay, STRAY_KEY, strayClock, strayConsumed } from "./nest-availability.js";
 import { antMarkup, antClasses, miniArt, NEST_LAYOUT, nestRouteLength, buildNestBase, encodeNestBraille, composeNestGrid } from "./nest-assets.js";
 import {
   BUILD_TIME,
@@ -320,8 +320,8 @@ import {
   // A stray ant is the easter egg for a closed Nest. It walks the reading pane on its own, not on
   // a trail, and if someone clicks it the ant runs for the launcher and makes it pulse. One click
   // marks the tab, so the random ant does not come back until a new tab.
-  let strayTimer = null, strayExitTimer = null, strayEl = null, strayLeaving = false;
-  const nextStrayDelay = () => 300000 + Math.random() * 180000;
+  let strayExitTimer = null, strayEl = null, strayLeaving = false;
+  const strayTimer = strayClock(() => spawnStray());
   const consumeStray = () => { try { sessionStorage.setItem(STRAY_KEY, "1"); } catch { /* private mode */ } };
   const strayReduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
   // The ant art is shared by the colony, the stray easter egg and the note figures.
@@ -330,14 +330,14 @@ import {
   // colour. At a glance it should not read as another worker.
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return nestDesktop.matches && r.width > 0 && r.height > 0; };
   const cancelStray = () => {
-    clearTimeout(strayTimer); clearTimeout(strayExitTimer);
+    strayTimer.stop(); clearTimeout(strayExitTimer);
     strayLeaving = false;
     if (strayEl) { strayEl.remove(); strayEl = null; }
   };
   const scheduleStray = (delay) => {
-    clearTimeout(strayTimer);
+    strayTimer.stop();
     if (noteFiguresOnPage || game || document.hidden || !launcherVisible() || strayConsumed()) return;
-    strayTimer = setTimeout(spawnStray, delay ?? firstStrayDelay());
+    strayTimer.start(delay);
   };
   const pulseLauncher = () => {
     antBtn.classList.add("nest-pulse");
@@ -410,7 +410,7 @@ import {
     };
     requestAnimationFrame(frame);
   };
-  const spawnStray = (force = false) => {
+  function spawnStray(force = false) {
     if (noteFiguresOnPage) return;
     if (!force && (strayConsumed() || game || document.hidden || !launcherVisible() || strayEl)) return;
     if (force && (game || document.hidden || !launcherVisible() || strayEl)) return;
