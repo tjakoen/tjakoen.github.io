@@ -7,8 +7,8 @@ This is my portfolio, laid out for a phone. Everything you need sits in the bar 
 the screen, and this short tour shows what each button does. Close it at any point.
 
 ## mobile-menu
-- verify: Tap Menu; the rail should slide in with Projects, Notes, Calendar, Mail, Plans and About, and tapping it again should close it.
-Menu opens the rail, the same list of sections the desktop keeps on the left: projects, notes, the
+- verify: Tap Menu; a drawer should rise above the bar with Projects, Notes, Calendar, Mail, Plans, About and Tour, and tapping it again should lower it.
+Menu raises a drawer with the sections the desktop keeps in its sidebar: projects, notes, the
 calendar, mail, plans and the about page. Tap a section to go there, or tap Menu again to close it.
 
 ## mobile-browse
