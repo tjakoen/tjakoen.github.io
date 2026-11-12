@@ -3,10 +3,8 @@ id: welcome
 mode: demo
 title: "Welcome to the desk"
 ---
-Welcome! This is my portfolio, built as a small desk you can poke at: notes, projects, a calendar
-and an assistant that answers questions about my work. Before you start, here is where the choice you
-just made lives, the color flavor beside it, and where the longer tour lives. It takes three
-clicks, and you can close it at any point.
+Welcome to my portfolio, a small desk you can poke at. Three short cards show where the light and
+dark switch, the flavor and the full tour live. Close this any time.
 
 ## dark-mode
 - verify: Click the highlighted button three times; it should go light, dark, then match the device, with its icon and tooltip following, and a reload should keep the choice.
