@@ -311,18 +311,29 @@ body[data-desk-mode="browse"] .walk[data-run-showcase] { display: none; }
 }
 .assistant__browse h2 { font-size: var(--text-lg); margin: 0; }
 .assistant__browse p { margin: 0; color: var(--color-muted); font-size: var(--text-sm); }
-.assistant__shortcuts { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.assistant__shortcuts a { display: inline-flex; align-items: center; min-height: 2.25rem; text-decoration: none; }
+/* Browse is the Desk's navigation, so its sections are tiles: an icon over a label, three to a
+   row, the current section in the accent colour. */
+.assistant__shortcuts { display: grid; gap: var(--space-2); }
+.browse-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
+.browse-tile { display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--space-1); min-height: 4.25rem; padding: var(--space-2);
+  border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-bg);
+  color: var(--color-fg); text-decoration: none; font-family: var(--font-mono); font-size: var(--text-xs); }
+.browse-tile .app-dock__icon { border-right: 0; }
+.browse-tile svg { width: 1.35rem; height: 1.35rem; }
+.browse-tile:hover { border-color: var(--color-muted); }
+.browse-tile[aria-current="page"] { color: var(--color-accent); border-color: var(--color-accent); }
+.browse-more { font-size: var(--text-sm); }
 .assistant__recent { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
 .assistant__recent-head { display: flex; justify-content: space-between; align-items: baseline;
   flex-wrap: wrap; gap: var(--space-2); }
 .assistant__recent h3 { margin: 0; font-size: var(--text-base); }
 .assistant__recent-more { font-size: var(--text-sm); white-space: nowrap; }
 .assistant__recent .recent { gap: var(--space-2); }
+.assistant__recent .recent { gap: 0; }
 .assistant__recent .recent__item { display: flex; flex-direction: column; align-items: start;
-  gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--color-line);
-  border-radius: var(--radius-md); background: var(--color-bg); }
-.assistant__recent .recent__item:hover { border-color: var(--color-muted); }
+  gap: var(--space-1); padding: var(--space-2) 0; border-top: 1px solid var(--color-line); }
+.assistant__recent .recent__item:hover .recent__name { text-decoration: underline; }
 .assistant__recent .recent__name { overflow-wrap: anywhere; }
 .assistant__recent .recent__type { display: inline-block; padding: 0 var(--space-2);
   border: 1px solid var(--color-line); border-radius: var(--radius-sm);
@@ -409,7 +420,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
     background: color-mix(in srgb, var(--ink) 24%, transparent); }
 
   /* the mode tabs read as a phone tab bar: equal columns across the sheet, each an icon over a
-     small label, the selected one in the accent colour with a short bar above it. The icons are
+     small label, the selected one in the accent colour. The icons are
      masks over currentColor, so they follow the theme like the text does. */
   .app-shell.app-window .assistant__modes { flex: 1; display: flex; align-items: stretch; }
   .app-shell.app-window .assistant__modes [data-shell-mode]:not([hidden]) {
@@ -421,9 +432,9 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
     content: ""; width: 1.25rem; height: 1.25rem; background: currentColor;
     -webkit-mask: var(--mode-icon) center / contain no-repeat; mask: var(--mode-icon) center / contain no-repeat; }
   .app-shell.app-window .assistant__modes [data-shell-mode][aria-selected="true"] { color: var(--color-accent); }
-  .app-shell.app-window .assistant__modes [data-shell-mode][aria-selected="true"]::after {
-    content: ""; position: absolute; top: 0; left: 30%; right: 30%; height: 2px;
-    border-radius: var(--radius-pill); background: var(--color-accent); }
+  /* the grab handle already says the sheet pulls up, so grain's arrow would only push the tabs
+     off centre. */
+  .app-shell.app-window .assistant__head::after { content: none; }
   [data-shell-mode="chat"] { --mode-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linejoin='round'%3E%3Cpath d='M4 5h16v11H9l-5 4z'/%3E%3C/svg%3E"); }
   [data-shell-mode="browse"] { --mode-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M15.5 8.5l-2 5-5 2 2-5z'/%3E%3C/svg%3E"); }
   [data-shell-mode="catalog"] { --mode-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linejoin='round'%3E%3Crect x='4' y='4' width='7' height='7'/%3E%3Crect x='13' y='4' width='7' height='7'/%3E%3Crect x='4' y='13' width='7' height='7'/%3E%3Crect x='13' y='13' width='7' height='7'/%3E%3C/svg%3E"); }
