@@ -331,16 +331,15 @@ body[data-desk-mode="browse"] .walk[data-run-showcase] { display: none; }
 @container shell-frame (max-width: 768px) {
   .browse-chips, .browse-title--wide { display: none; }
   .browse-title--phone { display: inline; }
-  .browse-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
+  .browse-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-1); }
   .browse-more { display: block; font-size: var(--text-sm); }
   .browse-tile { display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: var(--space-1); min-height: 4.25rem; padding: var(--space-2);
-    border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-bg);
-    color: var(--color-fg); text-decoration: none; font-family: var(--font-mono); font-size: var(--text-xs); }
+    gap: 0.2rem; height: 4rem; border-radius: var(--radius-md); color: var(--color-muted);
+    text-decoration: none; font-family: var(--font-mono); font-size: 0.65rem; }
   .browse-tile .app-dock__icon { border-right: 0; }
-  .browse-tile svg { width: 1.35rem; height: 1.35rem; }
-  .browse-tile:hover { border-color: var(--color-muted); }
-  .browse-tile[aria-current="page"] { color: var(--color-accent); border-color: var(--color-accent); }
+  .browse-tile svg { width: 1.25rem; height: 1.25rem; }
+  .browse-tile:hover { color: var(--color-fg); }
+  .browse-tile[aria-current="page"] { color: var(--color-accent); }
   .assistant__recent .recent { gap: 0; }
   .assistant__recent .recent__item { padding: var(--space-2) 0; border: 0;
     border-top: 1px solid var(--color-line); border-radius: 0; background: none; }
