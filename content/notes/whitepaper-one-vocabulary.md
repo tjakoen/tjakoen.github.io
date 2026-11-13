@@ -6,7 +6,7 @@ subtitle: "An alternative modality for human–AI interaction: one shared vocabu
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: whitepaper
-date: 2026-07-02
+date: 2026-07-06
 updated: 2026-07-17
 readingTime: "~28 min"
 tags: [ai, design-systems, stack]

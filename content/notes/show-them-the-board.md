@@ -6,7 +6,7 @@ subtitle: "I spent a month building a people app the slow way, then replaced it 
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
-date: 2026-11-10
+date: 2026-11-04
 readingTime: "~7 min"
 tags: [ai, leadership, tooling]
 people: [kercwin, kyle, cyrus]

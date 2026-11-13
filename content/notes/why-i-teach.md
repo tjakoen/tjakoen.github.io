@@ -6,7 +6,7 @@ subtitle: "I teach 150 to 300 students a semester, part-time, for a fraction of 
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
-date: 2026-07-03
+date: 2026-07-07
 readingTime: "~8 min"
 tags: [teaching, automation]
 summary: >
