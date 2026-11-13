@@ -38,7 +38,12 @@ if (toggle && note) {
       const n = emphasis(part);
       const b = document.createElement("b");
       b.textContent = part.slice(0, n);
-      span.append(b, part.slice(n));
+      const rest = part.slice(n);
+      if (!rest) { span.append(b); return; }
+      const tail = document.createElement("span");
+      tail.className = "bionic__rest";
+      tail.textContent = rest;
+      span.append(b, tail);
     });
     node.replaceWith(span);
     swapped.push([span, node]);
