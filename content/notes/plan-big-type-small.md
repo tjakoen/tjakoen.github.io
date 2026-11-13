@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-13
-readingTime: "~8 min"
+readingTime: "~10 min"
 tags: [ai, workflow]
 summary: >
   Plan and orchestrate on Opus, implement with Sonnet subagents, and try low effort before assuming
@@ -268,6 +268,47 @@ change, and then drop it again.
 </svg>
 
 *A miss fixed with thinking is paid for again tomorrow. A miss fixed with a rule is paid for once.*
+
+## Where the split is actually wired
+
+Advice is cheap, so here is where mine lives. I went looking this week to check that the split was
+doing what I tell people it does, and it mostly was. Mostly.
+
+**The model is pinned in the agent file, not chosen per task.** Each kind of subagent is a short
+file that names its job, its tools and its model. A locator, which only answers "where is this
+defined" with file and line, runs on Haiku. An implementer, which types a change that is already
+decided, runs on Sonnet. An auditor and a writer, the two whose mistakes are expensive, stay on
+Opus. The main session never decides any of this mid-flight. It picks the kind of subagent, and the
+file picks the model.
+
+**A brief that cannot be written does not get sent.** A hook runs before every spawn and refuses
+one that is missing four things: the lane, the scope cap, the hard stops and what should make the
+subagent stop and ask. That is the "only hand off decided work" rule from earlier, turned from
+advice into a gate. A session that tries to delegate a half-designed piece gets bounced back to
+finish the design.
+
+**The nudge to delegate counts reads, not models.** A second hook watches the main session. After
+fifteen file reads and searches with no subagent spawned, it says so once. I measured why it nudges
+toward delegating instead of toward a cheaper model: across twelve of my sessions, cache reads were
+94 percent of all input tokens (a snapshot, from August). Nothing leaves a conversation once it
+enters, so a file read early is paid for again on every turn after it. A subagent keeps that file
+out of the main thread for good, and that saving is bigger than any discount on the model.
+
+**The model switch happens once, at the start, or not at all.** A third hook reads the first prompt
+and suggests a stronger model only when the task looks like one that earns it, a refactor across
+many files or a hard design call. It never suggests a switch later, because changing the model
+halfway through throws the whole cached conversation away and you pay to rebuild it.
+
+**And now there is a receipt.** When a subagent finishes, a hook reads its transcript and logs which
+model it actually ran on and how many tokens it spent. My project dashboard, PANTRY, shows that
+beside every subagent: *locator, haiku, 68k in, 1k out*. A pin in a file is a request. This is the
+proof it was honored.
+
+Here is the "mostly." The delegation nudge was written, tested and documented in August, and then
+never switched on. For three months it sat there explaining at length why it mattered, to nobody.
+The receipt did not exist at all until this week, so before it I was taking my own setup on faith,
+which is the one thing this note tells you not to do. Both are fixed now. The lesson is the same as
+the trial above: check what actually ran, not what the config says should have.
 
 ## The same pattern in Codex
 
