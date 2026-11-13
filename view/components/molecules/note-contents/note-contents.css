@@ -99,5 +99,5 @@
 .content-source__bionic:disabled { opacity: .5; cursor: not-allowed; }
 /* Redaction's bold sits close to its regular weight, so weight alone vanished in a paragraph. The
    rest of each word is faded instead, which gives the bold start a contrast the eye can find. */
-.note.is-bionic .bionic b { font-weight: 800; color: var(--ink); }
+.note.is-bionic .bionic b { font-weight: 700; color: var(--ink); }
 .note.is-bionic .bionic__rest { color: color-mix(in srgb, currentColor 58%, transparent); }
