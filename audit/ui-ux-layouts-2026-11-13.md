@@ -42,8 +42,7 @@ under view/ for token use.
 5. **The notes tab strip clips without a cue.** On the phone, "How I lead" is cut at the edge with
    no fade or arrow, so the strip reads as three tabs rather than four. A trailing fade mask or a
    wrap to two rows fixes it.
-6. **One button breaks the type system.** "SEE WHAT'S NEW" on notes is uppercase serif, beside mono
-   tabs and a sentence-case search field. Every other control on the page is sentence case.
+6. **Retracted: the button type is GRAIN's.** "SEE WHAT'S NEW" on notes is uppercase serif, and so is every one of the eighteen .btn buttons across five sampled routes. That is GRAIN's button style working as designed, not a stray on this page.
 7. **Long card summaries on the phone.** The pinned note's summary runs to about fourteen lines at
    390 pixels, pushing the second note below two screens. A three-line clamp on phone, with the
    full text on the note page, keeps the list scannable.
@@ -70,3 +69,16 @@ under view/ for token use.
   in dark mode is still owed.
 - /builder returns the not-found page in this checkout, so the builder was not audited.
 - Keyboard order and focus visibility were not tested.
+
+## Status after the fix pass
+
+- Fixed in this repo: findings 1, 2, 3, 5, 7 and 9. The nav labels and shelf text render at 12
+  pixels, block-level controls in the page body have a 24 pixel floor on phone and tablet, the
+  notes tab strip fades at its trailing edge, phone note summaries stop at three lines, and the
+  leading page's paragraph spacing moved from seventeen inline styles to one rule on the spacing
+  scale.
+- Retracted: finding 6.
+- Belongs in GRAIN: finding 4 (a tablet tier in app-window), finding 10 (moving the shell up),
+  finding 11 (one named breakpoint set), and the talk deck's presentation controls, which still
+  render at about 11 by 11 pixels.
+- A design call for the owner: finding 8, whether the chat column starts collapsed on long reads.
