@@ -438,7 +438,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
     flex: 1; position: relative; display: flex; flex-direction: column; align-items: center;
     justify-content: center; gap: 0.2rem; min-height: 2.75rem; padding: var(--space-1) 0;
     border: 0; background: transparent; color: var(--color-muted);
-    font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.02em; }
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.02em; }
   .app-shell.app-window .assistant__modes [data-shell-mode]::before {
     content: ""; width: 1.25rem; height: 1.25rem; background: currentColor;
     -webkit-mask: var(--mode-icon) center / contain no-repeat; mask: var(--mode-icon) center / contain no-repeat; }
@@ -677,7 +677,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   .app-shell.app-window .mobile-menu__item {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem;
     height: 4rem; border-radius: var(--radius-md); color: var(--color-muted); text-decoration: none;
-    font-family: var(--font-mono); font-size: 0.65rem; }
+    font-family: var(--font-mono); font-size: 0.75rem; }
   .app-shell.app-window .mobile-menu__item svg { width: 1.25rem; height: 1.25rem; }
   .app-shell.app-window .mobile-menu__item .file-tree__close { display: none; }
   .app-shell.app-window .mobile-menu__item:hover { color: var(--color-fg); }
@@ -717,7 +717,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   .app-shell.app-window .app-shell__topbar { display: none; }
   .app-shell.app-window .window-bar { gap: var(--space-2); padding-inline: var(--space-3); }
   .app-shell.app-window .window-bar__brand {
-    display: block; margin-inline-end: auto; color: var(--color-fg); text-decoration: none;
+    display: block; min-block-size: 1.5rem; margin-inline-end: auto; color: var(--color-fg); text-decoration: none;
     font-family: var(--font-display, inherit); font-size: var(--text-base); white-space: nowrap; }
   .app-shell.app-window .window-bar__search { order: 2; margin-inline: 0; }
   .app-shell.app-window .window-bar__ctl { order: 3; }
@@ -735,4 +735,12 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
 /* Catalog is a desktop tool: hide its tab on tablet as well as on a phone. */
 @container shell-frame (max-width: 1100px) {
   .assistant__modes [data-shell-mode="catalog"] { display: none !important; }
+}
+
+/* On the phone and tablet layouts every block-level control in the page body is at least 24 pixels
+   tall, the WCAG 2.2 target floor. Inline links inside prose ignore min-height, so running text keeps
+   its line height and only the tag chips, toggles and list links grow. */
+@container shell-frame (max-width: 768px) {
+  main :is(a, button, summary, label):not(.skip-link) { min-block-size: 1.5rem; }
+  main :is(a, button, summary, label):not(.skip-link):is([class]) { align-content: center; }
 }
