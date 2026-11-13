@@ -87,10 +87,10 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect.poll(() => gameRequests, { timeout: 15_000 }).toBeGreaterThan(0);
   });
 
-  test("the note opens the colony on the home page", async ({ page }) => {
+  test("the note opens the colony in place, beside its figures", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
     await page.getByRole("link", { name: "Open the full colony" }).click();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/notes\/the-site-has-ants/);
     await expect(page.locator("#nest-mock")).toBeVisible();
   });
 
@@ -102,10 +102,6 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(stray).toHaveCount(0);
     await page.clock.fastForward(135_000);
     await expect(stray).toHaveCount(1);
-
-    await page.goto("/notes/the-site-has-ants");
-    await page.clock.fastForward(245_000);
-    await expect(stray).toHaveCount(0);
   });
 
   test("the wait for a stray carries from one page to the next", async ({ page }) => {
@@ -131,6 +127,7 @@ test("note figures keep their event loops with reduced motion enabled", async ({
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/notes/the-site-has-ants");
   const scout = page.locator('[data-nest-mode="theft"]');
+  await scout.scrollIntoViewIfNeeded(); // a figure only ticks while it is near the viewport
   await expect.poll(() => scout.evaluate((host) => Number((host as HTMLElement).dataset.completedCycles)), {
     timeout: 25_000,
     intervals: [250, 500, 1000],
@@ -768,6 +765,9 @@ test("the worship queen returns before she appears in her chamber", async ({ pag
 // Advance only the note simulations. Background tabs and busy browser workers throttle real frames.
 async function driveNoteFrames(page: Page) {
   await page.addInitScript(() => {
+    // A figure pauses off screen. These tests drive every figure at once, so each one is told it is
+    // in view; the pause itself is checked on its own.
+    window.IntersectionObserver = class { constructor(private cb: IntersectionObserverCallback) {} observe(el: Element) { this.cb([{ isIntersecting: true, target: el } as IntersectionObserverEntry], this as unknown as IntersectionObserver); } unobserve() {} disconnect() {} takeRecords() { return []; } } as unknown as typeof IntersectionObserver;
     const realFrame = window.requestAnimationFrame.bind(window);
     const noteCallbacks = new WeakSet<FrameRequestCallback>();
     const queued = new Set<FrameRequestCallback>();
@@ -964,8 +964,9 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   expect(colors.dark).not.toBe(colors.light);
   expect(errors).toEqual([]);
 
+  // The colony now opens in place: the figures stay on the page and stand still beside it.
   await page.getByRole("link", { name: "Play the colony" }).click();
-  await expect(page).toHaveURL(/\/$/);
-  await expect(page.locator("#nest-mock")).toBeVisible();
-  await expect(page.locator(".nest-scene")).toHaveCount(0);
+  await expect(page).toHaveURL(/\/notes\/the-site-has-ants/);
+  await expect(page.locator("html")).toHaveAttribute("data-nest-open", "");
+  await expect(page.locator(".nest-scene")).toHaveCount(6);
 });

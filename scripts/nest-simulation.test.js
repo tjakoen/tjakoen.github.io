@@ -120,3 +120,32 @@ describe("shared nest rules", () => {
     expect(miniArt(0)).toContain("\u2800");
   });
 });
+
+import { detourAround } from "./nest-simulation.js";
+
+describe("detourAround", () => {
+  const box = { l: 100, t: 100, r: 300, b: 200 };
+  test("leaves a clear path alone", () => {
+    expect(detourAround({ x: 0, y: 0 }, 400, 0, [box])).toBeNull();
+  });
+  test("aims for a near corner when the box is in the way", () => {
+    const [x, y] = detourAround({ x: 50, y: 150 }, 350, 150, [box]);
+    expect(x).toBeLessThan(100);
+    expect(y < 100 || y > 200).toBe(true);
+  });
+  test("walks out of a box it stands in", () => {
+    const [x] = detourAround({ x: 105, y: 150 }, 0, 150, [box]);
+    expect(x).toBeLessThan(100);
+  });
+  test("ignores a box that holds the target", () => {
+    expect(detourAround({ x: 0, y: 150 }, 200, 150, [box])).toBeNull();
+  });
+  test("reaches the far side by walking", () => {
+    const ant = { x: 50, y: 150, heading: 0, id: 1 };
+    for (let i = 0; i < 2000 && Math.hypot(ant.x - 350, ant.y - 150) > 1; i++) {
+      stepMovement(ant, 350, 150, 0.016, 120, { now: i * 16, obstacles: [box], wander: 0 });
+      expect(ant.x > 101 && ant.x < 299 && ant.y > 101 && ant.y < 199).toBe(false);
+    }
+    expect(Math.hypot(ant.x - 350, ant.y - 150)).toBeLessThan(1.5);
+  });
+});

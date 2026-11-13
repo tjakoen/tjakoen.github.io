@@ -27,9 +27,9 @@ social: |
   The colony is a small simulation: scouts find letters, lay scent trails, and workers carry the real
   glyphs home. The gaps stay put, so the paragraph you were reading goes missing one letter at a
   time. A rival colony grows from the same rules, spends the letters it takes, and builds its own
-  mounds. There is no win screen. It just keeps going. On any other page, open it with the small ant
-  in the status bar or the word nest in the terminal. The play button in this note opens the full
-  game on the home page, clear of the live figures.
+  mounds. There is no win screen. It just keeps going. Open it with the small ant in the status bar, the
+  word nest in the terminal, or the play button in this note, where the ants walk around the live
+  figures instead of through them.
 
   No canvas, no game library, no framework. A few plain JavaScript modules on the same vanilla stack as
   the rest of the site.
@@ -43,7 +43,7 @@ The site is where I show the serious work: the systems, the standards, the writi
 
 So I hid a small living thing under the copy. You can ignore it forever. If you find it, it should feel like finding a door in a wall.
 
-The door is an ant. On a desktop, every few minutes of reading, one wanders across the page. Click it and it bolts for the small ant button at the bottom of the screen, which wakes the whole colony. It never crosses this page, because the figures below have claimed it. They are the colony in miniature, and they run on phones too.
+The door is an ant. On a desktop, every few minutes of reading, one wanders across the page. Click it and it bolts for the small ant button at the bottom of the screen, which wakes the whole colony. The play button on this page wakes it right here. The figures below turn into walls the ants walk around, and they freeze while the colony runs so the real thing gets the whole machine.
 
 ## Where it came from
 
