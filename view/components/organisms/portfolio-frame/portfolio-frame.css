@@ -664,6 +664,18 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
     box-shadow: 0 -0.5rem 2rem color-mix(in srgb, var(--ink) 22%, transparent);
     transform: translateY(calc(100% + var(--mobile-nav-h))); transition: transform 0.3s ease; }
   .app-shell.app-window[data-rail-open="true"] .app-shell__rail { transform: none; }
+  /* A closed drawer parks just below the viewport, and iOS Safari's translucent floating toolbar
+     shows that strip, so the closed Browse sheet and Menu drawer read through it. Hiding them once
+     the slide finishes removes them from paint (and from tab order), and the delayed visibility
+     transition keeps the slide-out animation intact. */
+  .app-shell.app-window .app-shell__aside,
+  .app-shell.app-window .app-shell__rail {
+    visibility: hidden; transition: transform 0.3s ease, visibility 0s linear 0.3s; }
+  .app-shell.app-window[data-aside-open] .app-shell__aside,
+  .app-shell.app-window[data-rail-open="true"] .app-shell__rail {
+    visibility: visible; transition: transform 0.3s ease, visibility 0s; }
+  @media (prefers-reduced-motion: reduce) {
+    .app-shell.app-window :is(.app-shell__aside, .app-shell__rail) { transition: none; } }
   @media (prefers-reduced-motion: reduce) { .app-shell.app-window .app-shell__rail { transition: none; } }
   /* under the section grid sits the site's file tree, so every page is reachable from Menu: the
      home page, the résumé, each project such as the BREAD stack, experience and the docs */
