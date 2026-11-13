@@ -635,7 +635,8 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
 /* The phone's own navigation (portfolio-frame.html, .mobile-nav). On a phone the bottom bar holds
    Menu, Browse and Tour: the topbar's rail toggle is hidden because Menu opens the rail, the rail and
    the Browse sheet both stop at the bar, and the sheet drops Catalog and Notepad, which are desktop tools. */
-.mobile-nav, .window-bar__brand, .mobile-menu { display: none; }
+.mobile-nav, .window-bar__brand, .mobile-menu, .drawer-head { display: none; }
+.mobile-nav__item[hidden] { display: none !important; }
 @container shell-frame (max-width: 640px) {
   .app-shell.app-window { --mobile-nav-h: calc(3.75rem + env(safe-area-inset-bottom, 0px)); }
   .mobile-nav {
@@ -671,6 +672,21 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
     position: relative; display: flex; flex-direction: column; min-height: 0; overflow-y: auto;
     overscroll-behavior: contain; padding-top: var(--space-4); }
   .app-shell.app-window .app-shell__rail .app-dock { display: none; }
+  /* the Menu drawer's head: its name on the left, a labelled Close on the right */
+  .app-shell.app-window .drawer-head {
+    display: flex; align-items: center; justify-content: space-between; flex: none;
+    padding: var(--space-3) var(--space-3) 0; font-family: var(--font-mono); font-size: 0.75rem; }
+  .drawer-head__title { color: var(--color-muted); letter-spacing: 0.02em; }
+  .drawer-head__close {
+    display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.25rem; padding: 0 var(--space-2);
+    border: 1px solid var(--color-line); border-radius: var(--radius-pill); background: transparent;
+    color: var(--color-fg); font: inherit; cursor: pointer; }
+  .drawer-head__close svg { width: 1rem; height: 1rem; }
+  .drawer-head__close:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .app-shell.app-window .app-shell__rail .rail-body::before { display: none; }
+  .mobile-nav__item span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-inline: 0.25rem; }
+  /* the Browse sheet keeps a visible close at the right of its grab bar */
+  .app-shell.app-window .assistant:has(.assistant__browse:not([hidden])) .assistant__close { display: inline-flex; }
   .app-shell.app-window .mobile-menu {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-1); flex: none;
     padding: var(--space-2) var(--space-3) var(--space-3); }

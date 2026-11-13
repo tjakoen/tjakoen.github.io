@@ -52,6 +52,12 @@
 <aside class="app-shell__rail" data-tab-source>
   <!-- the brand — a full-width row at the SAME height as the tab rail beside it; the sidebar
        (.rail-explorer + .app-dock, in .rail-body) starts on its own line below it. -->
+  <!-- Phone only: a titled head with a plain Close button, so the Menu drawer can be dismissed by
+       something a visitor can see rather than only by a scrim tap or pressing Menu again. -->
+  <div class="drawer-head">
+    <span class="drawer-head__title">Menu</span>
+    <button type="button" class="drawer-head__close" data-mobile-close aria-label="Close the menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg><span>Close</span></button>
+  </div>
   <div class="rail-head"><b-icon sym="/assets/sprite.svg#spark"></b-icon><span>TJ's Desk</span></div>
   <div class="rail-body">
     <!-- Shown only in the phone's Menu drawer. Browse already lists the sections, so Menu leads with
@@ -476,10 +482,13 @@
 
 <div class="app-shell__scrim"></div>
 <!-- On a phone this bar is the way around the site, with three buttons: Menu slides in the rail with
-     the usual sections, Browse raises the Browse sheet, and Tour starts the phone's own tour
-     (content/tours/mobile.md). site.js wires Menu and Browse; CRUMB handles Tour's data-crumb-start. -->
+     the usual sections, Browse raises the Browse sheet, and the third slot depends on the page. On a
+     top-level page it is Tour, which starts the phone's own tour (content/tours/mobile.md); on a page
+     inside a section, such as a note, a calendar entry or a doc, site.js swaps it for a Back link to
+     that section, labelled with its name. site.js wires Menu and Browse; CRUMB handles Tour's data-crumb-start. -->
 <nav class="mobile-nav" aria-label="Main">
   <button class="mobile-nav__item" type="button" data-mobile-rail aria-expanded="false" data-surface="mobile-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menu</span></button>
   <button class="mobile-nav__item" type="button" data-mobile-browse aria-expanded="false" aria-controls="desk-browse" data-surface="mobile-browse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="4" width="7" height="7" rx="1"/><rect x="13.5" y="4" width="7" height="7" rx="1"/><rect x="3.5" y="13" width="7" height="7" rx="1"/><rect x="13.5" y="13" width="7" height="7" rx="1"/></svg><span>Browse</span></button>
+  <a class="mobile-nav__item" href="/" data-mobile-back data-surface="mobile-back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg><span data-mobile-back-label>Back</span></a>
   <button class="mobile-nav__item" type="button" data-crumb-start="mobile" data-crumb-mode="demo" data-surface="mobile-tour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span>Tour</span></button>
 </nav>
