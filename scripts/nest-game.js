@@ -1380,25 +1380,8 @@ import {
 
   // A follower uses the space left by the ant ahead in its lane. Reversing a route puts returning
   // ants on the other side of the trail, so the two lines can pass.
-  // The live figures in a note are walls. Their boxes are read in the colony frame and kept for
-  // half a second, since a layout change is rare and a read on every ant step would be the cost.
-  let figureWalls = [], figureWallsAt = -Infinity;
-  const walls = () => {
-    const now = performance.now();
-    if (now - figureWallsAt < 500) return figureWalls;
-    figureWallsAt = now;
-    const m = pageRect();
-    figureWalls = [...document.querySelectorAll("[data-live-figure]")].map((el) => {
-      const r = el.getBoundingClientRect();
-      if (!r.width || !r.height) return null;
-      const [l, t] = local(r, m);
-      return { l, t, r: l + r.width, b: t + r.height };
-    }).filter(Boolean);
-    return figureWalls;
-  };
   const move = (ant, tx, ty, dt, speed) => stepMovement(ant, tx, ty, dt, speed, {
     now: performance.now(),
-    obstacles: ant.role === "flyer" ? null : walls(),
     maxStep: trailClearance(ant, ant.trail?.ants ?? state.ants, tx, ty, GAP),
     wander: ant.trail ? 0.035 : 0.12,
   });

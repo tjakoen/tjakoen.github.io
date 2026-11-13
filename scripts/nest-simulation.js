@@ -80,11 +80,7 @@ export function turnToward(ant, heading, dt) {
   ant.heading += difference * Math.min(1, 9 * dt);
 }
 
-export function stepMovement(ant, tx, ty, dt, speed, { now, blocked = () => false, maxStep = Infinity, wander = 0.12, obstacles = null } = {}) {
-  if (obstacles?.length) {
-    const detour = detourAround(ant, tx, ty, obstacles);
-    if (detour) { const [dx, dy] = detour; const arrived = stepMovement(ant, dx, dy, dt, speed, { now, blocked, maxStep, wander }); return arrived && dx === tx && dy === ty; }
-  }
+export function stepMovement(ant, tx, ty, dt, speed, { now, blocked = () => false, maxStep = Infinity, wander = 0.12 } = {}) {
   const dx = tx - ant.x;
   const dy = ty - ant.y;
   const distance = Math.hypot(dx, dy);
@@ -154,55 +150,4 @@ export function worshipTarget(nextParty) {
 
 export function worshipReturnAt(until) {
   return until - 2200;
-}
-
-// Obstacles are rectangles an ant walks around rather than through: the live figures in a note.
-// Each is { l, t, r, b } in the colony's page frame. The rule is stateless so it costs nothing to
-// keep: when the straight line to the target crosses a box, aim for whichever padded corner on the
-// near side makes the shorter trip, and once past that corner the straight line is clear again. An
-// ant that somehow stands inside a box walks out of the nearest side first. A target inside a box
-// is left alone, so nothing that legitimately lives in one becomes unreachable.
-export const OBSTACLE_PAD = 10;
-
-const inside = (x, y, o, pad = 0) => x > o.l - pad && x < o.r + pad && y > o.t - pad && y < o.b + pad;
-
-function segmentHits(x0, y0, x1, y1, o) {
-  let lo = 0, hi = 1;
-  const dx = x1 - x0, dy = y1 - y0;
-  for (const [p, q] of [[-dx, x0 - o.l], [dx, o.r - x0], [-dy, y0 - o.t], [dy, o.b - y0]]) {
-    if (p === 0) { if (q < 0) return false; continue; }
-    const t = q / p;
-    if (p < 0) { if (t > hi) return false; if (t > lo) lo = t; } else { if (t < lo) return false; if (t < hi) hi = t; }
-  }
-  return lo < hi;
-}
-
-export function detourAround(ant, tx, ty, obstacles, pad = OBSTACLE_PAD) {
-  let best = null, bestT = Infinity;
-  for (const o of obstacles) {
-    if (inside(tx, ty, o, pad)) continue;
-    if (inside(ant.x, ant.y, o)) {
-      const exits = [[o.l - pad, ant.y, ant.x - o.l], [o.r + pad, ant.y, o.r - ant.x], [ant.x, o.t - pad, ant.y - o.t], [ant.x, o.b + pad, o.b - ant.y]];
-      exits.sort((a, b) => a[2] - b[2]);
-      return [exits[0][0], exits[0][1]];
-    }
-    const g = { l: o.l - pad / 2, t: o.t - pad / 2, r: o.r + pad / 2, b: o.b + pad / 2 };
-    if (!segmentHits(ant.x, ant.y, tx, ty, g)) continue;
-    const near = Math.hypot(Math.max(o.l - ant.x, 0, ant.x - o.r), Math.max(o.t - ant.y, 0, ant.y - o.b));
-    if (near < bestT) { bestT = near; best = o; }
-  }
-  if (!best) return null;
-  const o = best;
-  const corners = [[o.l - pad, o.t - pad], [o.r + pad, o.t - pad], [o.l - pad, o.b + pad], [o.r + pad, o.b + pad]];
-  let pick = null, cost = Infinity;
-  for (const [cx, cy] of corners) {
-    if (Math.hypot(cx - ant.x, cy - ant.y) < 1.5) continue;
-    const g = { l: o.l - pad / 2, t: o.t - pad / 2, r: o.r + pad / 2, b: o.b + pad / 2 };
-    if (segmentHits(ant.x, ant.y, cx, cy, g)) continue;
-    // A corner that still has the box between it and the target is only a stepping stone, so it
-    // loses to one that sees the target. Without this an ant just past a corner turns back to it.
-    const c = Math.hypot(cx - ant.x, cy - ant.y) + Math.hypot(tx - cx, ty - cy) + (segmentHits(cx, cy, tx, ty, g) ? 1e4 : 0);
-    if (c < cost) { cost = c; pick = [cx, cy]; }
-  }
-  return pick;
 }

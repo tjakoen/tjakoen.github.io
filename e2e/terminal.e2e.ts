@@ -767,7 +767,7 @@ async function driveNoteFrames(page: Page) {
   await page.addInitScript(() => {
     // A figure pauses off screen. These tests drive every figure at once, so each one is told it is
     // in view; the pause itself is checked on its own.
-    window.IntersectionObserver = class { constructor(private cb: IntersectionObserverCallback) {} observe(el: Element) { this.cb([{ isIntersecting: true, target: el } as IntersectionObserverEntry], this as unknown as IntersectionObserver); } unobserve() {} disconnect() {} takeRecords() { return []; } } as unknown as typeof IntersectionObserver;
+    window.IntersectionObserver = class { cb: IntersectionObserverCallback; constructor(cb: IntersectionObserverCallback) { this.cb = cb; } observe(el: Element) { this.cb([{ isIntersecting: true, target: el } as IntersectionObserverEntry], this as unknown as IntersectionObserver); } unobserve() {} disconnect() {} takeRecords() { return []; } } as unknown as typeof IntersectionObserver;
     const realFrame = window.requestAnimationFrame.bind(window);
     const noteCallbacks = new WeakSet<FrameRequestCallback>();
     const queued = new Set<FrameRequestCallback>();
@@ -964,9 +964,10 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   expect(colors.dark).not.toBe(colors.light);
   expect(errors).toEqual([]);
 
-  // The colony now opens in place: the figures stay on the page and stand still beside it.
+  // The colony opens in place, and the figures step aside so the page is the ants' alone.
   await page.getByRole("link", { name: "Play the colony" }).click();
   await expect(page).toHaveURL(/\/notes\/the-site-has-ants/);
   await expect(page.locator("html")).toHaveAttribute("data-nest-open", "");
-  await expect(page.locator(".nest-scene")).toHaveCount(6);
+  await expect(page.locator('[data-live-figure="nest"]').first()).toBeHidden();
+  await expect(page.locator(".nest-still").first()).toBeVisible();
 });

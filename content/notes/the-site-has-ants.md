@@ -28,14 +28,14 @@ social: |
   glyphs home. The gaps stay put, so the paragraph you were reading goes missing one letter at a
   time. A rival colony grows from the same rules, spends the letters it takes, and builds its own
   mounds. There is no win screen. It just keeps going. Open it with the small ant in the status bar, the
-  word nest in the terminal, or the play button in this note, where the ants walk around the live
-  figures instead of through them.
+  word nest in the terminal, or the play button in this note, where the live figures step
+  aside to give the ants the page.
 
   No canvas, no game library, no framework. A few plain JavaScript modules on the same vanilla stack as
   the rest of the site.
 ---
 
-<p class="nest-start" hidden><a href="/?nest=play" data-nest-start>Play the colony</a></p>
+<p class="nest-start" hidden><a href="?nest=play" data-nest-start>Play the colony</a></p>
 
 I did not need to put ants on my portfolio. That was the point.
 
@@ -43,7 +43,7 @@ The site is where I show the serious work: the systems, the standards, the writi
 
 So I hid a small living thing under the copy. You can ignore it forever. If you find it, it should feel like finding a door in a wall.
 
-The door is an ant. On a desktop, every few minutes of reading, one wanders across the page. Click it and it bolts for the small ant button at the bottom of the screen, which wakes the whole colony. The play button on this page wakes it right here. The figures below turn into walls the ants walk around, and they freeze while the colony runs so the real thing gets the whole machine.
+The door is an ant. On a desktop, every few minutes of reading, one wanders across the page. Click it and it bolts for the small ant button at the bottom of the screen, which wakes the whole colony. The play button on this page wakes it right here. The figures below step aside while it runs, since the real colony does everything they show.
 
 ## Where it came from
 
@@ -62,6 +62,8 @@ The letters are real. Each one is the actual glyph, in its actual font and color
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="theft" data-surface="figure:nest-theft">
 </div>
 
+<p class="nest-still"><img class="nest-still__img nest-still__img--light" src="/media/notes/nest-theft-light.webp" alt="Still of the scout figure: an ant carries a stolen letter up a dotted trail to its mound." loading="lazy"><img class="nest-still__img nest-still__img--dark" src="/media/notes/nest-theft-dark.webp" alt="" loading="lazy"></p>
+
 *A scout finds letters; workers carry them home and the stores rise.*
 
 Body text is a snack for one ant. A big heading letter needs a crew of two or three, and the trail waits until everyone has arrived to lift it. Back home, the food is split between the queen and the stores. When the stores fill up, a builder heads out and raises a mini mound somewhere else on the page, and that mound sends out guards to patrol and flyers to steal.
@@ -73,11 +75,15 @@ The main mound is the front door to a real nest underneath: tunnels, a queen's c
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="colony" data-surface="figure:nest-rooms">
 </div>
 
+<p class="nest-still"><img class="nest-still__img nest-still__img--light" src="/media/notes/nest-rooms-light.webp" alt="Still of the builder figure: workers carry letters toward a new mini mound." loading="lazy"><img class="nest-still__img nest-still__img--dark" src="/media/notes/nest-rooms-dark.webp" alt="" loading="lazy"></p>
+
 *Workers feed the stores, then a builder raises a new mini mound.*
 
 Workers haul letters down to the larder, turn them into meals, and carry those to the queen. She never leaves her chamber, except for one thing.
 
 <div class="live-fig live-fig--nest live-fig--colony" data-live-figure="colony" data-surface="figure:nest-colony-loop" role="img" aria-label="Inside the colony: ants carry food through the nest to the queen, stores and nursery."></div>
+
+<p class="nest-still"><img class="nest-still__img nest-still__img--light" src="/media/notes/nest-colony-loop-light.webp" alt="Still of the nest cutaway: tunnels joining the queen, the nursery, the larder and the stores." loading="lazy"><img class="nest-still__img nest-still__img--dark" src="/media/notes/nest-colony-loop-dark.webp" alt="" loading="lazy"></p>
 
 *Inside the nest, workers feed the queen, fill the stores and tend the nursery.*
 
@@ -87,6 +93,8 @@ At twenty stolen letters, then fifty, then ninety, the queen climbs out of the n
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="worship" data-surface="figure:nest-worship">
 </div>
+
+<p class="nest-still"><img class="nest-still__img nest-still__img--light" src="/media/notes/nest-worship-light.webp" alt="Still of the worship figure: the queen out of the mound with her colony gathering." loading="lazy"><img class="nest-still__img nest-still__img--dark" src="/media/notes/nest-worship-dark.webp" alt="" loading="lazy"></p>
 
 *The queen leaves the mound; the colony gathers, circles, and returns with full stores.*
 
@@ -99,6 +107,8 @@ After the second dance, a rival colony shows up. Nobody controls it, including m
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="rival" data-surface="figure:nest-rival">
 </div>
 
+<p class="nest-still"><img class="nest-still__img nest-still__img--light" src="/media/notes/nest-rival-light.webp" alt="Still of the rival figure: the home colony and a red rival colony each carrying letters home." loading="lazy"><img class="nest-still__img nest-still__img--dark" src="/media/notes/nest-rival-dark.webp" alt="" loading="lazy"></p>
+
 *The main colony forages while the rival mound takes shape. Once the mound is ready, rival workers follow the red trail and carry letters home while a guard patrols.*
 
 The rival settles on the far side of the page and starts at a little over half your size, so it is a real fight and not a decoration. It raises its own mounds and flyers. Two ants working together can tear down an enemy mound, which shakes under the crew before it falls, and the rival will happily do the same to any of your outposts left without guards. When a rival falls, the letters it stole are gone for good. Beat one and, a few dances later, another one arrives.
@@ -110,10 +120,14 @@ Your colony is the home team, but not by much.
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="fight" data-surface="figure:nest-fight">
 </div>
 
+<p class="nest-still"><img class="nest-still__img nest-still__img--light" src="/media/notes/nest-fight-light.webp" alt="Still of the fight figure: ants from the two colonies meeting in a duel." loading="lazy"><img class="nest-still__img nest-still__img--dark" src="/media/notes/nest-fight-dark.webp" alt="" loading="lazy"></p>
+
 *Four encounters repeat in turn. The guard and flyer duels roll for a winner each time. In the other two, the ants close enough to join the fight can overpower a lone defender.*
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="castes" data-surface="figure:nest-castes">
 </div>
+
+<p class="nest-still"><img class="nest-still__img nest-still__img--light" src="/media/notes/nest-castes-light.webp" alt="Still of the castes figure: a worker, a soldier, a flyer, the queen and a rival guard." loading="lazy"><img class="nest-still__img nest-still__img--dark" src="/media/notes/nest-castes-dark.webp" alt="" loading="lazy"></p>
 
 *From left to right, a worker, a soldier, a flyer, the queen and a red rival guard.*
 
@@ -160,7 +174,7 @@ That is the real advertisement. Not that an AI can write a game, but that I can 
 
 It also stays out of the way. A recruiter reading the résumé will never trip over it. If you find it, you get a surprise. If you do not, the site is still the site.
 
-<p class="nest-start" hidden><a href="/?nest=play" data-nest-start>Open the full colony</a></p>
+<p class="nest-start" hidden><a href="?nest=play" data-nest-start>Open the full colony</a></p>
 
 Leave it running for a minute. The page is the food.
 
