@@ -395,13 +395,19 @@ function withPeekRoot(html: string): string {
 // still owns the toggles and the writes; this only reads, and it sets exactly what shell.js would.
 // One default it adds: on a desktop window between 640 and 1280 pixels, with no saved choice yet, the chat
 // column starts hidden so the page keeps its width. Toggling it saves a choice that wins from then on.
+// It also drops the site-wide catalog root (withPeekRoot) on a touch screen. Without a hovering
+// pointer, grain's bridge turns any tap on a catalogued element that is not a link or button into
+// "open the Catalog sheet", and with the root on the whole shell that caught folder rows in the
+// Menu drawer and plain taps on the page, raising a catalog the phone layout otherwise hides.
+// The /grain showcase keeps its own root, where tapping a component to see its entry is the point.
 const SHELL_STATE_SCRIPT = `<script>(function(s){try{var g=function(k){return localStorage.getItem("grain.shell."+k)==="1"};` +
   `if(g("rail-collapsed"))s.setAttribute("data-rail-collapsed","true");` +
   `var ah=localStorage.getItem("grain.shell.aside-hidden");` +
   `if(ah==="1"||(ah===null&&innerWidth>640&&innerWidth<1280))s.setAttribute("data-aside-hidden","true");` +
   `if(g("console-hidden"))s.setAttribute("data-console-hidden","true");` +
   `if(g("console-expanded"))s.setAttribute("data-console-expanded","");` +
-  `if(g("console-open"))s.setAttribute("data-console-open","")}catch(e){}})(document.currentScript.parentElement)</script>`;
+  `if(g("console-open"))s.setAttribute("data-console-open","");` +
+  `if(!matchMedia("(hover: hover) and (pointer: fine)").matches)s.removeAttribute("data-peek-root")}catch(e){}})(document.currentScript.parentElement)</script>`;
 
 function withShellState(html: string): string {
   return html.replace(/<div [^>]*?class="app-shell[\s"][^>]*>/, (open) => open + SHELL_STATE_SCRIPT);
