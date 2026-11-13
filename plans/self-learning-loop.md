@@ -115,8 +115,28 @@ The test: if any one harness disappeared, everything except its adapter keeps wo
   as a standing instruction in the main prompt, so the agent does not learn to echo the owner.
 - **Fatigue.** At most one digest a day. The fourteen-day ignore rate says whether that cap is loose.
 
+## The definition of done comes first
+
+Added 2026-11-13. The owner expected every session to start by working out a definition of done
+with him, and had not seen it happen. INTAKE and PROMPT describe that step, but they are skills a
+session has to choose to open, and the only `UserPromptSubmit` hook is `model-escalation.sh`. So
+the step is written down but nothing enforces it, and it is also the baseline this plan scores
+against: an outcome can only be graded against a finish line agreed up front.
+
+- **A first-prompt hook.** A `UserPromptSubmit` hook, `dod-gate.sh`, fires on the first prompt of a
+  session and tells the agent to run INTAKE with the owner before anything else.
+- **The answer is written down.** `auto-plan.py` gives the chat plan it writes a `done:` section,
+  and the agreed definition of done goes there.
+- **Edits wait for it.** The PreToolUse write hook refuses edits while `done:` is empty. A skip
+  phrase from the owner ("just do it") lets a one-line ask through and records the skip as a signal.
+- **It feeds the score.** At close, the harvest compares what was delivered with `done:`, and a
+  miss is a loop-kind signal.
+- **Codex gets it when Codex can.** As with `auto-plan.py`, the gap is named in
+  `expected-hooks.txt` until Codex has a hook on its write tool.
+
 ## Phases
 
+0. The definition-of-done gate: `dod-gate.sh`, the `done:` section, and the write-hook refusal.
 1. Ledger format, `pantry_signal`, and the session-start count line.
 2. Harvest with the routine kind and Claude and DSH transcript adapters; `tidy` as a skill.
 3. PANTRY Signals surface with verdict buttons and make me a prompt; outcome log and weekly scores.
@@ -125,6 +145,8 @@ The test: if any one harness disappeared, everything except its adapter keeps wo
 
 ## Done when
 
+- A session's first prompt produces an agreed definition of done in its plan before any edit, and
+  an edit attempted without one is refused.
 - A routine the owner repeated three times shows up in PANTRY as a proposal without being asked for.
 - His verdict on it lands in the outcome log, and precision per kind is readable.
 - The same path works from a Codex or DSH session.
