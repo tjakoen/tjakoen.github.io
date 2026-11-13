@@ -20,6 +20,9 @@ import {
 const NS = "http://www.w3.org/2000/svg";
 const WIDTH = 600;
 const HEIGHT = 200;
+// The ants are drawn at page size, which reads as specks once the box scales to the column.
+// Half again as big makes the walk and the carry legible without crowding the scene.
+const ANT_SCALE = 1.5;
 const BASE_SPEED = 76;
 const svg = (name, attrs = {}) => {
   const el = document.createElementNS(NS, name);
@@ -128,7 +131,7 @@ function addActor(sim, role, side, x, y, { job = "idle" } = {}) {
 function placeActor(actor) {
   actor.el.setAttribute("transform", `translate(${actor.x} ${actor.y})`);
   // The shared ant artwork faces left at rest.
-  actor.turn.setAttribute("transform", `rotate(${actor.heading * 180 / Math.PI + 180})`);
+  actor.turn.setAttribute("transform", `rotate(${actor.heading * 180 / Math.PI + 180}) scale(${ANT_SCALE})`);
 }
 
 function moveActor(sim, actor, target, dt, { job = actor.job, factor = 1, letterNeed = 1 } = {}) {
@@ -703,13 +706,22 @@ export function mountNest(host) {
   host.dataset.cycle = "1";
   host.dataset.stores = "0";
   drawScene(sim);
-  let last = performance.now();
+  // A figure off screen, or one sitting under a running colony, stops ticking. Seven loops running
+  // at once under a live colony is the cost that would make the colony stutter on this page.
+  let last = performance.now(), visible = true, running = false;
+  const live = () => visible && !document.documentElement.hasAttribute("data-nest-open");
   const frame = (now) => {
+    if (!live()) { running = false; return; }
     const dt = Math.max(0, Math.min(0.05, (now - last) / 1000));
     last = now;
     tick(sim, dt);
     requestAnimationFrame(frame);
   };
-  requestAnimationFrame(frame);
+  const wake = () => { if (running || !live()) return; running = true; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entries) => { visible = entries.some((e) => e.isIntersecting); wake(); }, { rootMargin: "200px" }).observe(host);
+  }
+  new MutationObserver(wake).observe(document.documentElement, { attributes: true, attributeFilter: ["data-nest-open"] });
+  wake();
   return true;
 }

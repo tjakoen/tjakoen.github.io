@@ -315,7 +315,6 @@ import {
   }
   if (antBtn._nestLoader) { antBtn.removeEventListener("click", antBtn._nestLoader); delete antBtn._nestLoader; }
   let game = null;
-  const noteFiguresOnPage = document.querySelector('[data-live-figure="nest"]') !== null;
 
   // A stray ant is the easter egg for a closed Nest. It walks the reading pane on its own, not on
   // a trail, and if someone clicks it the ant runs for the launcher and makes it pulse. One click
@@ -336,7 +335,7 @@ import {
   };
   const scheduleStray = (delay) => {
     strayTimer.stop();
-    if (noteFiguresOnPage || game || document.hidden || !launcherVisible() || strayConsumed()) return;
+    if (game || document.hidden || !launcherVisible() || strayConsumed()) return;
     strayTimer.start(delay);
   };
   const pulseLauncher = () => {
@@ -411,7 +410,6 @@ import {
     requestAnimationFrame(frame);
   };
   function spawnStray(force = false) {
-    if (noteFiguresOnPage) return;
     if (!force && (strayConsumed() || game || document.hidden || !launcherVisible() || strayEl)) return;
     if (force && (game || document.hidden || !launcherVisible() || strayEl)) return;
     const fromLeft = Math.random() < 0.5;
@@ -458,7 +456,6 @@ import {
   const leave = () => game?.confirmLeave(game.reload);
   const openNest = () => {
     if (!nestDesktop.matches) return;
-    if (noteFiguresOnPage) { location.assign("/?nest=play"); return; }
     game = start();
   };
   antBtn.addEventListener("click", () => { if (game) leave(); else openNest(); });
@@ -486,6 +483,7 @@ import {
   cancelStray();
   // ================================ the panel ================================
   antBtn.setAttribute("aria-pressed", "true"); antBtn.setAttribute("aria-label", "Close the Nest");
+  document.documentElement.setAttribute("data-nest-open", ""); // note figures pause while the colony runs
   const sidebarWasHidden = shell?.getAttribute("data-aside-hidden") === "true";
   shell?.removeAttribute("data-aside-hidden");
   // Place the mound against the open sidebar's final page width.
@@ -690,7 +688,7 @@ import {
   const letterOf = (n, i) => { let m = byNode.get(n); if (!m) byNode.set(n, (m = new Map())); let L = m.get(i); if (!L) m.set(i, (L = { n, i, ch: n.data[i], state: "free", crew: [], need: 1 })); return L; };
   const textNodes = (root) => {
     const out = []; const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-      acceptNode: (n) => (layer.contains(n) || !n.parentElement || !n.parentElement.offsetParent || /^(SCRIPT|STYLE|PRE|CODE|BUTTON)$/.test(n.parentElement.tagName)) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+      acceptNode: (n) => (layer.contains(n) || !n.parentElement || !n.parentElement.offsetParent || n.parentElement.closest("[data-live-figure]") || /^(SCRIPT|STYLE|PRE|CODE|BUTTON)$/.test(n.parentElement.tagName)) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
     for (let n; (n = walk.nextNode());) out.push(n);
     return out;
   };
@@ -1382,8 +1380,25 @@ import {
 
   // A follower uses the space left by the ant ahead in its lane. Reversing a route puts returning
   // ants on the other side of the trail, so the two lines can pass.
+  // The live figures in a note are walls. Their boxes are read in the colony frame and kept for
+  // half a second, since a layout change is rare and a read on every ant step would be the cost.
+  let figureWalls = [], figureWallsAt = -Infinity;
+  const walls = () => {
+    const now = performance.now();
+    if (now - figureWallsAt < 500) return figureWalls;
+    figureWallsAt = now;
+    const m = pageRect();
+    figureWalls = [...document.querySelectorAll("[data-live-figure]")].map((el) => {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return null;
+      const [l, t] = local(r, m);
+      return { l, t, r: l + r.width, b: t + r.height };
+    }).filter(Boolean);
+    return figureWalls;
+  };
   const move = (ant, tx, ty, dt, speed) => stepMovement(ant, tx, ty, dt, speed, {
     now: performance.now(),
+    obstacles: ant.role === "flyer" ? null : walls(),
     maxStep: trailClearance(ant, ant.trail?.ants ?? state.ants, tx, ty, GAP),
     wander: ant.trail ? 0.035 : 0.12,
   });

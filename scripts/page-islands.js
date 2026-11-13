@@ -73,10 +73,6 @@ if (nestModes && nestAside && nestMain && nestBar) {
 
   const openNest = async () => {
     if (!nestDesktop.matches) return;
-    if (document.querySelector('[data-live-figure="nest"]')) {
-      location.assign("/?nest=play");
-      return;
-    }
     try {
       await ensureNestGame();
       if (window.__nestLauncher && window.__nestLauncher !== nestPlaceholderLauncher) window.__nestLauncher.open();
@@ -95,7 +91,7 @@ if (nestModes && nestAside && nestMain && nestBar) {
   window.__nestLauncher = nestPlaceholderLauncher;
   nestPlaceholderStray = {
     spawn: async (force = false) => {
-      if (!nestDesktop.matches || document.querySelector('[data-live-figure="nest"]')) return;
+      if (!nestDesktop.matches) return;
       try {
         await ensureNestGame();
         if (window.__nestStray && window.__nestStray !== nestPlaceholderStray) window.__nestStray.spawn(force);
@@ -105,12 +101,12 @@ if (nestModes && nestAside && nestMain && nestBar) {
   };
   window.__nestStray = nestPlaceholderStray;
   const launchNest = new URL(location.href);
-  if (launchNest.searchParams.get("nest") === "play" && !document.querySelector('[data-live-figure="nest"]')) {
+  if (launchNest.searchParams.get("nest") === "play") {
     launchNest.searchParams.delete("nest");
     history.replaceState(null, "", `${launchNest.pathname}${launchNest.search}${launchNest.hash}`);
     void openNest();
   }
-  if (!document.querySelector('[data-live-figure="nest"]')) {
+  {
     // The game module is not loaded until it is needed, so the first countdown runs here. Once the
     // module is in, it owns the countdown and this one stands down.
     const firstStray = strayClock(() => {
