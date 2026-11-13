@@ -149,12 +149,32 @@ function docsLink(currentPrefix: string) {
   };
 }
 
+// A link to a note that is still a DRAFT goes to its unlisted /drafts/<slug> twin, which the export
+// ships. A published note can then point at a follow-up before that one is ready, and neither the
+// reader nor the export check meets a dead /notes/ address. The set is reread at most every two
+// seconds, so flipping a status in the dev server takes effect without a restart.
+let draftSlugsCache: { at: number; slugs: Set<string> } | null = null;
+export function draftNoteSlugs(dir = join(import.meta.dir, "..", "content", "notes")): Set<string> {
+  const now = Date.now();
+  if (draftSlugsCache && now - draftSlugsCache.at < 2000) return draftSlugsCache.slugs;
+  const slugs = new Set<string>();
+  for (const file of readdirSync(dir)) {
+    if (!file.endsWith(".md")) continue;
+    const head = readFileSync(join(dir, file), "utf8").slice(0, 2000).match(/^---\n[\s\S]*?\n---/);
+    const status = head?.[0].match(/^status:\s*"?([A-Za-z]+)"?\s*$/m)?.[1];
+    if (!isPublishedStatus(status)) slugs.add(mdSlug(file));
+  }
+  draftSlugsCache = { at: now, slugs };
+  return slugs;
+}
+const noteHref = (slug: string, frag = "") => `${draftNoteSlugs().has(slug) ? "/drafts" : "/notes"}/${slug}${frag}`;
+
 // Notes link to each other as bare siblings (why-i-teach.md) or note:slug (MILL's default).
 function notesLink(href: string): string {
-  if (href.startsWith("note:")) return "/notes/" + href.slice(5);
+  if (href.startsWith("note:")) return noteHref(href.slice(5));
   const [path, frag = ""] = href.split(/(#.*)$/, 2);
   const local = path.match(/^(?:\.\/)?([A-Za-z0-9._-]+)\.md$/);
-  if (local) return `/notes/${mdSlug(local[1])}${frag}`;
+  if (local) return noteHref(mdSlug(local[1]), frag);
   return href;
 }
 

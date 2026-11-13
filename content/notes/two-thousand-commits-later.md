@@ -4,7 +4,7 @@ audience: [build]
 level: intro
 subtitle: "In July I wrote that I built a whole stack because no to-do app would have me, and promised the desk would take it from here. Four months and about two thousand commits later, here is what I actually built, told from the git log, and whether the desk ever took the wheel."
 author: "Tjakoen Stolk"
-status: PUBLISHED
+status: DRAFT
 type: note
 layout: timeline
 date: 2026-11-13
