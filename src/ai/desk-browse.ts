@@ -3,7 +3,7 @@ const MODE_KEY = "desk-mode";
 export function isMobileDevice(): boolean {
   return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ||
-    matchMedia("(max-width: 768px) and (pointer: coarse)").matches;
+    matchMedia("(max-width: 640px) and (pointer: coarse)").matches;
 }
 
 export function mountDeskBrowse({
