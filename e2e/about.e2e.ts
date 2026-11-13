@@ -13,7 +13,7 @@ test.describe("the /about profile app (JS on)", () => {
 
   test("the profile card shows the real name, role, and the AI-proud tagline", async ({ page }) => {
     await expect(page.locator(".profile-card__name")).toHaveText("Tjakoen Stolk");
-    await expect(page.locator(".profile-card__role")).toContainText("Senior Technical Team Lead");
+    await expect(page.locator(".profile-card__role")).toContainText("Engineering Manager");
     await expect(page.locator(".profile-card__tagline")).toHaveText("I direct, Claude types.");
   });
 

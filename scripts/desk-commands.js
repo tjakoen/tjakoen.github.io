@@ -110,7 +110,7 @@ import { nestDesktop } from "./nest-availability.js";
 
   // ── resume: the short version in the console; the full record is /resume ─────────────────────────
   t.register({ name: "resume", args: "", help: "the working record (opens /resume)", run(ctx) {
-    ctx.print("Tjakoen Stolk — dev manager, tech lead, and part-time software engineering teacher.");
+    ctx.print("Tjakoen Stolk — engineering manager and part-time software engineering teacher.");
     ctx.print("I build AI-first, no-build interfaces (this whole site is one) and teach 100 to 150 students a semester.");
     ctx.print("I direct, Claude types.");
     ctx.printHtml('full record: <a href="/resume">/resume</a> · history: <a href="https://www.linkedin.com/in/tjakoenstolk">LinkedIn</a> · code: <a href="https://github.com/tjakoen">GitHub</a>');
