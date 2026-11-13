@@ -36,7 +36,7 @@
 [data-screen="reading"] .book__title,
 [data-screen="reading"] .book__author { writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; }
 [data-screen="reading"] .book__title { font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em; }
-[data-screen="reading"] .book__author { font-family: var(--font-mono); font-size: 0.7rem; }
+[data-screen="reading"] .book__author { font-family: var(--font-mono); font-size: 0.75rem; }
 [data-screen="reading"] .book[data-kind="essay"] .book__author { display: none; }
 [data-screen="reading"] .book[data-long] .book__spine { width: 4rem; height: 16.5rem; }
 [data-screen="reading"] .book[data-long] .book__title { white-space: normal; inline-size: 10.5rem; font-size: 0.85rem; }
@@ -88,7 +88,7 @@
    resolves against the page, lands below the window, and the whole page grows a scrollbar. */
 [data-screen="reading"] .book__cat { position: relative; align-self: stretch; text-align: center; margin-top: var(--space-1);
   padding-top: var(--space-1); border-top: 1px solid color-mix(in srgb, currentColor 45%, transparent);
-  font-family: var(--font-mono); font-size: 0.55rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.85; }
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; letter-spacing: 0; opacity: 0.9; }
 [data-screen="reading"] .book__cat .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip-path: inset(50%); white-space: nowrap; }
 [data-screen="reading"] .book__title, [data-screen="reading"] .book__author, [data-screen="reading"] .book__cat { flex-shrink: 0; }
