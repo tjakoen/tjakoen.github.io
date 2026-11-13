@@ -735,3 +735,16 @@
 .live-fig--colony .nest-pre .t3, .live-fig--colony .nest-pre .t4 { color: var(--ink); }
 @keyframes nest-scene-flap { 50% { opacity: .15; } }
 @media (prefers-reduced-motion: reduce) { .nest-scene .nest-ant.fighting, .nest-scene .nest-ant.walk .legs-a, .nest-scene .nest-ant.walk .legs-b { animation: none; } }
+
+/* While the colony runs on the ants note, its figures step aside. The real colony shows everything
+   they illustrate, and an empty column gives the ants and their mounds the whole page. Closing the
+   Nest reloads the page, which brings them back. */
+:root[data-nest-open] .live-fig--nest { display: none; }
+
+/* Each figure has a still beside it, shown only while the colony runs, so the caption under it
+   still has a picture to describe. The still matches the current colour scheme. */
+.nest-still { display: none; margin: 0; }
+.nest-still__img { display: block; width: 100%; height: auto; border: 1px solid var(--color-line); }
+:root[data-nest-open] .nest-still { display: block; }
+.nest-still__img--dark, :root[data-color-scheme="dark"] .nest-still__img--light { display: none; }
+:root[data-color-scheme="dark"] .nest-still__img--dark { display: block; }
