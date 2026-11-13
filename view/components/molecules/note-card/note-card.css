@@ -206,3 +206,16 @@
 /* the reading column: the minutes over a min label, so the number reads as length, not votes. */
 .note-card__unit { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted); line-height: 1; }
 .note-card__vote .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* On a narrow page the audience tabs outrun the width and scroll sideways. A fade on the trailing
+   edge shows there is more strip to reach, so four tabs never read as three. */
+@media (max-width: 40rem) {
+  .notes-audience {
+    mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent);
+  }
+  .notes-audience:has(.notes-audience__tab:last-child input:checked) { mask-image: none; }
+  /* On the phone the summary keeps its first three lines; the note page carries the rest. */
+  .note-card__summary {
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+  }
+}
