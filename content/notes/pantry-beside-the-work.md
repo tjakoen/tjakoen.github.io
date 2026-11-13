@@ -13,17 +13,17 @@ tags: [ai, stack, tooling]
 summary: >
   PANTRY is my local command center for AI coding sessions: a plan board, claims and heartbeats so
   two sessions never take the same work, a doctor that checks the loop, and an MCP server agents
-  call. I built it in July, and it barely got used, because it was a web app I had to spin up by
+  call. I built it in July and barely used it, because it felt in the way. It was a web app I had to spin up by
   hand in every project and nothing in my day ever made me do that. The fix was not a better board.
   It was an always-on hub, then a dashboard, a desktop app and a pane beside the chat, so PANTRY is
   already open when the work starts. Parts of that are still landing, and the evidence is one
   person's use.
 ---
 
-The most useful tool I built this year spent most of September and October switched off.
+I have to be honest about PANTRY. I built it, I wrote about it, and I barely used it. Most days it
+just felt like it was in the way.
 
-Not broken. Switched off. PANTRY worked fine every time I started it. The problem was the starting.
-It lived in a sibling folder, it came up with a command I had to remember, and it served one project
+It was not broken. It was one more thing between me and the work. It lived in a sibling folder, it came up with a command I had to remember, and it served one project
 on one port until I closed the terminal. Every session I opened with Claude went straight to the
 code, because the code was right there, and the board that was supposed to tell that session what to
 do sat in a folder I had not opened in days.
@@ -239,8 +239,8 @@ The note itself stays a draft until the app is built and the release is out.
 
 ## Where it sits now
 
-In July I built a command center, and then I left it in a drawer and wondered why nobody used it.
-The board was fine. It just wanted me to walk to it.
+In July I built a command center, and then I mostly stepped around it. It was not that the board
+was wrong. It stood between me and the code, and anything that stands there gets walked past.
 
 Now it is meant to walk to me. The agents already ask it before they start. If the app and the pane
 land the way the branches say, the count will sit in the menu bar and the board will sit beside the
