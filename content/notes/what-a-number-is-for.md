@@ -6,7 +6,7 @@ subtitle: "I manage a team and I measure a lot of things. The counting has never
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
-date: 2026-11-12
+date: 2026-11-03
 readingTime: "~4 min"
 tags: [measurement, leadership, workflow]
 summary: >

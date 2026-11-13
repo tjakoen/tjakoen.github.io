@@ -6,7 +6,7 @@ subtitle: "The prompt, the loop, the harness, and the standards you write for yo
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
-date: 2026-11-08
+date: 2026-11-05
 readingTime: "~12 min"
 tags: [ai, workflow, tooling]
 people: [addy-osmani, alfonso-graziano, cole-medin]
