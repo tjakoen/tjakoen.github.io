@@ -8,6 +8,9 @@ status: PUBLISHED
 type: note
 date: 2026-07-02
 readingTime: "~9 min"
+updated: 2026-11-13
+changelog:
+  - "2026-11-13 | Added a link to the four-month follow-up, which checks these promises against the git log."
 tags: [stack, web-platform]
 people: [brad-frost, coding2go]
 sources: [book-atomic-design]
@@ -301,6 +304,8 @@ The assistant that manages me does not fully exist yet, not the real one. But th
 And this time I will be organized enough to see it through, because, eventually, that will not be my job anymore. It will be the desk's.
 
 > Noted. I'll take it from here.
+
+*Four months later, I went back through the git log to see whether it did: [Two Thousand Commits, and the To-Do App Still Doesn't Exist](two-thousand-commits-later.md).*
 
 ---
 
