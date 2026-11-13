@@ -567,7 +567,10 @@
       const asideToggle = shell.querySelector('[data-shell="aside-toggle"]');
       shell.querySelector(".assistant__close")?.addEventListener("click", (ev) => {
         ev.stopPropagation();
-        asideToggle?.click();
+        // on a phone the sheet is opened by attribute, so close it the same way; elsewhere grain's toggle owns it
+        const phone = getComputedStyle(document.querySelector(".mobile-nav") || document.body).display === "grid";
+        if (phone && shell.hasAttribute("data-aside-open")) closeSheet();
+        else asideToggle?.click();
         asideToggle?.focus();
       });
       shell.querySelector(".app-shell__scrim")?.addEventListener("click", closeSheet);
@@ -604,6 +607,57 @@
           sync();
         });
         new MutationObserver(sync).observe(shell, { attributeFilter: ["data-aside-open", "data-rail-open"] });
+        // Either drawer closes from a visible button too (the Menu head's Close, the Browse sheet's
+        // close), and Escape closes the rail the way it already closes the sheet.
+        shell.querySelector("[data-mobile-close]")?.addEventListener("click", () => {
+          shell.removeAttribute("data-rail-open");
+          railButton?.focus();
+        });
+        document.addEventListener("keydown", (ev) => {
+          if (ev.key === "Escape" && shell.getAttribute("data-rail-open") === "true") {
+            shell.removeAttribute("data-rail-open");
+            railButton?.focus();
+          }
+        });
+
+        // The third slot: Tour on a top-level page, Back on a page inside a section. The target is
+        // the nearest ancestor path the site links to somewhere in the chrome (so /notes/x goes to
+        // /notes and /grain/docs/x to /grain/docs), falling back to the first segment. Its label is
+        // that link's own text. When the visitor arrived from that very page, Back steps through
+        // history instead, so the list comes back where they left it.
+        const back = mobileNav.querySelector("[data-mobile-back]");
+        const segs = location.pathname.replace(/\/+$/, "").split("/").filter(Boolean);
+        if (back && segs.length > 1) {
+          const linkFor = (path) => [...document.querySelectorAll(".app-dock__item[href], .mobile-menu__item[href], .app-shell__rail a[href]")]
+            .find((a) => a.getAttribute("href").replace(/\/+$/, "") === path);
+          let target = "/" + segs[0];
+          for (let n = segs.length - 1; n >= 1; n--) {
+            const path = "/" + segs.slice(0, n).join("/");
+            const found = linkFor(path);
+            if (found) { target = path; break; }
+          }
+          // the dock or Menu's own name for the section when it has one ("Notes"), else the path
+          // segment itself, so a file-tree entry such as index.html never becomes the label
+          const named = [...document.querySelectorAll(".app-dock__item[href], .mobile-menu__item[href]")]
+            .find((a) => a.getAttribute("href").replace(/\/+$/, "") === target);
+          const name = ((named?.querySelector(".app-dock__label") || named?.querySelector(":scope > span"))?.textContent || target.split("/").pop().replace(/-/g, " "))
+            .trim().toLowerCase();
+          back.setAttribute("href", target);
+          back.setAttribute("aria-label", `Back to ${name}`);
+          const label = back.querySelector("[data-mobile-back-label]");
+          if (label) label.textContent = `Back to ${name}`;
+          back.addEventListener("click", (ev) => {
+            let from = null;
+            try { from = document.referrer ? new URL(document.referrer) : null; } catch { /* bad referrer */ }
+            if (from && from.origin === location.origin && from.pathname.replace(/\/+$/, "") === target && history.length > 1) {
+              ev.preventDefault();
+              history.back();
+            }
+          });
+          back.hidden = false;
+          const tour = mobileNav.querySelector("[data-crumb-start]");
+          if (tour) tour.hidden = true;
+        }
         // Tour closes whichever drawer is open before CRUMB starts, so the first card lights the
         // page and the bar rather than a drawer. Capture phase runs ahead of CRUMB's own listener.
         mobileNav.querySelector("[data-crumb-start]")?.addEventListener("click", () => {
