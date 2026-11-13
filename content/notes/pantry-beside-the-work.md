@@ -151,8 +151,9 @@ over MCP before it does anything: it reads an orientation brief, asks what is ne
 no other session takes it, and heartbeats while it works. A claim that goes quiet for thirty
 minutes expires and the plan goes back on the board.
 
-That is the whole point of PANTRY, and it took me four months to say it plainly. It is not a
-dashboard for me to admire. It is the place where my sessions and I agree on what is being done and
+The goal of PANTRY, and it took me four months to say it plainly, is to keep my projects aligned
+and accountable, and to make working with agents in the loop feel like no extra work at all. It is
+not a dashboard for me to admire. It is the place where my sessions and I agree on what is being done and
 by whom, so I can run several at once without two of them rewriting the same file, and so the one
 thing only I can decide sits in a column called Needs you instead of scrolling past in a chat.
 
@@ -232,7 +233,8 @@ a second user.
 
 The claim that putting PANTRY beside the chat will make me use it is a hypothesis with one strong
 piece of support: the parts that already sit in the path of the work, the doctor and the MCP server,
-are the parts that got used. The desktop app and the pane are the same bet. I will know in a month,
+are the parts that got used. The desktop app and the pane are the same bet, and I think the new setup may finally be the answer
+to the in-the-way problem. Think, not know. I will know in a month,
 and the commit chart will say so whether I like it or not.
 
 The note itself stays a draft until the app is built and the release is out.
