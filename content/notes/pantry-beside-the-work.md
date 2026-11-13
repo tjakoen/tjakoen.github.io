@@ -88,7 +88,7 @@ $ git log --reverse --format='%ad  %s' --date=short
 ```
 
 The idea was simple and I still believe it. I work across half a dozen repositories with Claude and
-Codex doing most of the typing, and none of those sessions remembers the last one. They need
+Codex doing most of the typing, and lately DeepSeek too, and none of those sessions remembers the last one. They need
 somewhere outside their own context to read what is planned, what someone else already took, and
 what is waiting on me. A plans folder in each repo gets you most of the way, and [the loop
 setup](loop-setup.md) still says so. PANTRY was the layer on top: one board over those plan files, a
@@ -158,6 +158,47 @@ over MCP before it does anything: it reads an orientation brief, asks what is ne
 no other session takes it, and heartbeats while it works. A claim that goes quiet for thirty
 minutes expires and the plan goes back on the board.
 
+<svg viewBox="0 0 440 330" width="100%" role="img"
+     aria-label="How a session works with PANTRY. It orients by reading the project brief, asks PANTRY what is next, and claims a ready plan. While it works it sends a heartbeat every ten minutes, which keeps the claim alive. If it goes silent for thirty minutes the claim expires and the plan goes back on the board to be picked up again. When the work is finished the session releases the plan as done, and the board knows it without anyone telling it."
+     style="display:block;width:100%;max-width:440px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-pantry0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="100" y="16" width="220" height="36" rx="6"/>
+    <rect x="100" y="80" width="220" height="36" rx="6"/>
+    <rect x="100" y="144" width="220" height="36" rx="6"/>
+    <rect x="100" y="208" width="220" height="36" rx="6"/>
+  </g>
+  <rect x="100" y="272" width="220" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="210" y1="52" x2="210" y2="78" marker-end="url(#fl-pantry0)"/>
+    <line x1="210" y1="116" x2="210" y2="142" marker-end="url(#fl-pantry0)"/>
+    <line x1="210" y1="180" x2="210" y2="206" marker-end="url(#fl-pantry0)"/>
+    <line x1="210" y1="244" x2="210" y2="270" marker-end="url(#fl-pantry0)"/>
+    <path d="M320,226 L360,226 L360,162 L322,162" marker-end="url(#fl-pantry0)"/>
+    <path d="M100,226 L50,226 L50,98 L98,98" marker-end="url(#fl-pantry0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="210" y="38.3" style="fill:var(--color-fg)">Orient: read the brief</text>
+    <text x="210" y="102.3" style="fill:var(--color-fg)">Next: what is ready?</text>
+    <text x="210" y="166.3" style="fill:var(--color-fg)">Claim the plan</text>
+    <text x="210" y="230.3" style="fill:var(--color-fg)">Work</text>
+    <text x="210" y="294.3" style="fill:var(--color-bg)">Release: done, and the board knows</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="392" y="190">heartbeat</text>
+    <text x="392" y="205">every 10 min</text>
+    <text x="50" y="158">silent</text>
+    <text x="50" y="173">30 min</text>
+  </g>
+</svg>
+
+*What a session does with PANTRY, over MCP, without me opening anything.*
+
 The goal of PANTRY, and it took me four months to say it plainly, is to keep my projects aligned
 and accountable, and to make working with agents in the loop feel like no extra work at all. It is
 not a dashboard for me to admire. It is the place where my sessions and I agree on what is being done and
@@ -177,14 +218,34 @@ point.
 ## Nov 14 · Then it moved beside the work
 
 The agents were using PANTRY. I still mostly was not, because looking at it still meant switching to
-a browser tab. So I asked whether I should drop the web app and use Obsidian, which I
-already keep open. The answer was no: Obsidian would show the plan files, but it would not know about
-claims, heartbeats or a session that died halfway through. What I wanted was not a different tool. I
-wanted PANTRY to feel like a workspace, the thing that is open next to the work rather than a
-destination.
+a browser tab. So I asked whether I should drop the web app and move the board into Obsidian.
 
-That turned into four pieces of work, run as four sessions at once, coordinated through PANTRY
-itself.
+That question did not come from nowhere. Two people on my team track their work in Obsidian.
+[Kyle](/people#kyle), a junior, built himself a work board in it, which I wrote about in [Show Them
+the Board](show-them-the-board.md). And I watched a senior engineer on the team run her whole week
+out of it, one checklist at a time. I have been through the entire to-do app journey, Obsidian
+included, and [none of them stuck](origin-story.md). She is a checklist person and it simply works
+for her. I am honestly envious.
+
+So the answer was no, and not because Obsidian is wrong. It would show the plan files, but it would
+not know about claims, heartbeats or a session that died halfway through, and it would be one more
+app I open for a week and then stop opening. What I wanted was not a different tool. I wanted
+PANTRY to feel like a workspace, the thing that is open next to the work rather than a destination.
+
+That turned into four pieces of work, run as four sessions at once, each with its own plan on the
+PANTRY board. I used PANTRY to work on PANTRY, which is either the best test a tool can get or a very
+elaborate way to avoid using it for anything else. Probably both.
+
+It also caught us. While they ran, the command center had flagged its own builders: seven files
+written outside any plan, marked Strayed, sitting in the Agents column for anyone to see. The tool
+whose job is keeping work accountable held the work on itself to account, and I would rather show
+that than crop it out.
+
+<figure class="shot">
+  <img class="shot__img" src="/media/pantry/command-center.jpg" width="2560" height="1720" loading="lazy" data-lightbox
+       alt="PANTRY's command center for the pantry repository itself. Chips across the top read 2 Agents, 1 Strayed, 0 Ready, 0 Needs you and 4 Drift. The Agents column shows the dashboard plan done by Claude, and below it a No plan card marked unplanned listing seven files written with no plan, including hub-ensure.ts, tiers.ts and docs/WORKFLOW.md. The Queue is empty, and the Inbox holds four drift warnings with Copy fix buttons.">
+  <figcaption class="shot__cap">PANTRY's command center on the PANTRY repository, while the four sessions ran. This is the layout the hub serves today, before the new dashboard; the Strayed card is the sessions that built PANTRY writing outside their plans.</figcaption>
+</figure>
 
 > PANTRY only works if it is already open when the work starts. Everything since November is that
 > one sentence.
