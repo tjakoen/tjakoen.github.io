@@ -407,7 +407,13 @@ const SHELL_STATE_SCRIPT = `<script>(function(s){try{var g=function(k){return lo
   `if(g("console-hidden"))s.setAttribute("data-console-hidden","true");` +
   `if(g("console-expanded"))s.setAttribute("data-console-expanded","");` +
   `if(g("console-open"))s.setAttribute("data-console-open","");` +
-  `if(!matchMedia("(hover: hover) and (pointer: fine)").matches)s.removeAttribute("data-peek-root")}catch(e){}})(document.currentScript.parentElement)</script>`;
+  `if(!matchMedia("(hover: hover) and (pointer: fine)").matches)s.removeAttribute("data-peek-root");` +
+  // The shell's columns glide when a panel opens or closes. On load that glide played every time a
+  // later script settled the layout (the tablet rail collapse, a page's own panel widths), so the
+  // page visibly slid into place. Hold the transition off until the page has loaded and painted
+  // twice, so a visitor's own toggles still glide and the first paint is already the final one.
+  `s.style.transition="none";addEventListener("load",function(){requestAnimationFrame(function(){requestAnimationFrame(function(){s.style.transition=""})})})` +
+  `}catch(e){}})(document.currentScript.parentElement)</script>`;
 
 function withShellState(html: string): string {
   return html.replace(/<div [^>]*?class="app-shell[\s"][^>]*>/, (open) => open + SHELL_STATE_SCRIPT);
