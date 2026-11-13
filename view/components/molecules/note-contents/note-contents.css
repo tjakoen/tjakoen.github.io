@@ -94,8 +94,13 @@
 /* The bionic reading toggle sits in the Rendered/Source row, pushed to the far end, and reads as a
    tab rather than a button. The bold it adds is one weight step, not a heavy black, so a paragraph
    still reads as prose. Script: scripts/bionic-reading.js. */
-.content-source__bionic { margin-left: auto; font: inherit; background: none; border: 0; cursor: pointer; color: inherit; }
-.content-source__bionic[aria-pressed="true"] { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+/* Bionic and Share are buttons dressed as GRAIN's .tab. The reset clears only the browser's button
+   chrome; the font, size, colour and divider all come from .tab, so they match Rendered and Source. */
+.content-source__bionic, .content-source__share {
+  background: none; border: 0; border-right: 1px solid var(--color-line); cursor: pointer;
+}
+.content-source__bionic { margin-left: auto; border-left: 1px solid var(--color-line); }
+.content-source__bionic[aria-pressed="true"] { color: var(--color-fg); background: var(--color-bg); box-shadow: inset 0 2px 0 var(--color-accent, var(--ink)); }
 .content-source__bionic:disabled { opacity: .5; cursor: not-allowed; }
 /* Redaction's bold sits close to its regular weight, so weight alone vanished in a paragraph. The
    rest of each word is faded instead, which gives the bold start a contrast the eye can find. */

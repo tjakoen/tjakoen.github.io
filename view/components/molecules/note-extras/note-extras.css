@@ -19,6 +19,5 @@
 .note-changelog__list li { display: grid; grid-template-columns: 6.5rem 1fr; gap: var(--space-3); font-size: 0.9rem; }
 .note-changelog__list time { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); padding-top: 0.15em; }
 
-.content-source__share { cursor: pointer; background: none; font: inherit; }
 .note-share__link { margin: var(--space-2) 0 0; padding: var(--space-2) var(--space-3); border: 1px solid var(--line-soft);
   border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.8rem; overflow-wrap: anywhere; user-select: all; }
