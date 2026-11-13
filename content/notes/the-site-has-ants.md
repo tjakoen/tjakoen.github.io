@@ -8,7 +8,7 @@ status: PUBLISHED
 type: note
 date: 2026-11-07
 updated: 2026-11-12
-readingTime: "~16 min"
+readingTime: "~9 min"
 tags: [web-platform, stack]
 summary: >
   My portfolio has ants now. They read the page, take real letters home, feed a queen, build more
@@ -43,54 +43,39 @@ The site is where I show the serious work: the systems, the standards, the writi
 
 So I hid a small living thing under the copy. You can ignore it forever. If you find it, it should feel like finding a door in a wall.
 
-The door is an ant. On a desktop, every so often, one wanders across whatever page you're reading. Click it and it runs for the small ant button at the bottom of the screen. That button starts the colony on the page you're on.
+The door is an ant. On a desktop, every few minutes of reading, one wanders across the page. Click it and it bolts for the small ant button at the bottom of the screen, which wakes the whole colony. It never crosses this page, because the figures below have claimed it. They are the colony in miniature, and they run on phones too.
 
-It's rare on purpose. The first ant turns up after two to four minutes of reading, counted across the pages you visit, and the next one can take ten to twenty. It works on every page except this one. The figures below need this page for themselves, so no stray ant crosses it, and the button here sends you to the home page instead.
+## Where it came from
 
-## Why I built this
+I blame [Swarm Protocol](https://domvirus.com/games/swarm-protocol/), a browser ant game by DOM VIRUS that makes a colony feel like a thousand tiny local decisions. I read the [source](https://github.com/coded-dot-design/dom-virus) and wondered what a much smaller version would do if you let it loose inside a real website.
 
-I was inspired by [Swarm Protocol](https://domvirus.com/games/swarm-protocol/), a browser ant game by DOM VIRUS. I liked the way it made a colony feel like a system made of tiny local decisions. I looked at the [source](https://github.com/coded-dot-design/dom-virus), then I wondered what a much smaller version would feel like inside my own site.
+It also made a good stress test. The site runs on GRAIN, a system that mostly renders documents. If the same tokens, type and small modules can carry a living colony, the framework is doing more than laying out text. If they cannot, I would rather find out by building something fun.
 
-The first version came together over a weekend. I used it as a reason to try DeepSeek and to test the loop I now use for most of my work: notice something interesting, turn it into a small project, give it enough constraints to make it real, then let the AI do most of the typing while I keep the judgment, review and taste. I moved between DeepSeek, Codex and Claude as the colony grew, but the loop stayed the same. I wrote more about that in [The Loop Outlives the Model](one-loop-three-harnesses.md). This portfolio is a small proof of concept for the loop too: the standards and checks that guide the AI are part of the site it helps build. The test was whether an idea from a browser link could become something working on the site without the process turning into a second job.
+## The page is the food
 
-Most people will never see the colony. I wanted the people who find it to spend a minute watching a scout steal the copy, then get their page back when they close the Nest.
+Nobody tells the colony what to do. Each ant carries a tiny bit of state and one small rule. Scouts look for letters. Workers follow trails. The queen turns meals into eggs, full stores turn into builders, and builders raise new mounds. Everything you see is those rules bumping into each other.
 
-I also wanted to show what the framework can do. The site is built on GRAIN, a system that mostly renders documents. A game is a useful stress test: if the same tokens, the same typography and the same small-module discipline can carry an interactive colony, then the framework is doing more than laying out text. And if it cannot, I would rather find out by building something fun.
+A scout finds a letter near home and carries it back, and that walk becomes a scent trail. Workers do not need to know where the food is. They follow the smell and fetch the next one.
 
-## What it is
-
-A self-growing ecosystem built from rules.
-
-There is no single script that says "now the colony does this." Each ant has a small amount of state and follows a small rule. A scout looks for a letter. A worker follows a trail. A letter that needs two or three ants takes two or three. The queen turns meals into eggs. The stores turn food into a builder. The builder raises a mini mound. The mini mound sends guards to patrol and flyers to steal. The rival does the same thing, with its own resource and its own limits.
-
-The boxes in this note start each event with its own setup and replay it. Their ants use the same sprites and rules for walking, carrying and fighting as the full colony. Open the full colony to see how those events happen on their own.
-
-
-The loop is the whole design. Letters are food and building material. Ants are the machinery that moves both. There is no final level and no score to chase. The colony can grow, the rival can grow, and the page can run out of letters. When it does, the colony keeps the emptied page as a permanent celebration instead of showing a win screen.
-
-## How the colony works
-
-The first scouts leave the hill and look for letters near home first. A scout takes one letter back to the entrance, and that walk becomes a trail. The trail is the memory. Workers do not need to know where the letter came from; they follow the scent and carry the next one.
-
-The letters are real. A letter taken from this page is the actual glyph, in its actual font and color, lifted out of its sentence. The space it leaves stays exactly where it was, so the paragraph never reflows. The reading gets worse one character at a time, which is a much quieter kind of damage than a banner.
+The letters are real. Each one is the actual glyph, in its actual font and color, lifted out of its sentence. The gap it leaves stays put, so the paragraph never reflows. It just gets harder to read, one character at a time. It is the quietest kind of vandalism I could think of.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="theft" data-surface="figure:nest-theft">
 </div>
 
 *A scout finds letters; workers carry them home and the stores rise.*
 
-A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. Full stores send a builder to raise a mini mound elsewhere on the page. If the colony is at its population cap, a worker takes the job. A mini mound stays above ground and spawns guards to patrol and flyers to steal letters. The rival does the same thing, with its own resource and limits.
+Body text is a snack for one ant. A big heading letter needs a crew of two or three, and the trail waits until everyone has arrived to lift it. Back home, the food is split between the queen and the stores. When the stores fill up, a builder heads out and raises a mini mound somewhere else on the page, and that mound sends out guards to patrol and flyers to steal.
 
 ## Inside the nest
 
-The main mound marks the entrance to the colony's underground nest. Tunnels connect the queen's chamber, nursery, larder and stores. Mini mounds are different: they stay above ground and spawn soldiers and flyers; they do not have tunnels.
+The main mound is the front door to a real nest underneath: tunnels, a queen's chamber, a nursery, a larder and the stores. The mini mounds are outposts with no basement.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="colony" data-surface="figure:nest-rooms">
 </div>
 
 *Workers feed the stores, then a builder raises a new mini mound.*
 
-The queen's chamber sits at the bottom, beside rooms for the nursery, larder and stores. The queen leaves only for worship. Inside the main nest, workers carry letters to the larder, turn them into meals, then feed the queen and stores.
+Workers haul letters down to the larder, turn them into meals, and carry those to the queen. She never leaves her chamber, except for one thing.
 
 <div class="live-fig live-fig--nest live-fig--colony" data-live-figure="colony" data-surface="figure:nest-colony-loop" role="img" aria-label="Inside the colony: ants carry food through the nest to the queen, stores and nursery."></div>
 
@@ -98,41 +83,29 @@ The queen's chamber sits at the bottom, beside rooms for the nursery, larder and
 
 ## Why the colony stops to worship
 
-Worship is the one moment the whole colony shares a direction. The trails go quiet as the colony gathers and the rival heads for its own mound. It is also the economy's reset: the stores fill, which pays for the soldiers and builders that keep the colony alive after the pause.
+At twenty stolen letters, then fifty, then ninety, the queen climbs out of the nest, walks to a clear patch of page and dances. Every trail goes quiet. Her colony gathers in a ring around her, and the rival, wisely, hides in its mound.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="worship" data-surface="figure:nest-worship">
 </div>
 
 *The queen leaves the mound; the colony gathers, circles, and returns with full stores.*
 
-The first dance comes at twenty letters, then fifty, then ninety:
+It is not a win screen. It is the colony's heartbeat: the stores fill, which pays for the soldiers and builders that come next, and then the trails reopen and everyone goes back to work.
 
-1. The queen climbs out of the panel and walks to a clear patch.
-2. Ants from her colony gather around her while the rival shelters in its mound.
-3. The queen dances, then returns through the entrance. The panel queen comes back only after she is home.
+## Then the neighbours move in
 
-The next threshold is fixed for the current dance and moves only after the queen returns. Hatching cannot keep pushing the target away.
-
-There is no win screen after the dance. Worship is the colony's own event, not the player's reward screen. It gives the simulation a pulse: a reason for the ants to gather, a reason for the stores to matter, and a moment where the queen is visibly the center of the nest. Then the trails reopen and the colony goes back to work.
-
-## The rival is a second ecosystem, not a second player
-
-The first rival appears after the second worship, not the first. It starts as a smaller colony with one trail, a few workers and a guard. A new rival comes at worships three, four and five if the last one was beaten. After the fifth, the page sends another rival every fifth worship: ten, fifteen, twenty. If a rival survives one or more of those dances, one new colony arrives after it falls.
-
-The rival is not a second player base. It does not take orders, it does not get a turn, and it cannot see the whole board. It runs the same kind of local rules the main colony runs: follow a trail, take a letter, carry it home, spend it on another ant. The difference is that its growth comes out of what it steals.
+After the second dance, a rival colony shows up. Nobody controls it, including me. It runs the same small rules as the home colony: find a letter, carry it home, spend it on another ant. It just happens to be eating the same page.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="rival" data-surface="figure:nest-rival">
 </div>
 
 *The main colony forages while the rival mound takes shape. Once the mound is ready, rival workers follow the red trail and carry letters home while a guard patrols.*
 
-Builders walk to a site before the mound takes shape. Workers and guards leave the entrance one at a time. Its population starts at a little over half the main colony, not one ant below it, and that share grows slowly with each new rival. It can still raise trails, mini mounds and flyers, but it cannot outgrow the nest it is fighting. The first rival is a real fight. Later rivals start from the live main colony, because a grown colony should not get a free win against a fresh, tiny rival. The goal is a clear main-colony advantage, not a guaranteed walkover.
-
-The rival prefers the left side when the main colony is on the right, and it keeps its distance. That is partly visual, so the two colonies do not sit on top of each other, and partly mechanical, so the rival has room to grow before the main trails reach it. Its mini mounds can be clicked down, and its guards react to the damage. A rival mound is not a one-ant job: two main ants can work it together, and the mound shakes under the crew before it comes down. The rival can break a main mini hill the same way, so a mound left without guards does not last. When the rival falls, its stolen letters are gone for good. There is no cache to clean up and no loot to collect. The reward is the celebration and a quieter page.
+The rival settles on the far side of the page and starts at a little over half your size, so it is a real fight and not a decoration. It raises its own mounds and flyers. Two ants working together can tear down an enemy mound, which shakes under the crew before it falls, and the rival will happily do the same to any of your outposts left without guards. When a rival falls, the letters it stole are gone for good. Beat one and, a few dances later, another one arrives.
 
 ## Who wins a fight
 
-Combat is deliberately small. The main colony gets the advantage, but not every fight is a formality.
+Your colony is the home team, but not by much.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="fight" data-surface="figure:nest-fight">
 </div>
@@ -145,20 +118,13 @@ Combat is deliberately small. The main colony gets the advantage, but not every 
 *From left to right, a worker, a soldier, a flyer, the queen and a red rival guard.*
 
 
-The rules are simple enough to hold in your head:
-
-- A main guard wins sixty percent of duels against a rival guard.
-- Two rival guards can overwhelm one main guard.
-- A main flyer wins seventy-five percent of duels against a rival flyer.
-- Workers are weak alone, but two can take a guard together.
-
-Group fights stay open for about a second, so nearby ants can pile in. The game counts the ants still close enough when the fight ends. The numbers make the main colony feel like the home team without turning the rival into a decoration.
+Your guards win most one-on-ones, but two rival guards will overwhelm one of yours. A lone worker is lunch, while two workers can take down a guard. Every fight stays open for about a second, so whoever is nearby piles in, and numbers usually decide it.
 
 ## You are the disturbance, not the colony
 
 You do not command the ants. You disturb them.
 
-Wait for a dotted trail to appear, select Wipe, then drag across the trail. The ants leave that trail and look for another route. Watch what happens to the delivery you interrupted.
+Try this: wait for a dotted trail, pick Wipe, and drag across it. Then watch a dozen ants stop, mill about, and slowly work out a new route home.
 
 - **Squash** flattens one ant.
 - **Wipe** breaks a trail and sends its ants looking for another.
@@ -169,11 +135,9 @@ Wait for a dotted trail to appear, select Wipe, then drag across the trail. The 
 
 Speed, pause and mute are there because a simulation should be comfortable to leave running.
 
-There is no game over screen. If the main colony loses every ant, the queen sends a scout, a soldier and workers back out, even when a mini hill is still standing. The nest can be hurt, but it cannot be permanently deleted. If the rival loses every ant, its mound sends another one out; the colony is beaten only when the mound itself is broken. A trail that no ant has walked for a while fades, so an old path does not sit on the page forever. If the page runs out of letters, the colony stays in a permanent celebration: the queen keeps her circle, some ants wander the page, and every hill keeps a dancer on top.
+There is no game over. Squash every ant and the queen quietly sends out a fresh scout, a soldier and a few workers. And if the colony eats the entire page, it throws a party that never ends: the queen keeps dancing, and every hill gets a dancer on top.
 
-Closing the Nest refreshes the page, so every letter is restored from its source rather than from a pile of patched text. A new page starts a fresh colony.
-
-The absence of a win condition is the design, not a missing feature. A portfolio game that ends with YOU WIN is a different thing: it asks the visitor to stop reading and play until the game is over. Here you can watch a delivery, interrupt one, then close the Nest and get your sentence back. The state is the interesting part. The score would only get in the way.
+There is no win screen either, and that is on purpose. A portfolio game that ends in YOU WIN asks you to stop reading and grind. This one asks for a minute of watching. When you close the Nest, the page reloads and every letter comes home.
 
 ## How it is built
 
@@ -186,25 +150,19 @@ The visible pieces are small and shared:
 - The scent trails are soft, broken curves with a small walk in them, so they look walked rather than sampled.
 - The sounds are synthesized from a few oscillators and one noise buffer. There are no audio files.
 
-The game is lazy loaded. The browser fetches it when someone opens the colony or a stray ant is due to cross the page.
+None of it loads until someone opens the colony or a stray ant is due. And the one hard rule is that the page stays a page: real glyphs from real text, gaps that hold the layout, a panel that sits in the sidebar instead of over your screen, and nothing left behind when it closes.
 
-The important constraint is that the page stays a page. The ants take real glyphs from real text nodes. The gaps keep the layout. The panel is a normal part of the sidebar, not an overlay that steals the screen. The game has to be able to disappear without a trace when it closes.
+## A weekend, not a month
 
-The rules are in the code, but they are not a scripted sequence. There is a trail system, a letter economy, a queen, stores, mounds, guards, flyers, a rival with a resource budget and a population cap. The behavior comes from those parts interacting. That is why the same game can feel calm on one page and busy on another, and why it can keep running after the page has been read.
+I could not have justified a month on ants. It took a weekend, and it doubled as a test of the loop I now use for most of my work: spot something interesting, give it enough constraints to be real, let the AI do most of the typing, and keep the judgment, the review and the taste for myself. I moved between DeepSeek, Codex and Claude as the colony grew, and the loop held. There is more on that in [The Loop Outlives the Model](one-loop-three-harnesses.md).
 
-## Why the workflow matters
+That is the real advertisement. Not that an AI can write a game, but that I can see something interesting and have a tested thing on my site before the interest wears off.
 
-I could not have justified this as a serious side project if it took a month. It took a weekend because the loop around it is good enough to carry a small idea quickly: a rough direction, a lot of AI typing, a browser to play it in, tests around the parts that matter, and a review pass that catches the things I would have missed at 2 a.m.
-
-That is the real advertisement. Not that an AI can write a game. That I can see something interesting, turn it into a small idea, and have a tested thing on my site before the interest goes away. The AI does a lot of the work. I keep the decisions, the standards and the final read. This note is part of the same loop: the game exists, the tests exist, and the writing is the explanation.
-
-I also wanted the portfolio to stay professional. The easter egg is small on purpose. It is behind a status-bar ant, a terminal word and a button in a note. It does not interrupt a recruiter reading the résumé, and it does not turn the home page into a game landing page. If you find it, you get a surprise. If you do not, the site is still the site.
-
-The lone ant from the top of this note is the fourth way in, and the only one that comes looking for you. It will not find you here, so the button below opens the colony on the home page.
+It also stays out of the way. A recruiter reading the résumé will never trip over it. If you find it, you get a surprise. If you do not, the site is still the site.
 
 <p class="nest-start" hidden><a href="/?nest=play" data-nest-start>Open the full colony</a></p>
 
-On desktop, click the ant icon at the bottom of the status bar to open the colony from any other page. The playable colony is desktop-only. The figures in this note also run on phones. Leave it running for a minute. The page is the food.
+Leave it running for a minute. The page is the food.
 
 ## What I have not earned yet
 
