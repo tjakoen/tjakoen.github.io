@@ -113,7 +113,7 @@ test.describe("résumé — the real CV (data/cv.json)", () => {
     await input.fill("resume");
     await input.press("Enter");
     const feed = page.locator('[data-surface="console"]');
-    await expect(feed).toContainText("dev manager, tech lead");
+    await expect(feed).toContainText("engineering manager");
     await expect(feed.locator('a[href="/resume"]')).toBeVisible();
   });
 });

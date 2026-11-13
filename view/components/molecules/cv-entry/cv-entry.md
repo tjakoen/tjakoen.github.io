@@ -20,7 +20,7 @@ several `/calendar` feed posts over time with no code change. The summary and lo
 <ol class="cv-list">
   <li class="cv-entry" id="xp-0" data-role-tag="ai">
     <div class="cv-entry__head">
-      <h3 class="cv-entry__title">Technical Team Lead</h3>
+      <h3 class="cv-entry__title">Engineering Manager</h3>
       <p class="cv-entry__meta"><span class="cv-entry__company">Career Team</span> <span class="cv-entry__dates">Sep 2025 to Present</span></p>
       <p class="cv-entry__where">United States, remote</p>
       <p class="cv-entry__summary">Both people-manager and technical lead for the team.</p>
