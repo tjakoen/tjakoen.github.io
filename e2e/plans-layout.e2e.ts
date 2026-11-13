@@ -29,11 +29,19 @@ test.describe("the plans board keeps every status reachable", () => {
   });
 
   test("a narrow desktop can scroll the final status fully into view", async ({ page }) => {
-    await page.setViewportSize({ width: 1050, height: 850 });
+    // At 1050px the settled board now fits all four columns, so 900px is the width where it still
+    // has to scroll. The shell animates its sidebars closed for about 300ms after load; measuring
+    // before that ends read a board that was still changing width, and failed at random.
+    await page.setViewportSize({ width: 900, height: 850 });
     await page.goto("/plans");
 
     const board = page.locator(".proof-board");
     await expect(board.locator(".proof-col")).toHaveCount(4);
+    await expect.poll(async () => {
+      const before = await board.evaluate((el) => el.clientWidth);
+      await page.waitForTimeout(150);
+      return before === await board.evaluate((el) => el.clientWidth);
+    }).toBe(true);
     expect(await board.evaluate((el) => getComputedStyle(el).overflowX)).toBe("auto");
     const scrollableWidth = await board.evaluate((el) => el.scrollWidth - el.clientWidth);
     expect(scrollableWidth).toBeGreaterThan(0);
