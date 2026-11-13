@@ -1,0 +1,3 @@
+/* The leading page's story cards give each paragraph after the first a small step of space. The step was an
+   inline margin on every card; it lives here once, on the spacing scale. */
+[data-screen="leading"] .card__body + .card__body { margin-top: var(--space-2); }

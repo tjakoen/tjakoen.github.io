@@ -55,7 +55,7 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     await expect(asideToggle).toBeVisible();
     await viewportToggle.click();
     await expect(viewportToggle).toHaveText(/mobile/);
-    await page.setViewportSize({ width: 768, height: 720 });
+    await page.setViewportSize({ width: 640, height: 720 });
     await expect(viewportToggle).toHaveText(/mobile/);
     await page.getByRole("navigation", { name: "Main" }).getByRole("button", { name: "Browse" }).click();
     await expect(shell).toHaveAttribute("data-aside-open", "");

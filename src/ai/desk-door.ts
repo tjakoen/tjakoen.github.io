@@ -83,7 +83,7 @@ function markOffline(): void {
 // ONE device probe at module load, used only for the up-front WebGPU/memory gate below (grain owns the
 // probe). The shared desk uses 0.5B; the Builder can choose 1.5B from conservative capability signals.
 // The same probe still decides whether any model can load here.
-const mobile = matchMedia("(max-width: 768px)");
+const mobile = matchMedia("(max-width: 640px)");
 const mobileDevice = isMobileDevice();
 const deviceCap = mobileDevice ? { webgpu: false } : await grainWebllm.probeDevice();
 // The up-front gate deliberately does NOT trust probeDevice()'s adapter result (`deviceCap.webgpu`).

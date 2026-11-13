@@ -393,9 +393,12 @@ function withPeekRoot(html: string): string {
 // rail navigation. This inline script sits first inside the shell element and runs while the parser
 // is still there, so the page paints in its saved state and there is nothing to animate. shell.js
 // still owns the toggles and the writes; this only reads, and it sets exactly what shell.js would.
+// One default it adds: on a desktop window between 640 and 1280 pixels, with no saved choice yet, the chat
+// column starts hidden so the page keeps its width. Toggling it saves a choice that wins from then on.
 const SHELL_STATE_SCRIPT = `<script>(function(s){try{var g=function(k){return localStorage.getItem("grain.shell."+k)==="1"};` +
   `if(g("rail-collapsed"))s.setAttribute("data-rail-collapsed","true");` +
-  `if(g("aside-hidden"))s.setAttribute("data-aside-hidden","true");` +
+  `var ah=localStorage.getItem("grain.shell.aside-hidden");` +
+  `if(ah==="1"||(ah===null&&innerWidth>640&&innerWidth<1280))s.setAttribute("data-aside-hidden","true");` +
   `if(g("console-hidden"))s.setAttribute("data-console-hidden","true");` +
   `if(g("console-expanded"))s.setAttribute("data-console-expanded","");` +
   `if(g("console-open"))s.setAttribute("data-console-open","")}catch(e){}})(document.currentScript.parentElement)</script>`;

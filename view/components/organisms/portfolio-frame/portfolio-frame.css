@@ -15,7 +15,7 @@ body.app-window-backdrop {
 }
 body.app-window-backdrop[data-viewport="tablet"] { --shell-viewport-w: 56rem; }
 body.app-window-backdrop[data-viewport="mobile"] { padding-block: 0; }
-@container shell-frame (width > 768px) {
+@container shell-frame (width > 640px) {
   .app-window-backdrop > .app-shell.app-window { margin-inline: var(--frame-gutter); }
 }
 
@@ -296,7 +296,7 @@ body.app-window-backdrop[data-viewport="mobile"] { padding-block: 0; }
 .assistant__composer .assistant__newchat { align-self: center; }
 body[data-desk="offline"] .assistant__newchat { display: none; }
 /* Leave the composer room for the input and Send on narrow screens. */
-@media (max-width: 768px) { .assistant__newchat { display: none; } }
+@container shell-frame (max-width: 640px) { .assistant__newchat { display: none; } }
 
 .assistant__offline { display: none; }
 body[data-desk="offline"]:not([data-desk-mode]) .assistant__offline {
@@ -328,7 +328,7 @@ body[data-desk-mode="browse"] .walk[data-run-showcase] { display: none; }
 
 /* On a phone Browse is the Desk's navigation: section tiles, an icon over a label three to a row
    with the current section in the accent colour, and recent updates as divided rows. */
-@container shell-frame (max-width: 768px) {
+@container shell-frame (max-width: 640px) {
   .browse-chips { display: none; }
   .browse-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .browse-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-1); }
@@ -381,7 +381,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
    leaves the main content its space. The :not() leaves GRAIN's hide rule in charge when the
    sidebar is toggled off, which this selector would otherwise outrank by loading later. */
 .app-shell.app-window:not([data-aside-hidden="true"]) { --shell-aside: clamp(18rem, 26vw, 24rem); }
-@container shell-frame (width > 768px) {
+@container shell-frame (width > 640px) {
   .app-shell[data-aside-hidden="true"] .app-shell__aside { visibility: hidden; }
 }
 
@@ -394,7 +394,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
    as a bottom sheet COLLAPSED TO ITS HEADER (a peeking grab bar); tapping it raises the full chat,
    the scrim or another tap lowers it. Portfolio-owned override (bundled after grain), ships
    without a grain repin. Design contract lives in e2e/mobile.e2e.ts. */
-@container shell-frame (max-width: 768px) {
+@container shell-frame (max-width: 640px) {
   /* the aside is a fixed sheet; when closed it's pushed down so only the header peeks (a grab
      bar), instead of vanishing (grain's display:none can't animate and left no way back in). */
   .app-shell.app-window .app-shell__aside {
@@ -438,7 +438,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
     flex: 1; position: relative; display: flex; flex-direction: column; align-items: center;
     justify-content: center; gap: 0.2rem; min-height: 2.75rem; padding: var(--space-1) 0;
     border: 0; background: transparent; color: var(--color-muted);
-    font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.02em; }
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.02em; }
   .app-shell.app-window .assistant__modes [data-shell-mode]::before {
     content: ""; width: 1.25rem; height: 1.25rem; background: currentColor;
     -webkit-mask: var(--mode-icon) center / contain no-repeat; mask: var(--mode-icon) center / contain no-repeat; }
@@ -479,7 +479,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
    Keep a compact bar with those controls and a search icon. Must be a @container query, not @media, so it also covers the
    preview (which clamps the container, not the real viewport). Higher specificity than grain's
    `.window-bar { display:none }`, so it wins in the same container regardless of bundle order. */
-@container shell-frame (max-width: 768px) {
+@container shell-frame (max-width: 640px) {
   .app-shell.app-window [data-shell="aside-toggle"],
   .app-shell.app-window .assistant__close { display: none; }
   .app-shell.app-window .window-bar { display: flex; justify-content: flex-end; }
@@ -604,7 +604,7 @@ body[data-desk-mode="browse"] .presence .presence__star { color: var(--ink-faint
 
 /* WCAG 2.4.11 (focus not obscured): on a phone the assistant sheet peeks over the bottom of the
    page, so whichever element scrolls the page keeps its focus target clear of that strip. */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   html, .app-shell__main { scroll-padding-bottom: 5.5rem; }
 }
 
@@ -636,7 +636,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
    Menu, Browse and Tour: the topbar's rail toggle is hidden because Menu opens the rail, the rail and
    the Browse sheet both stop at the bar, and the sheet drops Catalog and Notepad, which are desktop tools. */
 .mobile-nav, .window-bar__brand, .mobile-menu { display: none; }
-@container shell-frame (max-width: 768px) {
+@container shell-frame (max-width: 640px) {
   .app-shell.app-window { --mobile-nav-h: calc(3.75rem + env(safe-area-inset-bottom, 0px)); }
   .mobile-nav {
     display: grid; grid-template-columns: repeat(3, 1fr); position: fixed; inset: auto 0 0 0; z-index: 50;
@@ -677,7 +677,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   .app-shell.app-window .mobile-menu__item {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem;
     height: 4rem; border-radius: var(--radius-md); color: var(--color-muted); text-decoration: none;
-    font-family: var(--font-mono); font-size: 0.65rem; }
+    font-family: var(--font-mono); font-size: 0.75rem; }
   .app-shell.app-window .mobile-menu__item svg { width: 1.25rem; height: 1.25rem; }
   .app-shell.app-window .mobile-menu__item .file-tree__close { display: none; }
   .app-shell.app-window .mobile-menu__item:hover { color: var(--color-fg); }
@@ -717,7 +717,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   .app-shell.app-window .app-shell__topbar { display: none; }
   .app-shell.app-window .window-bar { gap: var(--space-2); padding-inline: var(--space-3); }
   .app-shell.app-window .window-bar__brand {
-    display: block; margin-inline-end: auto; color: var(--color-fg); text-decoration: none;
+    display: block; min-block-size: 1.5rem; margin-inline-end: auto; color: var(--color-fg); text-decoration: none;
     font-family: var(--font-display, inherit); font-size: var(--text-base); white-space: nowrap; }
   .app-shell.app-window .window-bar__search { order: 2; margin-inline: 0; }
   .app-shell.app-window .window-bar__ctl { order: 3; }
@@ -735,4 +735,12 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
 /* Catalog is a desktop tool: hide its tab on tablet as well as on a phone. */
 @container shell-frame (max-width: 1100px) {
   .assistant__modes [data-shell-mode="catalog"] { display: none !important; }
+}
+
+/* On the phone and tablet layouts every block-level control in the page body is at least 24 pixels
+   tall, the WCAG 2.2 target floor. Inline links inside prose ignore min-height, so running text keeps
+   its line height and only the tag chips, toggles and list links grow. */
+@container shell-frame (max-width: 640px) {
+  main :is(a, button, summary, label):not(.skip-link) { min-block-size: 1.5rem; }
+  main :is(a, button, summary, label):not(.skip-link):is([class]) { align-content: center; }
 }
