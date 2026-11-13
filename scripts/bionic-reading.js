@@ -24,6 +24,7 @@ if (toggle && note) {
   const SKIP = "h1, h2, h3, h4, h5, h6, pre, code, kbd, figure, svg, .note-contents, .live-fig, .nest-start, .note-progress, [data-live-figure], [aria-hidden='true']";
   const PROSE = "p, li, blockquote, td, th, dd";
   const swapped = []; // [wrapper span, original text node]
+  const ink = getComputedStyle(note).color; // the body colour of the note's prose
 
   // About the first half of a word, rounded up, with short words getting one letter.
   const emphasis = (word) => (word.length <= 3 ? 1 : Math.ceil(word.length / 2));
@@ -32,7 +33,9 @@ if (toggle && note) {
     const parts = node.nodeValue.split(/(\p{L}[\p{L}\p{M}'’-]*)/u);
     if (parts.length < 2) return;
     const span = document.createElement("span");
-    span.className = "bionic";
+    // Text that is already muted on purpose keeps its own colour; fading the rest of each word
+    // again would fade it twice. Only body-colour prose gets the fade.
+    span.className = getComputedStyle(node.parentElement).color === ink ? "bionic" : "bionic bionic--muted";
     parts.forEach((part, i) => {
       if (i % 2 === 0) { if (part) span.append(part); return; }
       const n = emphasis(part);

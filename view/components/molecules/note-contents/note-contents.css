@@ -106,3 +106,6 @@
    rest of each word is faded instead, which gives the bold start a contrast the eye can find. */
 .note.is-bionic .bionic b { font-weight: 700; color: var(--ink); }
 .note.is-bionic .bionic__rest { color: color-mix(in srgb, currentColor 72%, transparent); }
+/* Text already muted on purpose, such as a figure's caption, keeps its colour and gets the bold
+   alone, so it is not faded a second time. The script adds the class. */
+.note.is-bionic .bionic--muted b, .note.is-bionic .bionic--muted .bionic__rest { color: inherit; }
