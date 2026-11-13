@@ -4,7 +4,7 @@ audience: [build]
 level: intro
 subtitle: "In July I wrote that I built a whole stack because no to-do app would have me, and promised the desk would take it from here. Four months and about two thousand commits later, here is what I actually built, told from the git log, and whether the desk ever took the wheel."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 layout: timeline
 date: 2026-11-13
@@ -14,7 +14,7 @@ summary: >
   The follow-up to my origin story, told from the git history of six repositories. In July I promised
   to ship this portfolio, publish the repos, and then build the assistant that manages me. The first
   two happened. The third turned sideways: instead of an AI that manages me, I built a loop that
-  manages the AI, and the writing it let me do started getting me interviews. The to-do app still
+  manages the AI, and the writing it let me do started opening conversations about work. The to-do app still
   does not exist.
 ---
 
@@ -123,8 +123,8 @@ name.
 
 I started posting them on LinkedIn, and they got more traction than I expected from a man who
 writes about commit hooks. The site's traffic went up with them. And then people I had never met
-started reaching out because of something they had read, and some of those conversations turned
-into interviews. [Tjakoen to confirm the wording and how specific to be here.]
+started reaching out because of something they had read, and a few of those conversations turned
+into real ones about work.
 
 I did not plan that. In July the portfolio was a proof that the stack works. It turns out the part
 that worked hardest was the writing, which is the part I was least sure about.
@@ -154,7 +154,7 @@ know I needed one.
 
 The commit counts are a snapshot, and commits are a poor measure of work. A month of forty-seven
 careful commits can matter more than a month of seven hundred small ones, and September is the
-proof. The traction and the interviews are real, but I am not putting numbers on them here, and a
+proof. The traction and those conversations are real, but I am not putting numbers on them here, and a
 handful of good conversations is not a trend. And the main claim of the origin story, that a person
 working with an AI on a shared surface gets more capable, is exactly as unproven as it was in July.
 I have more receipts now. I do not have a study.
@@ -163,7 +163,7 @@ I have more receipts now. I do not have a study.
 
 In July I wrote that no to-do app would have me, so I built software shaped like the person I
 already am. Two thousand commits later, that person has a design system, a content engine, a plans
-board, a review loop, a linter for his own voice, and a site that gets him interviews.
+board, a review loop, a linter for his own voice, and a site that starts conversations about work.
 
 He still does not have a to-do list. It is on the board, though. PANTRY has it.
 
