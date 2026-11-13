@@ -28,6 +28,13 @@ on one port until I closed the terminal. Every session I opened with Claude went
 code, because the code was right there, and the board that was supposed to tell that session what to
 do sat in a folder I had not opened in days.
 
+And yet I never stopped working on it. I kept improving it and kept it wired into the loop: the
+doctor at every session start, the plans folder every repo writes to, the standards it mounts. I
+could not bring myself to use the board, and I could not bring myself to let it go either, because
+I could not argue with the goal. Projects that stay aligned and accountable, and agents in the loop
+that cost me nothing extra to keep there, are worth a tool I find annoying. That is a strange
+relationship to have with your own software, and I suspect it is not a rare one.
+
 As a snapshot, on `Nov 14` the PANTRY repository holds 168 commits on main and four branches still in
 flight. Here is where they fell.
 
