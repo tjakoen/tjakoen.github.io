@@ -78,7 +78,14 @@ under view/ for token use.
   leading page's paragraph spacing moved from seventeen inline styles to one rule on the spacing
   scale.
 - Retracted: finding 6.
-- Belongs in GRAIN: finding 4 (a tablet tier in app-window), finding 10 (moving the shell up),
-  finding 11 (one named breakpoint set), and the talk deck's presentation controls, which still
-  render at about 11 by 11 pixels.
-- A design call for the owner: finding 8, whether the chat column starts collapsed on long reads.
+- Fixed across GRAIN and this repo: findings 4 and 11, and the deck controls. The shell's phone
+  breakpoint moved from 768 to 640 pixels in both repos, GRAIN names its two shell breakpoints as
+  --bp-phone and --bp-narrow with a test that fails on any other width, and the presentation
+  controls never shrink under 24 pixels. The GRAIN half lives on its ui-tablet-tier-and-targets
+  branch, and this repo's half must not merge until that ships in a GRAIN release and the
+  dependency is bumped, or the band from 641 to 768 pixels would mix the two layouts.
+- Finding 8, settled by the owner: the chat column stays as it is on a wide desktop and starts
+  hidden on a desktop window narrower than 1280 pixels when no choice has been saved yet.
+- Finding 10 is left open on purpose. The shell CSS here is mostly the portfolio's own desk (the
+  phone menu, Browse tiles, the desk door), so moving it wholesale would push one site's product
+  into the design system. The generic part moved instead: the breakpoints and the targets.
