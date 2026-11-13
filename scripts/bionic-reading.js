@@ -2,7 +2,7 @@
  * bold, so the eye has an anchor to jump between.
  *
  * Mounts only where src/content.ts emitted the toggle ([data-bionic-toggle]), which is note pages.
- * The choice is remembered across notes in localStorage.
+ * It is never on by default: each note opens plain, and turning it on lasts for that page alone.
  *
  * What it touches: running prose inside the note (paragraphs, list items, quotes, table cells).
  * What it leaves alone: headings, code, figures, the contents block and anything inside a live
@@ -70,17 +70,17 @@ if (toggle && note) {
     note.classList.remove("is-bionic");
   };
 
-  const stored = () => { try { return localStorage.getItem(KEY) === "1"; } catch { return false; } };
-  const store = (v) => { try { if (v) localStorage.setItem(KEY, "1"); else localStorage.removeItem(KEY); } catch { /* private mode */ } };
-
   const apply = (v) => {
     toggle.setAttribute("aria-pressed", v ? "true" : "false");
     if (v) on(); else off();
   };
 
+  // Never on by default: every note opens as plain prose, and the choice lasts for this page only.
+  // The key an older build stored is cleared so a reader who once turned it on is not stuck with it.
+  try { localStorage.removeItem(KEY); } catch { /* private mode */ }
   toggle.hidden = false;
-  apply(stored());
-  toggle.addEventListener("click", () => { const v = toggle.getAttribute("aria-pressed") !== "true"; store(v); apply(v); });
+  apply(false);
+  toggle.addEventListener("click", () => apply(toggle.getAttribute("aria-pressed") !== "true"));
 
   // Stand down when the colony arrives. Its panel is #nest-mock.
   const colony = new MutationObserver(() => {
