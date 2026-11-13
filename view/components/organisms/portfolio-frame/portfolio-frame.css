@@ -727,8 +727,8 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   .app-shell.app-window .assistant__head { min-height: 1.75rem; }
   .app-shell__main { padding-bottom: var(--mobile-nav-h); scroll-padding-bottom: calc(var(--mobile-nav-h) + var(--space-4)); }
 
-  /* The top of a phone is one row: the site name, then search and the light and dark switch. The
-     desktop tab strip and the flavor name go, since the bottom bar now does the navigating, and the
+  /* The top of a phone is one row: the site name, then search, the flavor switch and the light and
+     dark switch. The desktop tab strip and the flavor's name go, since the bottom bar now does the navigating, and the
      view toggle shows only inside the mobile preview, where it is the way back to desktop. */
   .app-shell.app-window .app-shell__topbar { display: none; }
   .app-shell.app-window .window-bar { gap: var(--space-2); padding-inline: var(--space-3); }
@@ -736,11 +736,12 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
     display: block; min-block-size: 1.5rem; margin-inline-end: auto; color: var(--color-fg); text-decoration: none;
     font-family: var(--font-display, inherit); font-size: var(--text-base); white-space: nowrap; }
   .app-shell.app-window .window-bar__search { order: 2; margin-inline: 0; }
-  .app-shell.app-window .window-bar__ctl { order: 3; }
-  .app-shell.app-window .window-bar__ctl [data-cycle-theme] { display: none; }
-  /* the light and dark switch wears the same square as search beside it, with a symbol big enough
-     to read and tap */
-  .app-shell.app-window .window-bar__ctl [data-toggle-scheme] {
+  .app-shell.app-window .window-bar__ctl { order: 3; gap: var(--space-2); }
+  /* the flavor switch keeps its diamond but drops the flavor's name, so it fits the row as a square */
+  .app-shell.app-window .window-bar__ctl [data-cycle-theme] [data-theme-name] { display: none; }
+  /* the flavor and the light and dark switches wear the same square as search beside them, with a
+     symbol big enough to read and tap */
+  .app-shell.app-window .window-bar__ctl :is([data-toggle-scheme], [data-cycle-theme]) {
     display: inline-flex; align-items: center; justify-content: center;
     width: 2.25rem; height: 2rem; padding: 0;
     border: 1px solid var(--color-line); border-radius: var(--radius-sm);
