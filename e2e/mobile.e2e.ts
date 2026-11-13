@@ -1,4 +1,4 @@
-// tjakoen.github.io/e2e/mobile.e2e.ts — the phone layout (<768px). On a phone the bottom bar holds
+// tjakoen.github.io/e2e/mobile.e2e.ts — the phone layout (640px and under). On a phone the bottom bar holds
 // Menu, Browse and Tour: Menu raises a drawer of key pages and the file tree, Browse raises the Browse
 // sheet, and Tour starts the phone's own tour. Covers what only a browser shows.
 import { test, expect } from "@playwright/test";
@@ -104,7 +104,7 @@ test("narrowing a desktop window closes the Nest and restores page controls", as
   await page.goto("/?nest=play");
   await expect(page.locator("#nest-mock")).toBeVisible();
   await page.getByRole("button", { name: "Wipe", exact: true }).click();
-  await page.setViewportSize({ width: 700, height: 800 });
+  await page.setViewportSize({ width: 600, height: 800 });
   await expect(page.locator("#nest-mock, .nest-layer")).toHaveCount(0);
   await expect(page.locator(".nest-switch")).toBeHidden();
   const canUsePointer = await page.locator(".app-shell__main").evaluate((main) =>
