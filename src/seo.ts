@@ -22,7 +22,7 @@ export const SITE = {
   origin: "https://portfolio.tjakoen.com",
   author: {
     name: "Tjakoen Stolk",
-    jobTitle: "Software engineering manager, tech lead, and part-time software-engineering teacher",
+    jobTitle: "Engineering manager and part-time software-engineering teacher",
     sameAs: [
       "https://github.com/tjakoen",
       "https://www.linkedin.com/in/tjakoenstolk",
