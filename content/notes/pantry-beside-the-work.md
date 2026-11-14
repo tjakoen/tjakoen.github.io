@@ -156,7 +156,7 @@ stopped needing me to open the board, because the board came to them. A session 
 over MCP before it does anything: it reads an orientation brief, asks what is next, claims a plan so
 no other session takes it, and heartbeats while it works. A claim that goes quiet for thirty
 minutes expires and the plan goes back on the board. (The container did not last. Ten days later
-the hub went native, and the Docker files are on their way out on a branch of their own.)
+the hub went native, and the container, its image and its Docker files are gone.)
 
 <svg viewBox="0 0 440 330" width="100%" role="img"
      aria-label="How a session works with PANTRY. It orients by reading the project brief, asks PANTRY what is next, and claims a ready plan. While it works it sends a heartbeat every ten minutes, which keeps the claim alive. If it goes silent for thirty minutes the claim expires and the plan goes back on the board to be picked up again. When the work is finished the session releases the plan as done, and the board knows it without anyone telling it."
