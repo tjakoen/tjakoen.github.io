@@ -244,7 +244,7 @@ that than crop it out.
 <figure class="shot">
   <img class="shot__img" src="/media/pantry/command-center.jpg" width="2560" height="1720" loading="lazy" data-lightbox
        alt="PANTRY's command center for the pantry repository itself. Chips across the top read 2 Agents, 1 Strayed, 0 Ready, 0 Needs you and 4 Drift. The Agents column shows the dashboard plan done by Claude, and below it a No plan card marked unplanned listing seven files written with no plan, including hub-ensure.ts, tiers.ts and docs/WORKFLOW.md. The Queue is empty, and the Inbox holds four drift warnings with Copy fix buttons.">
-  <figcaption class="shot__cap">PANTRY's command center on the PANTRY repository, while the four sessions ran. This is the layout from before the new dashboard; the Strayed card is the sessions that built PANTRY writing outside their plans.</figcaption>
+  <figcaption class="shot__cap">PANTRY's command center on the PANTRY repository, while the four sessions ran. This is the layout from before the new dashboard, shown below; the Strayed card is the sessions that built PANTRY writing outside their plans.</figcaption>
 </figure>
 
 > PANTRY only works if it is already open when the work starts. Everything since November is that
@@ -258,6 +258,12 @@ a strip down the edge of the screen. That merged as [tjakoen/pantry#4](https://g
 2026-11-14  💄 Move PANTRY to a sidebar layout with Needs you first
 2026-11-14  📊 Make the command center a dashboard, with a sidebar mode (#4)
 ```
+
+<figure class="shot">
+  <img class="shot__img" src="/media/pantry/dashboard.jpg" width="2560" height="1720" loading="lazy" data-lightbox
+       alt="The new PANTRY dashboard on the pantry repository. A sidebar lists projects, with pantry selected, and views for Now, Plans and Project. Four tiles across the top read 0 Needs you, 4 Working, 0 Ready and 4 Drift. Below, Needs you says nothing is waiting, Working now lists the plans for the Claude pane, the dashboard and the drivable window with their sessions and subagents, and Up next is empty.">
+  <figcaption class="shot__cap">The dashboard that replaced it, on the same repository. Needs you leads, and every plan in Working now carries the sessions and subagents that ran under it. Only some of my projects are shown in the sidebar.</figcaption>
+</figure>
 
 **The desktop app.** A Tauri app, picked over Electron because it uses the system webview instead
 of shipping its own browser, so it costs a window rather than a gigabyte. It finds the hub by itself,
@@ -281,7 +287,13 @@ the one window I never close. Merged as [tjakoen/pantry#6](https://github.com/tj
 
 ```console
 2026-11-14  🧩 Add a Claude Code plugin that shows PANTRY beside the chat (#6)
+2026-11-14  💄 Make the Claude pane something you act from
 ```
+
+The second commit turned the pane from a readout into a place to act. It leads with the plan the
+current session holds, puts Open PANTRY and Refresh at the top, gives anything waiting on me Open and
+Ask Claude buttons, and lets a ready plan start in this session, a new one or a child agent. Each
+drift check gets a Fix it button.
 
 **The public release.** PANTRY was written for exactly one person, and a release has to admit that.
 The doctor's checks now come in three tiers. The contract can fail: plans in the right shape, the MCP
