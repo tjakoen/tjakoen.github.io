@@ -303,7 +303,7 @@ whose job is keeping work accountable held the work on itself to account, and I 
 that than crop it out.
 
 <figure class="shot">
-  <img class="shot__img" src="/media/pantry/command-center.jpg" width="2676" height="2000" loading="lazy" data-lightbox
+  <img class="shot__img" src="/media/pantry/command-center-browser.jpg" width="2676" height="2000" loading="lazy" data-lightbox
        alt="A browser window at localhost:4402 showing PANTRY's command center for the pantry repository itself. Chips across the top read 2 Agents, 1 Strayed, 0 Ready, 0 Needs you and 4 Drift. The Agents column shows the dashboard plan done by Claude, and below it a No plan card marked unplanned listing seven files written with no plan, including hub-ensure.ts, tiers.ts and docs/WORKFLOW.md. The Queue is empty, and the Inbox holds four drift warnings with Copy fix buttons.">
   <figcaption class="shot__cap">PANTRY's command center on the PANTRY repository, while the four sessions ran, still a website in a browser tab I had to remember to open. This is the layout from before the new dashboard, shown below; the Strayed card is the sessions that built PANTRY writing outside their plans.</figcaption>
 </figure>
@@ -321,7 +321,7 @@ a strip down the edge of the screen. That merged as [tjakoen/pantry#4](https://g
 ```
 
 <figure class="shot">
-  <img class="shot__img" src="/media/pantry/dashboard.jpg" width="2676" height="2000" loading="lazy" data-lightbox
+  <img class="shot__img" src="/media/pantry/dashboard-app.jpg" width="2676" height="2000" loading="lazy" data-lightbox
        alt="The PANTRY desktop app window showing the new dashboard on the pantry repository. A sidebar lists projects, with pantry selected, and views for Now, Plans and Project. Four tiles across the top read 0 Needs you, 4 Working, 0 Ready and 4 Drift. Below, Needs you says nothing is waiting, Working now lists the plans for the Claude pane, the dashboard and the drivable window with their sessions and subagents, and Up next is empty.">
   <figcaption class="shot__cap">The dashboard that replaced it, on the same repository, now in a window of its own. Needs you leads, and every plan in Working now carries the sessions and subagents that ran under it. Only some of my projects are shown in the sidebar.</figcaption>
 </figure>
