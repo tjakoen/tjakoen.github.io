@@ -1,3 +1,15 @@
+---
+id: ant-nest-ecology
+status: doing
+track: demo
+depends: []
+touches:
+  - scripts/nest-game.js
+  - content/notes/the-site-has-ants.md
+  - e2e/terminal.e2e.ts
+owner: human
+---
+
 # Nest: the page owner's ecology
 
 Status: PHASE 0 IMPLEMENTED; PHASE 4 HAS A FIRST SLICE. The rival arrives after the first worship with a built, slightly different mound; theft, retreat and a first soldier contest are in. The full rival queen, crew growth, sweet, environmental triggers and satellite roles remain. The worktree is
