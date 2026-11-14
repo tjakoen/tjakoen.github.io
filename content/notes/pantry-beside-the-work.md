@@ -35,11 +35,10 @@ I could not argue with the goal. Projects that stay aligned and accountable, and
 that cost me nothing extra to keep there, are worth a tool I find annoying. That is a strange
 relationship to have with your own software, and I suspect it is not a rare one.
 
-As a snapshot, on `Nov 14` the PANTRY repository holds 168 commits on main and four branches still in
-flight. Here is where they fell.
+As a snapshot, on `Nov 14` the PANTRY repository holds 176 commits on main. Here is where they fell.
 
 <svg viewBox="0 0 620 300" width="100%" role="img"
-     aria-label="PANTRY commits per month on main, July to November 2026: 49 in July, 78 in August, 7 in September, 2 in October, and 32 in November through the 14th. Activity collapses in September and October and returns in November when PANTRY became an always-on hub."
+     aria-label="PANTRY commits per month on main, July to November 2026: 49 in July, 78 in August, 7 in September, 2 in October, and 40 in November through the 14th. Activity collapses in September and October and returns in November when PANTRY became an always-on hub."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;
             --paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
@@ -50,13 +49,13 @@ flight. Here is where they fell.
   <rect x="170" y="82" width="70" height="158" style="fill:var(--ink)"/>
   <rect x="280" y="226" width="70" height="14" style="fill:var(--bar)"/>
   <rect x="390" y="236" width="70" height="4" style="fill:var(--bar)"/>
-  <rect x="500" y="175" width="70" height="65" style="fill:var(--ink)"/>
+  <rect x="500" y="159" width="70" height="81" style="fill:var(--ink)"/>
   <g text-anchor="middle" style="fill:var(--muted);font-size:12.5px">
     <text x="95" y="134">49</text>
     <text x="205" y="75">78</text>
     <text x="315" y="219">7</text>
     <text x="425" y="229">2</text>
-    <text x="535" y="168">32</text>
+    <text x="535" y="152">40</text>
   </g>
   <g text-anchor="middle" style="fill:var(--ink);font-size:14px">
     <text x="95" y="258">Jul</text>
