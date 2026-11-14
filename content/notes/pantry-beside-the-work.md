@@ -8,7 +8,7 @@ status: DRAFT
 type: note
 layout: timeline
 date: 2026-11-14
-readingTime: "~9 min"
+readingTime: "~12 min"
 tags: [ai, stack, tooling]
 summary: >
   PANTRY is my local command center for AI coding sessions: a plan board, claims and heartbeats so
@@ -16,8 +16,8 @@ summary: >
   call. I built it in July and barely used it, because it felt in the way. It was a web app I had to spin up by
   hand in every project and nothing in my day ever made me do that. The fix was not a better board.
   It was an always-on hub, then a dashboard, a desktop app and a pane beside the chat, so PANTRY is
-  already open when the work starts. Parts of that are still landing, and the evidence is one
-  person's use.
+  already open when the work starts, and so a session can show me a plan instead of describing
+  one. The evidence is still one person's use.
 ---
 
 I have to be honest about PANTRY. I built it, I wrote about it, and I barely used it. Most days it
@@ -151,12 +151,13 @@ actually saw. But the commit count tells you how often I opened the thing, and i
 2026-11-04  🧭 Make the alignment brief PANTRY's home page
 ```
 
-One day, eighteen commits, and it is the day PANTRY started working. The hub is one container that
-serves every project at once, so there is nothing to start and no port to remember. And the agents
+One day, eighteen commits, and it is the day PANTRY started working. The hub was one Docker container
+that served every project at once, so there is nothing to start and no port to remember. And the agents
 stopped needing me to open the board, because the board came to them. A session now calls PANTRY
 over MCP before it does anything: it reads an orientation brief, asks what is next, claims a plan so
 no other session takes it, and heartbeats while it works. A claim that goes quiet for thirty
-minutes expires and the plan goes back on the board.
+minutes expires and the plan goes back on the board. (The container did not last. Ten days later
+the hub went native, and the Docker files are on their way out on a branch of their own.)
 
 <svg viewBox="0 0 440 330" width="100%" role="img"
      aria-label="How a session works with PANTRY. It orients by reading the project brief, asks PANTRY what is next, and claims a ready plan. While it works it sends a heartbeat every ten minutes, which keeps the claim alive. If it goes silent for thirty minutes the claim expires and the plan goes back on the board to be picked up again. When the work is finished the session releases the plan as done, and the board knows it without anyone telling it."
@@ -244,7 +245,7 @@ that than crop it out.
 <figure class="shot">
   <img class="shot__img" src="/media/pantry/command-center.jpg" width="2560" height="1720" loading="lazy" data-lightbox
        alt="PANTRY's command center for the pantry repository itself. Chips across the top read 2 Agents, 1 Strayed, 0 Ready, 0 Needs you and 4 Drift. The Agents column shows the dashboard plan done by Claude, and below it a No plan card marked unplanned listing seven files written with no plan, including hub-ensure.ts, tiers.ts and docs/WORKFLOW.md. The Queue is empty, and the Inbox holds four drift warnings with Copy fix buttons.">
-  <figcaption class="shot__cap">PANTRY's command center on the PANTRY repository, while the four sessions ran. This is the layout the hub serves today, before the new dashboard; the Strayed card is the sessions that built PANTRY writing outside their plans.</figcaption>
+  <figcaption class="shot__cap">PANTRY's command center on the PANTRY repository, while the four sessions ran. This is the layout from before the new dashboard; the Strayed card is the sessions that built PANTRY writing outside their plans.</figcaption>
 </figure>
 
 > PANTRY only works if it is already open when the work starts. Everything since November is that
@@ -259,36 +260,52 @@ a strip down the edge of the screen. That merged as [tjakoen/pantry#4](https://g
 2026-11-14  📊 Make the command center a dashboard, with a sidebar mode (#4)
 ```
 
-**The desktop app.** A Tauri shell, picked over Electron because it uses the system webview instead
+**The desktop app.** A Tauri app, picked over Electron because it uses the system webview instead
 of shipping its own browser, so it costs a window rather than a gigabyte. It finds the hub by itself,
 shows an offline page with a Start button when the hub is down, and keeps the Needs you count in the
 menu bar. Alongside it, two commands: one that makes sure the hub is running and returns at once if
-it already is, and one that brings the app forward on a project. Sessions call the first at startup,
-so the hub is up before anyone thinks about it. This one is still landing. The shell is written and
-the commit says, honestly, that it has not been built yet.
+it already is, and one that brings the app forward on a project. My session-start hook now calls
+both. I tested the cold start by stopping the hub first: the hook brought it back up and opened the
+app before the session had read a file. The first commit for the shell said, honestly, that it had
+not been built yet. By the end of the day it was built and installed on my machine.
 
 ```console
 2026-11-14  ✨ Add pantry hub ensure, a richer health endpoint and pantry open
-2026-11-14  🚧 Add the Tauri shell for the PANTRY desktop app, not yet built
+2026-11-14  Add a Tauri desktop app that finds and starts the PANTRY hub (#7)
+2026-11-14  🪟 Bring the PANTRY window forward when a link launches the app
 ```
 
 **The pane beside the chat.** A Claude Code plugin that shows PANTRY in a pane next to the
 conversation: the project's Needs you items, the work in flight, and a link into the sidebar mode.
 The count also sits in the status line. This is the piece I wanted most, because it puts the board in
-the one window I never close. It is on a branch and not merged.
+the one window I never close. Merged as [tjakoen/pantry#6](https://github.com/tjakoen/pantry/pull/6).
 
 ```console
-2026-11-14  🧩 Add a Claude Code plugin that shows PANTRY beside the chat
+2026-11-14  🧩 Add a Claude Code plugin that shows PANTRY beside the chat (#6)
 ```
 
 **The public release.** PANTRY was written for exactly one person, and a release has to admit that.
 The doctor's checks now come in three tiers. The contract can fail: plans in the right shape, the MCP
 server registered. The loop warns with a fix and a link. My own habits, the run reports and the
 standards I care about, stay silent unless a project opts in. Someone else should be able to use
-PANTRY without inheriting my opinions about commit messages. Also on a branch, also not merged.
+PANTRY without inheriting my opinions about commit messages. Merged as
+[tjakoen/pantry#5](https://github.com/tjakoen/pantry/pull/5).
 
 ```console
-2026-11-14  🚀 Prepare PANTRY for a public release, with tiered doctor checks
+2026-11-14  🚀 Prepare PANTRY for a public release, with tiered doctor checks (#5)
+```
+
+**The window a session can drive.** This one was not on the list in the morning. Once the app
+existed, it seemed silly that a session could only tell me about a plan. So PANTRY got the same
+shape GRAIN gives a page: a session asks what it can see, gets back the views and plans with the
+moves each one allows, and then makes a move. Ask for a move that does not exist and it is refused,
+with the valid ones listed. I tried it the same day. A session asked to show me the plans view, the
+window went there, and a second look confirmed it. The try also found a bug: on a project that
+proxies a preview, as this site does, the first look failed until a fix landed.
+
+```console
+2026-11-14  🧭 Let sessions observe and move the PANTRY window
+2026-11-14  🐛 Reach the session door on projects that proxy a preview
 ```
 
 ## What I have not shown
@@ -296,27 +313,29 @@ PANTRY without inheriting my opinions about commit messages. Also on a branch, a
 All of the evidence here is mine. One person, a handful of repositories, a few months, and a commit
 count I am reading as a usage count, which it only roughly is. I have not watched anyone else set
 PANTRY up, and the public release exists precisely to find out what breaks when they do. The clean
-install trials in that branch ran on my machine under an empty home folder, which is a start and not
-a second user.
+install trials ran on my machine under an empty home folder, which is a start and not a second user.
+There are no signed downloads yet, so installing the app means building it from source. The hub
+has no login item, so it comes up with the first session of the day rather than with the machine.
+Windows is untested. And the window still advertises one move, navigate, that it then refuses,
+which is exactly the kind of lie the refusal was built to prevent.
 
 The claim that putting PANTRY beside the chat will make me use it is a hypothesis with one strong
 piece of support: the parts that already sit in the path of the work, the doctor and the MCP server,
 are the parts that got used. The desktop app and the pane are the same bet, and I think the new setup may finally be the answer
-to the in-the-way problem. Think, not know. I will know in a month,
-and the commit chart will say so whether I like it or not.
-
-The note itself stays a draft until the app is built and the release is out.
+to the in-the-way problem. Think, not know. Everything in the last section is a day old. I will know
+in a month, and the commit chart will say so whether I like it or not.
 
 ## Where it sits now
 
 In July I built a command center, and then I mostly stepped around it. It was not that the board
 was wrong. It stood between me and the code, and anything that stands there gets walked past.
 
-Now it is meant to walk to me. The agents already ask it before they start. If the app and the pane
-land the way the branches say, the count will sit in the menu bar and the board will sit beside the
-chat, and the only step left between me and it will be looking left.
+Now it walks to me. A session starts, and before it reads a line of code the hub is up and the app
+is open. The session asks PANTRY what is next and claims it. The count sits in the menu bar and the
+board sits in a pane beside the chat. And when there is a plan I should look at, the session does
+not describe it to me. It moves the window to it.
 
-I am fairly sure I can manage that one.
+The only step left between me and the board is looking left. I am fairly sure I can manage that one.
 
 ---
 
