@@ -18,6 +18,19 @@ summary: >
   It was an always-on hub, then a dashboard, a desktop app and a pane beside the chat, so PANTRY is
   already open when the work starts, and so a session can show me a plan instead of describing
   one. The evidence is still one person's use.
+social: |
+  I built a command center for my AI coding sessions in July, and I barely used it.
+
+  It had a plan board, claims so two sessions never take the same work, and a doctor that checks the
+  loop. It also had to be started by hand, in a terminal, in a browser tab. So it sat there.
+
+  Four months later the fix was not a better board. It was putting the board where I already am: an
+  always-on hub, a desktop app that opens itself when a session starts, and a pane right beside the
+  Claude chat.
+
+  A tool for keeping work accountable only works if it is already open when the work starts.
+socialImage: "/media/notes/pantry-beside-the-work-social.png"
+socialImageAlt: "I built a command center and forgot to turn it on: three small windows in a row, a faded browser tab I had to open, an app window that opens itself, and a dark chat window with the board in a pane beside it."
 ---
 
 I have to be honest about PANTRY. I built it, I wrote about it, and I barely used it. Most days it
@@ -217,6 +230,54 @@ point.
 
 ## Nov 14 · Then it moved beside the work
 
+<svg viewBox="0 0 620 230" width="100%" role="img"
+     aria-label="Where the PANTRY board lived, in four steps. In July it was a page started by hand in a terminal, one project at a time. On November 4 it became an always-on hub, but still a browser tab I had to open. On November 14 it became a desktop app that the session-start hook opens. The same day it became a pane in the Claude window, beside the chat."
+     style="display:block;width:100%;max-width:620px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-pantry1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="10" y="60" width="130" height="70" rx="6"/>
+    <rect x="166" y="60" width="130" height="70" rx="6"/>
+    <rect x="322" y="60" width="130" height="70" rx="6"/>
+  </g>
+  <rect x="478" y="60" width="130" height="70" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="140" y1="95" x2="164" y2="95" marker-end="url(#fl-pantry1)"/>
+    <line x1="296" y1="95" x2="320" y2="95" marker-end="url(#fl-pantry1)"/>
+    <line x1="452" y1="95" x2="476" y2="95" marker-end="url(#fl-pantry1)"/>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px">
+    <text x="75" y="44">Jul</text>
+    <text x="231" y="44">Nov 4</text>
+    <text x="387" y="44">Nov 14</text>
+    <text x="543" y="44">Nov 14</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-fg)">
+    <text x="75" y="91">A page I start</text>
+    <text x="75" y="109">by hand</text>
+    <text x="231" y="91">An always-on hub,</text>
+    <text x="231" y="109">still a tab</text>
+    <text x="387" y="91">An app the</text>
+    <text x="387" y="109">hook opens</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-bg)">
+    <text x="543" y="91">A pane beside</text>
+    <text x="543" y="109">the chat</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px">
+    <text x="75" y="160">I go to it</text>
+    <text x="543" y="160">it comes to me</text>
+  </g>
+  <line x1="120" y1="156" x2="496" y2="156" style="stroke:var(--color-line);stroke-width:1;stroke-dasharray:4 5"/>
+</svg>
+
+*Where the board lived. Each step took one more thing off the list of what I had to remember.*
+
+
 The agents were using PANTRY. I still mostly was not, because looking at it still meant switching to
 a browser tab. So I asked whether I should drop the web app and move the board into Obsidian.
 
@@ -284,6 +345,12 @@ not been built yet. By the end of the day it was built and installed on my machi
 conversation: the project's Needs you items, the work in flight, and a link into the sidebar mode.
 The count also sits in the status line. This is the piece I wanted most, because it puts the board in
 the one window I never close. Merged as [tjakoen/pantry#6](https://github.com/tjakoen/pantry/pull/6).
+
+<figure class="shot">
+  <img class="shot__img" src="/media/pantry/claude-pane.jpg" width="2676" height="1760" loading="lazy" data-lightbox
+       alt="A mockup of the Claude desktop app with a session open. The chat shows the session claiming the note's plan on the PANTRY board, a heartbeat, an edit and a clean voice lint. On the right, the PANTRY pane shows this session's plan with its steps, one item in Needs you with Open and Ask Claude buttons, one plan Up next with Start here and New session buttons, and one drift check with a Fix it button.">
+  <figcaption class="shot__cap">A mockup of the pane beside a session, drawn from what the plugin shows rather than captured from it. The board sits in the one window I already have open.</figcaption>
+</figure>
 
 ```console
 2026-11-14  🧩 Add a Claude Code plugin that shows PANTRY beside the chat (#6)
