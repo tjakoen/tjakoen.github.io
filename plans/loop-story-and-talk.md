@@ -1,6 +1,6 @@
 ---
 id: loop-story-and-talk
-status: doing
+status: todo
 track: content
 depends:
   - agent-autonomy-tiers
