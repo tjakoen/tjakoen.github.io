@@ -32,6 +32,7 @@
     "social:card:reviewer": "bun tools/social-card-reviewer.ts",
     "social:card:epic": "bun tools/social-card-epic.ts",
     "social:card:orchestration": "bun tools/social-card-orchestration.ts",
+    "social:card:pantry": "bun tools/social-card-pantry.ts",
     "audit": "bun tools/audit.ts",
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:links": "bun tools/link-lint.ts",
