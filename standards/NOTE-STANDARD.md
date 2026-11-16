@@ -54,7 +54,7 @@ summary: >
   A 1–3 sentence abstract for listing pages and AI/SEO. Says what the piece argues, in his voice,
   not "this post will discuss…". This is the AEO surface, make it a real answer.
 social: |
-  Optional post copy. When included, supply the image and alt text below.
+  Ready-to-post copy. Every note has it, with the image and alt text below.
 socialImage: "/media/notes/example-social.png"
 socialImageAlt: "What the card shows."
 updated: 2026-11-12      # optional, only after a major change (see below)
@@ -74,8 +74,8 @@ changelog:               # optional, newest first, one line per major change
 | `readingTime` | Honest estimate | `"~N min"`. Don't inflate it. |
 | `tags` | Topics | Lowercase, real, ~3–6. Reuse existing tags where they fit. |
 | `summary` | Abstract for listings + AI/SEO | A real answer in his voice. This is the AEO payload; treat it as first-class. |
-| `social` | Ready-to-post copy | Optional. A short post, not the summary. The page renders it at the bottom with the canonical link. |
-| `socialImage` | Social image path | Required with `social`. Supply a 1200×1200 PNG the reader can download and attach to the post. |
+| `social` | Ready-to-post copy | Required. A short post, not the summary. The page renders it at the bottom with the canonical link. |
+| `socialImage` | Social image path | Required. Supply a 1200×1200 PNG the reader can download and attach to the post. |
 | `socialImageAlt` | Social image alt | Required for every social image. Describe what the card shows. |
 | `updated` | The day of the last major change | Optional. ISO date. Renders as an edited line under the masthead. `date` never moves. |
 | `changelog` | What changed, and when | Optional. A list of `"YYYY-MM-DD \| sentence"` strings. Renders as a block at the foot of the note. |
@@ -100,7 +100,7 @@ for the reader who came back: say what is different, and leave out how the edit 
 
 ### The share block
 
-When you write social post copy, make the image and write its alt text in the same pass. The
+Every note ships with social post copy, a 1200×1200 image and the image's alt text, made in the same pass as the note. The
 collapsed block at the bottom of the note gives the reader the copy, the canonical link, and the
 image to download. The subtitle supplies the social preview. Write the post copy for the feed.
 
@@ -250,8 +250,8 @@ rather than cutting it.
 
 STEP 2 — WRITE:
 - Frontmatter block per the template (title/subtitle/author/status: DRAFT/type/date/readingTime/
-  tags/summary). Make the summary a real answer, it's the AI/SEO surface.
-- If you include social post copy, make the 1200×1200 image and add its alt text before handoff.
+  tags/summary/social/socialImage/socialImageAlt). Make the summary a real answer, it's the AI/SEO surface.
+- Write the social post copy, make the 1200×1200 image and add its alt text before handoff. A note without them is unfinished.
 - Open stakes-first (confession, number, or mid-problem), not thesis-first.
 - Argue MY side with MY reasons (see VOICE.md's opinion stack). Take a side; no both-sides mush.
 - Name real specifics (Bun, Claude, the real project) instead of vague placeholders.
