@@ -361,7 +361,13 @@ Principles:
   Pick a column count that stays legible down to 320px.
 - **Tracker rows:** the label flexes, the 7-dot group stays fixed-width on one line at
   every size. Dots don't wrap.
-- **Touch targets ≥ 44px** for buttons and icon squares.
+- **Every control is at least 24px** in both directions, buttons and icon squares included,
+  which is the WCAG 2.2 target-size minimum. GRAIN holds its own components to that floor. Make a
+  control larger where it is easy to do so, but 24px is the line nothing goes under.
+- **Two shell breakpoints, both named.** At `--bp-phone` (640px) and under, the app shell becomes
+  the phone layout: one column, with the rail and the assistant as drawers. Up to `--bp-narrow`
+  (1100px) it keeps three columns with a narrower assistant, so a tablet gets the desk layout.
+  Above that it is the full desk.
 - **Hairlines stay 1px** — don't scale rules, or they go blurry.
 - **Respect `prefers-reduced-motion`**; keep motion minimal regardless.
 - **Test floor: 320px up**, no horizontal scroll.
