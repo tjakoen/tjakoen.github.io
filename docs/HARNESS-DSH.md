@@ -37,7 +37,11 @@ bun tools/dsh-loop/cli.mjs start
 ```
 
 It runs the machine doctor, prints the warnings and due rows, checks that .agents/skills still
-points at the live mount, and reports the graph age. The full doctor is a command because DSH has no
+points at the live mount, reports the graph age, and says whether the map is older than its ground:
+a mounted skill whose standard changed after the sync, compared by content hash, or a graph built
+before the newest code file, compared by mtime because the graph carries no hash this repo can read.
+That last part is tools/map-freshness.ts, and the Claude Code SessionStart hook runs the same check,
+printing only when something is behind. See [the plan](../plans/stale-map-check.md). The full doctor is a command because DSH has no
 session-start event. The session checklist is separate and does run automatically: the plugin runs
 it on the first step and injects the block, and the global instruction file says to show that block
 verbatim at the top of the first reply. When the script prints nothing the plugin injects a line
