@@ -64,7 +64,7 @@
   body[data-screen="resume"] .profile-card__name { margin: 0 !important; font: 700 19pt/1.08 Arial, Helvetica, sans-serif !important;
     letter-spacing: 0.04em; color: #213f6b !important; text-transform: uppercase; }
   body[data-screen="resume"] .profile-card__role { margin: 2pt 0 0 !important; font-size: 9pt !important; color: var(--color-fg) !important; }
-  body[data-screen="resume"] .profile-card .eyebrow { margin: 0 0 2pt !important; font-size: 8pt !important;
+  body[data-screen="resume"] .profile-card .byline { margin: 0 0 2pt !important; font-size: 8pt !important;
     text-transform: uppercase; letter-spacing: 0.08em; }
   body[data-screen="resume"] .resume-contact { gap: 2pt 9pt; margin: 4pt 0 9pt !important; font-size: 8.3pt !important;
     line-height: 1.2; }
