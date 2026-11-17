@@ -644,8 +644,8 @@ const catalogPage = async (req: Request) => {
     "<h1>Catalog</h1>",
     '<h2 class="cat-nav__title">Catalog</h2>',
   ).replace(
-    '<main class="cat-main">',
-    '<main class="cat-main"><h1 class="cat-page-title">GRAIN component catalog</h1>',
+    /<main class="cat-main"[^>]*>/,
+    (open) => `${open}<h1 class="cat-page-title">GRAIN component catalog</h1>`,
   ).replace(
     /<figure class="panel">[\s\S]*?<\/figure>/g,
     (panel) => panel.replaceAll("<h1", '<div role="presentation"').replaceAll("</h1>", "</div>"),
@@ -670,8 +670,8 @@ const referencePage = async (req: Request) => {
     inject: PAGE_ASSETS,
     injectHead: PAGE_HEAD,
     board: `
-      <p class="eyebrow"><span class="name">Reference</span></p>
       <h1 class="masthead">Generated, not hand-copied.</h1>
+      <p class="byline"><span class="name">Reference</span></p>
       <hr class="rule">
       <p class="lede">Everything below is read from the real source at request time — the
         <a href="/grain/docs/ai-interface">AI vocabulary</a> contract and GRAIN's token slots.

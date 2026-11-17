@@ -31,7 +31,6 @@
 [data-screen="projects"] .project-feature__secondary:hover { color: var(--color-fg); }
 
 [data-screen="projects"] .projects-group { margin: 0 0 var(--space-8); scroll-margin-top: var(--space-4); }
-[data-screen="projects"] .projects-group > .eyebrow { margin-bottom: var(--space-1); }
 [data-screen="projects"] .section-head { margin: 0 0 var(--space-3); }
 
 [data-screen="projects"] .project-feature {

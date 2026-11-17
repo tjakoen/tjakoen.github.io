@@ -37,7 +37,7 @@ The assistant is the newest part. Instead of calling a server, the desk loads a 
 
 The shared desk uses Qwen 0.5B, downloaded once and run entirely in your browser on your own device through WebGPU. The Builder can use Qwen 1.5B on devices that pass its conservative capability check; other devices keep the 0.5B model. Nothing you type leaves your machine: there is no server behind either path. Before it answers, the desk searches this site's own notes, docs, and this page of facts, and grounds its reply on what it finds. It can also drive the site itself through GRAIN, the AI-interaction layer: navigating, summarizing, and operating the same surfaces you can.
 
-## What can the desk do?
+## What can the desk assistant do?
 
 The desk answers questions about TJ, about the BREAD stack, and about anything written on this site. It reads the notes and docs to ground its answers, and it points you at the page when you want the full story. It is a small model, so it keeps its answers short and sticks to what it can actually back up.
 
