@@ -5,9 +5,10 @@
 // stale one answers confidently about text or code that has moved. This module compares each derived
 // artifact with its source and says which ones fell behind.
 //
-// Content beats time wherever the content is readable. A skill is compared by hashing its body and
-// description against the standard's body and when line, the same rule the pantry sync uses, because
-// a checkout or an install rewrites mtimes for reasons unrelated to the source moving. The graph is
+// Content beats time wherever the content is readable. A skill is judged by hashes recorded in a stamp
+// beside the mount: it is behind when its standard's hash moved while the SKILL.md's did not. Comparing
+// the standard's text with the skill's directly does not work, because the sync rewrites the text on
+// the way in, and mtimes move on every checkout. The graph is
 // the exception: this repo cannot read per-file hashes out of it, so it falls back to mtime and says so.
 //
 // Adding an artifact is one entry in ARTIFACTS. derivedFile covers the common shape, a generated file
@@ -20,7 +21,7 @@
 
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 
 export type State = 'fresh' | 'stale' | 'missing' | 'skip';
@@ -86,20 +87,38 @@ export function frontmatterValue(head: string, key: string): string | null {
   return rest;
 }
 
-/** The body a skill should carry: the text after the standard's frontmatter. */
-function bodyOf(text: string): string {
-  const outer = splitFrontmatter(text);
-  let body = outer.body;
-  // If the sync ever keeps the standard's own frontmatter under its own, compare past both.
-  if (outer.head && body.startsWith('---')) body = splitFrontmatter(body).body;
-  return normalize(body);
-}
-
 /** Slugs a standard may mount under: the skill key, else the lowercased filename. */
 export function slugCandidates(file: string, head: string): string[] {
   const stem = basename(file, '.md').toLowerCase();
   const override = frontmatterValue(head, 'skill');
   return [...new Set([override, stem, stem.replace(/\./g, '-')].filter(Boolean) as string[])];
+}
+
+/**
+ * The sync stamp: per skill, the hash of the standard and of the SKILL.md as last seen together.
+ * The pantry sync rewrites a standard on its way into a skill (description, links, wrapping), so
+ * comparing the two texts directly calls every skill stale forever. Comparing each side with its own
+ * earlier hash does not depend on what the sync does to the text. It lives in the gitignored mount,
+ * so it is per machine, like the skills it describes.
+ */
+export type Stamp = { skills: Record<string, { source: string; skill: string }> };
+export const STAMP_FILE = '.freshness.json';
+
+export function readStamp(skillsDir: string): Stamp {
+  try {
+    const parsed = JSON.parse(readFileSync(join(skillsDir, STAMP_FILE), 'utf8'));
+    return { skills: parsed?.skills ?? {} };
+  } catch {
+    return { skills: {} };
+  }
+}
+
+function writeStamp(skillsDir: string, stamp: Stamp): void {
+  try {
+    writeFileSync(join(skillsDir, STAMP_FILE), JSON.stringify(stamp, null, 2) + '\n');
+  } catch {
+    // A read-only mount keeps working; it just baselines again next time.
+  }
 }
 
 export const skills: Artifact = {
@@ -122,6 +141,8 @@ export const skills: Artifact = {
       ];
     }
     const findings: Finding[] = [];
+    const stamp = readStamp(skillsDir);
+    const next: Stamp['skills'] = {};
     for (const file of readdirSync(standardsDir).filter((name) => name.endsWith('.md')).toSorted()) {
       const source = readFileSync(join(standardsDir, file), 'utf8');
       const { head } = splitFrontmatter(source);
@@ -133,18 +154,26 @@ export const skills: Artifact = {
         findings.push({ artifact: 'skills', subject: slugs[0], state: 'missing', detail: `standards/${file} is not mounted` });
         continue;
       }
-      const mounted = readFileSync(join(skillsDir, slug, 'SKILL.md'), 'utf8');
-      const description = frontmatterValue(splitFrontmatter(mounted).head, 'description') ?? '';
-      const moved: string[] = [];
-      if (sha(bodyOf(mounted)) !== sha(bodyOf(source))) moved.push('body');
-      if (sha(normalize(description)) !== sha(normalize(when))) moved.push('when line');
+      const skillSha = sha(readFileSync(join(skillsDir, slug, 'SKILL.md'), 'utf8'));
+      const sourceSha = sha(source);
+      const seen = stamp.skills[slug];
+      // A skill file that changed since the stamp was re-synced: whatever the standard says now is
+      // what it was built from. Only a moved standard under an unchanged skill file is behind.
+      const stale = seen !== undefined && seen.skill === skillSha && seen.source !== sourceSha;
+      if (!stale) next[slug] = { source: sourceSha, skill: skillSha };
+      else next[slug] = seen;
       findings.push({
         artifact: 'skills',
         subject: slug,
-        state: moved.length ? 'stale' : 'fresh',
-        detail: moved.length ? `standards/${file} ${moved.join(' and ')} changed since the sync` : `matches standards/${file}`,
+        state: stale ? 'stale' : 'fresh',
+        detail: stale
+          ? `standards/${file} changed since the sync`
+          : seen
+            ? `standards/${file} unchanged since the sync, or re-synced`
+            : `standards/${file} baselined (first time seen on this machine)`,
       });
     }
+    writeStamp(skillsDir, { skills: next });
     return findings;
   },
 };

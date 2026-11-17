@@ -33,12 +33,19 @@ files by hand.
 One module, tools/map-freshness.ts, with a list of derived artifacts. Each entry knows how to compare
 itself to its source and returns findings. Two entries ship now.
 
-- **Skills against standards, by content.** For every standard that carries a when line, find the
-  mounted skill by slug (the skill key, else the lowercased filename) and compare a hash of the body
-  and a hash of the description against the standard's body and when line. Whitespace is normalized
-  before hashing, because the sync re-encodes the when line and the comparison is about meaning, not
-  folding. A stale skill is named, and so is the part that moved. This does not need the pantry
-  package, which a cloud session and a DSH start without the pantry mount do not have.
+- **Skills against standards, by stamp.** For every standard that carries a when line, find the
+  mounted skill by slug (the skill key, else the lowercased filename). A stamp file in the gitignored
+  mount, .claude/skills/.freshness.json, records the hash of the standard and of the SKILL.md as last
+  seen together. A skill is behind when its standard's hash moved and its SKILL.md's did not; a SKILL.md
+  that changed means a sync ran, and the stamp moves forward. The first look on a machine baselines.
+  This does not need the pantry package, which a cloud session and a DSH start without the pantry
+  mount do not have.
+
+  The first version compared the standard's text with the skill's text directly. The first real run
+  on a synced machine called all 21 skills stale after a one-word edit to one standard, because the
+  sync rewrites the text on the way in. Comparing each side with its own earlier hash does not care
+  what the sync does to the text. The cost is that a machine already behind on its first look gets
+  baselined as fresh; the next edit after that is caught.
 - **Graph against code, by time.** The graph has no per-file hash this repo can read, so this one is
   honest about using mtime: the graph file against the newest tracked or untracked code file. It names
   that file and the gap.
