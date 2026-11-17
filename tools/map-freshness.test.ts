@@ -74,33 +74,40 @@ test('slugs: the skill key wins, else the lowercased filename', () => {
   expect(slugCandidates('CLAUDE.starter.md', '')).toEqual(['claude.starter', 'claude-starter']);
 });
 
-test('skills: a fresh sync is ok, and a refolded when line still matches', () => {
+test('skills: the first look baselines and is fresh, whatever the sync did to the text', () => {
   const dir = repo();
   put(dir, 'standards/VOICE.md', VOICE);
-  put(dir, '.claude/skills/voice/SKILL.md', synced('voice', WHEN, BODY));
+  // A sync that rewrites the text on the way in: a direct comparison would call this stale forever.
+  put(dir, '.claude/skills/voice/SKILL.md', synced('voice', 'Rewritten by the sync.', '\n# Voice (synced)\n'));
   const findings = skills.check(dir);
   expect(findings).toHaveLength(1);
   expect(findings[0].state).toBe('fresh');
-  expect(isStale(findings)).toBe(false);
+  expect(findings[0].detail).toContain('baselined');
+  expect(skills.check(dir)[0].state).toBe('fresh');
 });
 
-test('skills: a standard edited after the sync is stale, and the body is named', () => {
-  const dir = repo();
-  put(dir, 'standards/VOICE.md', VOICE.replace('No em-dashes.', 'No em-dashes. One console exception.'));
-  put(dir, '.claude/skills/voice/SKILL.md', synced('voice', WHEN, BODY));
-  const [finding] = skills.check(dir);
-  expect(finding.state).toBe('stale');
-  expect(finding.detail).toContain('body');
-  expect(finding.detail).not.toContain('when line');
-});
-
-test('skills: a changed when line is stale even when the body is not', () => {
+test('skills: a standard edited after the stamp, under an unchanged skill, is stale and stays stale', () => {
   const dir = repo();
   put(dir, 'standards/VOICE.md', VOICE);
-  put(dir, '.claude/skills/voice/SKILL.md', synced('voice', 'Use when writing prose.', BODY));
+  put(dir, '.claude/skills/voice/SKILL.md', synced('voice', WHEN, BODY));
+  skills.check(dir);
+  put(dir, 'standards/VOICE.md', VOICE.replace('No em-dashes.', 'No em-dashes. One console exception.'));
   const [finding] = skills.check(dir);
   expect(finding.state).toBe('stale');
-  expect(finding.detail).toBe('standards/VOICE.md when line changed since the sync');
+  expect(finding.detail).toBe('standards/VOICE.md changed since the sync');
+  expect(skills.check(dir)[0].state).toBe('stale');
+});
+
+test('skills: a re-sync after the edit clears it', () => {
+  const dir = repo();
+  put(dir, 'standards/VOICE.md', VOICE);
+  put(dir, '.claude/skills/voice/SKILL.md', synced('voice', WHEN, BODY));
+  skills.check(dir);
+  put(dir, 'standards/VOICE.md', VOICE.replace('No em-dashes.', 'No em-dashes. Ever.'));
+  expect(skills.check(dir)[0].state).toBe('stale');
+  put(dir, '.claude/skills/voice/SKILL.md', synced('voice', WHEN, '\n# Voice\n\nNo em-dashes. Ever.\n'));
+  expect(skills.check(dir)[0].state).toBe('fresh');
+  expect(skills.check(dir)[0].state).toBe('fresh');
 });
 
 test('skills: an unmounted standard is missing; a file with no when line is ignored', () => {
@@ -169,6 +176,8 @@ test('format: a stale artifact names its subject and the fix; a check that throw
   const dir = repo();
   put(dir, 'standards/VOICE.md', VOICE);
   put(dir, '.claude/skills/voice/SKILL.md', synced('voice', 'old', BODY));
+  skills.check(dir);
+  put(dir, 'standards/VOICE.md', VOICE + '\nEdited.\n');
   const broken = { name: 'broken', fix: 'n/a', check: () => { throw new Error('boom'); } };
   const artifacts = [skills, graph, broken];
   const findings = checkAll(dir, artifacts);
