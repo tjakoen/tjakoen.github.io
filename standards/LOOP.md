@@ -269,6 +269,13 @@ satisfy. Two halves.
 - **Close with a run report.** Gate results *verbatim* (not "tests pass" — the actual output), the
   diffstat, **what was not done**, and **what needs human eyes**. A report that only lists wins is a
   report that is hiding something.
+- **Name what you read.** The report's consulted list says which standard sections, skills and graph
+  queries the run opened before it wrote, one line each, in the form VOICE.md#register-by-surface. A
+  report that says it followed a rule without naming the section has made the same unbacked claim as
+  "tests pass", and is read the same way. It is a list, not a log, and a run that read nothing writes
+  none. The ledger's own README carries the shape (artifacts/runs/README.md in the portfolio), and a
+  check that resolves every anchor proves an entry points at a real section, never that the run read
+  it.
 - **A change a person can see owes a tour.** When the diff touches something that renders, the run
   closes with a CRUMB dev tour as well as the report: one step per changed surface, each carrying
   what moved and a verify line the reviewer can actually execute. A diff describes the edit; a tour
@@ -277,7 +284,7 @@ satisfy. Two halves.
   list is replaced by it. A change with no rendered surface, a parser, a CLI flag, a doc, owes no
   tour, and asking for one anyway is how the habit gets muted.
 
-The rule underneath all four: **evidence or it didn't happen.** A claim of "verified" with no gate output
+The rule underneath all five: **evidence or it didn't happen.** A claim of "verified" with no gate output
 attached is treated as unverified.
 
 **Where the repo runs PANTRY, hand over the link, not the summary.** The cockpit renders the run
@@ -639,6 +646,7 @@ The contract in §4 is rarely rejected. It is talked out of, one reasonable-soun
 - Work committed but unpushed, with no line in the handoff saying so.
 - The same gate rerun with no edit in between.
 - A run report with no "what was not done" section.
+- A report that says it followed a standard and names no section of it.
 - "Verified" written with no gate output attached to it.
 - Scope grew past the declared cap and no ask was raised.
 - A plan item edited before it was claimed.
@@ -662,6 +670,8 @@ run ledger is checked against, not a vibe pass.
       what it ignored. A green check proves one property, and the property it skipped is the finding
       rather than a footnote.
 - [ ] Diffstat in the report.
+- [ ] A consulted list in the report naming the standard sections, skills and graph queries the run
+      read, or the word none, and the run-report check green over it where the repo carries one.
 - [ ] "What was not done" written, even when the answer is nothing.
 - [ ] "What needs human eyes" written, even when the answer is nothing.
 - [ ] Every touched file is either committed or named in the handoff as deliberately left dirty.

@@ -36,6 +36,7 @@
     "audit": "bun tools/audit.ts",
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:links": "bun tools/link-lint.ts",
+    "lint:runs": "bun tools/run-report-lint.ts",
     "lint:baseline": "bun tools/lint-gate.ts --write",
     "answers:check": "bun tools/answers-check.ts",
     "audit:desk": "bun tools/desk-audit.ts",
