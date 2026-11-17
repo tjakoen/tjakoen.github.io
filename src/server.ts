@@ -670,8 +670,8 @@ const referencePage = async (req: Request) => {
     inject: PAGE_ASSETS,
     injectHead: PAGE_HEAD,
     board: `
-      <p class="eyebrow"><span class="name">Reference</span></p>
       <h1 class="masthead">Generated, not hand-copied.</h1>
+      <p class="byline"><span class="name">Reference</span></p>
       <hr class="rule">
       <p class="lede">Everything below is read from the real source at request time — the
         <a href="/grain/docs/ai-interface">AI vocabulary</a> contract and GRAIN's token slots.

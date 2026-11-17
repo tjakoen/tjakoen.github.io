@@ -39,7 +39,8 @@ What makes the reference feel like e-ink, in order of impact:
 1. **Paper background, not white.** A warm desaturated grey. Pure `#FFF` instantly kills it.
 2. **Soft black, not pure black.** Ink is `~#1C` something, so it reads printed, not screen-lit.
 3. **Disciplined display type, tight hierarchy.** The reference used a Helvetica-style grotesque; this system swaps in Redaction (see Typography) — a serif whose built-in grain doubles as a state signal.
-4. **Masthead pattern.** Small sentence-case eyebrow → big bold headline → hairline rule.
+4. **Masthead pattern.** Big bold headline → small byline (name and date) → hairline rule. Nothing
+   sits above the headline except breadcrumb navigation in the header.
 5. **The dot matrix.** Week-trackers and the life grid. This is the signature element.
 6. **Crisp edges + hairline rules.** Near-zero border-radius, 1px borders.
 7. **No effects.** No box-shadow, no gradient fill, no blur. Flatness is intentional.
@@ -144,7 +145,7 @@ commercial release.
 
 | Role            | Size            | Weight | Tracking  | Case      | Notes                          |
 |-----------------|-----------------|--------|-----------|-----------|--------------------------------|
-| Eyebrow         | 0.875rem (14px) | 400    | normal    | Sentence  | name underlined inline         |
+| Byline          | 0.875rem (14px) | 400    | normal    | Sentence  | name underlined inline         |
 | Display (H1)    | 2.25rem (36px)  | 400    | -0.01em   | Title     | line-height 1.02, the headline |
 | Section heading | 1.3rem (21px)   | 400    | normal    | Title     | "Overview", "Insights"         |
 | Body            | 0.9375rem (15px)| 400    | normal    | Sentence  | line-height 1.55, clean grade  |
@@ -257,12 +258,15 @@ share it.
 ## 5. Components
 
 ### Masthead
-Eyebrow (with underlined name) → bold display headline → hairline rule.
+Bold display headline → byline (underlined name, then the date) → hairline rule. Context sits
+below the headline, never above it: an eyebrow over a headline is the reflex that marks a page as
+machine-made, so GRAIN has no eyebrow class. Section headings carry no label above them either.
 ```
-Hello, Helly R.            ← eyebrow, name underlined
 You're 54% through life    ← display, bold, tight
+Helly R. · 17 Nov 2026     ← byline, name underlined
 ─────────────────────────  ← 1.5px rule
 ```
+Markup: `<h1 class="masthead">`, then `<p class="byline">`, then `<hr class="rule">`.
 
 ### Section header
 Label left, underlined action link right, baseline-aligned.
