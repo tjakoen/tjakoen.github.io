@@ -25,6 +25,9 @@ touched:
   - CLAUDE.md
   - artifacts/runs/2026-11-17-stale-map-check.md
 plans: stale-map-check
+consulted:
+  - CLAUDE.md
+  - VOICE.md
 gates:
   - bun install --frozen-lockfile
   - bun run check

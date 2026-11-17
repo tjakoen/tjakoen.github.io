@@ -17,6 +17,9 @@ diffstat: a 414 line generator and a 242 line test in tools/, a generated 3,159 
 unpushed: 0 once the push lands | claude/ai-workflow-standards-index
 verifiedBy: 22 new tests (fixtures plus the real folder and a freshness check), the full bun test run, a typecheck, the lint gate, the link lint and hand runs of the toc and read commands
 doctor: not run | the PANTRY doctor is not on this cloud machine
+consulted:
+  - CLAUDE.md
+  - VOICE.md
 ---
 
 The brief was retrieval by reasoning rather than by embedding, which people have started calling
