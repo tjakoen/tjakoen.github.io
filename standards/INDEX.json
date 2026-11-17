@@ -1,0 +1,3159 @@
+{
+  "version": 1,
+  "generatedBy": "bun run standards:index (tools/standards-index.ts); edit the standards, never this file",
+  "howToUse": [
+    "Pick the standard from its summary and when, without opening any file.",
+    "Inside it, pick the section from the heading and summary of each entry in sections and children.",
+    "Read only that section's line range from file. Load the whole file only when the task is the whole standard.",
+    "Follow refs to another standard's section the same way, by anchor, instead of loading the neighbour whole.",
+    "Summaries are each section's opening sentence, not a paraphrase: a thin one means read the section."
+  ],
+  "standards": [
+    {
+      "slug": "ai-development",
+      "file": "standards/AI-DEVELOPMENT.md",
+      "url": "https://portfolio.tjakoen.com/standards/ai-development",
+      "skill": "ai-development",
+      "title": "AI-DEVELOPMENT.md — how I build full stack with AI",
+      "summary": "A portable playbook for building with an AI partner - the standards, the pitfalls, and how problems become solutions.",
+      "when": "Read this BEFORE handing the typing to an AI on a real build task: a feature, a refactor, a bug hunt, a migration. It sets what the human owes the AI up front, the bar every change is held to before it counts as done, and the pitfalls that recur (the confident wrong answer, the silent scope creep, the doc that drifts away from the code). Don't skip because you have worked this way before - the pitfalls recur precisely because experience does not prevent them.",
+      "lines": 270,
+      "lead": {
+        "lines": [
+          13,
+          25
+        ],
+        "summary": "A portable playbook for developing software with an AI partner."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. The working relationship",
+          "anchor": "1-the-working-relationship",
+          "lines": [
+            29,
+            45
+          ],
+          "summary": "I set direction; the AI executes and reports.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. How I interact with the AI",
+          "anchor": "2-how-i-interact-with-the-ai",
+          "lines": [
+            49,
+            69
+          ],
+          "summary": "Give intent, not just tasks. \"Add caching\" is weak.",
+          "refs": [
+            {
+              "to": "session-loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "3. Standards (the bar every change is held to)",
+          "anchor": "3-standards-the-bar-every-change-is-held-to",
+          "lines": [
+            73,
+            95
+          ],
+          "summary": "Definition of done = code + tests + docs synced + green checks.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. Conventions (defaults that hold across projects)",
+          "anchor": "4-conventions-defaults-that-hold-across-projects",
+          "lines": [
+            99,
+            166
+          ],
+          "summary": "Keep dependencies close to the floor.",
+          "refs": [
+            {
+              "to": "session-loop"
+            }
+          ],
+          "children": [
+            {
+              "level": 3,
+              "heading": "Reusable prompt: index the codebase for the AI",
+              "anchor": "reusable-prompt-index-the-codebase-for-the-ai",
+              "lines": [
+                134,
+                166
+              ],
+              "summary": "Paste into a fresh session in any repo to set up the knowledge-graph index (see the \"Index the codebase for the AI\" convention above).",
+              "refs": []
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "5. Common pitfalls (and the guard for each)",
+          "anchor": "5-common-pitfalls-and-the-guard-for-each",
+          "lines": [
+            170,
+            182
+          ],
+          "summary": "A table: Pitfall, What it looks like, Guard.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Problem → solution (the loop)",
+          "anchor": "6-problem-solution-the-loop",
+          "lines": [
+            186,
+            239
+          ],
+          "summary": "Reproduce / locate first. Don't theorize into the void.",
+          "refs": [
+            {
+              "to": "session-loop"
+            }
+          ],
+          "children": [
+            {
+              "level": 3,
+              "heading": "Before the build: review the plan with a goldfish",
+              "anchor": "before-the-build-review-the-plan-with-a-goldfish",
+              "lines": [
+                206,
+                239
+              ],
+              "summary": "Fixing a bug starts from a reproduction.",
+              "refs": [
+                {
+                  "to": "decisions"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "7. Seeing the work",
+          "anchor": "7-seeing-the-work",
+          "lines": [
+            243,
+            250
+          ],
+          "summary": "Show, don't tell. For anything visual or behavioral, produce the artifact — screenshot, running output, a rendered page — not a description of it.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "8. Quick checklist (paste at the top of a session)",
+          "anchor": "8-quick-checklist-paste-at-the-top-of-a-session",
+          "lines": [
+            254,
+            270
+          ],
+          "summary": "This is a living document. When how I work changes, update it — the same rule it asks of everything else.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "decisions",
+        "readme",
+        "session-loop"
+      ],
+      "refsIn": [
+        "ai-repo-standard",
+        "audit-standard",
+        "claude.starter",
+        "loop",
+        "readme",
+        "session-loop"
+      ]
+    },
+    {
+      "slug": "ai-repo-standard",
+      "file": "standards/AI-REPO-STANDARD.md",
+      "url": "https://portfolio.tjakoen.com/standards/ai-repo-standard",
+      "skill": "ai-repo-standard",
+      "title": "AI-REPO-STANDARD.md",
+      "summary": "Structure a repo so AI sessions compound. The repo-side companion to AI-DEVELOPMENT, with the map, contracts, and guardrails that carry learning between sessions.",
+      "when": "Read this BEFORE setting up a repo for AI work, or before changing any of the machinery that carries knowledge between sessions: creating or restructuring a CLAUDE.md, adding a sync table, writing an AUDIT.md, deciding what belongs in agent memory versus a committed doc, or turning a written rule into a machine-checkable one. Read it too the moment a session re-makes a mistake an earlier session already solved, because that is the symptom this file treats. Don't skip because the repo already has a CLAUDE.md - a config dump is the exact failure mode it exists to prevent.",
+      "lines": 322,
+      "lead": {
+        "lines": [
+          14,
+          31
+        ],
+        "summary": "A portable standard for the repo side of AI-assisted development."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "0. The core principle everything else serves",
+          "anchor": "0-the-core-principle-everything-else-serves",
+          "lines": [
+            35,
+            45
+          ],
+          "summary": "An operator tripping on the system measures the system's clarity, not just the operator's.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "1. The file kit",
+          "anchor": "1-the-file-kit",
+          "lines": [
+            49,
+            61
+          ],
+          "summary": "Small repo? Collapse the kit: one CLAUDE.md with an audit section and a plan section.",
+          "refs": [
+            {
+              "to": "ai-development"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "2. The root CLAUDE.md — onboarding, not a config dump",
+          "anchor": "2-the-root-claudemd-onboarding-not-a-config-dump",
+          "lines": [
+            65,
+            88
+          ],
+          "summary": "The strongest CLAUDE.md files read like onboarding for a new senior hire, and they follow a consistent shape: A self-maintenance contract in the first lines.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "3. The sync table — \"when you change X, also update Y\"",
+          "anchor": "3-the-sync-table-when-you-change-x-also-update-y",
+          "lines": [
+            92,
+            112
+          ],
+          "summary": "The single highest-leverage pattern.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. Subsystem CLAUDE.md + the hard-won lessons section",
+          "anchor": "4-subsystem-claudemd-the-hard-won-lessons-section",
+          "lines": [
+            116,
+            141
+          ],
+          "summary": "Each major subsystem (layer, package, app) carries its own CLAUDE.md, seeded from a shared starter template, with two payloads: That area's non-negotiables — the local rules (import boundaries, file...",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. AUDIT.md — the alignment runbook",
+          "anchor": "5-auditmd-the-alignment-runbook",
+          "lines": [
+            145,
+            173
+          ],
+          "summary": "A committed, repeatable procedure that checks the repo still obeys its own rules.",
+          "refs": [
+            {
+              "to": "audit-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "6. Single source of truth + projections",
+          "anchor": "6-single-source-of-truth-projections",
+          "lines": [
+            177,
+            192
+          ],
+          "summary": "Every fact gets exactly one home; everything else points at it or summarizes it — a projection, never a fork.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "7. The hardening ladder — make rules machine-checkable",
+          "anchor": "7-the-hardening-ladder-make-rules-machine-checkable",
+          "lines": [
+            196,
+            218
+          ],
+          "summary": "When a rule matters, promote it up this ladder as far as it will go: A comment in one module — worthless as a contract; it gets reinvented, wrong.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "8. Definition of done — one sentence, enforced everywhere",
+          "anchor": "8-definition-of-done-one-sentence-enforced-everywhere",
+          "lines": [
+            222,
+            228
+          ],
+          "summary": "Done = code + the right test tier(s) + docs synced (walk the sync table) + checks green + a memory/decision record if a decision was made.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "9. Memory discipline (agent memory vs. committed docs)",
+          "anchor": "9-memory-discipline-agent-memory-vs-committed-docs",
+          "lines": [
+            232,
+            246
+          ],
+          "summary": "Two tiers, with a promotion rule: Agent memory (Claude's per-project memory) — decisions, preferences, context.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "10. Let the AI show its work",
+          "anchor": "10-let-the-ai-show-its-work",
+          "lines": [
+            250,
+            260
+          ],
+          "summary": "If the project has a UI, an AI in a headless session can't point at a screen — so build the channel once: a scripted command (npm run shots / Playwright) that boots the app, captures the key screens...",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "11. Index the codebase for the AI",
+          "anchor": "11-index-the-codebase-for-the-ai",
+          "lines": [
+            264,
+            290
+          ],
+          "summary": "Grepping and re-reading raw files is the AI's default way to orient — and its single biggest token sink, plus a source of partial-picture mistakes (it acts on the three files it read, not the ten...",
+          "refs": [
+            {
+              "to": "ai-development"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "12. Adoption checklist",
+          "anchor": "12-adoption-checklist",
+          "lines": [
+            294,
+            322
+          ],
+          "summary": "Day one (an hour): Link the published URLs for AI-DEVELOPMENT.md (the interaction playbook) and this file.",
+          "refs": [
+            {
+              "to": "ai-development"
+            }
+          ]
+        }
+      ],
+      "refsOut": [
+        "ai-development",
+        "audit-standard",
+        "loop"
+      ],
+      "refsIn": [
+        "audit-standard",
+        "graph",
+        "loop",
+        "readme",
+        "tree"
+      ]
+    },
+    {
+      "slug": "audit-standard",
+      "file": "standards/AUDIT-STANDARD.md",
+      "url": "https://portfolio.tjakoen.com/standards/audit-standard",
+      "skill": "audit-standard",
+      "title": "AUDIT-STANDARD.md — how a repo gets audited",
+      "summary": "The whole-repo audit - the nine dimensions it looks at, the severity words, the subagent fan-out that runs it, and the report it owes.",
+      "when": "Read this BEFORE running an audit, a full pass, a health check, a quality sweep, or a \"is this codebase any good\" review, and before writing or editing a repo's AUDIT.md. It owns the rubric (the nine dimensions), the severity vocabulary, the parallel subagent fan-out, and the report artifact. AI-REPO-STANDARD owns the per-repo runbook file; this owns what a real audit actually looks at. Don't skip because you already read the code - one reader going file by file is the exact failure mode the fan-out exists to fix, and a finding without a file:line is an opinion.",
+      "lines": 226,
+      "lead": {
+        "lines": [
+          14,
+          25
+        ],
+        "summary": "An audit is the pass where a repo is judged as a whole, against the bar it claims to hold itself to."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. The two halves",
+          "anchor": "1-the-two-halves",
+          "lines": [
+            29,
+            40
+          ],
+          "summary": "Every audit has both. Running one and calling it done is the most common way an audit lies.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. The rubric (the nine dimensions)",
+          "anchor": "2-the-rubric-the-nine-dimensions",
+          "lines": [
+            44,
+            64
+          ],
+          "summary": "Hunt each one explicitly. A dimension nobody looked for is a dimension that came back clean for the wrong reason, so an audit report says \"clean\" per dimension rather than staying silent.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "3. Severity",
+          "anchor": "3-severity",
+          "lines": [
+            68,
+            82
+          ],
+          "summary": "Three words, and they mean consequence, never effort.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. The fan-out (run it in parallel, read-only)",
+          "anchor": "4-the-fan-out-run-it-in-parallel-read-only",
+          "lines": [
+            86,
+            115
+          ],
+          "summary": "One reader going file by file is slow, and worse, it gets tired in a predictable order: the last directory always gets the thinnest pass.",
+          "refs": [
+            {
+              "to": "session-loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "5. Tests get audited, not trusted",
+          "anchor": "5-tests-get-audited-not-trusted",
+          "lines": [
+            119,
+            134
+          ],
+          "summary": "A green suite is evidence of nothing until someone checks what it asserts.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. The report",
+          "anchor": "6-the-report",
+          "lines": [
+            138,
+            153
+          ],
+          "summary": "The audit's artifact. Dated, committed, and written so the next reader can act without rerunning it.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "7. Fixing",
+          "anchor": "7-fixing",
+          "lines": [
+            157,
+            171
+          ],
+          "summary": "The gate comes first. Typecheck, lint, unit tests, end-to-end.",
+          "refs": [
+            {
+              "to": "tour-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "8. When to run one",
+          "anchor": "8-when-to-run-one",
+          "lines": [
+            175,
+            183
+          ],
+          "summary": "A table: Trigger, Depth.",
+          "refs": [
+            {
+              "to": "loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "9. Rationalizations",
+          "anchor": "9-rationalizations",
+          "lines": [
+            187,
+            196
+          ],
+          "summary": "A table: The excuse, Why it does not hold.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "10. Red flags",
+          "anchor": "10-red-flags",
+          "lines": [
+            200,
+            207
+          ],
+          "summary": "A findings table with no file:line anywhere in it.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "11. Verification (before an audit is called done)",
+          "anchor": "11-verification-before-an-audit-is-called-done",
+          "lines": [
+            211,
+            226
+          ],
+          "summary": "Gate output pasted verbatim: typecheck, lint, unit, end-to-end.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "ai-development",
+        "ai-repo-standard",
+        "loop",
+        "session-loop",
+        "tour-standard"
+      ],
+      "refsIn": [
+        "ai-repo-standard",
+        "conformance",
+        "hooks",
+        "readme",
+        "session-loop"
+      ]
+    },
+    {
+      "slug": "claude",
+      "file": "standards/CLAUDE.md",
+      "url": "https://portfolio.tjakoen.com/standards/claude",
+      "skill": null,
+      "title": "CLAUDE.md — standards",
+      "summary": "Operating rules for editing standards/ itself - keep each fact in exactly one home, and keep it accurate.",
+      "when": null,
+      "lines": 72,
+      "lead": {
+        "lines": [
+          7,
+          10
+        ],
+        "summary": "Operating rules for any AI (or human) editing standards/ — the canon itself: how Tjakoen builds with an AI, how anything under his byline reads, and how a repo is set up."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "What this is",
+          "anchor": "what-this-is",
+          "lines": [
+            12,
+            18
+          ],
+          "summary": "The single source of truth for the cross-repo standards, published at https://portfolio.tjakoen.com/standards (rendered by the portfolio from its own standards/ dir, where these files are canonically...",
+          "refs": [
+            {
+              "to": "readme"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Start here (reading order)",
+          "anchor": "start-here-reading-order",
+          "lines": [
+            20,
+            23
+          ],
+          "summary": "README.md — the index and the one rule this folder lives by.",
+          "refs": [
+            {
+              "to": "readme"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Non-negotiables",
+          "anchor": "non-negotiables",
+          "lines": [
+            25,
+            38
+          ],
+          "summary": "SSOT, ruthlessly. Each fact has exactly one home here; every other mention (in these files or any repo) is a pointer.",
+          "refs": [
+            {
+              "to": "voice"
+            },
+            {
+              "to": "claude.starter"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The frontmatter contract",
+          "anchor": "the-frontmatter-contract",
+          "lines": [
+            40,
+            67
+          ],
+          "summary": "Every standard opens with title, summary, and when.",
+          "refs": [
+            {
+              "to": "loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Definition of done",
+          "anchor": "definition-of-done",
+          "lines": [
+            69,
+            72
+          ],
+          "summary": "The edit + the index (README.md) still true + inbound links still resolve + published rendering checked (or noted for the next portfolio deploy) + a memory if a decision was made.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "claude.starter",
+        "loop",
+        "readme",
+        "voice"
+      ],
+      "refsIn": []
+    },
+    {
+      "slug": "claude.starter",
+      "file": "standards/CLAUDE.starter.md",
+      "url": "https://portfolio.tjakoen.com/standards/claude.starter",
+      "skill": "claude.starter",
+      "title": "CLAUDE.starter.md — the new-repo starter template",
+      "summary": "The template every new repo copies to wire itself into these standards from day one - reference them, don't fork them.",
+      "when": "Read this BEFORE writing the CLAUDE.md for a new repo, and the first time an existing repo is wired into these standards. It is a template to copy and fill, not prose to summarize: keep the pointers to the published standards and never fork a standard's content into the new file. Don't skip because the repo is small, private, or \"just a prototype\" - the wiring costs one file, and it is the thing that makes every later session in that repo cheap.",
+      "lines": 94,
+      "lead": {
+        "lines": [
+          13,
+          24
+        ],
+        "summary": "Starter template. Copy this to the root of a new repo as CLAUDE.md, delete this line, and fill the <…> placeholders."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "What this is",
+          "anchor": "what-this-is",
+          "lines": [
+            26,
+            29
+          ],
+          "summary": "<One paragraph: what this project is, who it's for, and the single most important thing to know before touching it.>",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "How I work here (non-negotiables)",
+          "anchor": "how-i-work-here-non-negotiables",
+          "lines": [
+            31,
+            47
+          ],
+          "summary": "The full rulebook is AI-DEVELOPMENT.md (the standards) + SESSION-LOOP.md (the session mechanics, memory, handoff, model economy).",
+          "refs": [
+            {
+              "to": "ai-development"
+            },
+            {
+              "to": "session-loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Voice (for any prose in my name)",
+          "anchor": "voice-for-any-prose-in-my-name",
+          "lines": [
+            49,
+            54
+          ],
+          "summary": "Follow VOICE.md. The short version: honest, quirky, self-deprecating, concrete, opinionated-with-the-why; no backticks in prose; contractions in casual writing, expanded in formal docs.",
+          "refs": [
+            {
+              "to": "voice"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "README presentation (do this once, at repo start)",
+          "anchor": "readme-presentation-do-this-once-at-repo-start",
+          "lines": [
+            56,
+            68
+          ],
+          "summary": "Follow README-STANDARD.md. In short: Title emoji.",
+          "refs": [
+            {
+              "to": "readme-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Commit convention",
+          "anchor": "commit-convention",
+          "lines": [
+            70,
+            89
+          ],
+          "summary": "No AI attribution trailers on commits (Co-Authored-By: Claude etc.).",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Docs / structure",
+          "anchor": "docs-structure",
+          "lines": [
+            91,
+            94
+          ],
+          "summary": "<List this repo's key files and where the important docs live.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "ai-development",
+        "readme-standard",
+        "session-loop",
+        "voice"
+      ],
+      "refsIn": [
+        "claude",
+        "conformance",
+        "kickstart",
+        "loop",
+        "readme"
+      ]
+    },
+    {
+      "slug": "commit-standard",
+      "file": "standards/COMMIT-STANDARD.md",
+      "url": "https://portfolio.tjakoen.com/standards/commit-standard",
+      "skill": "commit-standard",
+      "title": "COMMIT-STANDARD.md — the commit message standard",
+      "summary": "How a commit message is built in every repo - a gitmoji, a one-line title, then bullets saying what the commit did.",
+      "when": "Read this BEFORE writing a commit message, a squash message or a merge title in any repo. It owns the shape (the gitmoji, the title line, the bullet body); VOICE owns how the words read. Don't skip because the change is small - a one-line fix still gets its emoji and at least one bullet, and the log is only scannable if every entry follows the same shape.",
+      "lines": 93,
+      "lead": {
+        "lines": [
+          12,
+          15
+        ],
+        "summary": "Every commit message in my repos has the same three parts: a gitmoji, a title line, and a body of bullets."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "The shape",
+          "anchor": "the-shape",
+          "lines": [
+            17,
+            40
+          ],
+          "summary": "The gitmoji comes first, followed by one space.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Which gitmoji",
+          "anchor": "which-gitmoji",
+          "lines": [
+            42,
+            72
+          ],
+          "summary": "Pick the emoji for the main intent of the commit.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "What stays out",
+          "anchor": "what-stays-out",
+          "lines": [
+            74,
+            81
+          ],
+          "summary": "No AI trailers. No Co-Authored-By line for any model and no \"Generated with\" footer.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Merges and squashes",
+          "anchor": "merges-and-squashes",
+          "lines": [
+            83,
+            87
+          ],
+          "summary": "A squash merge takes the same shape: the pull request title becomes the gitmoji and title line, and the bullets summarise the whole branch.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The prompt",
+          "anchor": "the-prompt",
+          "lines": [
+            89,
+            93
+          ],
+          "summary": "Write the commit message for the staged change under COMMIT-STANDARD.",
+          "refs": []
+        }
+      ],
+      "refsOut": [],
+      "refsIn": [
+        "readme"
+      ]
+    },
+    {
+      "slug": "conformance",
+      "file": "standards/CONFORMANCE.md",
+      "url": "https://portfolio.tjakoen.com/standards/conformance",
+      "skill": "conformance",
+      "title": "CONFORMANCE — the prompt that checks a repo is wired, not just willing",
+      "summary": "A paste-in prompt that runs in any existing repo and reports whether the standards are wired, the links resolve, the audit runbook is real, and the loop is automated rather than remembered.",
+      "when": "Read this BEFORE assuming an existing repo is wired into the standards, and before rolling a standard, a hook, a skill or the loop out across more than one repo. It owns the conformance pass: what the mechanical doctor already covers, the eight things only a model can judge, and the report the pass owes. KICKSTART is the sibling that runs before the repo exists. Don't skip because the repo has a CLAUDE.md and the links look fine - a file that exists and a loop that runs are different claims, and the second one is the one that decays.",
+      "lines": 195,
+      "lead": {
+        "lines": [
+          14,
+          30
+        ],
+        "summary": "If you are an AI reading this because someone handed you this link: the fenced prompt below is addressed to you."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "What this does not do",
+          "anchor": "what-this-does-not-do",
+          "lines": [
+            32,
+            47
+          ],
+          "summary": "It never re-implements the doctor. bunx pantry doctor is the mechanical tier of the loop (LOOP §2) and it already owns the mechanical checks: CLAUDE.md present, the AGENTS.md symlink, forked...",
+          "refs": [
+            {
+              "to": "audit-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The prompt",
+          "anchor": "the-prompt",
+          "lines": [
+            49,
+            146
+          ],
+          "summary": "Paste everything between the lines, in the repo you want checked.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "After it reports",
+          "anchor": "after-it-reports",
+          "lines": [
+            148,
+            162
+          ],
+          "summary": "The report is the input to a normal session, not a to-do list to grind.",
+          "refs": [
+            {
+              "to": "claude.starter"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Rationalizations",
+          "anchor": "rationalizations",
+          "lines": [
+            164,
+            173
+          ],
+          "summary": "A table: Rationalization, Reality.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Red flags",
+          "anchor": "red-flags",
+          "lines": [
+            175,
+            182
+          ],
+          "summary": "A conformance report with no \"what was not covered\" section.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Verification (before the pass is called done)",
+          "anchor": "verification-before-the-pass-is-called-done",
+          "lines": [
+            184,
+            195
+          ],
+          "summary": "Doctor output pasted verbatim, or one line saying why it could not run.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "audit-standard",
+        "claude.starter",
+        "kickstart",
+        "loop"
+      ],
+      "refsIn": [
+        "kickstart",
+        "loop",
+        "readme"
+      ]
+    },
+    {
+      "slug": "decisions",
+      "file": "standards/DECISIONS.md",
+      "url": "https://portfolio.tjakoen.com/standards/decisions",
+      "skill": "decisions",
+      "title": "DECISIONS — how a run reaches the human, and how the answer comes back",
+      "summary": "The four ways a run asks for something it cannot decide alone, what picks between them, what a decision request has to contain, and the one channel an answer returns on so a session that did not ask can still act on it.",
+      "when": "Read this BEFORE asking the human anything mid-run, and before building any surface that collects an answer: a decision request, a review tour that ends in a question, a handoff, a prompt card, an approval step. It owns which surface a question belongs on and how the answer gets back; LOOP section 4b owns how much scrutiny a change earns, and SESSION-LOOP section 5 owns the shape of the handoff itself. Don't skip because you are about to just ask in chat - asking in chat is one of the four and the right one more often than the machinery suggests, but only when someone is there to read it.",
+      "lines": 163,
+      "lead": {
+        "lines": [
+          15,
+          22
+        ],
+        "summary": "A run reaches a person for one of two reasons."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. The four ways",
+          "anchor": "1-the-four-ways",
+          "lines": [
+            26,
+            38
+          ],
+          "summary": "A fifth case gets proposed every time this list is written, and it is not a fifth surface: the session that sleeps, runs out, or dies and is picked up later.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. What picks between them",
+          "anchor": "2-what-picks-between-them",
+          "lines": [
+            42,
+            61
+          ],
+          "summary": "The lane says how much scrutiny.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "3. What a decision request contains",
+          "anchor": "3-what-a-decision-request-contains",
+          "lines": [
+            65,
+            80
+          ],
+          "summary": "A request that only states the question is a request the reader has to reconstruct.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. How the answer comes back",
+          "anchor": "4-how-the-answer-comes-back",
+          "lines": [
+            84,
+            126
+          ],
+          "summary": "One channel, append only, and the same one whether the answer came from a card, a form or a paste.",
+          "refs": [
+            {
+              "to": "loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "5. Rationalizations",
+          "anchor": "5-rationalizations",
+          "lines": [
+            130,
+            139
+          ],
+          "summary": "A table: Rationalization, Reality.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Red flags",
+          "anchor": "6-red-flags",
+          "lines": [
+            143,
+            152
+          ],
+          "summary": "A question asked in chat during an unattended run.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "7. Verification",
+          "anchor": "7-verification",
+          "lines": [
+            156,
+            163
+          ],
+          "summary": "Every question raised this run is on the surface its lane and its visibility select.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "loop"
+      ],
+      "refsIn": [
+        "ai-development",
+        "intake",
+        "loop",
+        "readme",
+        "session-loop"
+      ]
+    },
+    {
+      "slug": "figures",
+      "file": "standards/FIGURES.md",
+      "url": "https://portfolio.tjakoen.com/standards/figures",
+      "skill": "figures",
+      "title": "FIGURES.md — figures & visualizations",
+      "summary": "The standard for every diagram and chart - HTML when a figure has state, two tokenized inline-SVG scaffolds when it does not, one palette each, and a generated diagram carries the same accessible name a hand-drawn one does.",
+      "when": "Read this BEFORE drawing the first shape of any figure that will ship: a chart, a graph, a timeline, a ratio, an architecture diagram, a flow, a loop, a pipeline. It gives the two inline-SVG scaffolds to copy, the token palette, the type scale, and the rule that no figure publishes without an accessible name. Don't skip because it is \"just a quick diagram\" or because a mermaid fence is faster to type - a freehanded figure will not match the family, and a mermaid fence without a label is refused and degrades to a code block rather than rendering.",
+      "lines": 248,
+      "lead": {
+        "lines": [
+          14,
+          21
+        ],
+        "summary": "The standard for every diagram and chart in Tjakoen's notes, docs, and pages."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "Three figure shapes, two media (the one rule)",
+          "anchor": "three-figure-shapes-two-media-the-one-rule",
+          "lines": [
+            23,
+            69
+          ],
+          "summary": "A figure that has state is HTML.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The data-viz scaffold (copy this, don't freehand)",
+          "anchor": "the-data-viz-scaffold-copy-this-dont-freehand",
+          "lines": [
+            71,
+            141
+          ],
+          "summary": "Every data-viz SVG starts from this exact skeleton.",
+          "refs": [],
+          "children": [
+            {
+              "level": 3,
+              "heading": "The tokens (the palette, single source)",
+              "anchor": "the-tokens-the-palette-single-source",
+              "lines": [
+                90,
+                99
+              ],
+              "summary": "A table: Token, Value, Role.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "The type scale",
+              "anchor": "the-type-scale",
+              "lines": [
+                101,
+                104
+              ],
+              "summary": "Serif always (Georgia / Times, set once on the root and inherited).",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "Non-negotiables",
+              "anchor": "non-negotiables",
+              "lines": [
+                106,
+                118
+              ],
+              "summary": "Canvas is 0 0 620 H, width=\"100%\", max-width:560px.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "A figure may be upgraded, never replaced",
+              "anchor": "a-figure-may-be-upgraded-never-replaced",
+              "lines": [
+                120,
+                141
+              ],
+              "summary": "An earlier version of this rule said \"no client JS\" and gave as its reason that script would break the zero-framework-JS promise.",
+              "refs": []
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The flow scaffold (steps, loops, relationships)",
+          "anchor": "the-flow-scaffold-steps-loops-relationships",
+          "lines": [
+            143,
+            198
+          ],
+          "summary": "A flow is structural, not quantitative, so it does the opposite of the data-viz figure on one point: it inherits the page's theme tokens instead of carrying its own palette, so it themes with the...",
+          "refs": [],
+          "children": [
+            {
+              "level": 3,
+              "heading": "Non-negotiables (flow)",
+              "anchor": "non-negotiables-flow",
+              "lines": [
+                182,
+                198
+              ],
+              "summary": "Theme tokens, never hex. --color-fg / --color-bg / --color-line / --color-muted only.",
+              "refs": []
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The reference figures (built to this standard)",
+          "anchor": "the-reference-figures-built-to-this-standard",
+          "lines": [
+            200,
+            206
+          ],
+          "summary": "All live in ten-times-zero.md.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Rendering reality (know this before you build)",
+          "anchor": "rendering-reality-know-this-before-you-build",
+          "lines": [
+            208,
+            248
+          ],
+          "summary": "Inline SVG renders everywhere the site serves, today, with zero dependencies.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "voice"
+      ],
+      "refsIn": [
+        "readme",
+        "voice"
+      ]
+    },
+    {
+      "slug": "graph",
+      "file": "standards/GRAPH.md",
+      "url": "https://portfolio.tjakoen.com/standards/graph",
+      "skill": "graph",
+      "title": "GRAPH.md — navigate the code by graph, not by fan-out",
+      "summary": "The retrieval standard - ask the code graph a scoped question before you fan out grep, reads, and subagents. A small structured answer instead of a pile of files, and a free hook that keeps the graph honest.",
+      "when": "Read this BEFORE answering any question about code by searching - \"where is X\", \"what calls Y\", \"how does Z connect to W\", \"find all uses of\", \"map this directory\" - and before firing a wide grep, reading a file whole, or spawning a search subagent. Don't skip because grep feels faster or because you assume the graph is stale: a stale graph is one command to refresh, and the fan-out you were about to do costs more than checking.",
+      "lines": 179,
+      "lead": {
+        "lines": [
+          13,
+          29
+        ],
+        "summary": "The standard for the cheapest way to answer a question about code: ask the graph first."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. The rule (graph-first for structural questions)",
+          "anchor": "1-the-rule-graph-first-for-structural-questions",
+          "lines": [
+            33,
+            48
+          ],
+          "summary": "Any question about structure goes to the graph before it goes to fan-out.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. Query by symbol, not by prose (the empirical rule)",
+          "anchor": "2-query-by-symbol-not-by-prose-the-empirical-rule",
+          "lines": [
+            52,
+            63
+          ],
+          "summary": "The one operating lesson, learned the hard way: query with names the code actually contains, not with an English description of the concept.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "3. Keep it fresh, for free (the hook)",
+          "anchor": "3-keep-it-fresh-for-free-the-hook",
+          "lines": [
+            67,
+            97
+          ],
+          "summary": "A stale graph is worse than none: it answers confidently about code that moved.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. When not to reach for it (honest limits)",
+          "anchor": "4-when-not-to-reach-for-it-honest-limits",
+          "lines": [
+            101,
+            116
+          ],
+          "summary": "The graph is a structural index, and outside that job it earns nothing.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. Rationalizations (what talks a session out of asking first)",
+          "anchor": "5-rationalizations-what-talks-a-session-out-of-asking-first",
+          "lines": [
+            120,
+            129
+          ],
+          "summary": "A table: Rationalization, Reality.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Red flags",
+          "anchor": "6-red-flags",
+          "lines": [
+            133,
+            141
+          ],
+          "summary": "Three or more greps fired before any graph query.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "7. Verification (per question, not per repo)",
+          "anchor": "7-verification-per-question-not-per-repo",
+          "lines": [
+            145,
+            154
+          ],
+          "summary": "Evidence-shaped, so the answer can be audited rather than taken on trust.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "8. Adoption checklist",
+          "anchor": "8-adoption-checklist",
+          "lines": [
+            158,
+            179
+          ],
+          "summary": "Mirrors the shape in AI-REPO-STANDARD.md: one small kit addition per repo.",
+          "refs": [
+            {
+              "to": "ai-repo-standard"
+            }
+          ]
+        }
+      ],
+      "refsOut": [
+        "ai-repo-standard",
+        "loop",
+        "session-loop"
+      ],
+      "refsIn": [
+        "readme"
+      ]
+    },
+    {
+      "slug": "hooks",
+      "file": "standards/HOOKS.md",
+      "url": "https://portfolio.tjakoen.com/standards/hooks",
+      "skill": "hooks",
+      "title": "HOOKS.md — the gates that fire before you do",
+      "summary": "The machine-level hooks that enforce parts of the loop on every session in every repo - what each one fires on, what it deliberately cannot do, how to turn it off, and the adapter contract that holds Claude Code, Codex and DeepSeek Harness to the same six signals with a ten-case conformance list.",
+      "when": "Read this BEFORE trusting that a rule in LOOP or SESSION-LOOP is enforced rather than merely written, before a session-start report or a blocked write surprises you, and before adding, editing or switching off anything under the machine's tools directory or wiring a new harness into the loop. It owns the machinery: which event each hook fires on, the limits that are deliberate, the off switch for each one, and the adapter contract with the case list that proves an adapter against it. Don't skip because you have read LOOP - LOOP says what the rules are, and this says which of them a machine actually stops you over, and in which harness.",
+      "lines": 477,
+      "lead": {
+        "lines": [
+          15,
+          32
+        ],
+        "summary": "A standard is a sentence until something enforces it."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. Where they live, and how a machine gets them",
+          "anchor": "1-where-they-live-and-how-a-machine-gets-them",
+          "lines": [
+            36,
+            71
+          ],
+          "summary": "The scripts live in a private config repo, under shared/tools.",
+          "refs": [
+            {
+              "to": "session-loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "2. session-doctor.sh, at session start",
+          "anchor": "2-session-doctorsh-at-session-start",
+          "lines": [
+            75,
+            108
+          ],
+          "summary": "Fires on: SessionStart, in whatever directory the session opened.",
+          "refs": [
+            {
+              "to": "audit-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "3. human-lane.sh, before a write",
+          "anchor": "3-human-lanesh-before-a-write",
+          "lines": [
+            112,
+            171
+          ],
+          "summary": "Fires on: PreToolUse, on the file-writing tools.",
+          "refs": [
+            {
+              "to": "loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "4. spawn-envelope.sh, before a spawn",
+          "anchor": "4-spawn-envelopesh-before-a-spawn",
+          "lines": [
+            175,
+            225
+          ],
+          "summary": "Fires on: PreToolUse on the tools that start a session or send an unsolicited prompt to a running one.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4b. The output gates",
+          "anchor": "4b-the-output-gates",
+          "lines": [
+            229,
+            294
+          ],
+          "summary": "Fires on: PostToolUse. Three scripts, wired 2026-08-21: bash-output-bound.sh at a 4,000 character bound, tool-output-bound.sh, and code-discovery.sh.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4c. The adapter contract (one set of rules, three harnesses)",
+          "anchor": "4c-the-adapter-contract-one-set-of-rules-three-harnesses",
+          "lines": [
+            298,
+            378
+          ],
+          "summary": "A harness is the program that runs a session, and three of them run here: Claude Code, Codex and DeepSeek Harness.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. Three limits that cost something to learn",
+          "anchor": "5-three-limits-that-cost-something-to-learn",
+          "lines": [
+            382,
+            415
+          ],
+          "summary": "None of these are guessable from the harness documentation, and each was found by building the wrong thing first.",
+          "refs": [
+            {
+              "to": "loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "6. The off switch is part of the design",
+          "anchor": "6-the-off-switch-is-part-of-the-design",
+          "lines": [
+            419,
+            437
+          ],
+          "summary": "Every hook here ships with a documented way to stop it, and that is a design requirement rather than a courtesy.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "7. Red flags",
+          "anchor": "7-red-flags",
+          "lines": [
+            441,
+            450
+          ],
+          "summary": "A hook edited without running it the way the harness runs it (section 5).",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "8. Before you change one of these",
+          "anchor": "8-before-you-change-one-of-these",
+          "lines": [
+            454,
+            477
+          ],
+          "summary": "Evidence-shaped, in the manner of LOOP.md section 9, and short because the blast radius is the whole machine rather than one repo.",
+          "refs": [
+            {
+              "to": "loop"
+            }
+          ]
+        }
+      ],
+      "refsOut": [
+        "audit-standard",
+        "loop",
+        "session-loop"
+      ],
+      "refsIn": [
+        "loop",
+        "readme",
+        "session-loop"
+      ]
+    },
+    {
+      "slug": "intake",
+      "file": "standards/INTAKE.md",
+      "url": "https://portfolio.tjakoen.com/standards/intake",
+      "skill": "intake",
+      "title": "INTAKE — turning a pasted blob into a scoped brief",
+      "summary": "The four questions a pasted document has to answer before a session starts spending, why the answers are confirmed by a person rather than inferred from the blob, where the brief lands, and the test for when no brief is needed at all.",
+      "when": "Read this BEFORE starting work on a pasted document, a forwarded brief, a handoff from another session, or any ask that runs longer than a screen and wants something changed. It turns the blob into the envelope LOOP section 4b names (the lane, the scope cap, the hard stops, the ask-triggers) plus a definition of done, by putting four questions to the person and writing the answers down. Don't skip because the ask reads clearly - a blob that reads clearly is the one whose scope grows quietly, and an envelope invented after the work started is the one thing the scope-growth check can never catch.",
+      "lines": 257,
+      "lead": {
+        "lines": [
+          15,
+          28
+        ],
+        "summary": "A run declares its envelope before it starts."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. The measurement this exists because of",
+          "anchor": "1-the-measurement-this-exists-because-of",
+          "lines": [
+            32,
+            50
+          ],
+          "summary": "Taken on 2026-08-19 over every session transcript in the portfolio repo.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. When it fires, and when it does not",
+          "anchor": "2-when-it-fires-and-when-it-does-not",
+          "lines": [
+            54,
+            77
+          ],
+          "summary": "A skill that fires on everything gets switched off, and then it protects nothing.",
+          "refs": [
+            {
+              "to": "prompt"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "3. The four questions",
+          "anchor": "3-the-four-questions",
+          "lines": [
+            81,
+            110
+          ],
+          "summary": "One round trip, four questions, every field pre-filled from the blob.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. Propose, never adopt",
+          "anchor": "4-propose-never-adopt",
+          "lines": [
+            114,
+            128
+          ],
+          "summary": "Pre-filling from the blob is the whole reason this is fast.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. The brief",
+          "anchor": "5-the-brief",
+          "lines": [
+            132,
+            166
+          ],
+          "summary": "The output is one file, and the same text is the prompt that opens the next session.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Where it lands",
+          "anchor": "6-where-it-lands",
+          "lines": [
+            170,
+            193
+          ],
+          "summary": "A brief lives in artifacts/briefs/, named by date and slug, beside the run reports it will later be judged against.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "7. Why this is a skill and not a hook",
+          "anchor": "7-why-this-is-a-skill-and-not-a-hook",
+          "lines": [
+            197,
+            218
+          ],
+          "summary": "The obvious next thought is a prompt-submit hook that fires on every paste, and it is worth saying plainly why that is not what this is.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "8. Rationalizations",
+          "anchor": "8-rationalizations",
+          "lines": [
+            222,
+            231
+          ],
+          "summary": "A table: Rationalization, Reality.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "9. Red flags",
+          "anchor": "9-red-flags",
+          "lines": [
+            235,
+            244
+          ],
+          "summary": "Work started on a multi-part paste with no cap written anywhere.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "10. Verification",
+          "anchor": "10-verification",
+          "lines": [
+            248,
+            257
+          ],
+          "summary": "The fire test in section 2 was run, and a skip was said out loud rather than assumed.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "decisions",
+        "loop",
+        "prompt",
+        "session-loop"
+      ],
+      "refsIn": [
+        "loop",
+        "prompt",
+        "readme"
+      ]
+    },
+    {
+      "slug": "kickstart",
+      "file": "standards/KICKSTART.md",
+      "url": "https://portfolio.tjakoen.com/standards/kickstart",
+      "skill": "kickstart",
+      "title": "KICKSTART — the new-project prompt for the BREAD stack",
+      "summary": "Paste one prompt into your AI and it interviews you, learns the stack, reads the public repos, and proposes which BREAD layers your project needs and how to wire them.",
+      "when": "Read this BEFORE proposing an architecture or scaffolding anything for a brand-new project that might sit on the BREAD stack. It is an interview to run, not a reference to cite: interview the person first, read the public repos, and propose which layers they actually need before writing a line. Don't jump to scaffolding because the shape sounds obvious - picking layers before the interview is how a project inherits a layer it never needed and carries it for years.",
+      "lines": 130,
+      "lead": {
+        "lines": [
+          13,
+          34
+        ],
+        "summary": "If you are an AI reading this because someone handed you this link: the fenced prompt below is addressed to you."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "The prompt",
+          "anchor": "the-prompt",
+          "lines": [
+            36,
+            109
+          ],
+          "summary": "Paste everything between the lines.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "After it plans",
+          "anchor": "after-it-plans",
+          "lines": [
+            111,
+            130
+          ],
+          "summary": "The plan the AI hands back is a proposal, not a contract.",
+          "refs": [
+            {
+              "to": "claude.starter"
+            },
+            {
+              "to": "conformance"
+            }
+          ]
+        }
+      ],
+      "refsOut": [
+        "claude.starter",
+        "conformance"
+      ],
+      "refsIn": [
+        "conformance",
+        "readme"
+      ]
+    },
+    {
+      "slug": "local-ai-standard",
+      "file": "standards/LOCAL-AI-STANDARD.md",
+      "url": "https://portfolio.tjakoen.com/standards/local-ai-standard",
+      "skill": "local-ai-standard",
+      "title": "LOCAL-AI-STANDARD.md",
+      "summary": "Choose, measure, and tune browser-local AI around real user tasks, with explicit limits and repeatable evidence.",
+      "when": "Read this BEFORE adding a browser-local model, changing its prompt or runtime settings, choosing a model profile, or claiming that a local AI feature works well. Use it to audit an existing feature before tuning it. Don't skip because the model is already chosen or the demo looked fine once; that is the case this standard exists to test.",
+      "lines": 145,
+      "lead": {
+        "lines": [
+          12,
+          16
+        ],
+        "summary": "A local model is useful when it completes a real task better than a small deterministic rule, and when it does so within the visitor's device, time, privacy, and reliability limits."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. Start from the visitor's task",
+          "anchor": "1-start-from-the-visitors-task",
+          "lines": [
+            18,
+            34
+          ],
+          "summary": "List each user-visible AI task separately. “The assistant” is not one workload if it answers grounded questions, summarizes a page, chooses a destination, and edits a document.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. Keep each boundary legible",
+          "anchor": "2-keep-each-boundary-legible",
+          "lines": [
+            36,
+            55
+          ],
+          "summary": "Separate the parts of the workflow so a failure points to the right fix: Inputs: identify trusted application data, user text, retrieved content, and any untrusted instructions.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "3. Build an evaluation from real tasks",
+          "anchor": "3-build-an-evaluation-from-real-tasks",
+          "lines": [
+            57,
+            86
+          ],
+          "summary": "Create a small, versioned scenario set from the phrases and content people actually use.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. Tune the failing layer",
+          "anchor": "4-tune-the-failing-layer",
+          "lines": [
+            88,
+            113
+          ],
+          "summary": "Use the evidence to choose the smallest responsible change: Wrong or missing source material: fix retrieval, ranking, source quality, or context allocation.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. Measure the browser experience",
+          "anchor": "5-measure-the-browser-experience",
+          "lines": [
+            115,
+            125
+          ],
+          "summary": "Record the model identifier and quantization, runtime and browser versions, capability signals, prompt and decoding settings, scenario-set revision, warm or cold state, load duration, generation...",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Make the result reusable",
+          "anchor": "6-make-the-result-reusable",
+          "lines": [
+            127,
+            145
+          ],
+          "summary": "Keep the task inventory, scenarios, runner, grader, and dated reports with the project that owns the feature.",
+          "refs": [],
+          "children": [
+            {
+              "level": 3,
+              "heading": "Review checklist",
+              "anchor": "review-checklist",
+              "lines": [
+                133,
+                145
+              ],
+              "summary": "Each model call maps to a named visitor task and expected outcome.",
+              "refs": []
+            }
+          ]
+        }
+      ],
+      "refsOut": [],
+      "refsIn": [
+        "readme"
+      ]
+    },
+    {
+      "slug": "loop",
+      "file": "standards/LOOP.md",
+      "url": "https://portfolio.tjakoen.com/standards/loop",
+      "skill": "loop-standard",
+      "title": "LOOP.md — one AI workflow across every repo",
+      "summary": "The system around the sessions - how every repo is worked the same way, the heartbeat that makes skipped chores visible, and the contract that keeps an unattended run honest.",
+      "when": "Read this at session start before touching anything, and again BEFORE calling work done, committing, opening a PR, writing a handoff, or ending a session. Covers verify-by-second-pass, the run evidence a session owes, and uncommitted or unpushed work piling up across sessions. Don't skip because you wrote it and checked it yourself - that is one pass, not two - and don't rerun a failing gate hoping it is flaky.",
+      "lines": 682,
+      "lead": {
+        "lines": [
+          14,
+          31
+        ],
+        "summary": "The standard for how every project is operated with an AI, so any repo of mine runs the same way: the same session shape, the same recurring chores, the same evidence left behind."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. The primitives (Osmani's five, mapped to this stack)",
+          "anchor": "1-the-primitives-osmanis-five-mapped-to-this-stack",
+          "lines": [
+            35,
+            55
+          ],
+          "summary": "The loop is built from five reusable primitives (see Why a loop at all below for the source).",
+          "refs": [
+            {
+              "to": "ai-repo-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "2. The heartbeat (work-triggered first, then scheduled where a check earns it)",
+          "anchor": "2-the-heartbeat-work-triggered-first-then-scheduled-where-a-check-earns-it",
+          "lines": [
+            59,
+            139
+          ],
+          "summary": "The chores that get skipped are the boring recurring ones: the e2e suite, the lint pass, the audit that's three weeks overdue.",
+          "refs": [
+            {
+              "to": "decisions"
+            },
+            {
+              "to": "ai-repo-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "2a. The four rungs, and what earns the fourth",
+          "anchor": "2a-the-four-rungs-and-what-earns-the-fourth",
+          "lines": [
+            143,
+            188
+          ],
+          "summary": "Osmani's second frame on loops, after the five primitives in §1, sorts them by what you hand off.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2b. What actually runs unattended",
+          "anchor": "2b-what-actually-runs-unattended",
+          "lines": [
+            192,
+            222
+          ],
+          "summary": "The promotion table. Every row names its trigger, the check that earned it the rung, what it may produce, and whether it is wired today.",
+          "refs": [
+            {
+              "to": "conformance"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "3. The thin CLAUDE.md kit shape",
+          "anchor": "3-the-thin-claudemd-kit-shape",
+          "lines": [
+            226,
+            253
+          ],
+          "summary": "Every repo carries the same shape, and the shape is deliberately thin.",
+          "refs": [
+            {
+              "to": "claude.starter"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "4. The accountability contract (keep an unattended run honest)",
+          "anchor": "4-the-accountability-contract-keep-an-unattended-run-honest",
+          "lines": [
+            257,
+            468
+          ],
+          "summary": "An AI run that touches code without a human watching each step needs a contract, or \"trust me\" is doing all the load-bearing work.",
+          "refs": [],
+          "children": [
+            {
+              "level": 3,
+              "heading": "(a) The run ledger — evidence or it didn't happen",
+              "anchor": "a-the-run-ledger-evidence-or-it-didnt-happen",
+              "lines": [
+                263,
+                298
+              ],
+              "summary": "Claim before you touch. Claim a plan item before editing code, so two sessions don't collide on the same work and so the trail starts before the diff does.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "(b) The rails — a declared envelope per run",
+              "anchor": "b-the-rails-a-declared-envelope-per-run",
+              "lines": [
+                300,
+                468
+              ],
+              "summary": "Before an autonomous run starts, it declares its envelope, and the envelope is enforced (mechanically where the tooling allows — Claude Code hooks blocking the forbidden commands; P3): Scope cap —...",
+              "refs": [
+                {
+                  "to": "hooks"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "5. Why a loop at all (the precedent, and the receipt)",
+          "anchor": "5-why-a-loop-at-all-the-precedent-and-the-receipt",
+          "lines": [
+            472,
+            576
+          ],
+          "summary": "This is not a new instinct, and it is not only mine.",
+          "refs": [
+            {
+              "to": "voice"
+            },
+            {
+              "to": "session-loop"
+            },
+            {
+              "to": "intake"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "6. Adoption checklist",
+          "anchor": "6-adoption-checklist",
+          "lines": [
+            580,
+            609
+          ],
+          "summary": "Mirrors AI-REPO-STANDARD.md §12 — one floor up, for the loop rather than the repo.",
+          "refs": [
+            {
+              "to": "ai-repo-standard"
+            },
+            {
+              "to": "conformance"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "7. Rationalizations (what talks a run out of the contract)",
+          "anchor": "7-rationalizations-what-talks-a-run-out-of-the-contract",
+          "lines": [
+            613,
+            631
+          ],
+          "summary": "The contract in §4 is rarely rejected.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "8. Red flags",
+          "anchor": "8-red-flags",
+          "lines": [
+            635,
+            651
+          ],
+          "summary": "Uncommitted work spanning more than one session, in any repo.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "9. Verification (before a session is called done)",
+          "anchor": "9-verification-before-a-session-is-called-done",
+          "lines": [
+            655,
+            682
+          ],
+          "summary": "Short, mechanical, evidence-shaped, and meant to be machine-checkable: this list is the schema the run ledger is checked against, not a vibe pass.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "ai-development",
+        "ai-repo-standard",
+        "claude.starter",
+        "conformance",
+        "decisions",
+        "hooks",
+        "intake",
+        "session-loop",
+        "voice"
+      ],
+      "refsIn": [
+        "ai-repo-standard",
+        "audit-standard",
+        "claude",
+        "conformance",
+        "decisions",
+        "graph",
+        "hooks",
+        "intake",
+        "prompt",
+        "readme",
+        "session-loop",
+        "tour-standard"
+      ]
+    },
+    {
+      "slug": "note-standard",
+      "file": "standards/NOTE-STANDARD.md",
+      "url": "https://portfolio.tjakoen.com/standards/note-standard",
+      "skill": "note-standard",
+      "title": "NOTE-STANDARD.md — the note / blog-post standard",
+      "summary": "How a note is put together - frontmatter, structure, the sign-off footer, plus a reusable drafting prompt.",
+      "when": "Read this BEFORE creating or finishing any file under content/notes: a blog post, a note, the whitepaper. It owns the artifact (the frontmatter block, the stakes-first opener, the figure requirement, the exact sign-off footer, where the file lives); VOICE owns how the words read, so the two are read together, not instead of each other. Don't skip because the note is only a draft or because you already know the voice - a note missing its frontmatter, its figure, or its footer is unfinished no matter how well it reads.",
+      "lines": 278,
+      "lead": {
+        "lines": [
+          14,
+          24
+        ],
+        "summary": "My standard for how a note (a blog post on portfolio.tjakoen.com/notes) is put together: the frontmatter template, the structure, the sign-off footer, and the guardrails, plus a copy-paste prompt..."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "Before you write",
+          "anchor": "before-you-write",
+          "lines": [
+            26,
+            37
+          ],
+          "summary": "Decide which kind of note it is (see Two kinds of note below).",
+          "refs": [
+            {
+              "to": "voice"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Frontmatter template",
+          "anchor": "frontmatter-template",
+          "lines": [
+            39,
+            97
+          ],
+          "summary": "Every note opens with this block.",
+          "refs": [],
+          "children": [
+            {
+              "level": 3,
+              "heading": "Edited notes and the changelog",
+              "anchor": "edited-notes-and-the-changelog",
+              "lines": [
+                83,
+                97
+              ],
+              "summary": "date is the day a note was first published and it stays put, so the feed keeps its order and a reader's memory of when they read a piece still holds.",
+              "refs": []
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Structure",
+          "anchor": "structure",
+          "lines": [
+            99,
+            117
+          ],
+          "summary": "Every note ships with social post copy, a 1200×1200 image and the image's alt text, made in the same pass as the note.",
+          "refs": [],
+          "children": [
+            {
+              "level": 3,
+              "heading": "The share block",
+              "anchor": "the-share-block",
+              "lines": [
+                101,
+                117
+              ],
+              "summary": "Every note ships with social post copy, a 1200×1200 image and the image's alt text, made in the same pass as the note.",
+              "refs": [
+                {
+                  "to": "voice"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Two kinds of note, and picking the wrong one is expensive",
+          "anchor": "two-kinds-of-note-and-picking-the-wrong-one-is-expensive",
+          "lines": [
+            119,
+            150
+          ],
+          "summary": "Everything above this section describes the personal note, and for years that was the only kind this standard had.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "What a guide owes on top of everything above",
+          "anchor": "what-a-guide-owes-on-top-of-everything-above",
+          "lines": [
+            152,
+            193
+          ],
+          "summary": "Derived from a comparison pass against Addy Osmani's blog run on 2026-08-18, which is the closest public writing to what these guides are trying to be.",
+          "refs": [
+            {
+              "to": "voice"
+            }
+          ],
+          "children": [
+            {
+              "level": 3,
+              "heading": "The pair pattern, when a guide runs long",
+              "anchor": "the-pair-pattern-when-a-guide-runs-long",
+              "lines": [
+                182,
+                193
+              ],
+              "summary": "Practitioner blogs in this genre run 1,500 to 3,000 words, and a guide with a real plan in it will not.",
+              "refs": []
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The footer (bottom of every note)",
+          "anchor": "the-footer-bottom-of-every-note",
+          "lines": [
+            195,
+            215
+          ],
+          "summary": "The sign-off speaks only to the content's authorship, the same way a repo footer speaks to the code's.",
+          "refs": [
+            {
+              "to": "readme-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Guardrails (this repo is public)",
+          "anchor": "guardrails-this-repo-is-public",
+          "lines": [
+            217,
+            229
+          ],
+          "summary": "Non-negotiable, and they precede voice, a specific being real doesn't make it publishable: No em-dashes, no backticks in prose.",
+          "refs": [
+            {
+              "to": "voice"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The prompt (paste into Claude Code to draft or finish a note)",
+          "anchor": "the-prompt-paste-into-claude-code-to-draft-or-finish-a-note",
+          "lines": [
+            231,
+            278
+          ],
+          "summary": "A projection of how these notes already get made.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "readme-standard",
+        "voice"
+      ],
+      "refsIn": [
+        "readme",
+        "readme-standard",
+        "voice"
+      ]
+    },
+    {
+      "slug": "prompt",
+      "file": "standards/PROMPT.md",
+      "url": "https://portfolio.tjakoen.com/standards/prompt",
+      "skill": "prompt",
+      "title": "PROMPT — what a prompt owes before the work starts",
+      "summary": "The checks an opening prompt is held to and the short polish pass that fixes it at session start, plus the rules for the prompts that live in files (instruction files, skills, agent prompts) so they stop carrying debt older models needed.",
+      "when": "Read this BEFORE acting on the first prompt of a session, and BEFORE editing a CLAUDE.md, an AGENTS.md, a skill, an agent definition or any other prompt that lives in a file. It scores an opening prompt against five checks and polishes it with at most three questions, and it holds instruction files to the debt rules. Don't skip because the prompt looks clear - a prompt that reads clearly to its writer is the one whose missing finish line nobody notices.",
+      "lines": 132,
+      "lead": {
+        "lines": [
+          13,
+          23
+        ],
+        "summary": "A prompt is the cheapest place to fix a piece of work."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. Why this exists",
+          "anchor": "1-why-this-exists",
+          "lines": [
+            27,
+            35
+          ],
+          "summary": "Prompts collect debt the way code does.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. The five checks for an opening prompt",
+          "anchor": "2-the-five-checks-for-an-opening-prompt",
+          "lines": [
+            39,
+            52
+          ],
+          "summary": "A prompt that opens work passes when it carries all five.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "3. The polish pass",
+          "anchor": "3-the-polish-pass",
+          "lines": [
+            56,
+            80
+          ],
+          "summary": "This runs once, on the first prompt of a session, before the first edit.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. Prompts that live in files",
+          "anchor": "4-prompts-that-live-in-files",
+          "lines": [
+            84,
+            101
+          ],
+          "summary": "Instruction files, skills and agent prompts are read on every run, so their debt is paid on every run.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. Rationalizations",
+          "anchor": "5-rationalizations",
+          "lines": [
+            105,
+            112
+          ],
+          "summary": "A table: Rationalization, Reality.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Red flags",
+          "anchor": "6-red-flags",
+          "lines": [
+            116,
+            122
+          ],
+          "summary": "Work started on a prompt with no finish line and no question asked about it.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "7. Verification",
+          "anchor": "7-verification",
+          "lines": [
+            126,
+            132
+          ],
+          "summary": "The polish pass ran on the first prompt, or its skip was said in one sentence.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "intake",
+        "loop",
+        "session-loop"
+      ],
+      "refsIn": [
+        "intake",
+        "readme"
+      ]
+    },
+    {
+      "slug": "readme-standard",
+      "file": "standards/README-STANDARD.md",
+      "url": "https://portfolio.tjakoen.com/standards/readme-standard",
+      "skill": "readme-standard",
+      "title": "README-STANDARD.md — the README standard",
+      "summary": "How a README presents itself across every repo - the title emoji, the badge row, and the footer, plus a reusable prompt.",
+      "when": "Read this BEFORE writing, restyling, or reviewing a README in any repo: the title emoji, the badge row and which badges the repo has earned, the made-with badge, and the footer that links the receipts. Don't skip because the repo is internal, half-finished, or already has a README - the badge row is the one part reliably left stale, and a repo shipping without the AI-use badge is the case this standard treats as a real miss rather than a nit.",
+      "lines": 114,
+      "lead": {
+        "lines": [
+          13,
+          17
+        ],
+        "summary": "My standard for how a README presents itself across all my repos: title emoji, badge row, and the footer, plus a copy-paste prompt that tells an AI how to apply it to any repo."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "The standard",
+          "anchor": "the-standard",
+          "lines": [
+            19,
+            44
+          ],
+          "summary": "Two jobs badges do: Status (dynamic, self-verifying): CI, coverage, version, license.",
+          "refs": [
+            {
+              "to": "voice"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Category menu (pick only what applies)",
+          "anchor": "category-menu-pick-only-what-applies",
+          "lines": [
+            46,
+            55
+          ],
+          "summary": "Identity (always): Made_with-Claude_%C2%B7_Codex_%C2%B7_DeepSeek-D97757 Tech stack (real runtime/langs/framework only): Bun / TypeScript / htmx / React / Node / CSS … Stance / thesis (only if TRUE)...",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The footer snippet (bottom of every README)",
+          "anchor": "the-footer-snippet-bottom-of-every-readme",
+          "lines": [
+            57,
+            62
+          ],
+          "summary": "A fenced block, quoted whole: read the section.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The prompt (paste into Claude Code in any repo)",
+          "anchor": "the-prompt-paste-into-claude-code-in-any-repo",
+          "lines": [
+            66,
+            114
+          ],
+          "summary": "A fenced block, quoted whole: read the section.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "note-standard",
+        "voice"
+      ],
+      "refsIn": [
+        "claude.starter",
+        "note-standard",
+        "readme",
+        "voice"
+      ]
+    },
+    {
+      "slug": "readme",
+      "file": "standards/README.md",
+      "url": "https://portfolio.tjakoen.com/standards/readme",
+      "skill": null,
+      "title": "standards/ — how I build, write, and work with AI",
+      "summary": "The index - one line per standard, so a reader loads one file, not nineteen.",
+      "when": null,
+      "lines": 105,
+      "lead": null,
+      "sections": [
+        {
+          "level": 2,
+          "heading": "The standards",
+          "anchor": "the-standards",
+          "lines": [
+            23,
+            47
+          ],
+          "summary": "A table: Read this when you're…, Standard, In one line.",
+          "refs": [
+            {
+              "to": "ai-development"
+            },
+            {
+              "to": "local-ai-standard"
+            },
+            {
+              "to": "ai-repo-standard"
+            },
+            {
+              "to": "audit-standard"
+            },
+            {
+              "to": "tree"
+            },
+            {
+              "to": "session-loop"
+            },
+            {
+              "to": "loop"
+            },
+            {
+              "to": "hooks"
+            },
+            {
+              "to": "graph"
+            },
+            {
+              "to": "voice"
+            },
+            {
+              "to": "note-standard"
+            },
+            {
+              "to": "tour-standard"
+            },
+            {
+              "to": "decisions"
+            },
+            {
+              "to": "intake"
+            },
+            {
+              "to": "prompt"
+            },
+            {
+              "to": "figures"
+            },
+            {
+              "to": "readme-standard"
+            },
+            {
+              "to": "commit-standard"
+            },
+            {
+              "to": "kickstart"
+            },
+            {
+              "to": "claude.starter"
+            },
+            {
+              "to": "conformance"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "How they fit together",
+          "anchor": "how-they-fit-together",
+          "lines": [
+            49,
+            96
+          ],
+          "summary": "AI-DEVELOPMENT + SESSION-LOOP are the engineering pair: the first is the standards, the second is the session mechanics that run against them.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The one rule this folder lives by",
+          "anchor": "the-one-rule-this-folder-lives-by",
+          "lines": [
+            98,
+            105
+          ],
+          "summary": "Single source of truth, everywhere.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "ai-development",
+        "ai-repo-standard",
+        "audit-standard",
+        "claude.starter",
+        "commit-standard",
+        "conformance",
+        "decisions",
+        "figures",
+        "graph",
+        "hooks",
+        "intake",
+        "kickstart",
+        "local-ai-standard",
+        "loop",
+        "note-standard",
+        "prompt",
+        "readme-standard",
+        "session-loop",
+        "tour-standard",
+        "tree",
+        "voice"
+      ],
+      "refsIn": [
+        "ai-development",
+        "claude",
+        "session-loop"
+      ]
+    },
+    {
+      "slug": "session-loop",
+      "file": "standards/SESSION-LOOP.md",
+      "url": "https://portfolio.tjakoen.com/standards/session-loop",
+      "skill": "session-loop",
+      "title": "SESSION-LOOP.md — the working loop, memory, and handoff",
+      "summary": "How a session with an AI runs start to finish - the loop it repeats, what it writes down, and how it hands off.",
+      "when": "Read this BEFORE orienting in a repo you have not worked today, and again BEFORE writing an agent-memory entry, a handoff prompt, or a plan file. It owns the inside of one session: how to orient cold, the loop to repeat, the recurring chores, what belongs in memory versus a committed doc, and how to end so the next session starts oriented. LOOP.md is the sibling that owns the gates across sessions and repos. Don't skip because you already have the context - context is the exact thing the next session will not have.",
+      "lines": 432,
+      "lead": {
+        "lines": [
+          14,
+          28
+        ],
+        "summary": "How a session with an AI actually runs, start to finish: how it orients, the loop it repeats, what it writes down so the next session inherits it, and how it hands off."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. Session start (orient before you touch anything)",
+          "anchor": "1-session-start-orient-before-you-touch-anything",
+          "lines": [
+            32,
+            61
+          ],
+          "summary": "Read the room. Load this repo's CLAUDE.md/AGENTS.md, then only the standards the task actually needs (the standards/README.md index exists so you fetch the one doc, not all of them).",
+          "refs": [
+            {
+              "to": "readme"
+            },
+            {
+              "to": "decisions"
+            },
+            {
+              "to": "loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "2. The loop (repeat until done)",
+          "anchor": "2-the-loop-repeat-until-done",
+          "lines": [
+            65,
+            91
+          ],
+          "summary": "The problem→solution loop lives in AI-DEVELOPMENT §6; the standing gate is §3/§8.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "3. Recurring chores (the things done every time)",
+          "anchor": "3-recurring-chores-the-things-done-every-time",
+          "lines": [
+            95,
+            109
+          ],
+          "summary": "These fire on a trigger, not on being asked.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. Self-learning: memory (so the next session doesn't relitigate)",
+          "anchor": "4-self-learning-memory-so-the-next-session-doesnt-relitigate",
+          "lines": [
+            113,
+            159
+          ],
+          "summary": "The point of memory is that a lesson is learned once.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. Handoff (end a session so the next one starts cold-but-oriented)",
+          "anchor": "5-handoff-end-a-session-so-the-next-one-starts-cold-but-oriented",
+          "lines": [
+            163,
+            312
+          ],
+          "summary": "When a bounded task finishes — a feature landed, the gate green, the commit made — don't just stop.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Model economy (be smart about which brain runs)",
+          "anchor": "6-model-economy-be-smart-about-which-brain-runs",
+          "lines": [
+            316,
+            381
+          ],
+          "summary": "Bigger models cost more and are slower; smaller ones are cheaper and faster.",
+          "refs": [
+            {
+              "to": "hooks"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "7. Delegation (fan out, don't grind)",
+          "anchor": "7-delegation-fan-out-dont-grind",
+          "lines": [
+            385,
+            432
+          ],
+          "summary": "§6 asks which brain runs. This asks how many.",
+          "refs": [
+            {
+              "to": "audit-standard"
+            }
+          ]
+        }
+      ],
+      "refsOut": [
+        "ai-development",
+        "audit-standard",
+        "decisions",
+        "hooks",
+        "loop",
+        "readme"
+      ],
+      "refsIn": [
+        "ai-development",
+        "audit-standard",
+        "claude.starter",
+        "graph",
+        "hooks",
+        "intake",
+        "loop",
+        "prompt",
+        "readme"
+      ]
+    },
+    {
+      "slug": "tour-standard",
+      "file": "standards/TOUR-STANDARD.md",
+      "url": "https://portfolio.tjakoen.com/standards/tour-standard",
+      "skill": "tour-standard",
+      "title": "TOUR-STANDARD.md — the review-tour standard",
+      "summary": "How a CRUMB dev tour is built - picking surfaces, writing a verify line someone can run, stamping the status, and handing it over.",
+      "when": "Read this BEFORE writing a review tour, and BEFORE saying a change that renders is done: a UI change, a new component, a page, a figure, anything a person can look at. It owns the artifact (which surfaces become steps, what a review line says, what a verify line must let someone do, the status vocabulary, the handoff link); LOOP section 4a owns the rule that a rendered change owes one at all. Don't skip because you can describe the change in a sentence - the sentence is what the reviewer already cannot check, and a tour with vague verify lines is worse than none because it looks like evidence.",
+      "lines": 169,
+      "lead": {
+        "lines": [
+          15,
+          22
+        ],
+        "summary": "A diff describes an edit. A tour shows the thing."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "What a tour is",
+          "anchor": "what-a-tour-is",
+          "lines": [
+            24,
+            48
+          ],
+          "summary": "A markdown file in the host's tours folder, rendered by CRUMB.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The seven rules",
+          "anchor": "the-seven-rules",
+          "lines": [
+            50,
+            107
+          ],
+          "summary": "One step per surface that changed, not one per commit.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The handoff",
+          "anchor": "the-handoff",
+          "lines": [
+            109,
+            125
+          ],
+          "summary": "A review tour is written for one change and handed to one person, so the handoff is a link.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Where it lives, and who sees it",
+          "anchor": "where-it-lives-and-who-sees-it",
+          "lines": [
+            127,
+            136
+          ],
+          "summary": "Flat, in the host's tours folder, named review-.md.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Rationalizations",
+          "anchor": "rationalizations",
+          "lines": [
+            138,
+            146
+          ],
+          "summary": "A table: Rationalization, Reality.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Red flags",
+          "anchor": "red-flags",
+          "lines": [
+            148,
+            154
+          ],
+          "summary": "A verify line that starts with \"Check\" or \"Make sure\" and names no interaction.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Verification",
+          "anchor": "verification",
+          "lines": [
+            156,
+            169
+          ],
+          "summary": "Every changed rendered surface has exactly one step, and no step points at an unchanged one.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "loop"
+      ],
+      "refsIn": [
+        "audit-standard",
+        "readme"
+      ]
+    },
+    {
+      "slug": "tree",
+      "file": "standards/TREE.md",
+      "url": "https://portfolio.tjakoen.com/standards/tree",
+      "skill": "tree",
+      "title": "TREE.md — keep the root an index, not a junk drawer",
+      "summary": "The layout standard - the repo root is the first screen an agent or a newcomer reads, so only load-bearing files earn a place there and everything else folds one level down into a named home. A lean root is cheaper to orient in and harder to get lost in.",
+      "when": "Read this BEFORE adding a file to a repo root, creating a new top-level directory, moving something up out of a folder, or answering \"where should this live\". Covers what earns a root slot, the placement map for everything else, the fold threshold, and where the rule honestly stops applying. Don't skip because it is one small file - one small file at a time is exactly how a root becomes a junk drawer, and nobody ever notices the turn.",
+      "lines": 158,
+      "lead": {
+        "lines": [
+          13,
+          28
+        ],
+        "summary": "The standard for where a file lives: the repo root is a table of contents, not a shelf you drop things on."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. The rule (the root is a read, and you pay for it)",
+          "anchor": "1-the-rule-the-root-is-a-read-and-you-pay-for-it",
+          "lines": [
+            32,
+            43
+          ],
+          "summary": "The root listing is the single most-read view in the repo.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. What earns a place at the root (the whitelist)",
+          "anchor": "2-what-earns-a-place-at-the-root-the-whitelist",
+          "lines": [
+            47,
+            59
+          ],
+          "summary": "Only four kinds of thing:",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "3. Where everything else goes (the placement map)",
+          "anchor": "3-where-everything-else-goes-the-placement-map",
+          "lines": [
+            63,
+            79
+          ],
+          "summary": "Give every other kind of file a directory named for its category, not its implementation.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. When to fold (the threshold)",
+          "anchor": "4-when-to-fold-the-threshold",
+          "lines": [
+            83,
+            96
+          ],
+          "summary": "Do not pre-build empty scaffolding, and do not let loose files pile up either.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. When not to reach for it (honest limits)",
+          "anchor": "5-when-not-to-reach-for-it-honest-limits",
+          "lines": [
+            100,
+            112
+          ],
+          "summary": "A genuinely small repo. A dozen files read fine flat.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Make it checkable (the hardening ladder)",
+          "anchor": "6-make-it-checkable-the-hardening-ladder",
+          "lines": [
+            116,
+            130
+          ],
+          "summary": "Promote the rule off the honor system, the same ladder as AI-REPO-STANDARD.md §7.",
+          "refs": [
+            {
+              "to": "ai-repo-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "7. Adoption checklist",
+          "anchor": "7-adoption-checklist",
+          "lines": [
+            134,
+            158
+          ],
+          "summary": "Mirrors the shape in AI-REPO-STANDARD.md: one small pass per repo.",
+          "refs": [
+            {
+              "to": "ai-repo-standard"
+            }
+          ]
+        }
+      ],
+      "refsOut": [
+        "ai-repo-standard"
+      ],
+      "refsIn": [
+        "readme"
+      ]
+    },
+    {
+      "slug": "voice",
+      "file": "standards/VOICE.md",
+      "url": "https://portfolio.tjakoen.com/standards/voice",
+      "skill": "voice",
+      "title": "VOICE.md: voice and tone",
+      "summary": "The standard for anything published in Tjakoen's name - cadence, the machine-tells to avoid, the honesty clause, and what a reader meets first.",
+      "when": "Read this BEFORE writing the first line of prose that carries Tjakoen's byline, and before editing existing prose: a note, a blog post, a README, a page, a commit message, release copy, social copy, product copy. Don't skip because it is internal, a draft, a one-liner, or \"just a README\" - the voice rules have no off switch, and no em-dash reads better here.",
+      "lines": 677,
+      "lead": {
+        "lines": [
+          12,
+          23
+        ],
+        "summary": "The standard for anything published in Tjakoen's name (notes, the whitepaper, READMEs, the blog, social posts, product copy)."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "In one line",
+          "anchor": "in-one-line",
+          "lines": [
+            25,
+            29
+          ],
+          "summary": "A smart friend explaining something he actually cares about, who refuses to bullshit you and refuses to bore you.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Core principles",
+          "anchor": "core-principles",
+          "lines": [
+            31,
+            87
+          ],
+          "summary": "Open with a confession or a real stake, not a thesis.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Register by surface",
+          "anchor": "register-by-surface",
+          "lines": [
+            89,
+            110
+          ],
+          "summary": "Same voice, different dial settings.",
+          "refs": [
+            {
+              "to": "note-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Sentence mechanics & rhythm",
+          "anchor": "sentence-mechanics-rhythm",
+          "lines": [
+            112,
+            124
+          ],
+          "summary": "Vary length hard. A long, winding sentence that carries the idea, then a short one that lands it.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Signature moves",
+          "anchor": "signature-moves",
+          "lines": [
+            126,
+            138
+          ],
+          "summary": "The pull-quote. Lift the single most important line out into a blockquote on its own: > I wanted to stay exactly as disorganized as I am, and have the software deal with it.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The metaphor bank",
+          "anchor": "the-metaphor-bank",
+          "lines": [
+            140,
+            157
+          ],
+          "summary": "Homey and physical over grand and abstract.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Punctuation & formatting conventions",
+          "anchor": "punctuation-formatting-conventions",
+          "lines": [
+            159,
+            194
+          ],
+          "summary": "No backticks in prose. This is a hard rule.",
+          "refs": [
+            {
+              "to": "note-standard"
+            },
+            {
+              "to": "readme-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "What a reader meets first",
+          "anchor": "what-a-reader-meets-first",
+          "lines": [
+            196,
+            275
+          ],
+          "summary": "Twenty-five of his code reviews went out with the verdict on the last line.",
+          "refs": [],
+          "children": [
+            {
+              "level": 3,
+              "heading": "Ticket and pull request comments",
+              "anchor": "ticket-and-pull-request-comments",
+              "lines": [
+                235,
+                275
+              ],
+              "summary": "A ticket comment gets read in a sidebar, between two other tickets, by someone deciding whether it is their turn.",
+              "refs": []
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Figures & visualizations",
+          "anchor": "figures-visualizations",
+          "lines": [
+            277,
+            287
+          ],
+          "summary": "He loves visuals, so a note should carry them, not lean on walls of prose.",
+          "refs": [
+            {
+              "to": "figures"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The specifics bank",
+          "anchor": "the-specifics-bank",
+          "lines": [
+            289,
+            332
+          ],
+          "summary": "Reach into this shelf instead of writing \"a modern typeface\" or \"a recent project.\" All real.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The opinion stack: what he argues",
+          "anchor": "the-opinion-stack-what-he-argues",
+          "lines": [
+            334,
+            352
+          ],
+          "summary": "So a draft takes his side with his reasoning, not a plausible-sounding stranger's.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Diction: reach for / avoid (quick pass; full tell-list below)",
+          "anchor": "diction-reach-for-avoid-quick-pass-full-tell-list-below",
+          "lines": [
+            354,
+            362
+          ],
+          "summary": "A table: Reach for, Avoid.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Do not sound like the machine",
+          "anchor": "do-not-sound-like-the-machine",
+          "lines": [
+            364,
+            474
+          ],
+          "summary": "Half the reason this guide exists: nothing under his name should read like it came out of a chatbot.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Editing a draft that already exists",
+          "anchor": "editing-a-draft-that-already-exists",
+          "lines": [
+            476,
+            494
+          ],
+          "summary": "Most of this guide describes writing.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Writing to Tjakoen",
+          "anchor": "writing-to-tjakoen",
+          "lines": [
+            496,
+            510
+          ],
+          "summary": "Everything above governs prose that goes out under his name.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Content guardrails (this repo is public)",
+          "anchor": "content-guardrails-this-repo-is-public",
+          "lines": [
+            512,
+            519
+          ],
+          "summary": "Money stays vague. Always. Never publish specific salary/pay numbers or exact ratios.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The honesty clause (non-negotiable)",
+          "anchor": "the-honesty-clause-non-negotiable",
+          "lines": [
+            521,
+            526
+          ],
+          "summary": "Never claim a benefit you have not shown.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Structure of a typical piece",
+          "anchor": "structure-of-a-typical-piece",
+          "lines": [
+            528,
+            541
+          ],
+          "summary": "A repertoire, not a template; don't hit every beat every time (see the formula tell).",
+          "refs": [
+            {
+              "to": "note-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Rationalizations: what talks a session out of this file",
+          "anchor": "rationalizations-what-talks-a-session-out-of-this-file",
+          "lines": [
+            543,
+            556
+          ],
+          "summary": "Every one of these has been used, and every one of them sounds reasonable at the moment it is thought.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Red flags: in how the session is working, not just how the prose reads",
+          "anchor": "red-flags-in-how-the-session-is-working-not-just-how-the-prose-reads",
+          "lines": [
+            558,
+            572
+          ],
+          "summary": "The smell test below catches bad sentences.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Verification (before it ships under his name)",
+          "anchor": "verification-before-it-ships-under-his-name",
+          "lines": [
+            574,
+            593
+          ],
+          "summary": "Mechanical and evidence-shaped, so it can be checked rather than felt.",
+          "refs": [
+            {
+              "to": "note-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The off-voice smell test",
+          "anchor": "the-off-voice-smell-test",
+          "lines": [
+            595,
+            630
+          ],
+          "summary": "Fast pass before anything ships under his name.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Calibration pair: same facts, two writers",
+          "anchor": "calibration-pair-same-facts-two-writers",
+          "lines": [
+            632,
+            660
+          ],
+          "summary": "Same content: the token playground demo.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Raw vs. finished: keep the bluntness",
+          "anchor": "raw-vs-finished-keep-the-bluntness",
+          "lines": [
+            662,
+            677
+          ],
+          "summary": "His unpolished writing is blunter, faster, and less literary than the finished notes: short declaratives, relentless forward momentum, folk-plain causation (I chose it cause…), catastrophes told in...",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "figures",
+        "note-standard",
+        "readme-standard"
+      ],
+      "refsIn": [
+        "claude",
+        "claude.starter",
+        "figures",
+        "loop",
+        "note-standard",
+        "readme",
+        "readme-standard"
+      ]
+    }
+  ]
+}
