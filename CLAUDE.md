@@ -45,6 +45,26 @@ the gitignored skills with `bun cli.ts skills sync ../tjakoen.github.io` from th
 it through bun, since no pantry binary is on PATH here). DSH reads the same mount through the
 .agents/skills symlink, so one sync serves both harnesses.
 
+**Read the tree before the file.** A whole standard is the expensive way to get one rule: VOICE and
+LOOP each run past six hundred lines, and the question usually lives under one heading.
+[standards/INDEX.json](standards/INDEX.json) is a generated table of contents for every standard: its
+summary and its *when*, then each H2 and H3 with its anchor, its line range, its opening sentence, and
+the other standards it points at. Drill down instead of loading:
+
+```sh
+bun tools/standards-index.ts toc                     # one line per standard: pick one
+bun tools/standards-index.ts toc voice               # its sections, ranges and summaries: pick one
+bun tools/standards-index.ts read voice#the-honesty-clause-non-negotiable   # that section only
+```
+
+Or read the range straight from the file with an offset and a limit. Load a whole standard, or invoke
+its skill, only when the task is governed by the whole of it, such as drafting a note under VOICE.
+Follow a ref to a neighbouring standard the same way, by anchor. The summaries are each section's own
+opening sentence rather than a paraphrase, so a thin one means read the section. Editing a standard
+means regenerating the index in the same commit (the standards:index script), and the test suite fails
+on a stale one. The generator is [tools/standards-index.ts](tools/standards-index.ts); why it lives
+here and not in PANTRY yet is in [the plan](plans/standards-section-index.md).
+
 1. [`PHILOSOPHY.md`](docs/PHILOSOPHY.md): the *why*. Read first.
 2. *Skill(intake)*: read BEFORE work on a pasted document, forwarded brief or long handoff that wants
    something changed. It turns the blob into lane, scope cap, hard stops, ask-triggers and a finish
@@ -119,7 +139,9 @@ image comparisons because the committed visual baselines are macOS-specific; use
 visual suite on macOS when changing presentation. See .github/workflows/ci.yml for runner details.
 
 On DSH, bun tools/dsh-loop/cli.mjs end runs the typecheck, the lint gate and the graph refresh;
-bun tools/dsh-loop/cli.mjs start runs the doctor and the mount check. See
+bun tools/dsh-loop/cli.mjs start runs the doctor, the mount check and the freshness check, which
+names a mounted skill whose standard changed since the sync or a graph older than the code it indexes.
+In Claude Code the same check runs as a SessionStart hook and speaks only when something is behind. See
 [docs/HARNESS-DSH.md](docs/HARNESS-DSH.md).
 
 The earlier container command depended on a sibling compose file absent from this checkout.
