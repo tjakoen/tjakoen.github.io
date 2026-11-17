@@ -16,6 +16,7 @@ import { join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { pathToFileURL } from 'node:url';
 import { runClose } from './close.ts';
+import { checkAll, format } from '../map-freshness.ts';
 
 const guardPath = process.env.DSH_GUARD || join(homedir(), '.dsh', 'loop', 'guard.mjs');
 let guardModule;
@@ -109,6 +110,12 @@ function graphAge() {
   console.log(`graph: graph.json ${minutes} minute${minutes === 1 ? '' : 's'} old`);
 }
 
+// Whether a derived map (the skills, the graph) fell behind its source. The graph age above says how
+// old the file is; this says whether anything it indexes moved after it, which is the question.
+function freshness() {
+  for (const line of format(checkAll(repo))) console.log(line);
+}
+
 function changedFiles() {
   const result = run('git', ['diff', '--name-only', 'HEAD']);
   const untracked = run('git', ['ls-files', '--others', '--exclude-standard']);
@@ -135,6 +142,7 @@ function start() {
   doctor();
   skillsMount();
   graphAge();
+  freshness();
   console.log('end: bun tools/dsh-loop/cli.mjs end');
 }
 
@@ -217,7 +225,7 @@ async function envelopeCommand(file) {
 function help() {
   console.log(`usage: bun tools/dsh-loop/cli.mjs <command>
 
-  start               run the session-start doctor, the mount check and the graph age
+  start               run the session-start doctor, the mount check, the graph age and freshness
   end                 refresh the graph, run the typecheck and the lint gate, print the run ledger
   close               answer whether this session can be archived, from git and the event log
   guard <path>        ask the human-lane rules about a path before a write
