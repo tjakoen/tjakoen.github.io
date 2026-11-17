@@ -119,7 +119,9 @@ image comparisons because the committed visual baselines are macOS-specific; use
 visual suite on macOS when changing presentation. See .github/workflows/ci.yml for runner details.
 
 On DSH, bun tools/dsh-loop/cli.mjs end runs the typecheck, the lint gate and the graph refresh;
-bun tools/dsh-loop/cli.mjs start runs the doctor and the mount check. See
+bun tools/dsh-loop/cli.mjs start runs the doctor, the mount check and the freshness check, which
+names a mounted skill whose standard changed since the sync or a graph older than the code it indexes.
+In Claude Code the same check runs as a SessionStart hook and speaks only when something is behind. See
 [docs/HARNESS-DSH.md](docs/HARNESS-DSH.md).
 
 The earlier container command depended on a sibling compose file absent from this checkout.
