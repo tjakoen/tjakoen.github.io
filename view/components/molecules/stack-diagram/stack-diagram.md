@@ -36,7 +36,7 @@ whole stack reads evenly, PANTRY frame present).
 
 ## Placement
 
-The first visual in the page header: the small eyebrow ("you are here") stays above it, then the
+The first visual in the page header: the headline and its byline ("you are here") sit above it, then the
 diagram, then the h1 masthead, then the rule + lede. The canvas is kept compact (`H 240`) so it
 leads without pushing the headline below the fold.
 
@@ -45,4 +45,4 @@ leads without pushing the headline below the fold.
 - `data-layer` values on the five `<g>` layer groups (`batch`/`grain`/`mill`/`proof`/`crumb`) and
   on the PANTRY frame group are what the CSS targets — keep them in sync with the `current` values.
 - The `aria-label` states the whole stack in words (a screen reader reads that, not the shapes);
-  the current member is announced textually by the page's adjacent eyebrow.
+  the current member is announced textually by the page's byline.
