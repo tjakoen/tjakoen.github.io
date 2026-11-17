@@ -18,9 +18,8 @@ Rewrite the paragraph beneath the approved tagline using the leading and teachin
 ```text
 PASS: revised supporting paragraph rendered with both links.
 PASS: mobile screenshot captured.
-PASS: mobile paragraph reviewed with assistant panel closed.
 ```
 
-The desktop screenshot was visually inspected and shared in the chat. The whitespace check passed. An independent reviewer found the claims supported and confirmed that the approved tagline remained intact. The full application suite was not run for this prose-only change. The implementation changes one paragraph, with one insertion and one deletion.
+The desktop screenshot was visually inspected and shared in the chat. The mobile screenshot was captured, but the assistant panel obscured the copy. Closing that panel timed out, so mobile visual verification remains incomplete. The whitespace check passed. An independent reviewer found the claims supported and confirmed that the approved tagline remained intact. The full application suite was not run for this prose-only change. The implementation changes one paragraph, with one insertion and one deletion.
 
 Consulted VOICE, GRAPH, TOUR-STANDARD, COMMIT-STANDARD and LOOP, the leading and teaching pages, and the notes on model routing, team dashboards and moving bugs left. No deployment was made. Human review covers the new wording; the local commit remains unpushed pending that review.
