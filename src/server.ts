@@ -644,8 +644,8 @@ const catalogPage = async (req: Request) => {
     "<h1>Catalog</h1>",
     '<h2 class="cat-nav__title">Catalog</h2>',
   ).replace(
-    '<main class="cat-main">',
-    '<main class="cat-main"><h1 class="cat-page-title">GRAIN component catalog</h1>',
+    /<main class="cat-main"[^>]*>/,
+    (open) => `${open}<h1 class="cat-page-title">GRAIN component catalog</h1>`,
   ).replace(
     /<figure class="panel">[\s\S]*?<\/figure>/g,
     (panel) => panel.replaceAll("<h1", '<div role="presentation"').replaceAll("</h1>", "</div>"),
