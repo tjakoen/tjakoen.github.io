@@ -33,7 +33,9 @@ any repo alongside [`AI-DEVELOPMENT.md`](AI-DEVELOPMENT.md).
 
 1. **Read the room.** Load this repo's `CLAUDE.md`/`AGENTS.md`, then only the standards the task
    actually needs (the [`standards/README.md`](README.md) index exists so you fetch the one doc, not
-   all of them).
+   all of them). Note each section you open and each graph query you run as you go: the run report
+   lists them under consulted, and the list is easy to keep while reading and hard to rebuild from
+   memory at the end (→ [LOOP](LOOP.md) §4a).
 2. **Recall, then verify.** Read any prior memory/decision record. Treat it as a *cache, not truth* —
    if a recalled fact names a file, flag, or function, confirm it still exists before you rely on it.
    Code wins over any memory (→ AI-DEVELOPMENT §1).

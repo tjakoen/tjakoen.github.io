@@ -250,7 +250,7 @@ export function dreamClock(cwd: string, now = Date.now()): DreamClock | null {
 
   const runDir = join(cwd, "artifacts", "runs");
   const runs = existsSync(runDir)
-    ? readdirSync(runDir).filter((f) => f.endsWith(".md") && statSync(join(runDir, f)).mtimeMs > since).length
+    ? readdirSync(runDir).filter((f) => f.endsWith(".md") && f !== "README.md" && statSync(join(runDir, f)).mtimeMs > since).length
     : 0;
 
   const sessionsDir = join(homedir(), ".dsh", "sessions", dshSlug(cwd));
@@ -370,8 +370,9 @@ export function frontmatterTitle(markdown: string): string | undefined {
 function runSources(root: string, outDir: string, since?: string): { source?: Source; corpus: string; parts: number; undated: number } {
   const dir = join(root, "artifacts", "runs");
   if (!existsSync(dir)) return { corpus: "", parts: 0, undated: 0 };
+  // README.md documents the report shape; it is not a report.
   const files = readdirSync(dir)
-    .filter((f) => f.endsWith(".md"))
+    .filter((f) => f.endsWith(".md") && f !== "README.md")
     .toSorted();
   const sections: string[] = [];
   let undated = 0;
