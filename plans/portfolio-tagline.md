@@ -12,6 +12,10 @@ touches:
 
 Replace the homepage introduction with “I lead teams, build tools, and teach software engineering.” Keep the remaining homepage copy unchanged. Verify the rendered homepage and capture a screenshot for review.
 
+## Follow-up scope
+
+The owner requested a stronger supporting paragraph beneath the new tagline, grounded in the leading and teaching pages and recent notes. Update only that paragraph to connect engineering leadership and mentoring, multi-model AI workflows, and teaching with concrete work. Keep the approved tagline. Verify the rendered result and commit the follow-up locally without pushing.
+
 ## Verification
 
 The Playwright browser check produced:
