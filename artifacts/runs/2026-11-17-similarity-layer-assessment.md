@@ -11,6 +11,8 @@ touched:
   - plans/similarity-layer-assessment.md
   - artifacts/runs/2026-11-17-similarity-layer-assessment.md
 plans: similarity-layer-assessment, written by this run and left blocked on its triggers.
+consulted:
+  - CLAUDE.md
 gates:
   - bun tools/voice-lint.ts on the two new files
 diffstat: One new plan and this report. No code.
