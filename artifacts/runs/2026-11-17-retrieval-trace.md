@@ -111,11 +111,25 @@ voice-lint: 0 flag(s) across 2 file(s) (0 tell, 0 warn).
 $ bun tools/link-lint.ts
 link-lint: 72 rendered file(s), no dead relative links.
 
-$ bunx playwright test --ignore-snapshots
-(still running at commit time; output lands in a follow-up commit)
+$ bunx playwright test --ignore-snapshots   (through a throwaway config naming /opt/pw-browsers/chromium)
+  1) e2e/builder-canvas.e2e.ts:1582:3 › the preview route › the switch shows the markup without fetching anything
+    Error: expect(received).toBe(expected) // Object.is equality
+    Expected: 0
+    Received: 7
+  2) e2e/portfolio-canonical-routes.e2e.ts:54:3 › sitemap canonical routes › a browser without inline PDF support can open the deck from its fallback
+    Error: expect(locator).toBeVisible() failed
+    Expected: visible
+    Received: hidden
+  2 failed
+  618 passed (20.5m)
+
+$ the two failures rerun alone, on this branch and on the base commit f62bca1
+  this branch: 2 failed (Received: 15; Received: hidden)
+  f62bca1:     2 failed (Received: 15; Received: hidden)
 ```
 
-The bun test failure and both lint-gate regressions predate this run. With every file this run touched
+The bun test failure, both lint-gate regressions and both Playwright failures predate this run. The
+two Playwright tests fail the same way on the base commit, rerun in isolation, so they are not flakes. With every file this run touched
 moved aside, the clean HEAD gives the same retrieval-evals failure and the same two regressions. They
 are carried forward, not fixed here.
 
