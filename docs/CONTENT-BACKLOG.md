@@ -9,6 +9,24 @@
 > the repo is **public**. The events-platform exit is told **neutrally, no names, lessons-forward**.
 > Company name is **Career Team**. People name-drops = public professional info + LinkedIn only.
 
+## The vectorless RAG note (drafted 2026-11-17)
+
+**My AI Workflow Is Vectorless RAG and I Didn't Call It That**
+(content/notes/vectorless-rag-by-accident.md, **DRAFT**). A personal note that takes Shivani Virdi's
+LinkedIn post on retrieval by similarity against retrieval by reasoning, credits the idea to her
+plainly, and maps it onto the loop. CLAUDE.md is the table of contents, the standards are skills whose
+*when* field is the node summary, PANTRY resolves them into every repo, graphify is an exact index,
+and each package's CLAUDE.md and PLAN.md is a subtree. One flow figure (the tree, with notes and run
+reports drawn outside it as a flat pile) and a social card from tools/social-card-vectorless.ts.
+
+**What it still owes before it can leave DRAFT.** A link to Shivani Virdi's post, which the draft
+names but does not link because the URL was not to hand. Three sibling sessions are written up as in
+flight and must not be described as done until they land: a standards index, a retrieval trace in the
+run report, and a staleness check. Once the trace exists, the traceability section can cite a real run
+instead of arguing it. The hybrid half (similarity search over notes and run reports) is labelled a
+guess in the text and must stay that way unless it gets built. The twenty-one skills and twenty-six
+notes are snapshots from the drafting day.
+
 ## The metrics note (drafted 2026-11-12)
 
 **I Trust the Number. I Do Not Trust What I Say About It.** (content/notes/what-a-number-is-for.md,
