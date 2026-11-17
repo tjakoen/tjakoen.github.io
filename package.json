@@ -33,9 +33,11 @@
     "social:card:epic": "bun tools/social-card-epic.ts",
     "social:card:orchestration": "bun tools/social-card-orchestration.ts",
     "social:card:pantry": "bun tools/social-card-pantry.ts",
+    "social:card:vectorless": "bun tools/social-card-vectorless.ts",
     "audit": "bun tools/audit.ts",
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:links": "bun tools/link-lint.ts",
+    "lint:runs": "bun tools/run-report-lint.ts",
     "lint:baseline": "bun tools/lint-gate.ts --write",
     "answers:check": "bun tools/answers-check.ts",
     "audit:desk": "bun tools/desk-audit.ts",
@@ -46,7 +48,8 @@
     "export": "bun tools/export.ts",
     "verify:export": "bun tools/verify-export.ts",
     "check": "tsc --noEmit",
-    "lint": "oxlint"
+    "lint": "oxlint",
+    "standards:index": "bun tools/standards-index.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
