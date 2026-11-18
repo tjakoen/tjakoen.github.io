@@ -159,105 +159,139 @@
     </ul>
   </section>
 
-  <!-- 6 ----------------------------------------------------------------- FUNDAMENTALS 1 AND 2 -->
-  <section class="presentation__slide" data-title="Consequence and severity">
-    <p class="slide-eyebrow settles">Fundamentals one and two</p>
-    <svg class="fig" viewBox="0 0 700 214" role="img"
-         aria-label="One: a finding needs a consequence. Seen: Blocking, integration tests not updated, as a rule code alone. Better: the new retry path has no integration case and those tests only run on a schedule, so a regression ships unnoticed; add a case for hold, then retry. Two: severity matches the consequence. Seen: a review requested changes, then opened with no blockers, but. Better: post it as a comment, with the test gaps under worth doing."
-         style="font-size:12px">
-      <text x="8" y="22" style="fill:var(--color-fg);font-size:15px">1 · A finding needs a consequence</text>
-      <text x="8" y="44" style="fill:var(--color-muted);font-size:12.5px">seen</text>
-      <text x="64" y="44" style="fill:var(--color-muted);font-size:13px">"Blocking: INTEGRATION_TESTS_NOT_UPDATED."</text>
-      <text x="8" y="66" style="fill:var(--color-fg);font-size:12.5px">better</text>
-      <text x="64" y="66" style="fill:var(--color-fg);font-size:13px">"The new retry path has no integration case, and those tests only run on a schedule,</text>
-      <text x="64" y="84" style="fill:var(--color-fg);font-size:13px">so a regression here ships unnoticed. Add a case for hold, then retry."</text>
-      <line x1="8" y1="104" x2="692" y2="104" style="stroke:var(--color-line)"/>
-      <text x="8" y="132" style="fill:var(--color-fg);font-size:15px">2 · Severity matches the consequence</text>
-      <text x="8" y="154" style="fill:var(--color-muted);font-size:12.5px">seen</text>
-      <text x="64" y="154" style="fill:var(--color-muted);font-size:13px">requested changes, then opened with "No blockers, but..."</text>
-      <text x="8" y="176" style="fill:var(--color-fg);font-size:12.5px">better</text>
-      <text x="64" y="176" style="fill:var(--color-fg);font-size:13px">post it as a comment, and put the test gaps under "worth doing"</text>
-      <text x="8" y="206" style="fill:var(--color-fg);font-size:14px">Blocking means users or data get hurt if this merges. Everything else says so.</text>
-    </svg>
+  <style>
+    .fund-map{list-style:none;margin:1.2rem 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem 2.4rem;counter-reset:f}
+    .fund-map li{display:flex;align-items:baseline;gap:.9rem;font-size:clamp(1.05rem,2.3vw,1.6rem);line-height:1.25;color:var(--color-fg);padding:.5rem 0;border-bottom:1px solid var(--color-line)}
+    .fund-n{font-variant-numeric:tabular-nums;color:var(--color-accent,var(--color-muted));font-size:1.15em;min-width:1.2em}
+    .presentation__slide .slide-head.fund-head[data-size]{display:flex;align-items:baseline;gap:1rem;font-size:clamp(1.9rem,4.6vw,3.2rem);line-height:1.1}
+    .fund-head .fund-n{font-size:1.4em;line-height:1}
+    .fund-why{margin:.8rem 0 1.4rem;font-size:clamp(1rem,1.9vw,1.3rem);color:var(--color-muted);max-width:44rem}
+    .fund-ba{display:grid;grid-template-columns:auto 1fr;gap:.6rem 1.1rem;max-width:46rem;font-size:clamp(.95rem,1.7vw,1.15rem);line-height:1.4}
+    .fund-ba dt{font-size:.75em;letter-spacing:.08em;text-transform:uppercase;color:var(--color-muted);padding-top:.25em}
+    .fund-ba dd{margin:0}
+    .fund-ba .was{color:var(--color-muted)}
+    @media (max-width:640px){.fund-map{grid-template-columns:1fr;gap:0}.fund-ba{grid-template-columns:1fr;gap:.2rem}.fund-ba dd{margin-bottom:.6rem}}
+  </style>
+
+  <!-- 6 ----------------------------------------------------------------- FUNDAMENTALS OVERVIEW -->
+  <section class="presentation__slide" data-title="Eight fundamentals">
+    <p class="slide-eyebrow settles">Eight fundamentals, whoever writes the comment</p>
+    <ol class="fund-map">
+      <li><span class="fund-n">1</span>A finding names its consequence</li>
+      <li><span class="fund-n">2</span>Severity matches the consequence</li>
+      <li><span class="fund-n">3</span>A nit never blocks</li>
+      <li><span class="fund-n">4</span>One issue, one comment</li>
+      <li><span class="fund-n">5</span>Check before you assert</li>
+      <li><span class="fund-n">6</span>Say why, offer a fix</li>
+      <li><span class="fund-n">7</span>Verify the fix</li>
+      <li><span class="fund-n">8</span>Know when to stay silent</li>
+    </ol>
     <ul class="slide-notes" hidden>
-      <li>One: if you cannot name what goes wrong and for whom, it is not a finding yet. It might be a question.</li>
-      <li>Two: the verdict and the text have to agree. A request for changes that says "no blockers" teaches people to ignore the verdict.</li>
+      <li>This is the map. One slide each, then real comments from our own reviews.</li>
     </ul>
   </section>
 
-  <!-- 7 ----------------------------------------------------------------- FUNDAMENTALS 3 AND 4 -->
-  <section class="presentation__slide" data-title="Nits and duplicates">
-    <p class="slide-eyebrow settles">Fundamentals three and four</p>
-    <svg class="fig" viewBox="0 0 700 214" role="img"
-         aria-label="Three: a nit never blocks. Seen: a Steps to Test template placeholder counted in the list that held the merge. Better: nit, Steps to Test still has the template text. Four: one issue gets one comment. Seen: a second-opinion review restated a migration concern already open from the first review. Better: plus one on the open migration thread above, nothing new to add."
-         style="font-size:12px">
-      <text x="8" y="22" style="fill:var(--color-fg);font-size:15px">3 · A nit never blocks</text>
-      <text x="8" y="44" style="fill:var(--color-muted);font-size:12.5px">seen</text>
-      <text x="64" y="44" style="fill:var(--color-muted);font-size:13px">a "Steps to Test" placeholder counted in the list that held the merge</text>
-      <text x="8" y="66" style="fill:var(--color-fg);font-size:12.5px">better</text>
-      <text x="64" y="66" style="fill:var(--color-fg);font-size:13px">"nit: Steps to Test still has the template text."</text>
-      <line x1="8" y1="90" x2="692" y2="90" style="stroke:var(--color-line)"/>
-      <text x="8" y="118" style="fill:var(--color-fg);font-size:15px">4 · One issue gets one comment</text>
-      <text x="8" y="140" style="fill:var(--color-muted);font-size:12.5px">seen</text>
-      <text x="64" y="140" style="fill:var(--color-muted);font-size:13px">a second-opinion review restated a migration concern already open</text>
-      <text x="8" y="162" style="fill:var(--color-fg);font-size:12.5px">better</text>
-      <text x="64" y="162" style="fill:var(--color-fg);font-size:13px">"+1 on the open migration thread above, nothing new to add."</text>
-      <text x="8" y="200" style="fill:var(--color-fg);font-size:14px">Read what is already there before you post. A summary points at a thread, it never copies it.</text>
-    </svg>
+  <section class="presentation__slide" data-title="1 · A finding names its consequence">
+    <p class="slide-eyebrow settles">Fundamental one of eight</p>
+    <h2 class="slide-head settles fund-head" data-size="sm"><span class="fund-n">1</span>A finding names its consequence</h2>
+    <p class="fund-why">If you can't say what breaks and for whom, it's a question, not a finding.</p>
+    <dl class="fund-ba">
+      <dt>Before</dt><dd class="was">"Blocking: INTEGRATION_TESTS_NOT_UPDATED."</dd>
+      <dt>After</dt><dd>"The retry path has no integration case, so a regression ships unnoticed. Add one for hold, then retry."</dd>
+    </dl>
     <ul class="slide-notes" hidden>
-      <li>Three: the 98 and 46 from two slides back are why. Mixing the labels spends the credibility of the first on the second.</li>
-      <li>Four: for a machine reviewer, the better version is often nothing at all.</li>
+      <li>If you cannot name what goes wrong and for whom, it is not a finding yet. It might be a question.</li>
     </ul>
   </section>
 
-  <!-- 8 ----------------------------------------------------------------- FUNDAMENTALS 5 AND 6 -->
-  <section class="presentation__slide" data-title="Check, then say why">
-    <p class="slide-eyebrow settles">Fundamentals five and six</p>
-    <svg class="fig" viewBox="0 0 700 214" role="img"
-         aria-label="Five: check before you assert. Seen: a hypothetical about signed-in users, posted as a question, sent the author to investigate a branch the reviewer could have read. Better: read the branch first, then drop it or point to the line. Six: say why, and offer a fix. Seen, done well: toBeInstanceOf Date passes on any date; could this freeze time and assert the exact value? The reason, then the fix."
-         style="font-size:12px">
-      <text x="8" y="22" style="fill:var(--color-fg);font-size:15px">5 · Check before you assert</text>
-      <text x="8" y="44" style="fill:var(--color-muted);font-size:12.5px">seen</text>
-      <text x="64" y="44" style="fill:var(--color-muted);font-size:13px">a "what about signed-in users?" that sent the author to read a branch for you</text>
-      <text x="8" y="66" style="fill:var(--color-fg);font-size:12.5px">better</text>
-      <text x="64" y="66" style="fill:var(--color-fg);font-size:13px">read the branch first, then drop it or point to the line</text>
-      <line x1="8" y1="90" x2="692" y2="90" style="stroke:var(--color-line)"/>
-      <text x="8" y="118" style="fill:var(--color-fg);font-size:15px">6 · Say why, and offer a fix</text>
-      <text x="8" y="140" style="fill:var(--color-fg);font-size:12.5px">seen,</text>
-      <text x="8" y="156" style="fill:var(--color-fg);font-size:12.5px">done well</text>
-      <text x="80" y="140" style="fill:var(--color-fg);font-size:13px">"toBeInstanceOf(Date) passes on any date.</text>
-      <text x="80" y="158" style="fill:var(--color-fg);font-size:13px">Could this freeze time and assert the exact value?"</text>
-      <text x="8" y="200" style="fill:var(--color-fg);font-size:14px">A convention needs a count across the service, not one neighbor. A reason, then a fix.</text>
-    </svg>
+  <section class="presentation__slide" data-title="2 · Severity matches the consequence">
+    <p class="slide-eyebrow settles">Fundamental two of eight</p>
+    <h2 class="slide-head settles fund-head" data-size="sm"><span class="fund-n">2</span>Severity matches the consequence</h2>
+    <p class="fund-why">Blocking means users or data get hurt if this merges.</p>
+    <dl class="fund-ba">
+      <dt>Before</dt><dd class="was">Changes requested, then "No blockers, but..."</dd>
+      <dt>After</dt><dd>Post a comment. Test gaps go under "worth doing."</dd>
+    </dl>
     <ul class="slide-notes" hidden>
-      <li>Five: if you have not checked, it is fine to ask. Say it is a question, so nobody mistakes it for a finding.</li>
-      <li>Six: "Could we drop this?" leaves the author guessing whether it gates the merge and what you are worried about. Only 10 percent of human comments carried a fix, and this is the easiest number in the talk to move.</li>
+      <li>The verdict and the text have to agree. A request for changes that says no blockers teaches people to ignore the verdict.</li>
     </ul>
   </section>
 
-  <!-- 9 ----------------------------------------------------------------- FUNDAMENTALS 7 AND 8 -->
-  <section class="presentation__slide" data-title="Verify, and stay silent">
-    <p class="slide-eyebrow settles">Fundamentals seven and eight</p>
-    <svg class="fig" viewBox="0 0 700 214" role="img"
-         aria-label="Seven: verify the fix. Done well: 9 of 11 prior threads are fixed at the new commit, two items remain on the new code. Eight: know when to stay silent. Work the description scoped out, cleanup in an untouched file, or an unrelated baseline go on a ticket, not in the review. And a serious finding gets a serious first line."
-         style="font-size:12px">
-      <text x="8" y="22" style="fill:var(--color-fg);font-size:15px">7 · Verify the fix</text>
-      <text x="8" y="44" style="fill:var(--color-fg);font-size:12.5px">done well</text>
-      <text x="80" y="44" style="fill:var(--color-fg);font-size:13px">"9 of 11 prior threads are fixed at the new commit. Two items remain on the new code."</text>
-      <text x="80" y="64" style="fill:var(--color-muted);font-size:12.5px">a silently closed thread tells the next reader nothing</text>
-      <line x1="8" y1="88" x2="692" y2="88" style="stroke:var(--color-line)"/>
-      <text x="8" y="116" style="fill:var(--color-fg);font-size:15px">8 · Know when to stay silent</text>
-      <g style="fill:var(--color-muted);font-size:13px">
-        <text x="80" y="140">work the description already scoped out</text>
-        <text x="80" y="160">cleanup in a file the change did not touch</text>
-        <text x="80" y="180">a baseline unrelated to the feature</text>
-      </g>
-      <text x="420" y="160" style="fill:var(--color-fg);font-size:13.5px">→ a ticket, not this review</text>
-      <text x="8" y="206" style="fill:var(--color-fg);font-size:14px">And a serious finding gets a serious first line. Banter in front of a data exposure reads as a joke.</text>
-    </svg>
+  <section class="presentation__slide" data-title="3 · A nit never blocks">
+    <p class="slide-eyebrow settles">Fundamental three of eight</p>
+    <h2 class="slide-head settles fund-head" data-size="sm"><span class="fund-n">3</span>A nit never blocks</h2>
+    <p class="fund-why">Authors act on 98% of blockers and 46% of nits. Mixing them spends the first on the second.</p>
+    <dl class="fund-ba">
+      <dt>Before</dt><dd class="was">A "Steps to Test" placeholder in the list that held the merge</dd>
+      <dt>After</dt><dd>"nit: Steps to Test still has the template text."</dd>
+    </dl>
     <ul class="slide-notes" hidden>
-      <li>Seven: when someone says "done," check the code at the new commit and say so in writing.</li>
-      <li>Eight is the hardest one for a good reviewer, because everything on that list is real. It is just not this pull request's business.</li>
+      <li>The 98 and 46 from the outcome log are why. Mixing the labels spends the credibility of the first on the second.</li>
+    </ul>
+  </section>
+
+  <section class="presentation__slide" data-title="4 · One issue, one comment">
+    <p class="slide-eyebrow settles">Fundamental four of eight</p>
+    <h2 class="slide-head settles fund-head" data-size="sm"><span class="fund-n">4</span>One issue, one comment</h2>
+    <p class="fund-why">Read what is already there before you post.</p>
+    <dl class="fund-ba">
+      <dt>Before</dt><dd class="was">A second review restated a migration concern already open</dd>
+      <dt>After</dt><dd>"+1 on the open migration thread above."</dd>
+    </dl>
+    <ul class="slide-notes" hidden>
+      <li>A summary points at a thread, it never copies it. For a machine reviewer, the better version is often nothing at all.</li>
+    </ul>
+  </section>
+
+  <section class="presentation__slide" data-title="5 · Check before you assert">
+    <p class="slide-eyebrow settles">Fundamental five of eight</p>
+    <h2 class="slide-head settles fund-head" data-size="sm"><span class="fund-n">5</span>Check before you assert</h2>
+    <p class="fund-why">Don't hand the author homework you could have done.</p>
+    <dl class="fund-ba">
+      <dt>Before</dt><dd class="was">"What about signed-in users?" without reading the branch</dd>
+      <dt>After</dt><dd>Read the branch, then drop it or point to the line</dd>
+    </dl>
+    <ul class="slide-notes" hidden>
+      <li>If you have not checked, it is fine to ask. Say it is a question, so nobody mistakes it for a finding.</li>
+    </ul>
+  </section>
+
+  <section class="presentation__slide" data-title="6 · Say why, offer a fix">
+    <p class="slide-eyebrow settles">Fundamental six of eight</p>
+    <h2 class="slide-head settles fund-head" data-size="sm"><span class="fund-n">6</span>Say why, offer a fix</h2>
+    <p class="fund-why">A reason, then a fix. Only 1 in 10 human comments had one.</p>
+    <dl class="fund-ba">
+      <dt>Before</dt><dd class="was">"Could we drop this?"</dd>
+      <dt>After</dt><dd>"toBeInstanceOf(Date) passes on any date. Could this freeze time and assert the value?"</dd>
+    </dl>
+    <ul class="slide-notes" hidden>
+      <li>Could we drop this leaves the author guessing whether it gates the merge. Only 10 percent of human comments carried a fix, and this is the easiest number in the talk to move.</li>
+    </ul>
+  </section>
+
+  <section class="presentation__slide" data-title="7 · Verify the fix">
+    <p class="slide-eyebrow settles">Fundamental seven of eight</p>
+    <h2 class="slide-head settles fund-head" data-size="sm"><span class="fund-n">7</span>Verify the fix</h2>
+    <p class="fund-why">A silently closed thread tells the next reader nothing.</p>
+    <dl class="fund-ba">
+      <dt>Before</dt><dd class="was">Thread resolved, nothing said</dd>
+      <dt>After</dt><dd>"9 of 11 threads fixed at the new commit. Two remain."</dd>
+    </dl>
+    <ul class="slide-notes" hidden>
+      <li>When someone says done, check the code at the new commit and say so in writing.</li>
+    </ul>
+  </section>
+
+  <section class="presentation__slide" data-title="8 · Know when to stay silent">
+    <p class="slide-eyebrow settles">Fundamental eight of eight</p>
+    <h2 class="slide-head settles fund-head" data-size="sm"><span class="fund-n">8</span>Know when to stay silent</h2>
+    <p class="fund-why">Scoped-out work, untouched files, unrelated baselines: a ticket, not this review.</p>
+    <dl class="fund-ba">
+      <dt>Before</dt><dd class="was">Cleanup asks on a file the change never touched</dd>
+      <dt>After</dt><dd>A ticket, linked once, and nothing in the review</dd>
+    </dl>
+    <ul class="slide-notes" hidden>
+      <li>The hardest one for a good reviewer, because everything on that list is real. It is just not this pull request's business. And a serious finding gets a serious first line.</li>
     </ul>
   </section>
 
