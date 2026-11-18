@@ -277,7 +277,7 @@
     .gh{border:1px solid var(--color-line);border-radius:8px;overflow:hidden;background:var(--color-bg);font-size:.9rem;line-height:1.5}
     .gh__bar{display:flex;align-items:center;gap:.55rem;padding:.45rem .8rem;border-bottom:1px solid var(--color-line);background:color-mix(in srgb,var(--color-fg) 5%,var(--color-bg));font-size:.78rem;color:var(--color-muted)}
     .gh__av{width:1.25rem;height:1.25rem;border-radius:50%;background:color-mix(in srgb,var(--color-fg) 22%,var(--color-bg));flex:none}
-    .gh__who{color:var(--color-fg);font-weight:600}
+    .gh__who{color:var(--color-fg);font-weight:600;white-space:nowrap}
     .gh__badge{margin-left:auto;font-size:.7rem;font-weight:700;letter-spacing:.04em;padding:.1rem .5rem;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
     .gh__badge--block{color:var(--color-accent,#C4553A)}
     .gh__badge--ok{color:#3E7B4F}
@@ -402,14 +402,14 @@
   <section class="presentation__slide" data-title="Seen on Spark: done well">
     <p class="slide-eyebrow settles">From real reviews · what good already looks like here</p>
     <div class="rv-grid">
-      <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span> a consequence you can test<span class="gh__badge gh__badge--block">ISSUE (BLOCKING)</span></div>
-        <div class="gh__body"><p>Nothing tests this filter. Delete line [N] and every spec still passes, while a representative goes on seeing a job in their list after its delegation has ended.</p></div></div>
-      <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span> the reason, then the fix</div>
-        <div class="gh__body"><p><code>toBeInstanceOf(Date)</code> passes on any date. Could this freeze time and assert the <code>cancelledAt</code> value?</p></div></div>
-      <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span> user impact, labeled<span class="gh__badge gh__badge--soft">NOT A BLOCKER</span></div>
-        <div class="gh__body"><p>do you think we should show the max codes error here instead of slicing, pasting more than 50 just drops the extras without telling the user, not a blocker for me</p></div></div>
-      <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span> a fix verified, in writing<span class="gh__badge gh__badge--ok">PASS</span></div>
-        <div class="gh__body"><p>[commit] settles every point from the last round. AC: 5 of 5 met.</p><p class="gh__cut">Then one row per requirement, each with its evidence.</p></div></div>
+      <div class="rv"><p class="rv-label">a consequence you can test</p><div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span><span class="gh__badge gh__badge--block">ISSUE (BLOCKING)</span></div>
+        <div class="gh__body"><p>Nothing tests this filter. Delete line [N] and every spec still passes, while a representative goes on seeing a job in their list after its delegation has ended.</p></div></div></div>
+      <div class="rv"><p class="rv-label">the reason, then the fix</p><div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span></div>
+        <div class="gh__body"><p><code>toBeInstanceOf(Date)</code> passes on any date. Could this freeze time and assert the <code>cancelledAt</code> value?</p></div></div></div>
+      <div class="rv"><p class="rv-label">user impact, labeled</p><div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span><span class="gh__badge gh__badge--soft">NOT A BLOCKER</span></div>
+        <div class="gh__body"><p>do you think we should show the max codes error here instead of slicing, pasting more than 50 just drops the extras without telling the user, not a blocker for me</p></div></div></div>
+      <div class="rv"><p class="rv-label">a fix verified, in writing</p><div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span><span class="gh__badge gh__badge--ok">PASS</span></div>
+        <div class="gh__body"><p>[commit] settles every point from the last round. AC: 5 of 5 met.</p><p class="gh__cut">Then one row per requirement, each with its evidence.</p></div></div></div>
     </div>
     <p class="rv__note">Real comments, openers removed. Two by people, two by AI reviewers.</p>
     <ul class="slide-notes" hidden>
