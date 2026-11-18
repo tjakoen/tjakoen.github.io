@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Review Comment Is a Cost · the talk</title>
+  <meta name="description" content="The second reviewer talk, for the whole dev team: what two months of real reviews showed, eight fundamentals of a good review comment, and how to steer your own AI reviewer to follow them.">
+</head>
+<!-- A TALK OWNS THE WINDOW. Same page contract as the other decks (view/components/pages/talk):
+     no app shell, `data-deck-only`, GRAIN's presentation organism doing the work.
+
+     THE SECOND REVIEWER TALK, FOR EVERYONE WHO REVIEWS. The first talk introduced the reviewer.
+     This one is about the comment itself, person or machine, so it is built for juniors and leads
+     in the same room: one recap slide for whoever missed the first, the evidence, one figure for
+     why weight matters, the eight fundamentals two to a slide, then the part people can copy into
+     their own reviewer. Every example is anonymized: no names, logins, pull request numbers,
+     ticket keys, customer names or product names, on a slide or in the notes.
+
+     The same figure rules as every-time-it-was-wrong.html hold here. Every slide is a picture or
+     two short lines. Every figure is a wide, shallow landscape around 700x210, so `--fit` stays at
+     1 and the fixed chrome keeps its air. Figures are inline SVG on the shared theme tokens so they
+     invert with the deck, and carry GRAIN's .fig rule. `.live-fig` is not used. -->
+<body data-screen="talk" data-deck-only>
+
+<div class="presentation" data-present data-deck data-hash data-minutes="20" data-channel="commentcost">
+
+  <div class="presentation__bar">
+    <p class="presentation__meta"><a href="/talks">← all talks</a></p>
+    <p class="presentation__hint">← → move · <kbd>D</kbd> light/dark · <kbd>.</kbd> blank</p>
+  </div>
+
+  <!-- 1 ----------------------------------------------------------------- TITLE -->
+  <section class="presentation__slide" data-title="Title">
+    <p class="slide-eyebrow settles">For everyone who reviews, person or machine</p>
+    <h1 class="slide-head" data-size="xl">A Review Comment Is a Cost You Hand Someone&nbsp;Else</h1>
+    <p class="slide-lede" data-grade="grain">What two months of our reviews showed, and eight fundamentals that hold whoever writes the comment.</p>
+    <hr class="slide-rule">
+    <p class="slide-sig settles"><b>Tjakoen Stolk</b></p>
+    <ul class="slide-notes" hidden>
+      <li>Twenty minutes. The shape: what we found, why it matters, eight fundamentals, then how to make your own reviewer follow them.</li>
+      <li>Say early that this is not about anyone's reviews in particular. Nothing on these slides names a person or a pull request.</li>
+      <li>The title is the whole argument: every comment spends the author's attention, and a bad one also teaches them to read the next one less carefully.</li>
+    </ul>
+  </section>
+
+  <!-- 2 ----------------------------------------------------------------- RECAP -->
+  <section class="presentation__slide" data-title="If you missed the first one">
+    <p class="slide-eyebrow settles">If you missed the first talk, the short version</p>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="Four things from the first talk. Most of the reviewer's work is throwing comments away, through gates, a skeptic and a hard cap. It verifies a fix at the new commit rather than trusting a done reply. An outcome log scores every comment as fixed, answered, wrong or ignored, which is how we know whether it is any good. And the surprise was placement and weight, not accuracy."
+         style="font-size:12px">
+      <g style="fill:var(--color-fg)">
+        <circle cx="18" cy="34" r="6"/><circle cx="18" cy="80" r="6"/><circle cx="18" cy="126" r="6"/>
+      </g>
+      <text x="36" y="39" style="fill:var(--color-fg);font-size:15px">most of its work is throwing comments away</text>
+      <text x="36" y="58" style="fill:var(--color-muted);font-size:12.5px">gates, a skeptic that argues back, a hard cap</text>
+      <text x="36" y="85" style="fill:var(--color-fg);font-size:15px">it checks your fix at the new commit</text>
+      <text x="36" y="104" style="fill:var(--color-muted);font-size:12.5px">a "done" reply is not evidence</text>
+      <text x="36" y="131" style="fill:var(--color-fg);font-size:15px">an outcome log scores every comment</text>
+      <text x="36" y="150" style="fill:var(--color-muted);font-size:12.5px">fixed, answered, wrong or ignored</text>
+      <line x1="8" y1="174" x2="692" y2="174" style="stroke:var(--color-line)"/>
+      <text x="8" y="202" style="fill:var(--color-fg);font-size:15px">The surprise was never accuracy. It was where a comment sat, and how heavy it was.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Under a minute. The people who saw it get a reminder; the people who did not get enough to follow.</li>
+      <li>The last line is the bridge. Today is about weight, for everyone, not just the machine.</li>
+      <li>The full story is in the written version, Seven Hundred Commits to Teach a Reviewer It Was Wrong.</li>
+    </ul>
+  </section>
+
+  <!-- 3 ----------------------------------------------------------------- THE EVIDENCE -->
+  <section class="presentation__slide" data-title="What we found">
+    <p class="slide-eyebrow settles">Mid-September to mid-November, one product</p>
+    <svg class="fig" viewBox="0 0 700 212" role="img"
+         aria-label="53 pull requests with reviews held 654 top-level review comments, about half from people and half from AI reviewers. Evidence was cited in about 90 percent of AI comments and 75 percent of human ones. A fix was suggested in 34 percent of AI comments and 10 percent of human ones."
+         style="font-size:12px">
+      <text x="8" y="70" style="fill:var(--color-fg);font-size:64px">654</text>
+      <text x="168" y="44" style="fill:var(--color-fg);font-size:17px">review comments on 53 pull requests</text>
+      <text x="168" y="68" style="fill:var(--color-muted);font-size:13px">about half from people, half from AI reviewers</text>
+      <line x1="8" y1="96" x2="692" y2="96" style="stroke:var(--color-line)"/>
+      <text x="8" y="124" style="fill:var(--color-muted);font-size:12.5px">cited evidence</text>
+      <text x="200" y="124" style="fill:var(--color-fg);font-size:14px">AI about 90%</text>
+      <text x="360" y="124" style="fill:var(--color-fg);font-size:14px">human about 75%</text>
+      <text x="8" y="152" style="fill:var(--color-muted);font-size:12.5px">suggested a fix</text>
+      <text x="200" y="152" style="fill:var(--color-fg);font-size:14px">AI 34%</text>
+      <text x="360" y="152" style="fill:var(--color-fg);font-size:14px">human 10%</text>
+      <line x1="8" y1="172" x2="692" y2="172" style="stroke:var(--color-line)"/>
+      <text x="8" y="200" style="fill:var(--color-fg);font-size:15px">Mostly good. The problems were weight, repetition and missing reasons.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Flag it as a snapshot of one product over two months. It is a sample, not a verdict on the team.</li>
+      <li>Say the good part first and mean it. Accuracy is not where we are losing.</li>
+      <li>The fix-suggestion gap is the easiest one for people to close, and it comes back at fundamental six.</li>
+    </ul>
+  </section>
+
+  <!-- 4 ----------------------------------------------------------------- WEIGHT AND REPETITION -->
+  <section class="presentation__slide" data-title="Weight and repetition">
+    <p class="slide-eyebrow settles">Where the attention actually went</p>
+    <svg class="fig" viewBox="0 0 700 212" role="img"
+         aria-label="Two problems. Weight: 105 blocking items, about 94 of them from AI reviewers, three reviews that requested changes while saying no blockers, and the worst blocking comments gave only a rule code. Repetition: about 60 near-duplicate pairs on the same pull request, from re-reviews restating their own points, a second reviewer repeating the first, and summaries copying inline comments."
+         style="font-size:12px">
+      <text x="8" y="22" style="fill:var(--color-muted);font-size:13px">weight</text>
+      <text x="8" y="58" style="fill:var(--color-fg);font-size:36px">105</text>
+      <text x="90" y="44" style="fill:var(--color-fg);font-size:13.5px">blocking items,</text>
+      <text x="90" y="62" style="fill:var(--color-fg);font-size:13.5px">about 94 from AI</text>
+      <text x="8" y="98" style="fill:var(--color-fg);font-size:13.5px">3 requested changes while saying</text>
+      <text x="8" y="116" style="fill:var(--color-fg);font-size:13.5px">"no blockers"</text>
+      <text x="8" y="146" style="fill:var(--color-muted);font-size:12.5px">the worst blocking ones gave a rule code</text>
+      <text x="8" y="163" style="fill:var(--color-muted);font-size:12.5px">and nothing else</text>
+
+      <line x1="340" y1="14" x2="340" y2="170" style="stroke:var(--color-line)"/>
+
+      <text x="372" y="22" style="fill:var(--color-muted);font-size:13px">repetition</text>
+      <text x="372" y="58" style="fill:var(--color-fg);font-size:36px">~60</text>
+      <text x="452" y="44" style="fill:var(--color-fg);font-size:13.5px">near-duplicate pairs</text>
+      <text x="452" y="62" style="fill:var(--color-fg);font-size:13.5px">on the same PR</text>
+      <g style="fill:var(--color-muted);font-size:12.5px">
+        <text x="372" y="98">a re-review restating its own points</text>
+        <text x="372" y="122">a second reviewer repeating the first</text>
+        <text x="372" y="146">a summary copying its inline comments</text>
+      </g>
+      <line x1="8" y1="180" x2="692" y2="180" style="stroke:var(--color-line)"/>
+      <text x="8" y="204" style="fill:var(--color-fg);font-size:14.5px">Only a handful made a true nit block. A handful is enough to make "blocking" a mood.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>None of the duplicates came from someone being careless. Each one is a reasonable habit, and they stack on one author.</li>
+      <li>The AI share of blocking items is not an indictment of AI. It is what happens when a severity rule is not written down, and it is fixable in a prompt.</li>
+      <li>Do not name or describe a specific pull request if asked. Point them to the pattern instead.</li>
+    </ul>
+  </section>
+
+  <!-- 5 ----------------------------------------------------------------- WHY WEIGHT MATTERS -->
+  <section class="presentation__slide" data-title="Why weight matters">
+    <p class="slide-eyebrow settles">From my own reviewer's outcome log</p>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="How often authors acted on the reviewer's findings, by label, across 2,203 scored findings with precision around 99 percent throughout: blocking issues 98 percent, inline comments 92 percent, nits 46 percent, notes in the review body 46 percent."
+         style="font-size:13px">
+      <text x="8" y="20" style="fill:var(--color-muted);font-size:12px">authors acted on it · 2,203 scored findings · about 99% right in every row</text>
+      <text x="8" y="56" style="fill:var(--color-fg)">blocking issue</text>
+      <rect x="170" y="42" width="441" height="20" style="fill:var(--color-fg)"/>
+      <text x="620" y="57" style="fill:var(--color-fg)">98%</text>
+      <text x="8" y="94" style="fill:var(--color-fg)">inline comment</text>
+      <rect x="170" y="80" width="414" height="20" style="fill:var(--color-fg)"/>
+      <text x="593" y="95" style="fill:var(--color-fg)">92%</text>
+      <text x="8" y="132" style="fill:var(--color-fg)">nit</text>
+      <rect x="170" y="118" width="207" height="20" style="fill:var(--color-line)"/>
+      <text x="386" y="133" style="fill:var(--color-muted)">46%</text>
+      <text x="8" y="170" style="fill:var(--color-fg)">review-body note</text>
+      <rect x="170" y="156" width="207" height="20" style="fill:var(--color-line)"/>
+      <text x="386" y="171" style="fill:var(--color-muted)">46%</text>
+      <text x="8" y="204" style="fill:var(--color-fg);font-size:14px">Same reviewer, same accuracy. The label decided whether anyone acted.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>This is the slide the title is about. Authors trust the label. When it says blocking, they act almost every time.</li>
+      <li>So every nit dressed up as a blocker spends credibility the next real blocker needed.</li>
+      <li>Honest limit: this does not prove the label causes the gap, because a nit is also less worth doing. It shows the two move together.</li>
+      <li>Snapshot as of this week. The counts keep growing.</li>
+    </ul>
+  </section>
+
+  <!-- 6 ----------------------------------------------------------------- FUNDAMENTALS 1 AND 2 -->
+  <section class="presentation__slide" data-title="Consequence and severity">
+    <p class="slide-eyebrow settles">Fundamentals one and two</p>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="One: a finding needs a consequence. Seen: Blocking, integration tests not updated, as a rule code alone. Better: the new retry path has no integration case and those tests only run on a schedule, so a regression ships unnoticed; add a case for hold, then retry. Two: severity matches the consequence. Seen: a review requested changes, then opened with no blockers, but. Better: post it as a comment, with the test gaps under worth doing."
+         style="font-size:12px">
+      <text x="8" y="22" style="fill:var(--color-fg);font-size:15px">1 · A finding needs a consequence</text>
+      <text x="8" y="44" style="fill:var(--color-muted);font-size:12.5px">seen</text>
+      <text x="64" y="44" style="fill:var(--color-muted);font-size:13px">"Blocking: INTEGRATION_TESTS_NOT_UPDATED."</text>
+      <text x="8" y="66" style="fill:var(--color-fg);font-size:12.5px">better</text>
+      <text x="64" y="66" style="fill:var(--color-fg);font-size:13px">"The new retry path has no integration case, and those tests only run on a schedule,</text>
+      <text x="64" y="84" style="fill:var(--color-fg);font-size:13px">so a regression here ships unnoticed. Add a case for hold, then retry."</text>
+      <line x1="8" y1="104" x2="692" y2="104" style="stroke:var(--color-line)"/>
+      <text x="8" y="132" style="fill:var(--color-fg);font-size:15px">2 · Severity matches the consequence</text>
+      <text x="8" y="154" style="fill:var(--color-muted);font-size:12.5px">seen</text>
+      <text x="64" y="154" style="fill:var(--color-muted);font-size:13px">requested changes, then opened with "No blockers, but..."</text>
+      <text x="8" y="176" style="fill:var(--color-fg);font-size:12.5px">better</text>
+      <text x="64" y="176" style="fill:var(--color-fg);font-size:13px">post it as a comment, and put the test gaps under "worth doing"</text>
+      <text x="8" y="206" style="fill:var(--color-fg);font-size:14px">Blocking means users or data get hurt if this merges. Everything else says so.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>One: if you cannot name what goes wrong and for whom, it is not a finding yet. It might be a question.</li>
+      <li>Two: the verdict and the text have to agree. A request for changes that says "no blockers" teaches people to ignore the verdict.</li>
+    </ul>
+  </section>
+
+  <!-- 7 ----------------------------------------------------------------- FUNDAMENTALS 3 AND 4 -->
+  <section class="presentation__slide" data-title="Nits and duplicates">
+    <p class="slide-eyebrow settles">Fundamentals three and four</p>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="Three: a nit never blocks. Seen: a Steps to Test template placeholder counted in the list that held the merge. Better: nit, Steps to Test still has the template text. Four: one issue gets one comment. Seen: a second-opinion review restated a migration concern already open from the first review. Better: plus one on the open migration thread above, nothing new to add."
+         style="font-size:12px">
+      <text x="8" y="22" style="fill:var(--color-fg);font-size:15px">3 · A nit never blocks</text>
+      <text x="8" y="44" style="fill:var(--color-muted);font-size:12.5px">seen</text>
+      <text x="64" y="44" style="fill:var(--color-muted);font-size:13px">a "Steps to Test" placeholder counted in the list that held the merge</text>
+      <text x="8" y="66" style="fill:var(--color-fg);font-size:12.5px">better</text>
+      <text x="64" y="66" style="fill:var(--color-fg);font-size:13px">"nit: Steps to Test still has the template text."</text>
+      <line x1="8" y1="90" x2="692" y2="90" style="stroke:var(--color-line)"/>
+      <text x="8" y="118" style="fill:var(--color-fg);font-size:15px">4 · One issue gets one comment</text>
+      <text x="8" y="140" style="fill:var(--color-muted);font-size:12.5px">seen</text>
+      <text x="64" y="140" style="fill:var(--color-muted);font-size:13px">a second-opinion review restated a migration concern already open</text>
+      <text x="8" y="162" style="fill:var(--color-fg);font-size:12.5px">better</text>
+      <text x="64" y="162" style="fill:var(--color-fg);font-size:13px">"+1 on the open migration thread above, nothing new to add."</text>
+      <text x="8" y="200" style="fill:var(--color-fg);font-size:14px">Read what is already there before you post. A summary points at a thread, it never copies it.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Three: the 98 and 46 from two slides back are why. Mixing the labels spends the credibility of the first on the second.</li>
+      <li>Four: for a machine reviewer, the better version is often nothing at all.</li>
+    </ul>
+  </section>
+
+  <!-- 8 ----------------------------------------------------------------- FUNDAMENTALS 5 AND 6 -->
+  <section class="presentation__slide" data-title="Check, then say why">
+    <p class="slide-eyebrow settles">Fundamentals five and six</p>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="Five: check before you assert. Seen: a hypothetical about signed-in users, posted as a question, sent the author to investigate a branch the reviewer could have read. Better: read the branch first, then drop it or point to the line. Six: say why, and offer a fix. Seen, done well: toBeInstanceOf Date passes on any date; could this freeze time and assert the exact value? The reason, then the fix."
+         style="font-size:12px">
+      <text x="8" y="22" style="fill:var(--color-fg);font-size:15px">5 · Check before you assert</text>
+      <text x="8" y="44" style="fill:var(--color-muted);font-size:12.5px">seen</text>
+      <text x="64" y="44" style="fill:var(--color-muted);font-size:13px">a "what about signed-in users?" that sent the author to read a branch for you</text>
+      <text x="8" y="66" style="fill:var(--color-fg);font-size:12.5px">better</text>
+      <text x="64" y="66" style="fill:var(--color-fg);font-size:13px">read the branch first, then drop it or point to the line</text>
+      <line x1="8" y1="90" x2="692" y2="90" style="stroke:var(--color-line)"/>
+      <text x="8" y="118" style="fill:var(--color-fg);font-size:15px">6 · Say why, and offer a fix</text>
+      <text x="8" y="140" style="fill:var(--color-fg);font-size:12.5px">seen,</text>
+      <text x="8" y="156" style="fill:var(--color-fg);font-size:12.5px">done well</text>
+      <text x="80" y="140" style="fill:var(--color-fg);font-size:13px">"toBeInstanceOf(Date) passes on any date.</text>
+      <text x="80" y="158" style="fill:var(--color-fg);font-size:13px">Could this freeze time and assert the exact value?"</text>
+      <text x="8" y="200" style="fill:var(--color-fg);font-size:14px">A convention needs a count across the service, not one neighbor. A reason, then a fix.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Five: if you have not checked, it is fine to ask. Say it is a question, so nobody mistakes it for a finding.</li>
+      <li>Six: "Could we drop this?" leaves the author guessing whether it gates the merge and what you are worried about. Only 10 percent of human comments carried a fix, and this is the easiest number in the talk to move.</li>
+    </ul>
+  </section>
+
+  <!-- 9 ----------------------------------------------------------------- FUNDAMENTALS 7 AND 8 -->
+  <section class="presentation__slide" data-title="Verify, and stay silent">
+    <p class="slide-eyebrow settles">Fundamentals seven and eight</p>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="Seven: verify the fix. Done well: 9 of 11 prior threads are fixed at the new commit, two items remain on the new code. Eight: know when to stay silent. Work the description scoped out, cleanup in an untouched file, or an unrelated baseline go on a ticket, not in the review. And a serious finding gets a serious first line."
+         style="font-size:12px">
+      <text x="8" y="22" style="fill:var(--color-fg);font-size:15px">7 · Verify the fix</text>
+      <text x="8" y="44" style="fill:var(--color-fg);font-size:12.5px">done well</text>
+      <text x="80" y="44" style="fill:var(--color-fg);font-size:13px">"9 of 11 prior threads are fixed at the new commit. Two items remain on the new code."</text>
+      <text x="80" y="64" style="fill:var(--color-muted);font-size:12.5px">a silently closed thread tells the next reader nothing</text>
+      <line x1="8" y1="88" x2="692" y2="88" style="stroke:var(--color-line)"/>
+      <text x="8" y="116" style="fill:var(--color-fg);font-size:15px">8 · Know when to stay silent</text>
+      <g style="fill:var(--color-muted);font-size:13px">
+        <text x="80" y="140">work the description already scoped out</text>
+        <text x="80" y="160">cleanup in a file the change did not touch</text>
+        <text x="80" y="180">a baseline unrelated to the feature</text>
+      </g>
+      <text x="420" y="160" style="fill:var(--color-fg);font-size:13.5px">→ a ticket, not this review</text>
+      <text x="8" y="206" style="fill:var(--color-fg);font-size:14px">And a serious finding gets a serious first line. Banter in front of a data exposure reads as a joke.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Seven: when someone says "done," check the code at the new commit and say so in writing.</li>
+      <li>Eight is the hardest one for a good reviewer, because everything on that list is real. It is just not this pull request's business.</li>
+    </ul>
+  </section>
+
+  <!-- 10 ---------------------------------------------------------------- GATES -->
+  <section class="presentation__slide" data-title="Gates">
+    <p class="slide-eyebrow settles">If you are building a reviewer: every finding passes five gates</p>
+    <svg class="fig" viewBox="0 0 700 200" role="img"
+         aria-label="A finding passes five gates in a row before it is posted: intent, does the ticket ask for exactly this; prior art, was it already raised or answered; proof, is any convention counted across the service rather than one neighbor; the exact line; and necessity, does the author need this at all. Failing any gate drops it."
+         style="font-size:12px">
+      <defs>
+        <marker id="gt-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="8" y="30" width="116" height="64" rx="4"/>
+        <rect x="144" y="30" width="116" height="64" rx="4"/>
+        <rect x="280" y="30" width="116" height="64" rx="4"/>
+        <rect x="416" y="30" width="116" height="64" rx="4"/>
+        <rect x="552" y="30" width="116" height="64" rx="4"/>
+      </g>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
+        <path d="M124 62 L140 62" marker-end="url(#gt-a)"/><path d="M260 62 L276 62" marker-end="url(#gt-a)"/>
+        <path d="M396 62 L412 62" marker-end="url(#gt-a)"/><path d="M532 62 L548 62" marker-end="url(#gt-a)"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg);font-size:14px">
+        <text x="66" y="56">intent</text><text x="202" y="56">prior art</text><text x="338" y="56">proof</text>
+        <text x="474" y="56">exact line</text><text x="610" y="56">necessity</text>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-muted);font-size:11px">
+        <text x="66" y="76">what the ticket</text><text x="66" y="89">asked for</text>
+        <text x="202" y="76">already raised</text><text x="202" y="89">or answered?</text>
+        <text x="338" y="76">counted across</text><text x="338" y="89">the service</text>
+        <text x="474" y="76">anchored where</text><text x="474" y="89">it happens</text>
+        <text x="610" y="76">does the author</text><text x="610" y="89">need it?</text>
+      </g>
+      <g style="stroke:var(--color-line);stroke-dasharray:3 2">
+        <line x1="66" y1="94" x2="66" y2="126"/><line x1="202" y1="94" x2="202" y2="126"/>
+        <line x1="338" y1="94" x2="338" y2="126"/><line x1="474" y1="94" x2="474" y2="126"/>
+        <line x1="610" y1="94" x2="610" y2="126"/>
+      </g>
+      <text x="8" y="146" style="fill:var(--color-muted);font-size:12.5px">fail any one and it is dropped, not softened</text>
+      <text x="8" y="186" style="fill:var(--color-fg);font-size:15px">Most of a good reviewer's work is deciding what not to say.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>This is the part I want people to steal. Write each gate down as a rule in your prompt or skill, not as a vibe.</li>
+      <li>Proof is the one that catches the most. One neighbor in the same file is not a convention; a grep across the service is.</li>
+    </ul>
+  </section>
+
+  <!-- 11 ---------------------------------------------------------------- RUBRIC, DEDUPE, EVIDENCE -->
+  <section class="presentation__slide" data-title="Three rules to write down">
+    <p class="slide-eyebrow settles">Three more rules, each one sentence long</p>
+    <svg class="fig" viewBox="0 0 700 200" role="img"
+         aria-label="Three rules. Severity: blocking means users or data are harmed if merged, otherwise it is an issue, a nit or a question, and the verdict must agree with the text. Dedupe: read the existing threads first, and let the summary point to inline comments rather than repeat them. Evidence: every claim cites a file and line, or it is phrased as a question."
+         style="font-size:12px">
+      <text x="8" y="30" style="fill:var(--color-fg);font-size:15px">severity</text>
+      <text x="130" y="30" style="fill:var(--color-fg);font-size:13.5px">blocking = users or data harmed if merged. Else issue, nit or question.</text>
+      <text x="130" y="50" style="fill:var(--color-muted);font-size:12.5px">and the verdict has to agree with the text</text>
+      <line x1="8" y1="70" x2="692" y2="70" style="stroke:var(--color-line)"/>
+      <text x="8" y="98" style="fill:var(--color-fg);font-size:15px">dedupe</text>
+      <text x="130" y="98" style="fill:var(--color-fg);font-size:13.5px">read the existing threads before posting anything</text>
+      <text x="130" y="118" style="fill:var(--color-muted);font-size:12.5px">the summary points to inline comments, it never repeats them</text>
+      <line x1="8" y1="138" x2="692" y2="138" style="stroke:var(--color-line)"/>
+      <text x="8" y="166" style="fill:var(--color-fg);font-size:15px">evidence</text>
+      <text x="130" y="166" style="fill:var(--color-fg);font-size:13.5px">every claim cites a file and a line, or it is a question</text>
+      <text x="130" y="186" style="fill:var(--color-muted);font-size:12.5px">a guess phrased as a fact is the expensive kind of wrong</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Severity is the rule that would have removed most of the 105. Tie it to harm, never to how sure the model feels.</li>
+      <li>Dedupe is cheap: one read of the existing threads before posting. It would have removed most of the sixty pairs.</li>
+    </ul>
+  </section>
+
+  <!-- 12 ---------------------------------------------------------------- A SNIPPET TO COPY -->
+  <section class="presentation__slide" data-title="Copy this">
+    <p class="slide-eyebrow settles">A starting point you can paste into your own prompt</p>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="A prompt snippet. Before posting any finding: drop it if the ticket asked for exactly this, if a thread already raises it, or if you cannot name what breaks and for whom. Prove any convention by searching the whole service. Cite file and line for every claim, or phrase it as a question. Blocking means users or data are harmed if this merges; everything else is issue, nit or question, and the verdict must match the text. Summaries link to inline comments and never repeat them."
+         style="font-size:12px">
+      <rect x="8" y="8" width="684" height="198" rx="4" style="fill:none;stroke:var(--color-line)"/>
+      <g style="fill:var(--color-fg);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px">
+        <text x="24" y="34">Before posting any finding:</text>
+        <text x="24" y="56">- Drop it if the ticket asked for exactly this, if an existing thread</text>
+        <text x="24" y="74">  already raises it, or if you cannot say what breaks and for whom.</text>
+        <text x="24" y="96">- Prove a "convention" by searching the whole service, not one file.</text>
+        <text x="24" y="118">- Cite file:line for every claim, or phrase it as a question.</text>
+        <text x="24" y="140">- blocking = users or data harmed if merged. Else issue, nit, question.</text>
+        <text x="24" y="158">  The verdict must agree with the text.</text>
+        <text x="24" y="180">- Summaries link to inline comments. They never repeat them.</text>
+      </g>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Say plainly that this is a starting point, not my whole reviewer. It will not make a reviewer good by itself; the next slide is what does.</li>
+      <li>Share the text in the team channel after the talk rather than asking people to copy it off the wall.</li>
+    </ul>
+  </section>
+
+  <!-- 13 ---------------------------------------------------------------- EVALS AND THE LOG -->
+  <section class="presentation__slide" data-title="How you know it works">
+    <p class="slide-eyebrow settles">A prompt is a guess until you measure it</p>
+    <svg class="fig" viewBox="0 0 700 200" role="img"
+         aria-label="Two habits that turn a prompt into something you can trust. Evals from real cases: keep the real misses as cases it must raise and the real false positives as cases it must drop, and rerun them after every change. An outcome log: score every comment as fixed, answered, wrong or ignored, per topic."
+         style="font-size:12px">
+      <rect x="8" y="16" width="330" height="128" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="24" y="44" style="fill:var(--color-fg);font-size:15px">evals from real cases</text>
+      <g style="fill:var(--color-muted);font-size:12.5px">
+        <text x="24" y="72">a real miss → a case it must raise</text>
+        <text x="24" y="94">a real false positive → a case it must drop</text>
+        <text x="24" y="116">rerun them after every change</text>
+      </g>
+      <rect x="362" y="16" width="330" height="128" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="378" y="44" style="fill:var(--color-fg);font-size:15px">an outcome log</text>
+      <g style="fill:var(--color-muted);font-size:12.5px">
+        <text x="378" y="72">every comment scored later:</text>
+        <text x="378" y="94">fixed, answered, wrong or ignored</text>
+        <text x="378" y="116">read per topic, never one average</text>
+      </g>
+      <text x="8" y="184" style="fill:var(--color-fg);font-size:15px">Without the log, you are guessing. The 98 and 46 came from one.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>The log does not need to be fancy. A file with one row per comment and a column you fill in later is enough to start.</li>
+      <li>Keep "was it right" and "did anyone act" as two numbers. Fused, an ignored correct comment looks exactly like the reviewer being wrong.</li>
+    </ul>
+  </section>
+
+  <!-- 14 ---------------------------------------------------------------- CLOSE -->
+  <section class="presentation__slide" data-title="Close">
+    <p class="slide-eyebrow settles">Keep building</p>
+    <h2 class="slide-head settles" data-size="sm">The eight fundamentals are the spec for whatever you&nbsp;build.</h2>
+    <p class="slide-lede">Build your reviewer, measure it, and show the rest of us what it got wrong. That is how the next one gets better.</p>
+    <hr class="slide-rule">
+    <p class="slide-sig"><b>The judgment is human. The typing, by design, is not.</b></p>
+    <ul class="slide-notes" hidden>
+      <li>Say it straight: the AI workflows people on this team are building are good, and I want more of them, not fewer.</li>
+      <li>The ask is to keep the loop of teaching going. When your reviewer is wrong, write it down and share it, the way the first talk did.</li>
+      <li>Take questions.</li>
+    </ul>
+  </section>
+
+  <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
+  <div class="presentation__controls">
+    <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 14</span></span>
+    <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
+    <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
+    <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
+    <button class="presentation__ctl" type="button" data-ctl="presenter" title="Presenter window (P)" aria-label="Presenter window">◫</button>
+    <button class="presentation__ctl" type="button" data-toggle-scheme title="Light or dark (D)" aria-label="Light or dark">☾</button>
+    <button class="presentation__ctl" type="button" data-present-toggle title="Present (F)" aria-label="Present">
+      <span class="off-present">⤢</span><span class="on-present">✕</span>
+    </button>
+  </div>
+  <div class="presentation__notes" data-inline-notes aria-live="polite"></div>
+  <div class="presentation__grid" data-grid></div>
+
+<div class="presenter">
+  <div class="presenter__now">
+    <span class="presenter__pos" data-p-pos>1 / 14</span>
+    <span class="presenter__clock" data-p-clock>00:00</span>
+  </div>
+  <div>
+    <h2 class="presenter__title" data-p-title></h2>
+    <ul class="presenter__notes" data-p-notes></ul>
+  </div>
+  <div class="presenter__next">
+    <h3>Next</h3>
+    <p data-p-next></p>
+  </div>
+  <p class="presenter__hint">Arrows here drive the main window · T resets the clock · the clock turns accent past 20 minutes</p>
+</div>
+
+<script type="module" src="/scripts/presentation.js"></script>
+</body>
+</html>
