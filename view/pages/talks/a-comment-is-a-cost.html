@@ -22,7 +22,7 @@
      invert with the deck, and carry GRAIN's .fig rule. `.live-fig` is not used. -->
 <body data-screen="talk" data-deck-only>
 
-<div class="presentation" data-present data-deck data-hash data-minutes="20" data-channel="commentcost">
+<div class="presentation" data-present data-deck data-hash data-minutes="25" data-channel="commentcost">
 
   <div class="presentation__bar">
     <p class="presentation__meta"><a href="/talks">← all talks</a></p>
@@ -261,6 +261,124 @@
     </ul>
   </section>
 
+  <!-- EXAMPLES ------------------------------------------------------------ FROM REAL REVIEWS
+       Every "seen" quote is a real Spark review comment, verbatim except that names, pull request
+       numbers, commits, ticket keys, file paths, tenants and personal openers are replaced with
+       placeholders in brackets. A "rewritten" panel is mine; a "done well" panel is another real
+       Spark comment on the same kind of point. -->
+  <style>
+    .rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1rem}
+    .rv-grid--one{grid-template-columns:1fr}
+    .rv{border:1px solid var(--color-line);border-radius:6px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.6rem;background:var(--color-bg)}
+    .rv__head{display:flex;justify-content:space-between;align-items:center;gap:.8rem}
+    .rv__tag{font-size:.78rem;color:var(--color-muted);letter-spacing:.04em;text-transform:uppercase}
+    .rv__flip{font:inherit;font-size:.8rem;padding:.25rem .7rem;border:1px solid var(--color-fg);border-radius:999px;background:transparent;color:var(--color-fg);cursor:pointer;white-space:nowrap}
+    .rv__flip[aria-pressed="true"]{background:var(--color-fg);color:var(--color-bg)}
+    .rv blockquote{margin:0;font-size:.95rem;line-height:1.45}
+    .rv__seen{color:var(--color-muted)}
+    .rv__better{color:var(--color-fg)}
+    .rv__who{display:block;font-size:.75rem;color:var(--color-muted);margin-top:.4rem;font-style:normal}
+  </style>
+
+  <section class="presentation__slide" data-title="Seen on Spark: consequence and severity">
+    <p class="slide-eyebrow settles">From real reviews · one and two</p>
+    <div class="rv-grid">
+      <div class="rv">
+        <div class="rv__head"><span class="rv__tag">1 · A finding needs a consequence</span>
+          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show it done well" data-back="Show the original">Show it done well</button></div>
+        <blockquote class="rv__seen">“Agent: CHANGES REQUESTED, re-review of [PR] since [commit]. Fixed since the last review: 6. New: 1. Blocking: INTEGRATION_TESTS_NOT_UPDATED. This was a recheck-only pass: new code in this push was not independently reviewed.”<cite class="rv__who">AI reviewer, a blocking verdict</cite></blockquote>
+        <blockquote class="rv__better" hidden>“MEDIUM, INADEQUATE_TESTS. The [helper] branches for a bare-string array entry and for an object entry with no url (or a null entry) are never exercised… A regression in how those entries are handled, such as throwing on a null entry, would not be caught. Add specs where [field] is a JSON array containing a bare string url, an object without url, and null.”<cite class="rv__who">AI reviewer, another pull request, same rule, done well</cite></blockquote>
+      </div>
+      <div class="rv">
+        <div class="rv__head"><span class="rv__tag">2 · Severity matches the consequence</span>
+          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
+        <blockquote class="rv__seen">“CHANGES REQUESTED. No blockers, but the profile row shows ‘None’ when it hasn’t checked anything, three test gaps would let wrong behaviour pass, and the last four commits are untested. Findings: 0 block · 1 bug · 8 issue · 5 ask · 6 nit”<cite class="rv__who">AI reviewer</cite></blockquote>
+        <blockquote class="rv__better" hidden>“COMMENT. Nothing here holds the merge. One bug inline: the profile row shows ‘None’ before it has checked anything. Three test gaps and the four untested commits are under Worth doing.”<cite class="rv__who">Rewritten: the verdict now agrees with the words</cite></blockquote>
+      </div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>Left: the rule code is real and so is the gap, but the comment never says what breaks. Flip it to see the same rule written well on another of our pull requests: the branch, the regression it would miss, and the specs to add.</li>
+      <li>Right: zero blockers, and a request for changes anyway. The author believes the verdict and stops trusting the text.</li>
+    </ul>
+  </section>
+
+  <section class="presentation__slide" data-title="Seen on Spark: nits and labels">
+    <p class="slide-eyebrow settles">From real reviews · three</p>
+    <div class="rv-grid">
+      <div class="rv">
+        <div class="rv__head"><span class="rv__tag">3 · A nit never blocks</span>
+          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
+        <blockquote class="rv__seen">“CHANGES REQUESTED · 1 bug, 2 issues, 1 nit. One error-code collision, one a11y gap, one date-render mismatch. … Not on a diff line: nit: Steps to Test is still the template placeholder.”<cite class="rv__who">AI reviewer</cite></blockquote>
+        <blockquote class="rv__better" hidden>“CHANGES REQUESTED for the error-code collision (inline). The a11y gap and the date mismatch are issues, not blockers. nit, not holding anything: Steps to Test is still the template placeholder.”<cite class="rv__who">Rewritten: the nit is outside the list that holds the merge</cite></blockquote>
+      </div>
+      <div class="rv">
+        <div class="rv__head"><span class="rv__tag">3 · Label it, so nobody guesses</span>
+          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
+        <blockquote class="rv__seen">“could we drop the export here ? nothing outside this file imports it (0 importers)”<cite class="rv__who">Human reviewer</cite></blockquote>
+        <blockquote class="rv__better" hidden>“nit: could we drop the export here? Nothing outside this file imports it (0 importers). Not blocking.”<cite class="rv__who">Rewritten: same evidence, one word of weight</cite></blockquote>
+      </div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>Left is a good review with one misplaced line: the template nit sits inside the summary that holds the merge.</li>
+      <li>Right is a good comment, with evidence even. It only lacks a label, so the author can’t tell whether it gates anything.</li>
+    </ul>
+  </section>
+
+  <section class="presentation__slide" data-title="Seen on Spark: duplicates and checking">
+    <p class="slide-eyebrow settles">From real reviews · four and five</p>
+    <div class="rv-grid">
+      <div class="rv">
+        <div class="rv__head"><span class="rv__tag">4 · One issue, one comment</span>
+          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
+        <blockquote class="rv__seen">“wouldn’t it be good to add a case with a null or key-less entry inside [setting list]? the migration filters on setting?.key, but the cases here only cover a missing, null or non array list, so that guard isnt covered.”<br><br>Then, on the sibling spec: “same as the [customer] spec, should there be a case with a null or key-less entry inside [setting list] here too?”<cite class="rv__who">Human reviewer, two threads</cite></blockquote>
+        <blockquote class="rv__better" hidden>“Both [customer] specs miss a null or key-less entry inside [setting list]. The migration filters on setting?.key, so that guard isn’t covered in either. One case per spec.”<cite class="rv__who">Rewritten: one thread for one gap</cite></blockquote>
+      </div>
+      <div class="rv">
+        <div class="rv__head"><span class="rv__tag">5 · Check before you assert</span>
+          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
+        <blockquote class="rv__seen">“q: when someone is still signed in, does core [login route] let them pick another account here ? if it is: all good as is. if it isnt: core login sees the session and sends them right back to this page, which auto links again and shows the same refusal. could we sign out first … and have the spec check that instead of just the href ?”<cite class="rv__who">Human reviewer</cite></blockquote>
+        <blockquote class="rv__better" hidden>“question: I read [login route] at [line] and a signed-in user is sent straight back here, which links again and shows the same refusal. Could we sign out first, and have the spec assert that instead of the href?”<cite class="rv__who">Rewritten: the reviewer reads the branch, so the author doesn’t have to</cite></blockquote>
+      </div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>Left: the second comment is a fair cross-reference, but it opens a second thread for one gap. The happy ending is real: the fix landed in both specs, and the re-review said so.</li>
+      <li>Right: a good instinct, labeled as a question, which is right. But both branches of the “if” were readable, so the reviewer could have walked it and handed over an answer instead of homework.</li>
+    </ul>
+  </section>
+
+  <section class="presentation__slide" data-title="Seen on Spark: tone">
+    <p class="slide-eyebrow settles">From real reviews · eight</p>
+    <div class="rv-grid rv-grid--one">
+      <div class="rv">
+        <div class="rv__head"><span class="rv__tag">8 · A serious finding gets a serious first line</span>
+          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
+        <blockquote class="rv__seen">“[playful opener] this runs the regex over the whole users collection with no role filter and no limit, so a short term like ‘a’ or ‘gmail’ pulls back every matching jobseeker and staff id… On a big tenant that’s a huge $in on every keystroke. Could this filter to employer users and cap the result?”<cite class="rv__who">Human reviewer, opener removed here</cite></blockquote>
+        <blockquote class="rv__better" hidden>“issue (blocking): this runs the regex over the whole users collection with no role filter and no limit, so a short term like ‘a’ or ‘gmail’ pulls back every matching jobseeker and staff id. On a big tenant that’s a huge $in on every keystroke. Filter to employer users and cap the result.”<cite class="rv__who">Rewritten: the body was already right, it needed a label and no joke in front</cite></blockquote>
+      </div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>The original opened with a few playful words, removed here so nobody is recognized by them. The finding underneath is one of the best in the sample: scope, the input that triggers it, the cost and the fix.</li>
+      <li>A data exposure that reads like a joke gets treated like one. Warmth is fine on a nit; save it for there.</li>
+    </ul>
+  </section>
+
+  <section class="presentation__slide" data-title="Seen on Spark: done well">
+    <p class="slide-eyebrow settles">From real reviews · what good already looks like here</p>
+    <div class="rv-grid">
+      <div class="rv"><span class="rv__tag">A consequence you can test</span>
+        <blockquote class="rv__better">“issue (blocking): Nothing tests this filter. Delete line [N] and every spec still passes, while a representative goes on seeing a job in their list after its delegation has ended.”<cite class="rv__who">AI reviewer</cite></blockquote></div>
+      <div class="rv"><span class="rv__tag">The reason, then the fix</span>
+        <blockquote class="rv__better">“toBeInstanceOf(Date) passes on any date. Could this freeze time and assert the cancelledAt value?”<cite class="rv__who">Human reviewer, opener removed</cite></blockquote></div>
+      <div class="rv"><span class="rv__tag">User impact, labeled non-blocking</span>
+        <blockquote class="rv__better">“do you think we should show the max codes error here instead of slicing, pasting more than 50 just drops the extras without telling the user, not a blocker for me”<cite class="rv__who">Human reviewer, opener removed</cite></blockquote></div>
+      <div class="rv"><span class="rv__tag">A fix verified, in writing</span>
+        <blockquote class="rv__better">“PASS. [commit] settles every point from the last round. AC: 5 of 5 met.” Then one row per requirement, each with its evidence.<cite class="rv__who">AI reviewer</cite></blockquote></div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>All four are ours, from the same two months. Two by people, two by AI reviewers. The fundamentals aren’t new; they’re just not every comment yet.</li>
+    </ul>
+  </section>
+
   <!-- 10 ---------------------------------------------------------------- GATES -->
   <section class="presentation__slide" data-title="Gates">
     <p class="slide-eyebrow settles">If you are building a reviewer: every finding passes five gates</p>
@@ -431,5 +549,6 @@
 </div>
 
 <script type="module" src="/scripts/presentation.js"></script>
+<script type="module" src="/site/talk-review.js"></script>
 </body>
 </html>
