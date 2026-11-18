@@ -1,12 +1,8 @@
 /* The badges hub: one block per subject, one card per badge design showing the real medallion.
    Flat on the paper: hairlines and space carry the structure, no shadows and no gradients. */
 [data-screen="badges"] .badges-board { max-width: 1080px; }
-[data-screen="badges"] .badge-stats { display: flex; flex-wrap: wrap; gap: var(--space-6); margin: var(--space-6) 0 0;
-  padding: var(--space-4) 0; border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); }
-[data-screen="badges"] .badge-stats div { display: grid; gap: var(--space-1); }
-[data-screen="badges"] .badge-stats dt { color: var(--color-muted); font: var(--text-xs) var(--font-mono);
-  text-transform: uppercase; letter-spacing: .06em; }
-[data-screen="badges"] .badge-stats dd { margin: 0; font-size: var(--text-2xl, var(--text-xl)); line-height: 1; }
+/* The totals are GRAIN's stat tiles in its dashboard KPI strip; this only spaces the strip. */
+[data-screen="badges"] .badge-stats { margin: var(--space-6) 0 0; }
 
 [data-screen="badges"] .badge-course { margin-top: var(--space-8, var(--space-6)); padding-top: var(--space-5, var(--space-4));
   border-top: 2px solid var(--color-fg); }
@@ -38,5 +34,4 @@
 }
 @container shell-frame (max-width: 36rem) {
   [data-screen="badges"] .badge-designs { grid-template-columns: minmax(0, 1fr); }
-  [data-screen="badges"] .badge-stats { gap: var(--space-4); }
 }
