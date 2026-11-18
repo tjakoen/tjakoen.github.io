@@ -28,6 +28,7 @@ social: |
   Eight things a review comment owes the person reading it, with the before and after for each.
 socialImage: "/media/notes/a-comment-is-a-cost-social.png"
 socialImageAlt: "Four bars for how often authors acted on a reviewer's comments: blocking issues 98 percent, inline comments 92 percent, nits 46 percent, notes in the review body 46 percent, under the line: same reviewer, same accuracy."
+deck: "A Review Comment Is a Cost | Talk | /talks/a-comment-is-a-cost | 19 slides · runs in the browser, no download"
 ---
 
 This one is for my team. Some of you, mostly the juniors, have told me our reviews are wearing you
