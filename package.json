@@ -31,6 +31,7 @@
     "social:card:dashboards": "bun tools/social-card-dashboards.ts",
     "social:card:reviewer": "bun tools/social-card-reviewer.ts",
     "social:card:epic": "bun tools/social-card-epic.ts",
+    "social:card:comment-cost": "bun tools/social-card-comment-cost.ts",
     "social:card:orchestration": "bun tools/social-card-orchestration.ts",
     "social:card:pantry": "bun tools/social-card-pantry.ts",
     "social:card:vectorless": "bun tools/social-card-vectorless.ts",
