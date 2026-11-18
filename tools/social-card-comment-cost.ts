@@ -56,7 +56,7 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
     <text x="96" y="430" style="fill:${MUTED};font-size:28px">How often the author acts on it, by how the comment is labeled</text>
     ${rows}
     <line x1="96" y1="1122" x2="${W - 96}" y2="1122" style="stroke:${LINE};stroke-width:1"/>
-    <text x="96" y="1158" style="fill:${INK};font-size:22px">A Review Comment Is a Cost You Hand Someone Else</text>
+    <text x="96" y="1158" style="fill:${INK};font-size:22px">Eight Things a Review Comment Owes the Person Reading It</text>
     <text x="${W - 96}" y="1158" text-anchor="end" style="fill:${MUTED};font-size:21px">${HOST}</text>
   </svg>
 </body></html>`;

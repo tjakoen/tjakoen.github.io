@@ -1,8 +1,8 @@
 ---
-title: "A Review Comment Is a Cost You Hand Someone Else"
+title: "Eight Things a Review Comment Owes the Person Reading It"
 audience: [lead, build]
 level: intro
-subtitle: "Every comment on a pull request spends the author's attention. We read two months of reviews on one product and found the problem was never accuracy. It was weight, repetition and missing reasons."
+subtitle: "For my team, now that half of you are building your own AI reviewers. Our reviews were mostly right. They still blocked on nits, said things twice and left out the reason, and those are fundamentals, not automation."
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
@@ -10,39 +10,47 @@ date: 2026-11-18
 readingTime: "~9 min"
 tags: [ai, leadership, code-review]
 summary: >
-  Eight fundamentals of a good code review comment, drawn from 654 review comments on one product
-  at Career Team, about half written by people and half by AI reviewers. The comments were mostly
-  right. What went wrong was weight (blocking on things that were not blocking), repetition (about
-  sixty points posted twice) and missing reasons. The same eight rules are the spec for anyone
-  building their own AI reviewer.
+  Written for my dev team at Career Team after juniors told me our reviews were blocking on nits,
+  inflating minor things and repeating themselves. Across 654 review comments on one product, about
+  half human and half AI, the comments were mostly right; weight, repetition and missing reasons
+  were the problem. Eight fundamentals of a good comment, each with what we saw and what would have
+  been better, as the spec for the AI reviewers the team is now building.
 social: |
-  My own AI reviewer is right about 99% of the time. Authors act on 98% of its blocking findings
-  and 46% of its nits.
+  The juniors on my team told me our code reviews were wearing them out. Nits that block. Minor
+  things raised as major. The same comment twice.
 
-  Same reviewer, same accuracy. The label decided whether anyone read it.
+  So we read 654 review comments, half human and half AI. They were mostly right. That was never
+  the problem.
 
-  We went through 654 review comments on one product at work, half human and half AI. The problem
-  was never accuracy. It was weight, repetition and missing reasons. Eight fundamentals, with the
-  before and after for each.
+  My own reviewer's log says why it matters: authors act on 98% of its blocking findings and 46%
+  of its nits. Same accuracy. The label decided.
+
+  Eight things a review comment owes the person reading it, with the before and after for each.
 socialImage: "/media/notes/a-comment-is-a-cost-social.png"
 socialImageAlt: "Four bars for how often authors acted on a reviewer's comments: blocking issues 98 percent, inline comments 92 percent, nits 46 percent, notes in the review body 46 percent, under the line: same reviewer, same accuracy."
 ---
 
-My own reviewer is right about 99 percent of the time, and half of what it says still gets
-ignored. I spent a while assuming that was the authors' fault. It was not. It was the reviewer
-spending their attention on things that did not deserve it, and I built that reviewer, so it was
-mine.
+This one is for my team. Some of you, mostly the juniors, have told me our reviews are wearing you
+out: nits that block the merge, minor things raised as major, the same point posted twice. You
+were right to say it, and since I started the AI reviewing here, part of the complaint lands on me.
+
+In September I gave a talk on that reviewer, [Every Time It Was Wrong](/talks/every-time-it-was-wrong),
+and the long version is in
+[Seven Hundred Commits to Teach a Reviewer It Was Wrong](the-reviewer-that-learned-to-be-wrong.md).
+Since then several of you have built AI review workflows of your own. I am genuinely glad about
+that, and a little smug that the talk had something to do with it. But it means the quality of our
+reviews now depends on what each of those reviewers has been told a good comment is.
+
+So this note is less about automation and more about the fundamentals underneath it. They hold
+whether you write the comment or a reviewer you built writes it, and if you are steering one, they
+are the spec. Think of it as the next turn of the same loop: I showed you mine, you built yours, and
+now we agree on what all of them should be aiming at.
 
 Every comment on a pull request spends the author's attention. A good one buys something with it: a
 bug that does not ship, a test that would have caught the next one. A bad one spends it and buys
 nothing, and it also teaches the author to read the next comment a little less carefully. That
 second cost is the one we keep underestimating, because it never shows up on the pull request where
 it was paid.
-
-If you missed the first talk, [Every Time It Was Wrong](/talks/every-time-it-was-wrong), the short
-version is that most of my reviewer's work is throwing comments away, and the long version is in
-[Seven Hundred Commits to Teach a Reviewer It Was Wrong](the-reviewer-that-learned-to-be-wrong.md).
-This note is the part that applies to everyone who reviews, person or machine.
 
 ## What two months of one product's reviews looked like
 
@@ -134,8 +142,9 @@ nit is also less worth doing, but it does show that the label and the response m
 
 ## Eight fundamentals
 
-These hold whether a person writes the comment or a reviewer you built writes it. Each comes with
-something we actually saw, anonymized, and what would have been better.
+Each one comes with something we actually saw, anonymized, and what would have been better. If you
+recognize one of yours, that is the point, not a callout: people and AI reviewers both posted the
+comments on this list.
 
 ### 1. A finding needs a consequence
 
@@ -204,10 +213,10 @@ cleanup in a file the change did not touch, a baseline unrelated to the feature:
 ticket. And a serious finding deserves a serious opening line. Banter in front of a data exposure
 makes it read as a joke.
 
-## If you are building a reviewer
+## How to steer the reviewer you are building
 
-Every one of the eight is a gate you can write down, and that is the part I most want the team to
-steal. What worked in mine, in the order a finding meets it:
+Every one of the eight is a gate you can write down, and that is the part I most want you to steal
+for your own prompts and skills. What worked in mine, in the order a finding meets it:
 
 - **Gates before posting.** A finding has to know the ticket's intent, check it was not already
   raised, prove any convention by searching the whole service, anchor to an exact line, and survive
