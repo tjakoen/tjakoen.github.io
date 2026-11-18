@@ -35,6 +35,7 @@
     "social:card:orchestration": "bun tools/social-card-orchestration.ts",
     "social:card:pantry": "bun tools/social-card-pantry.ts",
     "social:card:vectorless": "bun tools/social-card-vectorless.ts",
+    "social:card:same-reviewer": "bun tools/social-card-same-reviewer.ts",
     "audit": "bun tools/audit.ts",
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:links": "bun tools/link-lint.ts",
