@@ -262,38 +262,58 @@
   </section>
 
   <!-- EXAMPLES ------------------------------------------------------------ FROM REAL REVIEWS
-       Every "seen" quote is a real Spark review comment, verbatim except that names, pull request
-       numbers, commits, ticket keys, file paths, tenants and personal openers are replaced with
-       placeholders in brackets. A "rewritten" panel is mine; a "done well" panel is another real
-       Spark comment on the same kind of point. -->
+       Every "original" comment is a real Spark review comment, verbatim except that names, pull
+       request numbers, commits, ticket keys, file paths, tenants and personal openers are replaced
+       with placeholders in brackets. A "rewrite" is mine, and so is every suggestion diff, which is
+       illustrative rather than the real code. A "done well" panel is another real Spark comment. -->
   <style>
-    .rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1rem}
-    .rv-grid--one{grid-template-columns:1fr}
-    .rv{border:1px solid var(--color-line);border-radius:6px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.6rem;background:var(--color-bg)}
-    .rv__head{display:flex;justify-content:space-between;align-items:center;gap:.8rem}
-    .rv__tag{font-size:.78rem;color:var(--color-muted);letter-spacing:.04em;text-transform:uppercase}
-    .rv__flip{font:inherit;font-size:.8rem;padding:.25rem .7rem;border:1px solid var(--color-fg);border-radius:999px;background:transparent;color:var(--color-fg);cursor:pointer;white-space:nowrap}
-    .rv__flip[aria-pressed="true"]{background:var(--color-fg);color:var(--color-bg)}
-    .rv blockquote{margin:0;font-size:.95rem;line-height:1.45}
-    .rv__seen{color:var(--color-muted)}
-    .rv__better{color:var(--color-fg)}
-    .rv__who{display:block;font-size:.75rem;color:var(--color-muted);margin-top:.4rem;font-style:normal}
+    .rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:1.1rem;align-items:start}
+    .rv-grid--one{grid-template-columns:minmax(0,46rem)}
+    .rv-label{font-size:.78rem;color:var(--color-muted);letter-spacing:.06em;text-transform:uppercase;margin:0 0 .45rem}
+    .rv{display:flex;flex-direction:column;gap:.55rem}
+    .rv__switch{display:inline-flex;align-self:flex-start;border:1px solid var(--color-line);border-radius:999px;padding:2px;gap:2px}
+    .rv__switch button{font:inherit;font-size:.78rem;padding:.2rem .8rem;border:0;border-radius:999px;background:transparent;color:var(--color-muted);cursor:pointer}
+    .rv__switch button[aria-current="true"]{background:var(--color-fg);color:var(--color-bg)}
+    .gh{border:1px solid var(--color-line);border-radius:8px;overflow:hidden;background:var(--color-bg);font-size:.9rem;line-height:1.5}
+    .gh__bar{display:flex;align-items:center;gap:.55rem;padding:.45rem .8rem;border-bottom:1px solid var(--color-line);background:color-mix(in srgb,var(--color-fg) 5%,var(--color-bg));font-size:.78rem;color:var(--color-muted)}
+    .gh__av{width:1.25rem;height:1.25rem;border-radius:50%;background:color-mix(in srgb,var(--color-fg) 22%,var(--color-bg));flex:none}
+    .gh__who{color:var(--color-fg);font-weight:600}
+    .gh__badge{margin-left:auto;font-size:.7rem;font-weight:700;letter-spacing:.04em;padding:.1rem .5rem;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+    .gh__badge--block{color:var(--color-accent,#C4553A)}
+    .gh__badge--ok{color:#3E7B4F}
+    .gh__badge--soft{color:var(--color-muted)}
+    .gh__body{padding:.7rem .85rem;color:var(--color-fg)}
+    .gh__body p{margin:0 0 .45rem}
+    .gh__body p:last-child{margin-bottom:0}
+    .gh code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82em;padding:.05rem .3rem;border-radius:4px;background:color-mix(in srgb,var(--color-fg) 8%,var(--color-bg))}
+    .gh__lbl{font-weight:700}
+    .gh__cut{color:var(--color-muted)}
+    .gh__diff{margin:.55rem 0 0;border:1px solid var(--color-line);border-radius:6px;overflow:hidden;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.76rem;line-height:1.55}
+    .gh__diff-h{padding:.25rem .6rem;font-family:inherit;color:var(--color-muted);border-bottom:1px solid var(--color-line);font-size:.72rem}
+    .gh__diff div{padding:0 .6rem;white-space:pre}
+    .gh__diff .del{background:color-mix(in srgb,#C4553A 14%,var(--color-bg))}
+    .gh__diff .add{background:color-mix(in srgb,#3E7B4F 16%,var(--color-bg))}
+    .rv__note{font-size:.75rem;color:var(--color-muted)}
   </style>
 
   <section class="presentation__slide" data-title="Seen on Spark: consequence and severity">
-    <p class="slide-eyebrow settles">From real reviews · one and two</p>
+    <p class="slide-eyebrow settles">From real reviews · fundamentals one and two</p>
     <div class="rv-grid">
       <div class="rv">
-        <div class="rv__head"><span class="rv__tag">1 · A finding needs a consequence</span>
-          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show it done well" data-back="Show the original">Show it done well</button></div>
-        <blockquote class="rv__seen">“Agent: CHANGES REQUESTED, re-review of [PR] since [commit]. Fixed since the last review: 6. New: 1. Blocking: INTEGRATION_TESTS_NOT_UPDATED. This was a recheck-only pass: new code in this push was not independently reviewed.”<cite class="rv__who">AI reviewer, a blocking verdict</cite></blockquote>
-        <blockquote class="rv__better" hidden>“MEDIUM, INADEQUATE_TESTS. The [helper] branches for a bare-string array entry and for an object entry with no url (or a null entry) are never exercised… A regression in how those entries are handled, such as throwing on a null entry, would not be caught. Add specs where [field] is a JSON array containing a bare string url, an object without url, and null.”<cite class="rv__who">AI reviewer, another pull request, same rule, done well</cite></blockquote>
+        <p class="rv-label">1 · A finding needs a consequence</p>
+        <div class="rv__switch" role="group" aria-label="Which version"><button type="button" data-rv-show="seen" aria-current="true">Original</button><button type="button" data-rv-show="better" aria-current="false">Done well</button></div>
+        <div class="gh rv__seen"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span> re-review<span class="gh__badge gh__badge--block">CHANGES REQUESTED</span></div>
+          <div class="gh__body"><p>Re-review of [PR] since [commit]. Fixed since the last review: 6. New: 1.</p><p><span class="gh__lbl">Blocking:</span> <code>INTEGRATION_TESTS_NOT_UPDATED</code></p><p class="gh__cut">This was a recheck-only pass: new code in this push was not independently reviewed.</p></div></div>
+        <div class="gh rv__better" hidden><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span> another pull request<span class="gh__badge gh__badge--soft">MEDIUM</span></div>
+          <div class="gh__body"><p><code>INADEQUATE_TESTS</code> The [helper] branches for a bare-string array entry and for an object entry with no url (or a null entry) are never exercised…</p><p>A regression in how those entries are handled, such as throwing on a null entry, would not be caught.</p><p>Add specs where [field] is a JSON array containing a bare string url, an object without url, and <code>null</code>.</p></div></div>
       </div>
       <div class="rv">
-        <div class="rv__head"><span class="rv__tag">2 · Severity matches the consequence</span>
-          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
-        <blockquote class="rv__seen">“CHANGES REQUESTED. No blockers, but the profile row shows ‘None’ when it hasn’t checked anything, three test gaps would let wrong behaviour pass, and the last four commits are untested. Findings: 0 block · 1 bug · 8 issue · 5 ask · 6 nit”<cite class="rv__who">AI reviewer</cite></blockquote>
-        <blockquote class="rv__better" hidden>“COMMENT. Nothing here holds the merge. One bug inline: the profile row shows ‘None’ before it has checked anything. Three test gaps and the four untested commits are under Worth doing.”<cite class="rv__who">Rewritten: the verdict now agrees with the words</cite></blockquote>
+        <p class="rv-label">2 · Severity matches the consequence</p>
+        <div class="rv__switch" role="group" aria-label="Which version"><button type="button" data-rv-show="seen" aria-current="true">Original</button><button type="button" data-rv-show="better" aria-current="false">Rewrite</button></div>
+        <div class="gh rv__seen"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span><span class="gh__badge gh__badge--block">CHANGES REQUESTED</span></div>
+          <div class="gh__body"><p><b>No blockers</b>, but the profile row shows “None” when it hasn’t checked anything, three test gaps would let wrong behaviour pass, and the last four commits are untested.</p><p class="gh__cut">Findings: 0 block · 1 bug · 8 issue · 5 ask · 6 nit</p></div></div>
+        <div class="gh rv__better" hidden><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Rewritten</span><span class="gh__badge gh__badge--soft">COMMENT</span></div>
+          <div class="gh__body"><p>Nothing here holds the merge.</p><p><span class="gh__lbl">bug</span> (inline): the profile row shows “None” before it has checked anything.</p><p class="gh__cut">Worth doing: three test gaps, and the four untested commits.</p></div></div>
       </div>
     </div>
     <ul class="slide-notes" hidden>
@@ -303,19 +323,24 @@
   </section>
 
   <section class="presentation__slide" data-title="Seen on Spark: nits and labels">
-    <p class="slide-eyebrow settles">From real reviews · three</p>
+    <p class="slide-eyebrow settles">From real reviews · fundamental three</p>
     <div class="rv-grid">
       <div class="rv">
-        <div class="rv__head"><span class="rv__tag">3 · A nit never blocks</span>
-          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
-        <blockquote class="rv__seen">“CHANGES REQUESTED · 1 bug, 2 issues, 1 nit. One error-code collision, one a11y gap, one date-render mismatch. … Not on a diff line: nit: Steps to Test is still the template placeholder.”<cite class="rv__who">AI reviewer</cite></blockquote>
-        <blockquote class="rv__better" hidden>“CHANGES REQUESTED for the error-code collision (inline). The a11y gap and the date mismatch are issues, not blockers. nit, not holding anything: Steps to Test is still the template placeholder.”<cite class="rv__who">Rewritten: the nit is outside the list that holds the merge</cite></blockquote>
+        <p class="rv-label">3 · A nit never blocks</p>
+        <div class="rv__switch" role="group" aria-label="Which version"><button type="button" data-rv-show="seen" aria-current="true">Original</button><button type="button" data-rv-show="better" aria-current="false">Rewrite</button></div>
+        <div class="gh rv__seen"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span><span class="gh__badge gh__badge--block">CHANGES REQUESTED</span></div>
+          <div class="gh__body"><p>1 bug, 2 issues, 1 nit. One error-code collision, one a11y gap, one date-render mismatch.</p><p class="gh__cut">…</p><p>Not on a diff line: <span class="gh__lbl">nit:</span> Steps to Test is still the template placeholder.</p></div></div>
+        <div class="gh rv__better" hidden><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Rewritten</span><span class="gh__badge gh__badge--block">CHANGES REQUESTED</span></div>
+          <div class="gh__body"><p>Held for one thing: the error-code collision (inline).</p><p>The a11y gap and the date mismatch are issues, not blockers.</p><p class="gh__cut"><span class="gh__lbl">nit</span>, holds nothing: Steps to Test is still the template placeholder.</p></div></div>
       </div>
       <div class="rv">
-        <div class="rv__head"><span class="rv__tag">3 · Label it, so nobody guesses</span>
-          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
-        <blockquote class="rv__seen">“could we drop the export here ? nothing outside this file imports it (0 importers)”<cite class="rv__who">Human reviewer</cite></blockquote>
-        <blockquote class="rv__better" hidden>“nit: could we drop the export here? Nothing outside this file imports it (0 importers). Not blocking.”<cite class="rv__who">Rewritten: same evidence, one word of weight</cite></blockquote>
+        <p class="rv-label">3 · Label it, so nobody guesses</p>
+        <div class="rv__switch" role="group" aria-label="Which version"><button type="button" data-rv-show="seen" aria-current="true">Original</button><button type="button" data-rv-show="better" aria-current="false">Rewrite</button></div>
+        <div class="gh rv__seen"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span> on a service file</div>
+          <div class="gh__body"><p>could we drop the export here ? nothing outside this file imports it (0 importers)</p></div></div>
+        <div class="gh rv__better" hidden><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Rewritten</span><span class="gh__badge gh__badge--soft">NIT</span></div>
+          <div class="gh__body"><p><span class="gh__lbl">nit:</span> could we drop the export here? Nothing outside this file imports it (0 importers). Not blocking.</p>
+            <div class="gh__diff"><div class="gh__diff-h">suggestion · illustrative</div><div class="del">- export function [helper](…) {</div><div class="add">+ function [helper](…) {</div></div></div></div>
       </div>
     </div>
     <ul class="slide-notes" hidden>
@@ -325,57 +350,70 @@
   </section>
 
   <section class="presentation__slide" data-title="Seen on Spark: duplicates and checking">
-    <p class="slide-eyebrow settles">From real reviews · four and five</p>
+    <p class="slide-eyebrow settles">From real reviews · fundamentals four and five</p>
     <div class="rv-grid">
       <div class="rv">
-        <div class="rv__head"><span class="rv__tag">4 · One issue, one comment</span>
-          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
-        <blockquote class="rv__seen">“wouldn’t it be good to add a case with a null or key-less entry inside [setting list]? the migration filters on setting?.key, but the cases here only cover a missing, null or non array list, so that guard isnt covered.”<br><br>Then, on the sibling spec: “same as the [customer] spec, should there be a case with a null or key-less entry inside [setting list] here too?”<cite class="rv__who">Human reviewer, two threads</cite></blockquote>
-        <blockquote class="rv__better" hidden>“Both [customer] specs miss a null or key-less entry inside [setting list]. The migration filters on setting?.key, so that guard isn’t covered in either. One case per spec.”<cite class="rv__who">Rewritten: one thread for one gap</cite></blockquote>
+        <p class="rv-label">4 · One issue, one comment</p>
+        <div class="rv__switch" role="group" aria-label="Which version"><button type="button" data-rv-show="seen" aria-current="true">Original</button><button type="button" data-rv-show="better" aria-current="false">Rewrite</button></div>
+        <div class="rv__seen" style="display:flex;flex-direction:column;gap:.5rem">
+          <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span> spec one</div>
+            <div class="gh__body"><p>wouldn’t it be good to add a case with a null or key-less entry inside [setting list]? the migration filters on <code>setting?.key</code>, but the cases here only cover a missing, null or non array list, so that guard isnt covered.</p></div></div>
+          <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span> spec two</div>
+            <div class="gh__body"><p>same as the [customer] spec, should there be a case with a null or key-less entry inside [setting list] here too?</p></div></div>
+        </div>
+        <div class="gh rv__better" hidden><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Rewritten</span> one thread<span class="gh__badge gh__badge--soft">ISSUE</span></div>
+          <div class="gh__body"><p>Both [customer] specs miss a null or key-less entry inside [setting list]. The migration filters on <code>setting?.key</code>, so that guard isn’t covered in either. One case per spec:</p>
+            <div class="gh__diff"><div class="gh__diff-h">suggestion · illustrative</div><div class="add">+ it('skips a null or key-less entry', …)</div></div></div></div>
       </div>
       <div class="rv">
-        <div class="rv__head"><span class="rv__tag">5 · Check before you assert</span>
-          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
-        <blockquote class="rv__seen">“q: when someone is still signed in, does core [login route] let them pick another account here ? if it is: all good as is. if it isnt: core login sees the session and sends them right back to this page, which auto links again and shows the same refusal. could we sign out first … and have the spec check that instead of just the href ?”<cite class="rv__who">Human reviewer</cite></blockquote>
-        <blockquote class="rv__better" hidden>“question: I read [login route] at [line] and a signed-in user is sent straight back here, which links again and shows the same refusal. Could we sign out first, and have the spec assert that instead of the href?”<cite class="rv__who">Rewritten: the reviewer reads the branch, so the author doesn’t have to</cite></blockquote>
+        <p class="rv-label">5 · Check before you assert</p>
+        <div class="rv__switch" role="group" aria-label="Which version"><button type="button" data-rv-show="seen" aria-current="true">Original</button><button type="button" data-rv-show="better" aria-current="false">Rewrite</button></div>
+        <div class="gh rv__seen"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span><span class="gh__badge gh__badge--soft">Q</span></div>
+          <div class="gh__body"><p>when someone is still signed in, does core [login route] let them pick another account here ?</p><p>if it is: all good as is. if it isnt: core login sees the session and sends them right back to this page, which auto links again and shows the same refusal.</p><p>could we sign out first … and have the spec check that instead of just the href ?</p></div></div>
+        <div class="gh rv__better" hidden><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Rewritten</span><span class="gh__badge gh__badge--soft">QUESTION</span></div>
+          <div class="gh__body"><p>I read [login route] at [line]: a signed-in user is sent straight back here, which links again and shows the same refusal.</p><p>Could we sign out first, and have the spec assert that instead of the <code>href</code>?</p></div></div>
       </div>
     </div>
     <ul class="slide-notes" hidden>
       <li>Left: the second comment is a fair cross-reference, but it opens a second thread for one gap. The happy ending is real: the fix landed in both specs, and the re-review said so.</li>
-      <li>Right: a good instinct, labeled as a question, which is right. But both branches of the “if” were readable, so the reviewer could have walked it and handed over an answer instead of homework.</li>
+      <li>Right: a good instinct, labeled as a question, which is right. But both branches of the “if” were readable, so the reviewer could have walked it and handed over an answer instead of homework. The rewrite assumes that reading; it is illustrative.</li>
     </ul>
   </section>
 
   <section class="presentation__slide" data-title="Seen on Spark: tone">
-    <p class="slide-eyebrow settles">From real reviews · eight</p>
+    <p class="slide-eyebrow settles">From real reviews · fundamental eight</p>
     <div class="rv-grid rv-grid--one">
       <div class="rv">
-        <div class="rv__head"><span class="rv__tag">8 · A serious finding gets a serious first line</span>
-          <button class="rv__flip" type="button" data-rv-flip aria-pressed="false" data-label="Show the rewrite" data-back="Show the original">Show the rewrite</button></div>
-        <blockquote class="rv__seen">“[playful opener] this runs the regex over the whole users collection with no role filter and no limit, so a short term like ‘a’ or ‘gmail’ pulls back every matching jobseeker and staff id… On a big tenant that’s a huge $in on every keystroke. Could this filter to employer users and cap the result?”<cite class="rv__who">Human reviewer, opener removed here</cite></blockquote>
-        <blockquote class="rv__better" hidden>“issue (blocking): this runs the regex over the whole users collection with no role filter and no limit, so a short term like ‘a’ or ‘gmail’ pulls back every matching jobseeker and staff id. On a big tenant that’s a huge $in on every keystroke. Filter to employer users and cap the result.”<cite class="rv__who">Rewritten: the body was already right, it needed a label and no joke in front</cite></blockquote>
+        <p class="rv-label">8 · A serious finding gets a serious first line</p>
+        <div class="rv__switch" role="group" aria-label="Which version"><button type="button" data-rv-show="seen" aria-current="true">Original</button><button type="button" data-rv-show="better" aria-current="false">Rewrite</button></div>
+        <div class="gh rv__seen"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span> on a search query</div>
+          <div class="gh__body"><p><i>[playful opener]</i> this runs the regex over the whole users collection with no role filter and no limit, so a short term like “a” or “gmail” pulls back every matching jobseeker and staff id…</p><p>On a big tenant that’s a huge <code>$in</code> on every keystroke. Could this filter to employer users and cap the result?</p></div></div>
+        <div class="gh rv__better" hidden><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Rewritten</span><span class="gh__badge gh__badge--block">ISSUE (BLOCKING)</span></div>
+          <div class="gh__body"><p>This runs the regex over the whole users collection with no role filter and no limit, so a short term like “a” or “gmail” pulls back every matching jobseeker and staff id. On a big tenant that’s a huge <code>$in</code> on every keystroke. Filter to employer users and cap the result.</p>
+            <div class="gh__diff"><div class="gh__diff-h">suggestion · illustrative</div><div class="del">- users.find({ email: { $regex: term } })</div><div class="add">+ users.find({ role: 'employer', email: { $regex: term } }).limit(20)</div></div></div></div>
       </div>
     </div>
     <ul class="slide-notes" hidden>
       <li>The original opened with a few playful words, removed here so nobody is recognized by them. The finding underneath is one of the best in the sample: scope, the input that triggers it, the cost and the fix.</li>
-      <li>A data exposure that reads like a joke gets treated like one. Warmth is fine on a nit; save it for there.</li>
+      <li>A data exposure that reads like a joke gets treated like one. Warmth is fine on a nit; save it for there. The diff is illustrative, not the real query.</li>
     </ul>
   </section>
 
   <section class="presentation__slide" data-title="Seen on Spark: done well">
     <p class="slide-eyebrow settles">From real reviews · what good already looks like here</p>
     <div class="rv-grid">
-      <div class="rv"><span class="rv__tag">A consequence you can test</span>
-        <blockquote class="rv__better">“issue (blocking): Nothing tests this filter. Delete line [N] and every spec still passes, while a representative goes on seeing a job in their list after its delegation has ended.”<cite class="rv__who">AI reviewer</cite></blockquote></div>
-      <div class="rv"><span class="rv__tag">The reason, then the fix</span>
-        <blockquote class="rv__better">“toBeInstanceOf(Date) passes on any date. Could this freeze time and assert the cancelledAt value?”<cite class="rv__who">Human reviewer, opener removed</cite></blockquote></div>
-      <div class="rv"><span class="rv__tag">User impact, labeled non-blocking</span>
-        <blockquote class="rv__better">“do you think we should show the max codes error here instead of slicing, pasting more than 50 just drops the extras without telling the user, not a blocker for me”<cite class="rv__who">Human reviewer, opener removed</cite></blockquote></div>
-      <div class="rv"><span class="rv__tag">A fix verified, in writing</span>
-        <blockquote class="rv__better">“PASS. [commit] settles every point from the last round. AC: 5 of 5 met.” Then one row per requirement, each with its evidence.<cite class="rv__who">AI reviewer</cite></blockquote></div>
+      <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span> a consequence you can test<span class="gh__badge gh__badge--block">ISSUE (BLOCKING)</span></div>
+        <div class="gh__body"><p>Nothing tests this filter. Delete line [N] and every spec still passes, while a representative goes on seeing a job in their list after its delegation has ended.</p></div></div>
+      <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span> the reason, then the fix</div>
+        <div class="gh__body"><p><code>toBeInstanceOf(Date)</code> passes on any date. Could this freeze time and assert the <code>cancelledAt</code> value?</p></div></div>
+      <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">Human reviewer</span> user impact, labeled<span class="gh__badge gh__badge--soft">NOT A BLOCKER</span></div>
+        <div class="gh__body"><p>do you think we should show the max codes error here instead of slicing, pasting more than 50 just drops the extras without telling the user, not a blocker for me</p></div></div>
+      <div class="gh"><div class="gh__bar"><span class="gh__av"></span><span class="gh__who">AI reviewer</span> a fix verified, in writing<span class="gh__badge gh__badge--ok">PASS</span></div>
+        <div class="gh__body"><p>[commit] settles every point from the last round. AC: 5 of 5 met.</p><p class="gh__cut">Then one row per requirement, each with its evidence.</p></div></div>
     </div>
+    <p class="rv__note">Real comments, openers removed. Two by people, two by AI reviewers.</p>
     <ul class="slide-notes" hidden>
-      <li>All four are ours, from the same two months. Two by people, two by AI reviewers. The fundamentals aren’t new; they’re just not every comment yet.</li>
+      <li>All four are ours, from the same two months. The fundamentals aren’t new; they’re just not every comment yet.</li>
     </ul>
   </section>
 
