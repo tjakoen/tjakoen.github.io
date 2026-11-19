@@ -154,10 +154,15 @@ systems that already existed.
 
 ## The same call, twice
 
-This is not the first time I made this exact decision. [CrewDesk and CrewWatch: what they were, what
-I built for them, and what I kept instead. Tjakoen to supply.] Both times the shape was the same: a
-classic app, built because it felt like the grown-up version, replaced by the systems already in use
-and an AI layer on top of them.
+This is not the first time I made this exact decision. At work I wanted a view of my team for
+one-on-ones, and my first serious answer was People Manager, a whole app I was coding myself. It
+stalled. Then one afternoon I asked Claude for a dashboard instead, pointed it at the data, and handed
+it People Manager as a reference. That dashboard became Crew Watch, and I wrote the story up in
+[I Showed My Team a Dashboard](show-them-the-board.md).
+
+Both times the shape was the same: a classic app, built because it felt like the grown-up version,
+replaced by the systems already in use and a dashboard on top of them. You would think I would have
+recognised it the second time sooner.
 
 ## How I parked it
 
