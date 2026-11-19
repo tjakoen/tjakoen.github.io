@@ -386,6 +386,42 @@ proxies a preview, as this site does, the first look failed until a fix landed.
 2026-11-14  🐛 Reach the session door on projects that proxy a preview
 ```
 
+## Nov 19 · Then it had to tell me where I was
+
+Being beside the work turned out to be half of it. The other half is the question I ask most
+mornings: what is going on, where am I, and what needs me. I run about twenty projects across three
+machines and three harnesses, I write notes and do research beside them, and some of the work takes
+days because a token budget runs out and has to refresh. I am one person and I do one thing at a
+time, so I lose the thread.
+
+On the morning of the 19th I asked a session for a report on everything we had done. It read five
+repositories' git logs, ran the gates, graded every note and published the result as a page. I liked
+the page. I also noticed that it took a whole session to make one snapshot, and that it was stale
+the moment it went up. PANTRY already held most of what that session had gathered by hand.
+
+So I had the session audit PANTRY's own front page first, and the hub did not come out of it well.
+Five of its twenty rows were the same course platform under different names. Most rows said no
+sessions were logged for projects I had worked on the day before. Every row showed four counters,
+zero or not, so the page carried eighty numbers and gave the eye nowhere to land. The header said
+twelve things were waiting on me and never said which twelve.
+
+The fix I am building has one rule: more information is not the answer. Everything on the front
+page has to name its next action or the person it waits on, or it stays one click down. The first
+slice landed the same day. The hub now lists what waits on me across every project, one line each
+with a button that opens it, and the zeros, the drift counts and the welcome plan every new board
+is seeded with are gone from the rows.
+
+```console
+2026-11-19  ✨ List what waits on the owner across every project on the hub
+```
+
+The rest is a plan, not a feature. Each machine will write a small state file that the config sync
+already carries, so the hub can see work started on the other two. A session that ends on a token
+limit will leave a three-line card that the next session starts from, wherever it runs. A closed plan
+will leave a few lines written for me, so I can learn what we did and not only that we did it. And
+the report that started this will become a page PANTRY builds on its own, with every finding carrying
+its evidence and an action.
+
 ## What I have not shown
 
 All of the evidence here is mine. One person, a handful of repositories, a few months, and a commit
