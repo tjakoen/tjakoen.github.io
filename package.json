@@ -34,6 +34,7 @@
     "social:card:comment-cost": "bun tools/social-card-comment-cost.ts",
     "social:card:orchestration": "bun tools/social-card-orchestration.ts",
     "social:card:pantry": "bun tools/social-card-pantry.ts",
+    "social:card:old-fashioned": "bun tools/social-card-old-fashioned.ts",
     "social:card:vectorless": "bun tools/social-card-vectorless.ts",
     "social:card:same-reviewer": "bun tools/social-card-same-reviewer.ts",
     "audit": "bun tools/audit.ts",
