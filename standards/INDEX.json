@@ -1387,7 +1387,7 @@
             207,
             214
           ],
-          "summary": "erd.yaml edited by hand, or older than a schema file.",
+          "summary": "erd.yaml edited by hand, or its recorded schema hash no longer matching the schema files.",
           "refs": []
         },
         {
