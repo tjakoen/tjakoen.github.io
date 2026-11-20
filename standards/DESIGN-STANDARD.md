@@ -206,7 +206,7 @@ A hand-written migration says in its first comment why the diff could not produc
 
 ## Red flags
 
-- erd.yaml edited by hand, or older than a schema file.
+- erd.yaml edited by hand, or its recorded schema hash no longer matching the schema files.
 - A table with RLS enabled and no rule in the dictionary, or a rule with no test.
 - A flow crossing a trust boundary with no region, retention or purpose.
 - An accepted ADR edited to say something new.
