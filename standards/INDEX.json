@@ -923,6 +923,169 @@
       ]
     },
     {
+      "slug": "dashboard",
+      "file": "standards/DASHBOARD.md",
+      "url": "https://portfolio.tjakoen.com/standards/dashboard",
+      "skill": "dashboard",
+      "title": "DASHBOARD.md — a dashboard tells you what to do next",
+      "summary": "The dashboard standard - how Tjakoen wants a dashboard built, from the head that states its baseline to the queue that names one action per row. It composes GRAIN's dashboards layer rather than inventing a grid, keeps colour to the theme's one accent, and is checked on a screenshot at a phone and a desktop width before anyone calls it done.",
+      "when": "Read this BEFORE building or restyling a dashboard, a home page, a report page, a run summary, a board of work or any page whose job is to show state and point at the next move. It owns what goes on the page, in what order, and what each item owes its reader; GRAIN owns the components and FIGURES owns any chart drawn inside one. Don't skip because the page is internal or only for you - the owner is the reader these rules came from, and every rule here is a correction he already made.",
+      "lines": 147,
+      "lead": {
+        "lines": [
+          13,
+          26
+        ],
+        "summary": "A dashboard is not a report of everything a system knows."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. Build on the layer, never beside it",
+          "anchor": "1-build-on-the-layer-never-beside-it",
+          "lines": [
+            30,
+            39
+          ],
+          "summary": "A dashboard is composed from GRAIN's dashboards layer: the dash page with its head, its KPI strip and its panel grid, and dash panels inside it.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. The head states the comparison",
+          "anchor": "2-the-head-states-the-comparison",
+          "lines": [
+            41,
+            48
+          ],
+          "summary": "The page opens with a real heading, one line on what the page covers, and the period or baseline every number on it compares against.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "3. Lead with what needs the reader",
+          "anchor": "3-lead-with-what-needs-the-reader",
+          "lines": [
+            50,
+            58
+          ],
+          "summary": "Order the page by who has to move.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. Every item carries one verb and one action",
+          "anchor": "4-every-item-carries-one-verb-and-one-action",
+          "lines": [
+            60,
+            71
+          ],
+          "summary": "A row that names a problem without a way to act on it is not finished.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. Work in flight is a board, detail is a drawer",
+          "anchor": "5-work-in-flight-is-a-board-detail-is-a-drawer",
+          "lines": [
+            73,
+            81
+          ],
+          "summary": "Work with stages is a board: one column per stage, cards in the column, a count in each column head.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Keep it to one scroll",
+          "anchor": "6-keep-it-to-one-scroll",
+          "lines": [
+            83,
+            93
+          ],
+          "summary": "A dashboard that runs past three screens is a report.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "7. Every panel has four states",
+          "anchor": "7-every-panel-has-four-states",
+          "lines": [
+            95,
+            100
+          ],
+          "summary": "Ready, loading, empty and stale.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "8. The theme carries the colour",
+          "anchor": "8-the-theme-carries-the-colour",
+          "lines": [
+            102,
+            111
+          ],
+          "summary": "Colour comes from the active theme's one accent and the stat tile's tones, and nowhere else.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "9. Small numbers stay counts",
+          "anchor": "9-small-numbers-stay-counts",
+          "lines": [
+            113,
+            117
+          ],
+          "summary": "Below about ten observations a percentage misleads, so show the count.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "10. One shell across the app",
+          "anchor": "10-one-shell-across-the-app",
+          "lines": [
+            119,
+            124
+          ],
+          "summary": "Every page of an app shares one shell: a sidebar with the app name, the theme switch at its top, the cross-cutting views, then the project or section list, with the current page marked by more than...",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "11. Shown at two widths before it is done",
+          "anchor": "11-shown-at-two-widths-before-it-is-done",
+          "lines": [
+            126,
+            131
+          ],
+          "summary": "A dashboard change is done when it has been screenshotted at a phone width and a desktop width, the screenshots have been looked at, and the run report says what they show.",
+          "refs": [
+            {
+              "to": "tour-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The checklist",
+          "anchor": "the-checklist",
+          "lines": [
+            133,
+            147
+          ],
+          "summary": "Before calling a dashboard done: Built from GRAIN's dashboards layer, with any missing part proposed upstream.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "figures",
+        "tour-standard",
+        "voice"
+      ],
+      "refsIn": [
+        "readme"
+      ]
+    },
+    {
       "slug": "decisions",
       "file": "standards/DECISIONS.md",
       "url": "https://portfolio.tjakoen.com/standards/decisions",
@@ -1168,6 +1331,7 @@
         "voice"
       ],
       "refsIn": [
+        "dashboard",
         "readme",
         "voice"
       ]
@@ -2350,7 +2514,7 @@
       "title": "standards/ — how I build, write, and work with AI",
       "summary": "The index - one line per standard, so a reader loads one file, not nineteen.",
       "when": null,
-      "lines": 105,
+      "lines": 106,
       "lead": null,
       "sections": [
         {
@@ -2359,7 +2523,7 @@
           "anchor": "the-standards",
           "lines": [
             23,
-            47
+            48
           ],
           "summary": "A table: Read this when you're…, Standard, In one line.",
           "refs": [
@@ -2374,6 +2538,9 @@
             },
             {
               "to": "audit-standard"
+            },
+            {
+              "to": "dashboard"
             },
             {
               "to": "tree"
@@ -2433,8 +2600,8 @@
           "heading": "How they fit together",
           "anchor": "how-they-fit-together",
           "lines": [
-            49,
-            96
+            50,
+            97
           ],
           "summary": "AI-DEVELOPMENT + SESSION-LOOP are the engineering pair: the first is the standards, the second is the session mechanics that run against them.",
           "refs": []
@@ -2444,8 +2611,8 @@
           "heading": "The one rule this folder lives by",
           "anchor": "the-one-rule-this-folder-lives-by",
           "lines": [
-            98,
-            105
+            99,
+            106
           ],
           "summary": "Single source of truth, everywhere.",
           "refs": []
@@ -2458,6 +2625,7 @@
         "claude.starter",
         "commit-standard",
         "conformance",
+        "dashboard",
         "decisions",
         "figures",
         "graph",
@@ -2713,6 +2881,7 @@
       ],
       "refsIn": [
         "audit-standard",
+        "dashboard",
         "readme"
       ]
     },
@@ -3152,6 +3321,7 @@
       "refsIn": [
         "claude",
         "claude.starter",
+        "dashboard",
         "figures",
         "loop",
         "note-standard",
