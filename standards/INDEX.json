@@ -1196,6 +1196,218 @@
       ]
     },
     {
+      "slug": "design-standard",
+      "file": "standards/DESIGN-STANDARD.md",
+      "url": "https://portfolio.tjakoen.com/standards/design-standard",
+      "skill": "design-standard",
+      "title": "DESIGN-STANDARD.md — design artifacts that stay true to the code",
+      "summary": "The design standard - which planning artifacts a project keeps in its design folder (ERD, data dictionary, DFD, C4, user flows, wireframes, ADRs, traceability), the established method each one follows, which are generated from code and which are written by hand, when a plan owes one, and how tests close the loop. PANTRY renders the files; the files are the truth.",
+      "when": "Read this BEFORE adding a table, a column, a policy, a screen, a data flow or an integration, before choosing between two options for a project, and before writing or reviewing a plan in a project that has a design folder: ERD, data dictionary, DFD, C4, architecture diagram, user flow, wireframe, ADR, requirement, traceability, RLS test, Supabase schema, migration. Don't skip because the change is small - a new column with no dictionary entry is exactly how the design folder stops being true.",
+      "lines": 221,
+      "lead": {
+        "lines": [
+          13,
+          23
+        ],
+        "summary": "A design folder is worth keeping only while it matches the system."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. The folder",
+          "anchor": "1-the-folder",
+          "lines": [
+            25,
+            46
+          ],
+          "summary": "Every project with a design keeps it in one folder at its root, named design.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. Each artifact and its method",
+          "anchor": "2-each-artifact-and-its-method",
+          "lines": [
+            48,
+            119
+          ],
+          "summary": "Crow's-foot notation: entities with their columns and types, primary keys, and every foreign key drawn as a relationship whose ends show zero, one or many.",
+          "refs": [],
+          "children": [
+            {
+              "level": 3,
+              "heading": "The ERD",
+              "anchor": "the-erd",
+              "lines": [
+                50,
+                55
+              ],
+              "summary": "Crow's-foot notation: entities with their columns and types, primary keys, and every foreign key drawn as a relationship whose ends show zero, one or many.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "The data dictionary",
+              "anchor": "the-data-dictionary",
+              "lines": [
+                57,
+                65
+              ],
+              "summary": "One entry per table and per column, keyed by the same ids as the ERD.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "The DFD",
+              "anchor": "the-dfd",
+              "lines": [
+                67,
+                86
+              ],
+              "summary": "Gane and Sarson notation: rounded processes, open-ended data stores, square external entities, and named flows between them.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "The architecture",
+              "anchor": "the-architecture",
+              "lines": [
+                88,
+                93
+              ],
+              "summary": "C4, the first two levels only.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "User flows",
+              "anchor": "user-flows",
+              "lines": [
+                95,
+                99
+              ],
+              "summary": "One file per flow, a sequence of steps, each of one kind: start, action, decision, system or end.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "Wireframes",
+              "anchor": "wireframes",
+              "lines": [
+                101,
+                106
+              ],
+              "summary": "Low fidelity, in plain HTML, one file per screen: grey boxes, real labels, no colour or brand.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "ADRs",
+              "anchor": "adrs",
+              "lines": [
+                108,
+                113
+              ],
+              "summary": "Nygard format: a title, a status, the context, the decision, and its consequences.",
+              "refs": []
+            },
+            {
+              "level": 3,
+              "heading": "Traceability",
+              "anchor": "traceability",
+              "lines": [
+                115,
+                119
+              ],
+              "summary": "requirements.yaml lists each requirement once: its id, its text, the plan that delivers it, the artifacts that describe it, and the tests that prove it.",
+              "refs": []
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "3. Generated, or written by hand",
+          "anchor": "3-generated-or-written-by-hand",
+          "lines": [
+            121,
+            129
+          ],
+          "summary": "Generate everything the code already knows.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. When a plan owes an artifact",
+          "anchor": "4-when-a-plan-owes-an-artifact",
+          "lines": [
+            131,
+            152
+          ],
+          "summary": "A plan lists the artifacts it creates or changes in its frontmatter, under design, as a list of references:",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. Tests close the loop",
+          "anchor": "5-tests-close-the-loop",
+          "lines": [
+            154,
+            166
+          ],
+          "summary": "Traceability is the gate. A plan is not done while one of its requirements has no test, or has a test that is not passing.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Supabase declarative schemas",
+          "anchor": "6-supabase-declarative-schemas",
+          "lines": [
+            168,
+            194
+          ],
+          "summary": "The schema is declared, not migrated by hand.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Rationalizations",
+          "anchor": "rationalizations",
+          "lines": [
+            196,
+            205
+          ],
+          "summary": "A table: The excuse, The answer.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Red flags",
+          "anchor": "red-flags",
+          "lines": [
+            207,
+            214
+          ],
+          "summary": "erd.yaml edited by hand, or older than a schema file.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Verification",
+          "anchor": "verification",
+          "lines": [
+            216,
+            221
+          ],
+          "summary": "The design skill's audit mode reports no drift, quoted verbatim.",
+          "refs": []
+        }
+      ],
+      "refsOut": [],
+      "refsIn": [
+        "readme"
+      ]
+    },
+    {
       "slug": "figures",
       "file": "standards/FIGURES.md",
       "url": "https://portfolio.tjakoen.com/standards/figures",
@@ -2514,7 +2726,7 @@
       "title": "standards/ — how I build, write, and work with AI",
       "summary": "The index - one line per standard, so a reader loads one file, not nineteen.",
       "when": null,
-      "lines": 106,
+      "lines": 107,
       "lead": null,
       "sections": [
         {
@@ -2523,7 +2735,7 @@
           "anchor": "the-standards",
           "lines": [
             23,
-            48
+            49
           ],
           "summary": "A table: Read this when you're…, Standard, In one line.",
           "refs": [
@@ -2541,6 +2753,9 @@
             },
             {
               "to": "dashboard"
+            },
+            {
+              "to": "design-standard"
             },
             {
               "to": "tree"
@@ -2600,8 +2815,8 @@
           "heading": "How they fit together",
           "anchor": "how-they-fit-together",
           "lines": [
-            50,
-            97
+            51,
+            98
           ],
           "summary": "AI-DEVELOPMENT + SESSION-LOOP are the engineering pair: the first is the standards, the second is the session mechanics that run against them.",
           "refs": []
@@ -2611,8 +2826,8 @@
           "heading": "The one rule this folder lives by",
           "anchor": "the-one-rule-this-folder-lives-by",
           "lines": [
-            99,
-            106
+            100,
+            107
           ],
           "summary": "Single source of truth, everywhere.",
           "refs": []
@@ -2627,6 +2842,7 @@
         "conformance",
         "dashboard",
         "decisions",
+        "design-standard",
         "figures",
         "graph",
         "hooks",
