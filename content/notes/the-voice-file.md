@@ -2,46 +2,73 @@
 title: "Write for the Person Who Has to Read It"
 audience: [lead, learn]
 level: intro
-subtitle: "A short VOICE.md gives your AI examples of what an instructor or teammate needs to see first."
+subtitle: "AI says a lot. Your reader still has to find the point. Give it examples of words you would actually use."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-11
-readingTime: "~6 min"
+updated: 2026-11-21
+changelog:
+  - "2026-11-21 | Added a worked wording example and expanded the VOICE.md template to cover words you would use and claims you can explain."
+readingTime: "~9 min"
 tags: [standards, leadership, workflow, teaching]
 people: [kercwin, ege-vusal-chelebi]
 sources: [book-cure-for-ai-slop]
 summary: >
-  A practical guide for students and junior teammates on writing ticket comments, review
-  comments and chat messages with AI. Put the reader's next action first, keep open questions
-  visible, and save before-and-after examples in a short VOICE.md the agent can read.
+  An AI draft goes out under your name. Use words you would say and claims you can explain,
+  so your reader can understand what you mean without asking you to translate it. Save
+  examples of those rewrites in a short VOICE.md, then teach the agent where the question
+  and the untested parts belong.
 social: |
-  An AI wrote "provides a consistent authentication experience across devices." The student
-  had tested sign-in on one laptop.
+  AI says a lot. Your reader still has to find the point.
 
-  Write for the person who has to read it. Put what they need to do on the first line, keep
-  what you have yet to test visible, and use words you could explain if someone asked.
+  If you wouldn’t say it yourself, or can’t explain what it means, why send it under your name?
 
-  I keep the before-and-after pairs in a short VOICE.md so the agent starts from them too.
+  Everyone working with AI should have a VOICE.md. Give it examples of how you actually write.
+  Get to the point. Your reader has enough work already.
 socialImage: "/media/notes/the-voice-file-social-ticket.png"
-socialImageAlt: "Write for the person who has to read it. The same ticket comment twice: pasted from the AI, three paragraphs with the question in the last line; rewritten, the question opens it, the untested date filter stays visible, and the checks fold under a label."
+socialImageAlt: "Two versions of the same report say sign-in worked on a laptop and phone testing is still pending. The AI draft uses formal wording about validation and subsequent navigation; the rewrite says what happened in plain words."
 ---
 
-Your class project is due tomorrow. The submission asks you to explain what your app does and what you tested. You give an AI your notes and ask for a paragraph to paste into the project report. It writes, “The application provides a consistent authentication experience across devices.” You tested sign-in on your own laptop.
+Your class project is due tomorrow. You tested sign-in on your laptop and reached the dashboard. You still need to test it on a phone. You give an AI those notes for the project report, and it hands you a paragraph about “sign-in functionality” and “subsequent navigation.” Your instructor has to translate it back into what you did.
 
-Or you are a few months into your first developer job, and a bug ticket is waiting for an update. You paste the thread into an AI and post what comes back. It is four paragraphs long, and the question you needed answered is in the last one.
+**If it represents you, it should sound like you.** Your instructor needs to know what worked and what you still need to check. Your teammate needs the same thing from a ticket: what you found, and what they have to do next. Neither should have to ask you to translate a paragraph you would never have written yourself.
 
-**Write for the human who has to read it.** Your instructor needs to know what worked and what you still need to check. Try “I signed in on my laptop and reached the dashboard. I still need to test sign-in on a phone.” Your instructor can tell what you did after one read, and you can show them what happened if they ask. Your teammate needs the same thing from a ticket: what you found, and what they have to do next.
-
-An AI draft can turn two plain sentences into a paragraph full of phrases you would never say. It can also make the work sound more complete than it is. When you paste that paragraph into a report or a ticket, it carries your name. Readers notice, too. An instructor grading forty reports and a lead reading twenty tickets can tell a pasted draft by the second line, and from then on they read everything you write a little more slowly.
+An AI draft can turn two plain sentences into a paragraph full of phrases you would never say. Your instructor now has to turn “subsequent navigation” back into “I reached the dashboard.” Your teammate has to read the ticket again to find the question. The model saved you a minute and handed the work to someone else. Generous of it.
 
 I tell my students and junior teammates the same thing: **Don't let AI do what you can't do or understand yourself.** That applies to the words you publish under your name. If a draft says the bug is caused by permissions, you should be able to explain what you checked and why it points to permissions. If you only know that two accounts got different results, say that. Read the draft aloud before you post it. Rewrite any sentence you wouldn't say or couldn't explain if someone asked.
 
-Fixing one draft by hand is easy. Fixing the same draft every week is the part that wears you down, because the AI forgets your fix the moment the chat closes. A short file called VOICE.md is how you make it remember. You write one rewrite down as an example, the agent reads it before it drafts, and the next comment starts closer to what your reader needs. The rest of this note shows one rewrite worth saving and the file to save it in.
+Fixing one draft by hand is easy. Fixing the same draft every week is the part that wears you down, because the AI forgets your fix the moment the chat closes. A short file called VOICE.md gives the next session examples to start from. Save words you would actually use, alongside the draft they replaced, and tell the agent to read them before it writes. Everyone working with AI should have one. The rest of this note shows what to put in it.
+
+## Say what you actually mean
+
+Go back to the project report. The only test you ran was signing in on your laptop and reaching the dashboard. Compare what the AI wrote with what you can explain to your instructor.
+
+<figure class="live-fig voice-compare" data-live-figure="voice" data-surface="figure:voice" aria-label="The same sign-in report in AI wording and in your own words">
+<div class="voice-compare__versions" aria-live="polite" aria-atomic="true">
+<section data-voice-version="before" aria-label="AI draft">
+<p><strong>AI draft</strong></p>
+<blockquote>The application’s sign-in functionality was successfully validated on a laptop, with subsequent navigation to the dashboard. Validation of sign-in functionality on a phone remains pending.</blockquote>
+<p class="voice-compare__note">The facts are there. Your reader has to translate the wording.</p>
+</section>
+<section data-voice-version="after" aria-label="In your own words">
+<p><strong>In your own words</strong></p>
+<blockquote>I signed in on my laptop and reached the dashboard. I still need to test sign-in on a phone.</blockquote>
+<p class="voice-compare__note">The reader knows what worked and what you still need to test.</p>
+</section>
+</div>
+<figcaption>The same facts in both versions. Only the wording changes.</figcaption>
+</figure>
+
+Both versions say sign-in worked on a laptop, the dashboard opened, and the phone test is still pending. The first makes your instructor translate “sign-in functionality was successfully validated” into “I signed in.” The rewrite says what happened in words you could use in a conversation. Your reader gets the same information with less work.
+
+That is the check to make before you send an AI draft. Would you use these words yourself? Do you understand every claim? Can the person reading it tell what you mean? If a sentence fails, rewrite it before it goes out under your name. Save the pair in VOICE.md so the agent can see the difference next time.
 
 ## Start with the question you need answered
 
-The same habit applies to a ticket, a shared record of a bug or a piece of work. Say someone reported an empty export. You tried two accounts and got different results. To take the next step, you need to know which account the reporter used.
+The same habit applies to a ticket, a shared record of a bug or a piece of work. Say you are a few months into your first developer job, and a bug ticket is waiting for an update. You paste the thread into an AI and post what comes back. It is four paragraphs long, and the question you needed answered is in the last one.
+
+Once the words say what you mean, put them where the reader can use them. Someone reported an empty export. You tried two accounts and got different results. To take the next step, you need to know which account the reporter used.
 
 **Before**
 
@@ -98,9 +125,9 @@ Use these three questions to check your next draft before you post.
 
 You can keep a VOICE.md for yourself in a class repo or a side project. On a team, ask whoever owns the repository whether one exists, and offer to start it if it does not. The rest of this section is the setup.
 
-The agent reads AGENTS.md or CLAUDE.md when the session opens. That file tells it which tests to run. When you ask for a ticket comment, the agent also needs to know what the reader should see first. Without an example, it may recount the work and leave the question at the bottom.
+The agent reads AGENTS.md or CLAUDE.md when the session opens. That file tells it which tests to run. When you ask it to write, it also needs examples of how you speak and what your reader needs. Without them, it may turn a laptop test into a claim about every device, or recount the work and leave the question at the bottom.
 
-Put VOICE.md beside the instruction file and add a line telling the agent to read it before writing. Use an example from your own tracker to show where the question goes in a ticket. Do the same for a review and a chat message.
+Put VOICE.md beside the instruction file and add a line telling the agent to read it before writing. Start with a draft you would never say aloud and your rewrite. Add an example from your own tracker to show where the question goes in a ticket. Do the same for a review and a chat message when you have a pair worth keeping.
 
 <svg viewBox="0 0 340 248" width="100%" role="img"
      aria-label="At startup the agent reads AGENTS.md or CLAUDE.md. When asked to write a ticket comment, it follows the instruction to read VOICE.md. It uses the tracker example to draft a comment with the question first."
@@ -134,14 +161,16 @@ Put VOICE.md beside the instruction file and add a line telling the agent to rea
 
 Forty lines that get read beat four thousand that get skimmed, because the file competes with the code for the model's attention. Examples carry more than adjectives. One bad comment and one good one teach a register faster than a page saying be clear and concise, which every writer already believes and the model will cheerfully agree with while doing the opposite.
 
-The rules worth writing down are about where things go, not about taste:
+Write down what makes the words yours and what helps the reader act:
 
+- **Use words you would say.** Replace a sentence you would have to translate with the words you would use to explain it to a teammate.
+- **Keep claims you can explain.** Say what you checked. A test on one laptop does not establish what happens on a phone.
 - **Put the ask first.** The first line says what the reader has to do and who has to do it: needs a check, needs the reporter, fixed and back to you.
 - **Put the proof under a label with a count.** What I checked (2) tells the reader whether opening it is worth the tap.
 - **Keep what you have not tested in view.** If a claim rests on something untested, say so next to the claim, never inside the fold.
 - **A one-line comment stays one line.** Structure is for comments with more than one thing to say.
 
-Write them as rules, not as a list of banned words. [Ege Vusal Chelebi](/people#ege-vusal-chelebi) [tried a writing skill](https://www.chele.bi/videos/the-cure-for-ai-slop) a writing skill derived from Simplified Technical English on six tasks. The linter counted 74 percent fewer violations per hundred words on Claude Sonnet and 50 percent fewer on GPT-5.5. A banned-word list cut violations by 3 percent and 40 percent, respectively. The linter scored the writing against a set of rules. The test did not measure whether readers found the ask faster.
+Write them as rules, not as a list of banned words. [Ege Vusal Chelebi](/people#ege-vusal-chelebi) [tried a writing skill](https://www.chele.bi/videos/the-cure-for-ai-slop) derived from Simplified Technical English on six tasks. The linter counted 74 percent fewer violations per hundred words on Claude Sonnet and 50 percent fewer on GPT-5.5. A banned-word list cut violations by 3 percent and 40 percent, respectively. The linter scored the writing against a set of rules. The test did not measure whether readers found the ask faster.
 
 My own standard is public at [portfolio.tjakoen.com/standards/voice](https://portfolio.tjakoen.com/standards/voice). It is longer than a team needs because it is also a guide to one person's prose. Take its structure, not its length: the registers, the scan rule, the list of shapes it refuses.
 
@@ -161,8 +190,17 @@ wins.
 
 ## The one rule
 
-Front what the reader has to do. Fold what only
-proves it. Never fold a hedge.
+Use words I would say and claims I can explain.
+The reader should not have to translate the draft.
+
+## Before sending
+
+- Read the draft aloud. Rewrite anything I would
+  not say to the person receiving it.
+- Keep the facts I supplied. Do not turn one test
+  into a claim about devices I have not checked.
+- Put what the reader needs to do first. Keep
+  anything untested visible beside the claim.
 
 ## By surface
 
@@ -213,6 +251,26 @@ proves it. Never fold a hedge.
 
 ## Before and after
 
+### Say what I checked
+
+Bad:
+> The application's sign-in functionality was
+> successfully validated on a laptop, with
+> subsequent navigation to the dashboard.
+> Validation of sign-in functionality on a
+> phone remains pending.
+
+Good:
+> I signed in on my laptop and reached the
+> dashboard. I still need to test sign-in
+> on a phone.
+
+Use the words I would use to explain the test.
+Keep the same facts when rewriting. Change
+the wording, not the result.
+
+### Put the question where the reader can find it
+
 Bad:
 > I looked into the export and got a full report
 > as an admin and an empty one as a counselor.
@@ -238,14 +296,14 @@ Good:
 On a tracker without disclosures, put the proof
 below the ask and caveat under the same label.
 
-Replace these two examples with a real pair from
-our tracker. A real bad comment is worth ten
-invented ones.
+Replace these examples with my own drafts and
+rewrites. Keep a pair that fixes the wording and
+a pair that makes the next action easy to find.
 ```
 
 </div>
 
-The examples are the part to replace first. A comment that made someone scroll and a rewritten one that did not are worth more than anything invented here.
+The examples are the part to replace first. Save the paragraph that did not sound like you and the one you would send. Keep the comment that made someone scroll and the rewrite that put the question first. Those pairs teach the agent what you mean by writing well.
 
 ## The same file can point the other way
 
