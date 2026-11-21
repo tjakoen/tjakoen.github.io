@@ -1,6 +1,6 @@
 ---
 id: ai-fluency-and-tokenomics
-status: doing
+status: done
 track: ai
 depends: []
 touches:
@@ -9,7 +9,7 @@ touches:
   - artifacts/runs/
   - ../../../agent-config/shared/personal-skills/
   - ../../../agent-config/shared/tools/
-  - ../../../agent-config/codex/
+  - ../../../agent-config/shared/codex/
 owner: ai
 ---
 
@@ -29,8 +29,8 @@ coverage and tests, and Codex role routing. The parked machine state and live ma
 untouched. No push or publication is authorized. Unsupported model settings or an unrelated failing
 gate are reported rather than silently bypassed.
 
-- [ ] Add the sourced 4D request check and portable model-economy rules.
-- [ ] Create and mount only the missing page procedures.
-- [ ] Make routine signals consult coverage and configure Codex role routing.
-- [ ] Regenerate standards projections, run focused checks, and obtain an independent second pass.
-- [ ] Record evidence, show the rendered standards change, and close the plan.
+- [x] Add the sourced 4D request check and portable model-economy rules.
+- [x] Create and mount only the missing page procedures.
+- [x] Make routine signals consult coverage and configure Codex role routing.
+- [x] Regenerate standards projections, run focused checks, and obtain an independent second pass.
+- [x] Record evidence, show the rendered standards change, and close the plan.

@@ -17,7 +17,7 @@
       "title": "AI-DEVELOPMENT.md — how I build full stack with AI",
       "summary": "A portable playbook for building with an AI partner - the standards, the pitfalls, and how problems become solutions.",
       "when": "Read this BEFORE handing the typing to an AI on a real build task: a feature, a refactor, a bug hunt, a migration. It sets what the human owes the AI up front, the bar every change is held to before it counts as done, and the pitfalls that recur (the confident wrong answer, the silent scope creep, the doc that drifts away from the code). Don't skip because you have worked this way before - the pitfalls recur precisely because experience does not prevent them.",
-      "lines": 270,
+      "lines": 269,
       "lead": {
         "lines": [
           13,
@@ -69,12 +69,13 @@
           "anchor": "4-conventions-defaults-that-hold-across-projects",
           "lines": [
             99,
-            166
+            165
           ],
           "summary": "Keep dependencies close to the floor.",
           "refs": [
             {
-              "to": "session-loop"
+              "to": "session-loop",
+              "anchor": "6-model-economy-be-smart-about-which-brain-runs"
             }
           ],
           "children": [
@@ -83,8 +84,8 @@
               "heading": "Reusable prompt: index the codebase for the AI",
               "anchor": "reusable-prompt-index-the-codebase-for-the-ai",
               "lines": [
-                134,
-                166
+                133,
+                165
               ],
               "summary": "Paste into a fresh session in any repo to set up the knowledge-graph index (see the \"Index the codebase for the AI\" convention above).",
               "refs": []
@@ -96,8 +97,8 @@
           "heading": "5. Common pitfalls (and the guard for each)",
           "anchor": "5-common-pitfalls-and-the-guard-for-each",
           "lines": [
-            170,
-            182
+            169,
+            181
           ],
           "summary": "A table: Pitfall, What it looks like, Guard.",
           "refs": []
@@ -107,8 +108,8 @@
           "heading": "6. Problem → solution (the loop)",
           "anchor": "6-problem-solution-the-loop",
           "lines": [
-            186,
-            239
+            185,
+            238
           ],
           "summary": "Reproduce / locate first. Don't theorize into the void.",
           "refs": [
@@ -122,8 +123,8 @@
               "heading": "Before the build: review the plan with a goldfish",
               "anchor": "before-the-build-review-the-plan-with-a-goldfish",
               "lines": [
-                206,
-                239
+                205,
+                238
               ],
               "summary": "Fixing a bug starts from a reproduction.",
               "refs": [
@@ -139,8 +140,8 @@
           "heading": "7. Seeing the work",
           "anchor": "7-seeing-the-work",
           "lines": [
-            243,
-            250
+            242,
+            249
           ],
           "summary": "Show, don't tell. For anything visual or behavioral, produce the artifact — screenshot, running output, a rendered page — not a description of it.",
           "refs": []
@@ -150,8 +151,8 @@
           "heading": "8. Quick checklist (paste at the top of a session)",
           "anchor": "8-quick-checklist-paste-at-the-top-of-a-session",
           "lines": [
-            254,
-            270
+            253,
+            269
           ],
           "summary": "This is a living document. When how I work changes, update it — the same rule it asks of everything else.",
           "refs": []
@@ -1834,7 +1835,7 @@
       "title": "INTAKE — turning a pasted blob into a scoped brief",
       "summary": "The four questions a pasted document has to answer before a session starts spending, why the answers are confirmed by a person rather than inferred from the blob, where the brief lands, and the test for when no brief is needed at all.",
       "when": "Read this BEFORE starting work on a pasted document, a forwarded brief, a handoff from another session, or any ask that runs longer than a screen and wants something changed. It turns the blob into the envelope LOOP section 4b names (the lane, the scope cap, the hard stops, the ask-triggers) plus a definition of done, by putting four questions to the person and writing the answers down. Don't skip because the ask reads clearly - a blob that reads clearly is the one whose scope grows quietly, and an envelope invented after the work started is the one thing the scope-growth check can never catch.",
-      "lines": 257,
+      "lines": 262,
       "lead": {
         "lines": [
           15,
@@ -1875,18 +1876,23 @@
           "anchor": "3-the-four-questions",
           "lines": [
             81,
-            110
+            115
           ],
-          "summary": "One round trip, four questions, every field pre-filled from the blob.",
-          "refs": []
+          "summary": "Apply the sourced 4D lens in PROMPT section 2a while preparing the brief.",
+          "refs": [
+            {
+              "to": "prompt",
+              "anchor": "2a-the-4d-lens-for-a-request"
+            }
+          ]
         },
         {
           "level": 2,
           "heading": "4. Propose, never adopt",
           "anchor": "4-propose-never-adopt",
           "lines": [
-            114,
-            128
+            119,
+            133
           ],
           "summary": "Pre-filling from the blob is the whole reason this is fast.",
           "refs": []
@@ -1896,8 +1902,8 @@
           "heading": "5. The brief",
           "anchor": "5-the-brief",
           "lines": [
-            132,
-            166
+            137,
+            171
           ],
           "summary": "The output is one file, and the same text is the prompt that opens the next session.",
           "refs": []
@@ -1907,8 +1913,8 @@
           "heading": "6. Where it lands",
           "anchor": "6-where-it-lands",
           "lines": [
-            170,
-            193
+            175,
+            198
           ],
           "summary": "A brief lives in artifacts/briefs/, named by date and slug, beside the run reports it will later be judged against.",
           "refs": []
@@ -1918,8 +1924,8 @@
           "heading": "7. Why this is a skill and not a hook",
           "anchor": "7-why-this-is-a-skill-and-not-a-hook",
           "lines": [
-            197,
-            218
+            202,
+            223
           ],
           "summary": "The obvious next thought is a prompt-submit hook that fires on every paste, and it is worth saying plainly why that is not what this is.",
           "refs": []
@@ -1929,8 +1935,8 @@
           "heading": "8. Rationalizations",
           "anchor": "8-rationalizations",
           "lines": [
-            222,
-            231
+            227,
+            236
           ],
           "summary": "A table: Rationalization, Reality.",
           "refs": []
@@ -1940,8 +1946,8 @@
           "heading": "9. Red flags",
           "anchor": "9-red-flags",
           "lines": [
-            235,
-            244
+            240,
+            249
           ],
           "summary": "Work started on a multi-part paste with no cap written anywhere.",
           "refs": []
@@ -1951,8 +1957,8 @@
           "heading": "10. Verification",
           "anchor": "10-verification",
           "lines": [
-            248,
-            257
+            253,
+            262
           ],
           "summary": "The fire test in section 2 was run, and a skip was said out loud rather than assumed.",
           "refs": []
@@ -2544,7 +2550,7 @@
       "title": "PROMPT — what a prompt owes before the work starts",
       "summary": "The checks an opening prompt is held to and the short polish pass that fixes it at session start, plus the rules for the prompts that live in files (instruction files, skills, agent prompts) so they stop carrying debt older models needed.",
       "when": "Read this BEFORE acting on the first prompt of a session, and BEFORE editing a CLAUDE.md, an AGENTS.md, a skill, an agent definition or any other prompt that lives in a file. It scores an opening prompt against five checks and polishes it with at most three questions, and it holds instruction files to the debt rules. Don't skip because the prompt looks clear - a prompt that reads clearly to its writer is the one whose missing finish line nobody notices.",
-      "lines": 132,
+      "lines": 153,
       "lead": {
         "lines": [
           13,
@@ -2577,11 +2583,22 @@
         },
         {
           "level": 2,
+          "heading": "2a. The 4D lens for a request",
+          "anchor": "2a-the-4d-lens-for-a-request",
+          "lines": [
+            56,
+            73
+          ],
+          "summary": "Rick Dakan, Joseph Feller and Anthropic describe four competencies in The AI Fluency Framework: Delegation, Description, Discernment and Diligence.",
+          "refs": []
+        },
+        {
+          "level": 2,
           "heading": "3. The polish pass",
           "anchor": "3-the-polish-pass",
           "lines": [
-            56,
-            80
+            77,
+            101
           ],
           "summary": "This runs once, on the first prompt of a session, before the first edit.",
           "refs": []
@@ -2591,8 +2608,8 @@
           "heading": "4. Prompts that live in files",
           "anchor": "4-prompts-that-live-in-files",
           "lines": [
-            84,
-            101
+            105,
+            122
           ],
           "summary": "Instruction files, skills and agent prompts are read on every run, so their debt is paid on every run.",
           "refs": []
@@ -2602,8 +2619,8 @@
           "heading": "5. Rationalizations",
           "anchor": "5-rationalizations",
           "lines": [
-            105,
-            112
+            126,
+            133
           ],
           "summary": "A table: Rationalization, Reality.",
           "refs": []
@@ -2613,8 +2630,8 @@
           "heading": "6. Red flags",
           "anchor": "6-red-flags",
           "lines": [
-            116,
-            122
+            137,
+            143
           ],
           "summary": "Work started on a prompt with no finish line and no question asked about it.",
           "refs": []
@@ -2624,8 +2641,8 @@
           "heading": "7. Verification",
           "anchor": "7-verification",
           "lines": [
-            126,
-            132
+            147,
+            153
           ],
           "summary": "The polish pass ran on the first prompt, or its skip was said in one sentence.",
           "refs": []
@@ -2872,7 +2889,7 @@
       "title": "SESSION-LOOP.md — the working loop, memory, and handoff",
       "summary": "How a session with an AI runs start to finish - the loop it repeats, what it writes down, and how it hands off.",
       "when": "Read this BEFORE orienting in a repo you have not worked today, and again BEFORE writing an agent-memory entry, a handoff prompt, or a plan file. It owns the inside of one session: how to orient cold, the loop to repeat, the recurring chores, what belongs in memory versus a committed doc, and how to end so the next session starts oriented. LOOP.md is the sibling that owns the gates across sessions and repos. Don't skip because you already have the context - context is the exact thing the next session will not have.",
-      "lines": 434,
+      "lines": 415,
       "lead": {
         "lines": [
           14,
@@ -2952,9 +2969,9 @@
           "anchor": "6-model-economy-be-smart-about-which-brain-runs",
           "lines": [
             318,
-            383
+            364
           ],
-          "summary": "Bigger models cost more and are slower; smaller ones are cheaper and faster.",
+          "summary": "Choose the cheapest capable configuration for the work, counting the whole collaboration rather than the price of one call.",
           "refs": [
             {
               "to": "hooks"
@@ -2966,8 +2983,8 @@
           "heading": "7. Delegation (fan out, don't grind)",
           "anchor": "7-delegation-fan-out-dont-grind",
           "lines": [
-            387,
-            434
+            368,
+            415
           ],
           "summary": "§6 asks which brain runs. This asks how many.",
           "refs": [

@@ -53,6 +53,27 @@ changes nothing needs no stops. Score what is missing, not what is unwritten.
 
 ---
 
+## 2a. The 4D lens for a request
+
+Rick Dakan, Joseph Feller and Anthropic describe four competencies in
+[The AI Fluency Framework](https://www-cdn.anthropic.com/334975cdec18f744b4fa511dc8518bd8d119d29d.pdf):
+Delegation, Description, Discernment and Diligence. They concern the whole collaboration, not just
+prompt wording. The checks below are this estate's application of their framework.
+
+| Competency | What the session establishes |
+|---|---|
+| **Delegation** | Whether AI suits the work, what the human retains, and whether the selected system has the tools and capabilities it needs. Delegating to a subagent is only one part of this decision. |
+| **Description** | The goal, constraints, desired output and relevant context. Section 2 supplies the five concrete checks. |
+| **Discernment** | The evidence that will establish usefulness and correctness, including the agent's behavior during the work. Passing a test does not establish every property of an answer. |
+| **Diligence** | Who owns the result and its use, what privacy and permission boundaries apply, and what disclosure is owed. Existing authorization remains valid. |
+
+Apply this lens before accepting a change request and revisit it when the scope or capabilities
+change. Use the prompt, repository rules and existing plan as evidence. Ask only when a missing answer
+changes the work; four competencies do not require four questions or a printed scorecard. A simple
+lookup still skips the polish pass. These are cognitive checks, not a claim that a hook enforces them.
+
+---
+
 ## 3. The polish pass
 
 This runs once, on the first prompt of a session, before the first edit.
@@ -64,7 +85,7 @@ is said out loud in one sentence, so the person knows the check ran.
 
 **What it does.**
 
-- **Score the prompt** against the five checks, in one line: which pass and which fail.
+- **Apply the 4D lens** in section 2a, then score the five concrete checks in one line: which pass and which fail. Name a material gap in suitability, verification or responsibility alongside that score.
 - **Ask at most three questions,** one round trip, each pre-filled with a proposed answer and marked
   as lifted from the prompt or invented. Ask only about a failed check that changes the work.
 - **Suggest the fixes** that need no answer, such as a link to the evidence or a tighter verb.

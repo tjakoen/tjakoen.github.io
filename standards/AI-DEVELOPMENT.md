@@ -125,11 +125,10 @@ premise. That's the whole value of a second reader.
   AI co-author trailers or attribution unless explicitly wanted.
 - **Conventional-ish commits.** `type: imperative summary`. Body only when the *why*
   isn't obvious from the diff.
-- **Match the model to the task — plan and orchestrate in Opus, execute and delegate to Sonnet subagents where possible.**
-  Reason with the strongest model (planning, architecture, hard debugging); once the plan's approved,
-  execute on the mid tier; hand wide reads to a small-model subagent. The default is to drop off the
-  big model as soon as the work stops being *thinking*. The full rule of thumb and how to actually
-  capture the savings is **[`SESSION-LOOP.md`](SESSION-LOOP.md) §6**.
+- **Match the model to the work.** Use stronger reasoning for uncertain plans and judgment, a
+  capable execution model for settled implementation, and the cheapest capable model for bounded
+  location work. The routing, context budget and verification requirements for every harness,
+  including Codex, live in **[SESSION-LOOP section 6](SESSION-LOOP.md#6-model-economy-be-smart-about-which-brain-runs)**.
 
 ### Reusable prompt: index the codebase for the AI
 

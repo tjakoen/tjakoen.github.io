@@ -317,46 +317,35 @@ clock.
 
 ## 6. Model economy (be smart about which brain runs)
 
-Bigger models cost more and are slower; smaller ones are cheaper and faster. Match the model to the
-*kind* of thinking the task needs, not to every task uniformly.
+Choose the cheapest capable configuration for the work, counting the whole collaboration rather
+than the price of one call. The main session owns the plan, integration and reconciliation. A child
+receives a bounded task, the evidence it needs, and a fixed return format.
 
-**The default posture: plan and orchestrate in Opus, execute and delegate to Sonnet subagents wherever possible.** Reason with
-the top tier while the shape is still uncertain (planning, architecture, hard debugging); once the
-plan is approved and the rest is grind, drop to the mid tier; push wide reads out to a small-tier
-subagent. Stay on the big model only for the parts that are actually still *thinking*. The main
-thread can't silently swap models mid-task, so this is partly a human lever — the standard is that
-**the AI names when a switch would pay off** and the human flips it (or `/model opusplan` automates
-the plan→execute half).
+| Work | Routing |
+|---|---|
+| Uncertain planning, architecture, difficult debugging and consequential review | A strong reasoning model; preserve judgment quality. |
+| Settled implementation, wiring and tests | A capable execution model with enough reasoning for the contract. |
+| Bounded location and extraction | The cheapest capable model, after a graph query has failed to answer the question. |
 
-**Rule of thumb:**
+**Pin the route when the harness supports it.** This applies to Codex as well as Claude Code.
+Verify supported model identifiers and reasoning settings against the installed harness before
+configuring role files. A role name alone does not select a cheaper model. When a child inherits the
+parent's configuration, report that inheritance rather than claiming a tier saving. Keep the owner's
+main-model choice; recommend a phase change when useful rather than silently replacing it.
 
-| Task shape | Model | Why |
-|---|---|---|
-| Planning, architecture, ambiguous debugging, "why is this wrong" | **the strongest** (Opus / the top tier) | The reasoning is the value; a wrong plan is expensive downstream. |
-| Executing an already-approved plan, mechanical edits, wiring, tests | **the mid tier** (Sonnet) | The thinking is done; you're paying for throughput, not insight. |
-| Wide reads — "where is X used", "map this dir", locating code | **the small tier** (Haiku), via a subagent | Search is cheap cognition; don't burn the big model reading files. |
+**Budget context as well as models.** Prefer a fresh child with a compact task envelope over a fork
+of the whole conversation when it needs only a few files. Give it the constraints and decisions it
+cannot recover, and require a bounded answer with file and line evidence. Query the graph first,
+load only the relevant standard sections, and avoid large tool dumps. Sequential, stateful work
+usually belongs inline; delegation must earn its coordination cost.
 
-**How to actually get the savings:**
-- **Plan-then-execute auto-switch.** If the harness offers a hybrid mode that reasons big in planning
-  and drops to a mid model for execution (Claude Code's `/model opusplan`), prefer it as the default —
-  it captures most of the win with zero babysitting.
-- **Pin subagents to small models.** A read-only locator or reviewer subagent should run on the small
-  tier; the main thread stays on the big one and eats a compressed result. Free savings, fully
-  automatic once configured.
-- **Ask for the switch when the phase turns.** When a session crosses from "figuring out" into "grind
-  it out" (or the reverse), the AI says so: *"plan's approved and the rest is mechanical — consider
-  `/model sonnet`"*. One sentence, real money.
+**Measure the total cost.** Input, output, reasoning, retries, duplicated context and integration all
+count. Account for cache behavior and the harness's billing or subscription limits using current
+evidence; a lower tier or a late model switch is not automatically cheaper. Compare completed,
+verified work rather than isolated token prices. Escalate when the cheaper route cannot meet the
+contract, and keep consequential verification independent of the author. Model identifiers and
+prices belong in verified configuration, not in this portable rule.
 
-**What the switch costs, which the advice above does not price.** A conversation is served from a
-prompt cache, and the model and the reasoning effort are part of what the cache is keyed on. Switch
-either one halfway through and the whole session ahead of that point is prefilled again at full
-price, so a switch made late in a long thread can cost more than the tier it was meant to save. The
-lesson is not that switching is wrong; it is that the tier is cheapest to choose at the start, when
-there is nothing behind it to re-pay for. So pick it when the task is picked, prefer the harness
-mode that does the plan-then-execute switch on its own, and where a session really is about to cross
-from thinking into grinding, weigh the switch against how much conversation sits behind it. Late
-enough in a thread, the honest answer is to finish here and start the grind in a fresh session at
-the tier it wanted (§2, item 5).
 
 **Measured 2026-08-22, and the rule above had never once fired.** Twelve sessions in the portfolio:
 2,492 assistant turns, every one on the main thread at the top tier. Turns that ran in a subagent:
@@ -366,19 +355,11 @@ is why `delegate-gate.sh` now exists (HOOKS.md §4b): after fifteen reads or sea
 with nothing delegated, it says so once, and goes permanently quiet the moment the session delegates
 anything.
 
-**The same measurement retunes why the rule is worth following.** The table above argues from price,
-and on the current tiers that argument has weakened: the top and mid tiers are about forty percent
-apart, not the five-fold gap the older generations trained everyone to expect. The stronger argument
-is structural, and it is much larger. Cache reads were **94.3 percent of all input** across those
-sessions, 355 million read against 1.9 million generated. Nothing leaves a conversation once it
-enters, so every result is re-read on every turn after it: a search that lands early in a long
-session is paid for hundreds of times. **A subagent carries its own window.** What it reads to answer
-one question never enters the main thread and is never re-read; only the answer comes back. So
-delegate for the carry, and treat the cheaper tier as the smaller bonus it now is.
-
-Which also sharpens what the tier is worth choosing for. On a subscription rather than per-token
-billing the prices are only a ranking, and the real budget is turns per rate-limit window and room
-left in the context. Carry is what spends both.
+**The same measurement shows why context matters.** Cache reads were 94.3 percent of all input
+in those measured sessions, 355 million read against 1.9 million generated. That historical result
+motivates bounded retrieval and compact child returns; it is not a current price comparison or a
+promise that every harness bills the same way. A child's separate context can keep a large read out
+of the main conversation when only its conclusion is needed.
 
 Carry the model recommendation into the handoff (§5): the next task's shape usually implies its tier.
 
