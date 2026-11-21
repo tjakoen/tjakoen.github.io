@@ -189,3 +189,11 @@ on Opus with `keep this model` carries on; and a `/compact` in a guarded session
 ## Owner's answer
 
 D4 was answered on 2026-11-22: respawn it too.
+
+## Resume card
+
+- Stopped: Plan written, reviewed by goldfish to GO, marked ready and committed as 543e230a; nothing built.
+- Next: On owner approval, start a Sonnet build session in claude-config for steps 1 to 6, then a portfolio session for step 7.
+- Waiting on: The owner's approval of the plan.
+- Ended: blocked
+- Left: 2026-11-21T22:02:39.157Z by claude on TJ
