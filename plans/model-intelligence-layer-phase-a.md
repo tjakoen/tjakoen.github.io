@@ -347,8 +347,8 @@ No push. No Edge repository. No later-phase behavior. No change to human-lane.sh
 
 ## Resume card
 
-- Stopped: The plan is written, reviewed by goldfish to GO, marked ready and committed; nothing is built.
-- Next: On owner approval, start session C in claude-config with steps 1 to 7, test first.
-- Waiting on: The owner's approval of the plan, and confirmation of D8 (settings repaired only on approval).
+- Stopped: Steps 8 and 9 committed (b6049deb, af299522); the Claude Code verify run passed every check except the model probe, which ran on Opus because the parent session started this one with that model.
+- Next: Rerun MODELS-VERIFY in a fresh Sonnet session, or accept the recorded FAIL; then set status: done and release with outcome done.
+- Waiting on: The owner's call on the model-probe FAIL, and the owner's push.
 - Ended: blocked
-- Left: 2026-11-21T20:42:25.984Z by claude on TJ
+- Left: 2026-11-21T21:38:55.209Z by claude (claude-opus-5-5) on TJ
