@@ -1,6 +1,6 @@
 ---
 id: model-intelligence-layer-phase-a
-status: ready
+status: doing
 track: ai
 depends: []
 touches:
