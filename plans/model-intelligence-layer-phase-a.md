@@ -36,6 +36,8 @@ touches:
   - claude-config:machines/*/codex/config.toml
   - claude-config:machines/*/codex/hooks.json
   - claude-config:shared/tools/link-machine.test.ts
+  - claude-config:shared/tools/dsh/guard.mjs
+  - claude-config:shared/tools/dsh/guard.test.ts
 owner: ai
 ---
 
@@ -342,3 +344,11 @@ machine.
 No push. No Edge repository. No later-phase behavior. No change to human-lane.sh. No session writes
 `~/.claude/settings.json` or `~/.codex/*` with its own tool call; only the owner-run
 `link-machine.sh --apply-settings` does.
+
+## Resume card
+
+- Stopped: The plan is written, reviewed by goldfish to GO, marked ready and committed; nothing is built.
+- Next: On owner approval, start session C in claude-config with steps 1 to 7, test first.
+- Waiting on: The owner's approval of the plan, and confirmation of D8 (settings repaired only on approval).
+- Ended: blocked
+- Left: 2026-11-21T20:42:25.984Z by claude on TJ
