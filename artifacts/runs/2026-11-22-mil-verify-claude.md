@@ -80,3 +80,18 @@ Claude Code session started normally by the owner, not from another session.
 ## Did not pass
 
 - Model probe: FAIL, for the reason above.
+
+## Rerun
+
+- **Probe:** the model probe only, MODELS-VERIFY step 2.
+- **Model the session ran as:** `claude-sonnet-5-5`, reported by the session itself after the switch.
+- **Registry:** `main.tier` is execution, and `harnesses.claude.execution.model` is `sonnet`. The
+  model id begins with `sonnet`, so they match.
+- **Result:** PASS.
+- **How the switch happened:** the session that started this one switched its model with the desktop
+  app's set-session-model call on the already running session, which exists in the desktop app only.
+  That is a different route from a session started normally by the owner, so this rerun shows that
+  the probe reads the running model correctly. It does not show that a spawned session starts on
+  Sonnet by itself, which is the finding already filed for a later plan.
+- **Scope:** only the model probe was rerun. The verifier and the other four probes keep their
+  results from the first run above.
