@@ -15,3 +15,12 @@ The owner authorized the dream after the Decision Inbox implementation. Follow [
 - [x] Analyze the recent runs and both store halves.
 - [x] Organize and verify the index.
 - [x] Commit and push the memory index and public run report.
+
+## What we learned
+
+- Topic: Memory dream
+- Changed: Reconciled eight recent run reports and 102 existing notes into a verified 8499-character index.
+- Why: The finish gate identified a due hindsight pass.
+- Dropped: nothing
+- Remember: All 102 note links survive. Transcripts were exported but not analyzed; note bodies remain for a later pass.
+- Closed: 2026-11-21T05:54:18.554Z by codex on Tjakoens-MacBook-Air.local
