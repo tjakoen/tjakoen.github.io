@@ -108,7 +108,7 @@ The shape that works:
 
 Model tier for the auditors follows [`SESSION-LOOP.md`](SESSION-LOOP.md) §6 and §7: the reading is
 wide but the judgment is real, so auditors sit on the mid tier, and the synthesis that ranks and
-de-duplicates their output stays on the strong one.
+de-duplicates their output stays on the strong one. The role contract behind that split is [MODELS.md](MODELS.md).
 
 **Where the barrier is.** Findings from all agents are collected before fixing starts, because
 de-duplication needs the full set: the same duplicated helper will be reported by both agents that
