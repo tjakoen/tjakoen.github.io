@@ -72,11 +72,10 @@ later.recovery, later.goldfish-freshness, later.model-scout
 ## The model probe
 
 The machine's configuration is right: `live.match` passes, and the live settings name `sonnet[1m]`.
-This session still ran on Opus, because it was started from another session through the desktop
-app's session tool, and the model it ran as was set by that start rather than by the settings
-default. The probe exists to catch exactly that gap, a session whose model the registry never saw,
-so it is recorded as FAIL rather than explained away. A session opened fresh by the owner, with no
-model override, is the clean rerun.
+This session still ran on Opus because it inherited `claude-opus-5-5` from the session that started
+it, and that session was itself started before the owner applied the Sonnet main model. The probe exists to catch exactly that gap, a session whose model the registry never saw,
+so it is recorded as FAIL, and the probe was not changed to accept Opus. The clean rerun is a fresh
+Claude Code session started normally by the owner, not from another session.
 
 ## Did not pass
 

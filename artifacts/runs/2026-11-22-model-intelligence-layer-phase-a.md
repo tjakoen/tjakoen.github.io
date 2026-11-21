@@ -86,6 +86,11 @@ to the parent session.
 
 ## What was not done
 
-- The plan is not marked done, pending the answer on the model probe.
+- **Remaining:** the owner reruns MODELS-VERIFY in a fresh Claude Code session started normally,
+  not from another session. The plan goes to done when that run passes, and it stays at doing
+  until then.
+- **Finding for a later plan:** a session started by another session inherits the parent's model,
+  so the main-tier rule can be bypassed by spawning a session. Neither the verifier nor any hook
+  sees it; only the model probe caught it.
 - Follow-ups carried from session C stand: `human-lane.sh` and the `python3` stub, the DSH plugin
   passing the agent type, and the plan's `touches` list missing the DSH guard files.
