@@ -80,6 +80,11 @@ when the work starts. Ask for a cap on where fixes may land, not on what they ma
 
 ## 3. The four questions
 
+Apply the sourced [4D lens in PROMPT section 2a](PROMPT.md#2a-the-4d-lens-for-a-request)
+while preparing the brief. Establish suitability and human responsibilities, clear description,
+verification evidence, and responsible use from the supplied context. A material gap informs the
+questions below; the lens adds no mandatory round of questions.
+
 One round trip, four questions, every field pre-filled from the blob. Put them on a single form and
 never split them across turns.
 
