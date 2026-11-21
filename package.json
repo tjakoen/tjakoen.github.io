@@ -38,6 +38,7 @@
     "social:card:vectorless": "bun tools/social-card-vectorless.ts",
     "social:card:same-reviewer": "bun tools/social-card-same-reviewer.ts",
     "social:card:voice": "bun tools/social-card-voice.ts",
+    "social:card:four-of-fourteen": "bun tools/social-card-four-of-fourteen.ts",
     "audit": "bun tools/audit.ts",
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:links": "bun tools/link-lint.ts",
