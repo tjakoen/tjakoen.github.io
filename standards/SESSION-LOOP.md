@@ -327,6 +327,8 @@ receives a bounded task, the evidence it needs, and a fixed return format.
 | Settled implementation, wiring and tests | A capable execution model with enough reasoning for the contract. |
 | Bounded location and extraction | The cheapest capable model, after a graph query has failed to answer the question. |
 
+Which role sits on which tier, the main session's tier and escalation by delegation are in [MODELS.md](MODELS.md).
+
 **Pin the route when the harness supports it.** This applies to Codex as well as Claude Code.
 Verify supported model identifiers and reasoning settings against the installed harness before
 configuring role files. A role name alone does not select a cheaper model. When a child inherits the

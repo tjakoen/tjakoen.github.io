@@ -324,6 +324,8 @@ at the first step, a listener after each execution, and session events.
 [The DeepSeek Harness adapter doc](https://github.com/tjakoen/tjakoen.github.io/blob/main/docs/HARNESS-DSH.md)
 owns that in detail; this file owns only the contract it is held to.
 
+OpenCode is the fourth harness, and it is unsupported: it is not installed on any machine, so no adapter exists and no signal is claimed for it. Its model preferences are kept in the registry that [MODELS.md](MODELS.md) points to.
+
 **The list earned its keep on the first run, and the defect was real.** Measure the lane list in both
 guards and on 2026-11-08 they did not agree. The shell guard carried seventeen path rules plus the
 package.json special case, and the DSH guard carried twenty. Three differed, and only one of the three

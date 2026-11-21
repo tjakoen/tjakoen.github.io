@@ -10,6 +10,26 @@
   ],
   "standards": [
     {
+      "slug": "agents",
+      "file": "standards/AGENTS.md",
+      "url": "https://portfolio.tjakoen.com/standards/agents",
+      "skill": null,
+      "title": "AGENTS.md",
+      "summary": "",
+      "when": null,
+      "lines": 1,
+      "lead": {
+        "lines": [
+          1,
+          1
+        ],
+        "summary": "CLAUDE.md"
+      },
+      "sections": [],
+      "refsOut": [],
+      "refsIn": []
+    },
+    {
       "slug": "ai-development",
       "file": "standards/AI-DEVELOPMENT.md",
       "url": "https://portfolio.tjakoen.com/standards/ai-development",
@@ -168,6 +188,7 @@
         "audit-standard",
         "claude.starter",
         "loop",
+        "models",
         "readme",
         "session-loop"
       ]
@@ -424,6 +445,9 @@
           "refs": [
             {
               "to": "session-loop"
+            },
+            {
+              "to": "models"
             }
           ]
         },
@@ -517,6 +541,7 @@
         "ai-development",
         "ai-repo-standard",
         "loop",
+        "models",
         "session-loop",
         "tour-standard"
       ],
@@ -524,6 +549,7 @@
         "ai-repo-standard",
         "conformance",
         "hooks",
+        "models",
         "readme",
         "session-loop"
       ]
@@ -1192,6 +1218,7 @@
         "ai-development",
         "intake",
         "loop",
+        "models",
         "readme",
         "session-loop"
       ]
@@ -1676,7 +1703,7 @@
       "title": "HOOKS.md — the gates that fire before you do",
       "summary": "The machine-level hooks that enforce parts of the loop on every session in every repo - what each one fires on, what it deliberately cannot do, how to turn it off, and the adapter contract that holds Claude Code, Codex and DeepSeek Harness to the same six signals with a ten-case conformance list.",
       "when": "Read this BEFORE trusting that a rule in LOOP or SESSION-LOOP is enforced rather than merely written, before a session-start report or a blocked write surprises you, and before adding, editing or switching off anything under the machine's tools directory or wiring a new harness into the loop. It owns the machinery: which event each hook fires on, the limits that are deliberate, the off switch for each one, and the adapter contract with the case list that proves an adapter against it. Don't skip because you have read LOOP - LOOP says what the rules are, and this says which of them a machine actually stops you over, and in which harness.",
-      "lines": 477,
+      "lines": 479,
       "lead": {
         "lines": [
           15,
@@ -1758,18 +1785,22 @@
           "anchor": "4c-the-adapter-contract-one-set-of-rules-three-harnesses",
           "lines": [
             298,
-            378
+            380
           ],
           "summary": "A harness is the program that runs a session, and three of them run here: Claude Code, Codex and DeepSeek Harness.",
-          "refs": []
+          "refs": [
+            {
+              "to": "models"
+            }
+          ]
         },
         {
           "level": 2,
           "heading": "5. Three limits that cost something to learn",
           "anchor": "5-three-limits-that-cost-something-to-learn",
           "lines": [
-            382,
-            415
+            384,
+            417
           ],
           "summary": "None of these are guessable from the harness documentation, and each was found by building the wrong thing first.",
           "refs": [
@@ -1783,8 +1814,8 @@
           "heading": "6. The off switch is part of the design",
           "anchor": "6-the-off-switch-is-part-of-the-design",
           "lines": [
-            419,
-            437
+            421,
+            439
           ],
           "summary": "Every hook here ships with a documented way to stop it, and that is a design requirement rather than a courtesy.",
           "refs": []
@@ -1794,8 +1825,8 @@
           "heading": "7. Red flags",
           "anchor": "7-red-flags",
           "lines": [
-            441,
-            450
+            443,
+            452
           ],
           "summary": "A hook edited without running it the way the harness runs it (section 5).",
           "refs": []
@@ -1805,8 +1836,8 @@
           "heading": "8. Before you change one of these",
           "anchor": "8-before-you-change-one-of-these",
           "lines": [
-            454,
-            477
+            456,
+            479
           ],
           "summary": "Evidence-shaped, in the manner of LOOP.md section 9, and short because the blast radius is the whole machine rather than one repo.",
           "refs": [
@@ -1819,10 +1850,13 @@
       "refsOut": [
         "audit-standard",
         "loop",
+        "models",
         "session-loop"
       ],
       "refsIn": [
         "loop",
+        "models",
+        "models-verify",
         "readme",
         "session-loop"
       ]
@@ -2361,10 +2395,248 @@
         "graph",
         "hooks",
         "intake",
+        "models",
+        "models-verify",
         "prompt",
         "readme",
         "session-loop",
         "tour-standard"
+      ]
+    },
+    {
+      "slug": "models-verify",
+      "file": "standards/MODELS-VERIFY.md",
+      "url": "https://portfolio.tjakoen.com/standards/models-verify",
+      "skill": "models-verify",
+      "title": "MODELS-VERIFY — the copy-paste prompt that proves the model policy on one harness",
+      "summary": "A prompt the owner pastes into a fresh session on Claude Code, Codex, DeepSeek Harness or OpenCode. The session runs the verifier for its harness, then the five probes a script cannot run (its own model, an unenveloped spawn, delegation to the planner, a 16-hex canary that proves a goldfish is fresh, and a human-lane write), and files a dated run report.",
+      "when": "Read this BEFORE claiming a harness runs the model policy in MODELS.md, after a harness or its adapter updates, after the registry changes, and when confirming a model identifier still marked unverified. It owns the verify prompt and its pass criteria; MODELS.md owns the policy being verified. Don't skip because the checklist row is green - the row is configured and tested evidence, and the probes here are the part only a running session can show.",
+      "lines": 93,
+      "lead": {
+        "lines": [
+          13,
+          17
+        ],
+        "summary": "The checklist row says the device matches the registry."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "The prompt",
+          "anchor": "the-prompt",
+          "lines": [
+            19,
+            79
+          ],
+          "summary": "A fenced block, quoted whole: read the section.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "What each probe proves",
+          "anchor": "what-each-probe-proves",
+          "lines": [
+            81,
+            93
+          ],
+          "summary": "The policy behind every row is MODELS.md.",
+          "refs": [
+            {
+              "to": "models"
+            },
+            {
+              "to": "loop"
+            },
+            {
+              "to": "hooks"
+            }
+          ]
+        }
+      ],
+      "refsOut": [
+        "hooks",
+        "loop",
+        "models"
+      ],
+      "refsIn": [
+        "models"
+      ]
+    },
+    {
+      "slug": "models",
+      "file": "standards/MODELS.md",
+      "url": "https://portfolio.tjakoen.com/standards/models",
+      "skill": "models",
+      "title": "MODELS — which model plays which role, on every harness",
+      "summary": "The portable model policy of the loop. Six roles on three tiers, a main session on the execution tier, escalation by delegation rather than by switching models, the effort ceiling, one registry as the only home of model identifiers, five conformance levels, and how a device repairs its own drift.",
+      "when": "Read this BEFORE pinning a model in an agent file, a settings file or a Codex config, before adding an agent, before reaching for a model switch mid-session, and before claiming a harness runs the loop's model policy. It owns which role sits on which tier and how the strong tier is reached; the registry in claude-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice. Don't skip because the agent file already names a model - a pin nobody checked against the registry is how five files came to disagree.",
+      "lines": 161,
+      "lead": {
+        "lines": [
+          14,
+          22
+        ],
+        "summary": "This file came out of a small embarrassment."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. What this file owns, and what it does not",
+          "anchor": "1-what-this-file-owns-and-what-it-does-not",
+          "lines": [
+            24,
+            38
+          ],
+          "summary": "It owns the portable policy: the roles, the tiers they map to, the tier the main session runs on, how work reaches the strong tier, the effort ceiling, the conformance levels a harness is graded on...",
+          "refs": [
+            {
+              "to": "session-loop"
+            },
+            {
+              "to": "ai-development"
+            },
+            {
+              "to": "loop"
+            },
+            {
+              "to": "hooks"
+            },
+            {
+              "to": "decisions"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "2. Six roles on three tiers",
+          "anchor": "2-six-roles-on-three-tiers",
+          "lines": [
+            40,
+            60
+          ],
+          "summary": "The tiers are SESSION-LOOP's: strong, execution and cheapest.",
+          "refs": [
+            {
+              "to": "audit-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "3. Escalation is delegation, not a switch",
+          "anchor": "3-escalation-is-delegation-not-a-switch",
+          "lines": [
+            62,
+            77
+          ],
+          "summary": "The owner's requirement is plain: when the next piece of work is planning, orchestration or review, it should run on the strong tier, and the session should come back down when the piece is done.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "4. Three decisions that look like one",
+          "anchor": "4-three-decisions-that-look-like-one",
+          "lines": [
+            79,
+            91
+          ],
+          "summary": "\"Which model\" hides three separate decisions, and mixing them up is how a fallback quietly becomes a default.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "5. Effort",
+          "anchor": "5-effort",
+          "lines": [
+            93,
+            101
+          ],
+          "summary": "No pin sets reasoning effort to high.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "6. The registry is the only home of identifiers",
+          "anchor": "6-the-registry-is-the-only-home-of-identifiers",
+          "lines": [
+            103,
+            114
+          ],
+          "summary": "The concrete table lives in claude-config, in its shared model-roles file: the tiers, the roles, the main tier, each agent's tier, each harness's model for each tier, the forbidden defaults and the...",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "7. Five conformance levels",
+          "anchor": "7-five-conformance-levels",
+          "lines": [
+            116,
+            132
+          ],
+          "summary": "Every check is graded by what it proves when it passes, and a capability is never reported as working on configuration alone.",
+          "refs": [
+            {
+              "to": "models-verify"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "8. A device resolves its own drift, except the permission surface",
+          "anchor": "8-a-device-resolves-its-own-drift-except-the-permission-surface",
+          "lines": [
+            134,
+            147
+          ],
+          "summary": "At session start a reconcile runs before the verifier, so the row describes the device after repairs.",
+          "refs": [
+            {
+              "to": "loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "9. Harnesses",
+          "anchor": "9-harnesses",
+          "lines": [
+            149,
+            154
+          ],
+          "summary": "Claude Code and Codex pin every tier.",
+          "refs": [
+            {
+              "to": "session-loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Verification",
+          "anchor": "verification",
+          "lines": [
+            156,
+            161
+          ],
+          "summary": "The verifier for the harness run (the command is in MODELS-VERIFY step 1), no line FAIL.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "ai-development",
+        "audit-standard",
+        "decisions",
+        "hooks",
+        "loop",
+        "models-verify",
+        "session-loop"
+      ],
+      "refsIn": [
+        "audit-standard",
+        "hooks",
+        "models-verify",
+        "readme",
+        "session-loop"
       ]
     },
     {
@@ -2743,7 +3015,7 @@
       "title": "standards/ — how I build, write, and work with AI",
       "summary": "The index - one line per standard, so a reader loads one file, not nineteen.",
       "when": null,
-      "lines": 107,
+      "lines": 108,
       "lead": null,
       "sections": [
         {
@@ -2752,7 +3024,7 @@
           "anchor": "the-standards",
           "lines": [
             23,
-            49
+            50
           ],
           "summary": "A table: Read this when you're…, Standard, In one line.",
           "refs": [
@@ -2785,6 +3057,9 @@
             },
             {
               "to": "hooks"
+            },
+            {
+              "to": "models"
             },
             {
               "to": "graph"
@@ -2832,8 +3107,8 @@
           "heading": "How they fit together",
           "anchor": "how-they-fit-together",
           "lines": [
-            51,
-            98
+            52,
+            99
           ],
           "summary": "AI-DEVELOPMENT + SESSION-LOOP are the engineering pair: the first is the standards, the second is the session mechanics that run against them.",
           "refs": []
@@ -2843,8 +3118,8 @@
           "heading": "The one rule this folder lives by",
           "anchor": "the-one-rule-this-folder-lives-by",
           "lines": [
-            100,
-            107
+            101,
+            108
           ],
           "summary": "Single source of truth, everywhere.",
           "refs": []
@@ -2867,6 +3142,7 @@
         "kickstart",
         "local-ai-standard",
         "loop",
+        "models",
         "note-standard",
         "prompt",
         "readme-standard",
@@ -2889,7 +3165,7 @@
       "title": "SESSION-LOOP.md — the working loop, memory, and handoff",
       "summary": "How a session with an AI runs start to finish - the loop it repeats, what it writes down, and how it hands off.",
       "when": "Read this BEFORE orienting in a repo you have not worked today, and again BEFORE writing an agent-memory entry, a handoff prompt, or a plan file. It owns the inside of one session: how to orient cold, the loop to repeat, the recurring chores, what belongs in memory versus a committed doc, and how to end so the next session starts oriented. LOOP.md is the sibling that owns the gates across sessions and repos. Don't skip because you already have the context - context is the exact thing the next session will not have.",
-      "lines": 415,
+      "lines": 417,
       "lead": {
         "lines": [
           14,
@@ -2969,10 +3245,13 @@
           "anchor": "6-model-economy-be-smart-about-which-brain-runs",
           "lines": [
             318,
-            364
+            366
           ],
           "summary": "Choose the cheapest capable configuration for the work, counting the whole collaboration rather than the price of one call.",
           "refs": [
+            {
+              "to": "models"
+            },
             {
               "to": "hooks"
             }
@@ -2983,8 +3262,8 @@
           "heading": "7. Delegation (fan out, don't grind)",
           "anchor": "7-delegation-fan-out-dont-grind",
           "lines": [
-            368,
-            415
+            370,
+            417
           ],
           "summary": "§6 asks which brain runs. This asks how many.",
           "refs": [
@@ -3000,6 +3279,7 @@
         "decisions",
         "hooks",
         "loop",
+        "models",
         "readme"
       ],
       "refsIn": [
@@ -3010,6 +3290,7 @@
         "hooks",
         "intake",
         "loop",
+        "models",
         "prompt",
         "readme"
       ]
