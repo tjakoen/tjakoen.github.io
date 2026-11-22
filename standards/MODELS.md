@@ -84,11 +84,14 @@ default.
 1. **Preferred assignment.** Which tier a role or agent runs on when everything works. This file and
    the registry define it.
 2. **Operational fallback.** What runs when the preferred model is unavailable. Section 11 defines
-   it: the light chain, its cooldowns, and the strong tier when both plans are out.
-3. **Capability escalation.** Moving a piece of work up a tier because it needs more judgment.
-   Defined here only in its delegation form (section 3). Paid escalation to a model outside the
-   tiers is recorded in the registry as approval-required and unwired, and stays that way until a
-   later phase wires it with an approval step.
+   it: the light chain, its cooldowns, and the strong tier when both plans are out. The chain holds
+   free and plan models only. Each move along it is written to the usage ledger as a transition, and
+   when every candidate is spent the route check exits 7, which means checkpoint and stop (section
+   15), then ask the owner for an escalation. It never reaches for a metered model on its own.
+3. **Capability escalation.** Moving a piece of work up a tier because it needs more judgment, or
+   past the chain to a metered model. The delegation form is section 3. Paid DeepSeek is escalation
+   only (owner decision O1, 2026-11-22): it left the light chain, and every paid call needs an
+   approval the owner typed, as section 12 describes. That overrides D10 in section 11.
 
 ## 5. Effort
 
@@ -205,8 +208,8 @@ guard prints them in both its restart card and its blocking message.
 DeepSeek Harness runs Flash on every tier and reaches the full DeepSeek V4.1 only as a rare escalation
 the owner approves. OpenCode borrows the Codex models while a Codex plan has usage left. Light work on OpenCode tries the free chain first (DeepSeek V4.1 Flash Free, MiMo V2.6 Flash Free,
 LongCat 2.5 Free, Nemotron 3.5 Lightning Free, Flint 40B Free), then the cheaper Codex models while the
-Codex plan has usage left, then DeepSeek V4.1 Flash on the paid API. Section 11 holds that order and the
-privacy rules behind it. The chain is recorded in the registry and not yet wired.
+Codex plan has usage left. The paid API is no longer part of that order; it is an escalation the owner
+approves (section 12). Section 11 holds that order and the privacy rules behind it. The chain is recorded in the registry and not yet wired.
 
 Every row outside Claude Code is marked unverified in the registry. Codex, DeepSeek Harness and OpenCode
 are not installed on the machine where the guard was proven, and OpenCode is not installed anywhere yet.
@@ -247,6 +250,11 @@ below, each of which the owner can change in the registry.
 - D10. The paid API runs up to a daily cap of five dollars. Past the cap each further use asks the owner
   first. This replaces the approval gate on the OpenCode escalation for the D3 fallback only, and a
   deliberate escalation still asks.
+
+**Superseded on 2026-11-22.** Owner decision O1 took paid DeepSeek out of the light chain, so the
+last step of D3 and the whole of D10 no longer apply. The chain now ends at the Codex models, and a
+paid call is an escalation that needs a recorded approval (section 12). D3 and D10 stay listed above
+so the history reads straight.
 
 **What the registry holds.** Every per-model entry carries a cost, which is free, plan or metered, and a
 private flag. The OpenCode fallback is an ordered list named lightChain, ending in the Codex entries and
@@ -294,6 +302,136 @@ are deleted on the first write of each day.
 **What is proven where.** The route check and the record are tested on the Windows PC against fixture
 registries. The free model ids, the OpenCode plugin, the price list for the paid API and the PANTRY views
 wait for a run on the Mac, so every free entry stays unverified until then.
+
+## 12. Escalation records and the owner's typed approval
+
+Phase B gave every escalation a record and every paid call an approval with one source. The tool is
+escalation-record.ts in claude-config, and it has three commands: request, approve and outcome.
+
+A request writes one escalation line to the usage ledger carrying the seven fields the owner's brief
+asks for: the reason, the source model and role, the destination model, the capability
+justification, the approval, the resource use (estimated first, actual once known) and the outcome.
+The same source, destination and reason always produce the same request id, so a repeated request
+is recognizably the same one.
+
+**Approval is typed by the owner, on a terminal, and nowhere else.** The approve command asks for the
+exact phrase *approve* followed by the request id, and only then appends a line to the approvals file
+under the escalation state directory. That file is the only place approval lives. An answer in the
+DECISIONS inbox is not approval, and neither is a sentence in chat. An agent has no terminal input,
+so the command refuses it with exit 3, which is the point: the one step a model cannot take is the
+one that spends money.
+
+The exit codes are the route check's. Exit 3 means ask the owner, for an unapproved request or for
+the same denial twice inside the cooldown window, and in the second case the stderr line starts with
+*ask:* and names the repeated cause, which is LOOP's ask. Exit 6 means the credentials are missing,
+and it is decided before any network call. The tool makes no network call at all.
+
+## 13. The supervisor and its limits
+
+The supervisor is code, not an agent (decision M1). It is supervisor.ts in claude-config, and it does
+two jobs. The decide command returns a role's tier, the model the route check gives for it, and
+whether the piece should be delegated. The admit-spawn command counts spawns per task and refuses
+past the owner's limits (O4):
+
+| Limit | Value |
+|---|---|
+| Agents live at once, per task | 3 |
+| Delegation depth | 2 |
+| Retries | 2 |
+| Spawns per task | 4 |
+
+The values are read from the registry's supervisor block, and those four numbers are the fallback when
+the block is absent. A limit refusal exits 3 with a reason that names the limit. An agent that has not
+been heard from in thirty minutes stops counting as live.
+
+It defers to the human lane and never overrides it. A path in the lane is held for the owner, and the
+lane's own answer is final. Where it is wired is in [HOOKS](HOOKS.md) section 4, in the spawn
+envelope. What a session owes before it delegates at all stays in [SESSION-LOOP §6](SESSION-LOOP.md).
+
+## 14. Context metadata and the budget
+
+Each model entry in the registry may carry a context block: the advertised window, the usable
+window, the output reserve (maxOut), the overhead, the method it was measured by (transcript,
+provider usage or estimate) and a confidence (measured, estimated or unverified). A model nobody has
+calibrated is marked unverified and gets no thresholds of its own (decision M3).
+
+context-budget.ts answers one question, whether the next task fits, and its answer is advice. It
+always exits 0, never blocks, and fails open. The context trigger passes its line on to the model.
+The decision is one of continue, narrow, delegate, compact, checkpoint, fresh-session, transfer or
+stop-handoff.
+
+The estimate is the byte size of the plan's touched files divided by four, plus a fixed allowance of
+8,000 tokens for tool output, plus the model's output reserve. A path that does not resolve counts as
+zero and lowers the confidence to estimated. The thresholds are the measured CONTEXT_WARN and
+CONTEXT_STOP, which stay authoritative. A model without measured thresholds gets 70 and 85 percent of
+its usable window, marked unverified, and that is the only place those generic percentages are
+allowed. When to hand off on context pressure is [SESSION-LOOP §5](SESSION-LOOP.md); this section
+only says how the number is reached.
+
+## 15. Continuation and recovery checkpoints
+
+A recovery checkpoint is not a handoff. A clean, task-complete handoff keeps the form the handoff
+command gives it. A recovery checkpoint is the emergency record for context pressure, a provider
+failure or an interrupted environment, and it lives at artifacts/handoffs/ under the date, the plan
+id and the word recovery. The two never blur.
+
+checkpoint.ts writes, validates, lists the lineage of, and supersedes these files. A checkpoint
+records the dirty tree and the pending operations. One marked complete refuses any gate result but
+green, so it can never claim a task finished on a red suite. A predecessor is superseded only after
+its successor has written *recovered: verified* into the same file, and the successor cannot be the
+session that wrote it. Refusals exit 5.
+
+On Claude Code, continuation reuses the model guard's restart path (section 10). The successor's
+prompt carries the envelope and the checkpoint, never an instruction to pick the next backlog item.
+The archive of the old session is offered only after the lineage is verified, and archiving still
+needs the owner's click. **Continuation is assisted, not automatic.**
+
+## 16. Model Scout
+
+model-scout.ts researches models and recommends them. It has three commands: inventory reads the
+registry, evaluate scores trial results a person or the Mac run recorded, and recommend turns the
+scores into requests. It runs by hand only (O5), and it makes no network calls.
+
+It never writes the registry. The recommend command hashes the registry before and after, and a
+changed hash is a failure with exit 5. Every recommendation says the model is not added to the light
+chain. A model from a provider the registry does not already carry becomes a request for the owner
+to approve the provider first. Evaluations against free models run on the Mac.
+
+## 17. The runtime brief
+
+The session checklist keeps a healthy start to one row, *Model Intelligence Layer verified*. When the
+layer drifts, or when the checklist is run with --brief, it adds the runtime brief: the policy line
+(paid models are escalation only, the supervisor limits and the cooldown), which models are cooling
+down, how many registry entries sit at each context confidence, the level each capability has
+reached, and the preferred model beside the active one. The checklist itself is owned by
+[SESSION-LOOP](SESSION-LOOP.md); this is only what the layer adds to it.
+
+## 18. Where each record lives
+
+Every new record has one home (decision M2), so a reader looking for one never has to search two
+places.
+
+| Record | Home |
+|---|---|
+| Fallback transitions and escalation lines | The usage ledger, as transition and escalation lines in format version 2. A version 1 reader skips them. |
+| Approvals | The approvals file under the escalation state directory, written only by the owner's typed approve. |
+| Side-effect keys | The effects file under the route check's state directory. A retry against a key already done is refused with exit 5. |
+| Supervisor counts | One file per task under the supervisor's state directory. |
+| Worktree claims | The worktrees file under the state directory ([HOOKS](HOOKS.md) section 4). |
+| Recovery checkpoints | artifacts/handoffs/, one file per interrupted task. |
+| Scout evidence and requests | artifacts/scout/, with requests in its inbox until the DECISIONS inbox renders them. |
+| Run reports | artifacts/runs/, as [LOOP](LOOP.md) names them. run-report.ts writes the skeleton and pulls the model transitions from the ledger. |
+
+## 19. What is on hold and what is not tested
+
+- **DeepSeek Harness is on hold** (owner, 2026-11-23). The verifier reports every DSH row as
+  UNSUPPORTED with the reason *on hold*, so none of them is a claim about a working harness.
+- **OpenCode main-session failover is NOT TESTED.** Today only bounded light subagents fall back. A
+  main session on the Codex-backed Sol allowance stops when that allowance runs out. Plan step 19
+  investigates what OpenCode can do and builds either an in-place switch through the route check or a
+  resumable handoff, and the check opencode.main-failover stays NOT TESTED until a real quota
+  transition has happened on its own and been recorded in the ledger and a run report. Deterministic
+  tests are required for it and are not enough.
 
 ## Verification
 
