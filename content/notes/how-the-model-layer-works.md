@@ -372,6 +372,19 @@ If you want to start smaller, steps 1, 4 and 5 give you most of the saving. Step
 
 ## What the layer does not do
 
+The layer is not finished, and I would rather say so than let the diagrams above suggest otherwise. Built so far are the registry, the tiers and roles, the session check, the model guard, the operational fallback, the work guards and the usage records. A second phase is planned and not built.
+
+| Planned, not built | State |
+|---|---|
+| Recorded paid escalation | Paid escalation is still marked approval-required and unwired in the registry |
+| Predictive context budgeting | Not built |
+| Recovery checkpoints and session continuation | Not built |
+| Goldfish freshness enforcement | Not built. The review in the figure above is a practice with agents today, not something a hook enforces |
+| Execution supervisor, run evidence and decisions | Not built |
+| Model Scout | Not built |
+
+[Phase B: update this table and the diagrams as each part lands.]
+
 The layer proves the routing and the privacy rules. It does not prove the work is good. The second reader, the fresh goldfish, is still the thing that catches that. Ten times zero is still zero, and a cheaper model is still a model.
 
 ## The sources
