@@ -13,8 +13,8 @@ summary: >
   I ran out of Claude and Codex usage in the middle of a task and would not pay for the next tier up. So
   I built a Model Intelligence Layer: free models take the light work, Opus and Sol keep the planning, a
   fallback order handles the day a model says no, and hard guards keep every free model and DeepSeek away
-  from anything that is not mine. This is the short version of why, and what changed. The technical note
-  shows how it works.
+  from anything that is not mine. This is the short version of why, and what changed, and it says plainly
+  that the layer is only partly built. The technical note shows how it works.
 social: |
   I spent my Codex usage with four hours left on the five-hour refresh. I was in the zone and did not
   want to stop. The next tier up felt like too much pressure to maximize, so I built a layer instead.
@@ -120,6 +120,10 @@ Planning and review stay on the strong models, Opus on Claude and Sol on Codex, 
 </svg>
 
 *Free first, then the plan I have already paid for, then the meter.*
+
+## What is built, and what is still coming
+
+**The layer is not finished.** What runs today is the first part: the registry with its tiers and roles, the session check, the model guard, the fallback order with its cooldowns, the work guards and the usage records. A second phase is planned and not built. It holds recorded paid escalation (paid escalation is still marked approval-required and unwired in my registry), predictive context budgeting, recovery checkpoints so a session can continue, enforcement that a goldfish review really starts fresh, an execution supervisor, run evidence and decisions, and a Model Scout that researches and proposes new models. I will fold each into the notes as it lands. [Phase B: update this section as each part is built.]
 
 ## The rule I will not bend
 
