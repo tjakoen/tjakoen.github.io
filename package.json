@@ -37,6 +37,7 @@
     "social:card:old-fashioned": "bun tools/social-card-old-fashioned.ts",
     "social:card:vectorless": "bun tools/social-card-vectorless.ts",
     "social:card:same-reviewer": "bun tools/social-card-same-reviewer.ts",
+    "social:card:model-layer": "bun tools/social-card-model-layer.ts",
     "social:card:voice": "bun tools/social-card-voice.ts",
     "social:card:four-of-fourteen": "bun tools/social-card-four-of-fourteen.ts",
     "audit": "bun tools/audit.ts",
