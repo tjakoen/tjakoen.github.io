@@ -274,7 +274,7 @@ the honor system fails.
 
 **Update, 2026-11-23.** The model is a guard too, and it earned its hook. When I ran out of usage mid-task,
 the loop kept going and the model did not, so I wrote the layer that chooses it. It is in
-[Necessity Is the Mother of Innovation](necessity-and-the-model-layer.md), including a ten-step list for
+[Necessity Is the Mother of Innovation](necessity-and-the-model-layer.md), including a list of steps for
 building your own.
 
 The second guard is the handoff. A subagent gets four headings:

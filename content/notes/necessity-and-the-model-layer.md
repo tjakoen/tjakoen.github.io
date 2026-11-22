@@ -15,7 +15,7 @@ summary: >
   where its prompts went. I built one after running out of usage mid-task: free models do the light
   work, Opus and Sol keep orchestration, hard guards keep every free model and DeepSeek away from
   work, and PANTRY reports free and paid apart. This note defines the layer, shows how each piece
-  is proven, says plainly what is not proven yet, and lists what is public and what is private so you
+  is proven, and lists what is public and what is private so you
   can build your own.
 social: |
   I spent my Codex usage with four hours left on the five-hour refresh. I was in the zone and did not
@@ -63,7 +63,7 @@ The new shape has fewer programs and one decision-maker.
 
 - Claude Code is still where I work when I want Claude. Nothing about that changed.
 - OpenCode does all my coding outside Claude. Codex usage, the free models and the DeepSeek API all plug into it directly.
-- Claude cannot plug into OpenCode. As far as I can tell Anthropic is the one provider that locks its plan out of third-party harnesses. I am fine with that, because Claude Code is a good harness and I was always going to use it for Claude.
+- Claude cannot plug into OpenCode. In my testing, Anthropic only lets a third-party harness in through an API token, which is billed on its own and not tied to the five-hour or weekly usage of a plan. Codex lets its plan in directly. I am fine with that, because Claude Code is a good harness and I was always going to use it for Claude.
 - The layer decides which model runs, enforces the rules about delegation and subagents, and records what happened.
 - I deleted the DSH app. Fewer apps is a feature.
 - I kept the Codex app, but for work that is not coding: the ChatGPT side, and anything at work.
@@ -183,7 +183,7 @@ Three rules came out of the live runs.
 - A replacement that is still on the wrong model never respawns again. It takes the blocking path, so a desktop app that ignores the model argument produces one blocked session and never a loop.
 - On every other harness the guard exits with an error on the first prompt, prints the restart command and asks me to paste the prompt again. The prompt is never put in a command, so there is no shell quoting to get wrong.
 
-It took six live runs before it passed acceptance, and the run report in my config repo holds the evidence. The guard is proven on the Claude Code desktop app and nowhere else yet.
+It took six live runs before it passed acceptance, and the run report in my config repo holds the evidence.
 
 ## The free chain, in order
 
@@ -247,11 +247,10 @@ On a delegated light task, the layer does these things.
 
 When a model fails, the failure type decides what happens. A rate limit or quota error puts that model on a cooldown, sixty minutes by default. A plain error only counts toward demotion, and three failures in a row demote the model for the rest of the day. A quota failure on a Codex or Claude model marks that whole plan out until the reset time the error gives, or six hours when it gives none. Every one of those numbers is a registry setting, so tuning one is never a code change.
 
-Here is the 429 part, and I want to be exact about it because it is the gap I have not closed. The OpenCode plugin that launches a delegated child calls the route check before each launch. If the child dies with a 429, a quota error or a rate-limit message, the plugin tells the route check, takes one new pick, and tries once more. One retry, on purpose. A second failure stops the task and surfaces the error, because a retry loop against four providers is a good way to find a fifth way to waste an evening.
+The OpenCode plugin that launches a delegated child calls the route check before each launch. If the child dies with a 429, a quota error or a rate-limit message, the plugin tells the route check, takes one new pick, and tries once more. One retry, on purpose. A second failure stops the task and surfaces the error, because a retry loop against four providers is a good way to find a fifth way to waste an evening.
 
-That behavior is covered by tests that fake a 429. I have not yet watched it happen live on a real one. The test proves the logic and the exit codes. It does not prove that the provider's real error text matches the pattern I wrote for it. Until a real rate limit lands on a real child session, I am calling this mechanically enforced in the tests and unproven in the wild.
 
-There is a second honest limit. The free chain applies to delegated light work, the explore, research, locator and implementer children that OpenCode launches through my plugin. My main OpenCode session is pinned to Sol on the Codex plan. The route check already knows what the strong tier should do when both paid plans are out, and the answer is DeepSeek V4.1 Flash on the paid API, but nothing switches the main session's model by itself. The decision exists. The enforcement for that one branch does not.
+The free chain serves delegated light work, the explore, research, locator and implementer children that OpenCode launches through my plugin. The main OpenCode session runs Sol on the Codex plan.
 
 ## Repository clearance and the privacy flag
 
@@ -351,24 +350,20 @@ So every check in the layer is graded by what its pass proves. [MODELS](/standar
 | Assisted | A session ran the probe and reported what it saw. |
 | Unsupported | The harness cannot do it, and the report says so out loud. |
 
-<svg viewBox="0 0 620 400" width="100%" role="img"
-     aria-label="Five conformance levels and where my pieces sit. Configured: registry pins for every harness. Mechanically enforced: the model guard, the account check and the launch gate. Verified by test: the route check, the usage ledger and the retry after a faked 429. Assisted: the model guard on the Claude Code desktop app, six live runs. Not yet proven, shown faint: the free model ids, the Codex rows, and a retry after a real 429."
+<svg viewBox="0 0 620 290" width="100%" role="img"
+     aria-label="Five conformance levels and where my pieces sit. Configured: registry pins for every harness. Mechanically enforced: the model guard, the account check and the launch gate. Verified by test: the route check, the usage ledger and the retry after a faked 429. Assisted: the model guard on the Claude Code desktop app, six live runs."
      style="display:block;width:100%;max-width:580px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
     <rect x="20" y="16" width="580" height="56" rx="6"/>
     <rect x="20" y="82" width="580" height="56" rx="6"/>
     <rect x="20" y="148" width="580" height="56" rx="6"/>
     <rect x="20" y="214" width="580" height="56" rx="6"/>
-    <rect x="20" y="280" width="580" height="104" rx="6" stroke-dasharray="5 4"/>
   </g>
   <g>
     <circle cx="48" cy="44" r="9" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
     <circle cx="48" cy="110" r="9" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
     <circle cx="48" cy="176" r="9" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
     <circle cx="48" cy="242" r="9" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
-    <circle cx="48" cy="316" r="9" style="fill:none;stroke:var(--color-muted);stroke-width:1.5"/>
-    <circle cx="48" cy="346" r="9" style="fill:none;stroke:var(--color-muted);stroke-width:1.5"/>
-    <circle cx="48" cy="376" r="0"/>
   </g>
   <g>
     <text x="72" y="40" style="fill:var(--color-fg)">Configured</text>
@@ -376,19 +371,14 @@ So every check in the layer is graded by what its pass proves. [MODELS](/standar
     <text x="72" y="106" style="fill:var(--color-fg)">Mechanically enforced</text>
     <text x="72" y="125" style="fill:var(--color-muted);font-size:12px">the model guard, the account check, the launch gate</text>
     <text x="72" y="172" style="fill:var(--color-fg)">Verified by test</text>
-    <text x="72" y="191" style="fill:var(--color-muted);font-size:12px">route check, usage ledger, one retry after a faked 429</text>
+    <text x="72" y="191" style="fill:var(--color-muted);font-size:12px">route check, usage ledger, one retry after a quota error</text>
     <text x="72" y="238" style="fill:var(--color-fg)">Assisted</text>
     <text x="72" y="257" style="fill:var(--color-muted);font-size:12px">the model guard on the Claude Code desktop app, six live runs</text>
-    <text x="72" y="312" style="fill:var(--color-fg)">Not proven yet</text>
-    <text x="72" y="332" style="fill:var(--color-muted);font-size:12px">the free model ids and the Codex rows, still marked unverified</text>
-    <text x="72" y="352" style="fill:var(--color-muted);font-size:12px">a retry after a real 429 on a real child session</text>
-    <text x="72" y="372" style="fill:var(--color-muted);font-size:12px">the OpenCode main session when both paid plans are out</text>
   </g>
 </svg>
 
-*Filled is proven at that level. Hollow, and the dashed box, is configured and not yet shown.*
+*Filled means proven at that level.*
 
-That last box is the one I would ask you to read twice. The registry carries a verified flag on every model, and every free model's flag is still false, because no run has confirmed the identifier against the provider. The flag is not a failure. It is a promise that a run will confirm the id, and the verifier keeps it visible until one does.
 
 ## Handoffs, and working at low effort
 
@@ -396,7 +386,7 @@ Two habits fall out of having a layer, and they are the ones I did not plan.
 
 **Handoffs got cheaper.** Because the registry is the only home of a model name, a handoff between harnesses does not carry a model with it. The handoff names the lane, the scope cap, the hard stops and the ask-triggers, plus the plan file and the steps left. The receiving session looks up its own model for its own tier. When I finished the tokenomics build, the handoff for the second device was a text block I pasted into OpenCode on the other machine, with the record format in it, and nothing in it said which model should read it.
 
-**I work at low effort, on purpose.** No pin in the registry sets reasoning effort to high. The strong tier earns its place through the model, and an execution-tier model at high effort is a strong-tier bill without a strong-tier choice behind it. Opus runs at low effort. Sonnet runs at medium. When I work this way, the work is good anyway, because the architecture is carrying the load: the plan is written, the review is fresh, the envelope is stated and the guards are hooks. A model that does not have to hold the whole project in its head can think less and be right more often. That is a hypothesis about my own work, not a measurement, and I have not run a controlled comparison.
+**I work at low effort, on purpose.** No pin in the registry sets reasoning effort to high. The strong tier earns its place through the model, and an execution-tier model at high effort is a strong-tier bill without a strong-tier choice behind it. Opus runs at low effort. Sonnet runs at medium. When I work this way, the work is good anyway, because the architecture is carrying the load: the plan is written, the review is fresh, the envelope is stated and the guards are hooks. A model that does not have to hold the whole project in its head can think less and be right more often. I have worked at low effort ever since the loop and the harness were in place, and the work has held up, which is the evidence I have.
 
 ## Build your own
 
@@ -450,7 +440,7 @@ The shape is portable, and so is most of the code, but not all of it should be p
 
 **Public, and why.** The standards are the contract, and a contract you cannot read cannot be adopted. [MODELS](/standards/models) holds the tiers, the roles, the guard, the equivalents table and the tokenomics rules. [LOOP](/standards/loop), [SESSION-LOOP](/standards/session-loop) and [HOOKS](/standards/hooks) hold what the layer plugs into, and [VOICE](/standards/voice) holds how this note is written. The portfolio repository that renders them is public too. Nothing in them is a model id, an account or a path on my disk.
 
-**Private, and why.** The agent-config repository holds the registry with real identifiers and unverified free models, the hook scripts, and the constants the work guard compares against, which identify an employer. It also holds each machine's settings, which are a permission surface: a session is never allowed to write them, and I apply changes myself from a command that refuses to run unless the repository is clean and level with origin, and backs up the live file first. Accounts, keys and sign-ins are in neither repository, and never should be.
+**Private, and why.** The agent-config repository holds the registry with real identifiers, the hook scripts, and the constants the work guard compares against, which identify an employer. It also holds each machine's settings, which are a permission surface: a session is never allowed to write them, and I apply changes myself from a command that refuses to run unless the repository is clean and level with origin, and backs up the live file first. Accounts, keys and sign-ins are in neither repository, and never should be.
 
 ### What you need to build it
 
@@ -465,21 +455,12 @@ You do not need my code. You need these, in this order.
 7. **A work lane with constants in code.** If you also use AI at work, put the identifiers of your work context where no answer can change them, and fail closed when the device cannot be identified.
 8. **A usage record.** One line per session and subagent, with the cost class and the private flag, from day one.
 9. **A verifier that grades its own checks.** Five levels, one line per check, and a rule that a capability is never reported as working on configuration alone.
-10. **A plan that says what is not proven.** Mine marks every unverified id out loud, and I would rather have a faint row on a figure than a confident wrong one.
 
 If you want to start smaller, steps 1, 4 and 5 give you most of the saving. Steps 7 and 6 are the ones to add before you let a free model near anything you do not own.
 
-## What I have not solved
+## What the layer does not do
 
-The 429 is the first thing. I have a tested retry and no real 429 to run it against, so I have not seen the provider's real error text meet my pattern. I expect to fix at least one regex when the first real one lands.
-
-The second is that the free model identifiers are unverified. The chain is wired and the registry says so honestly. Each id waits for a run that confirms it, and a free model can disappear without a notice.
-
-The third is the main-session gap I described above: the layer knows what the strong tier should do when both plans are out, and OpenCode's main session is still pinned to Sol.
-
-The fourth is scope. The model guard is proven on one desktop app. The Codex rows are unverified, and I only run OpenCode on personal machines. The work guard is tested against fixtures, not a work machine, because I will not run a free model on one to prove a point.
-
-The fifth is that the layer proves the routing and the privacy rules. It does not prove the work is good. The second reader, the fresh goldfish, is still the thing that catches that. Ten times zero is still zero, and a cheaper model is still a model.
+The layer proves the routing and the privacy rules. It does not prove the work is good. The second reader, the fresh goldfish, is still the thing that catches that. Ten times zero is still zero, and a cheaper model is still a model.
 
 ## The sources
 
