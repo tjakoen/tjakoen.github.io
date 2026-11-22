@@ -195,22 +195,105 @@ only, and the stopped session tells the owner to add them again.
 **Per-harness equivalents.** The registry, shared/model-roles.json, is the only place these live, and the
 guard prints them in both its restart card and its blocking message.
 
-| Tier | Claude Code | Codex | DeepSeek Harness | OpenCode |
-|---|---|---|---|---|
-| strong | opus, low effort | gpt-6.2-sol, medium | DeepSeek V4.1 Flash | the Codex model, gpt-6.2-sol, medium |
-| execution (main) | sonnet, medium effort | gpt-6.2-sol, low | DeepSeek V4.1 Flash | the Codex model, gpt-6.2-sol, low |
-| cheapest | haiku, low effort | gpt-6-luna, medium | DeepSeek V4.1 Flash | the Codex model, gpt-6-luna, medium |
-| escalation, on approval | none, delegate to strong | gpt-6.2-astra, low | DeepSeek V4.1 | the paid DeepSeek API, while credits remain |
+| Tier | Claude Code | Codex | DeepSeek Harness | OpenCode | Privacy |
+|---|---|---|---|---|---|
+| strong | opus, low effort | gpt-6.2-sol, medium | DeepSeek V4.1 Flash | the Codex model, gpt-6.2-sol, medium | Claude and Codex private; DeepSeek not private |
+| execution (main) | sonnet, medium effort | gpt-6.2-sol, low | DeepSeek V4.1 Flash | the free chain first, then the Codex model, gpt-6.2-sol, low | free models and DeepSeek not private; Claude and Codex private |
+| cheapest | haiku, low effort | gpt-6-luna, medium | DeepSeek V4.1 Flash | the free chain first, then the Codex model, gpt-6-luna, medium | free models and DeepSeek not private; Claude and Codex private |
+| escalation, on approval | none, delegate to strong | gpt-6.2-astra, low | DeepSeek V4.1 | the paid DeepSeek API, while credits remain | Codex private; DeepSeek, paid API included, not private |
 
 DeepSeek Harness runs Flash on every tier and reaches the full DeepSeek V4.1 only as a rare escalation
-the owner approves. OpenCode borrows the Codex models while a Codex plan has usage left. When every paid
-plan is spent, it falls back to a chain of free models (DeepSeek V4.1 Flash Free, MiMo V2.6 Flash Free,
-LongCat 2.5 Free, Nemotron 3.5 Lightning Free, Flint 40B Free), so work can carry on with no paid plan
-at all. That chain is recorded in the registry and not yet wired.
+the owner approves. OpenCode borrows the Codex models while a Codex plan has usage left. Light work on OpenCode tries the free chain first (DeepSeek V4.1 Flash Free, MiMo V2.6 Flash Free,
+LongCat 2.5 Free, Nemotron 3.5 Lightning Free, Flint 40B Free), then the cheaper Codex models while the
+Codex plan has usage left, then DeepSeek V4.1 Flash on the paid API. Section 11 holds that order and the
+privacy rules behind it. The chain is recorded in the registry and not yet wired.
 
 Every row outside Claude Code is marked unverified in the registry. Codex, DeepSeek Harness and OpenCode
 are not installed on the machine where the guard was proven, and OpenCode is not installed anywhere yet.
 The guard is proven on the Claude Code desktop app only.
+
+## 11. Cost and privacy
+
+Phase A made one registry the home of every model choice. It did not say what a model costs or where
+its prompts go. On OpenCode the light work runs on the cheaper Codex models, which spends plan usage
+that orchestration and planning need more, and a free endpoint may keep whatever it is sent. This
+section adds cost and privacy to the registry, along with the rules that use them. The numbers are
+registry settings, so tuning one is never a code change.
+
+**The decisions.** The owner made D1 to D7 in chat on 2026-11-22 and left D8 to D10 to the defaults
+below, each of which the owner can change in the registry.
+
+- D1. Free models replace the light tiers, not the strong one. On OpenCode the execution and cheapest
+  tiers try the free chain first. Orchestration and planning stay on the strong tier: Opus on Claude
+  Code, Sol on Codex and OpenCode.
+- D2. Flash takes the strong tier only when both paid plans are out. With the Claude and Codex plans
+  both marked out, the strong tier on OpenCode runs on DeepSeek V4.1 Flash.
+- D3. The fallback order for light work on OpenCode is the free chain in registry order, then the
+  cheaper Codex models while the Codex plan is not marked out (gpt-6-luna, then gpt-6.2-sol at low
+  effort), then DeepSeek V4.1 Flash on the paid DeepSeek API.
+- D4. Every model is private or not private. Claude and Codex models are private. Every free model and
+  every DeepSeek model, the paid API included, is not private. The registry records it per model.
+- D5. A repository is cleared for non-private models once, by the owner. The first time the route check
+  runs in a repository with no entry, it stops and asks, and records the answer. On yes the full D3
+  chain applies. On no only Claude and Codex are candidates, so work still runs but never leaves those
+  two providers. Nothing is cleared by default.
+- D6. The route check and the usage record are built in claude-config, with every limit a registry
+  setting.
+- D7. Every session and subagent writes usage records, and PANTRY reports them, split by harness, model,
+  cost class and privacy.
+- D8. Codex comes before the paid API in D3, because the Codex plan is already paid for.
+- D9. A plan is marked out by its quota error, until the reset time the error gives, or six hours when
+  it gives none.
+- D10. The paid API runs up to a daily cap of five dollars. Past the cap each further use asks the owner
+  first. This replaces the approval gate on the OpenCode escalation for the D3 fallback only, and a
+  deliberate escalation still asks.
+
+**What the registry holds.** Every per-model entry carries a cost, which is free, plan or metered, and a
+private flag. The OpenCode fallback is an ordered list named lightChain, ending in the Codex entries and
+the paid API, plus one entry named strongWhenPlansOut for D2. A routing block holds the four numbers the
+route check uses: the default cooldown in minutes, the failures in a row that demote a model for the day,
+the default hours a plan stays marked out, and the daily cap in dollars. Validation fails when an entry
+lacks a cost or a private flag, when a chain entry is incomplete, when two entries with one id disagree,
+and when a routing number is missing or not positive. A free entry keeps a null id until a run on the
+Mac proves it, and validation accepts a null id only where verified is false.
+
+**The route check.** One script, route-check.ts in claude-config, decides which model a light task
+takes. It is the contract OpenCode's plugin calls before a delegation and after a model call. Claude Code
+never calls it, because its subagents are pinned in their agent files and stay private.
+
+```text
+route-check pick <harness> <tier> [--cwd <dir>]
+route-check fail <model> <rate-limit|quota|error> [--until <iso>]
+route-check ok <model>
+route-check plan out|clear <claude|codex> [--until <iso>]
+route-check repo allow|deny [--cwd <dir>]
+route-check paid allow [--hours <n>]
+```
+
+Pick prints one line of JSON with the model, id, provider, cost, private, effort and the reason. Exit 3
+means it needs the owner, with the question on stdout: an unanswered repository, or the paid cap
+reached. Exit 4 means no private model is available, which happens when a repository is denied and every
+private candidate is out. Exit 2 is an unknown harness or tier. A candidate is skipped when it is not
+private and the repository is not cleared, when it is cooling down, when it is demoted for the day, or
+when it is a Codex entry and the Codex plan is out. A rate-limit or quota failure sets a cooldown, an
+error only counts toward demotion, and a quota failure on a Codex or Claude model also marks that plan
+out. The repository key is the lower-cased absolute path of the git top level, so a subfolder or a
+worktree maps to its own top level.
+
+**The usage record.** The Stop and SubagentStop hooks each run usage-ledger.sh, which appends one JSON
+line to a file named for the local date under the usage state directory. The fields are the format
+version, the time, the machine, the harness, the project key, the plan id, the session id, the agent
+type, the model id, the provider, the cost class, the private flag, the input, cache and output token
+counts, the dollar cost where the provider reports one, and how the model was picked. The token counts
+are sums over the turns since that session's previous record, so nothing is counted twice. Cache reads
+and writes count as cache tokens. Provider, cost and private come from the registry by exact model id,
+and an unknown id records unknown and not private, so an unlisted model is never counted as private. The
+wrapper always exits 0, so a ledger failure can never block a session, and files older than ninety days
+are deleted on the first write of each day.
+
+**What is proven where.** The route check and the record are tested on the Windows PC against fixture
+registries. The free model ids, the OpenCode plugin, the price list for the paid API and the PANTRY views
+wait for a run on the Mac, so every free entry stays unverified until then.
 
 ## Verification
 

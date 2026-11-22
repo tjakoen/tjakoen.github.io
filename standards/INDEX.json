@@ -2411,7 +2411,7 @@
       "title": "MODELS-VERIFY — the copy-paste prompt that proves the model policy on one harness",
       "summary": "A prompt the owner pastes into a fresh session on Claude Code, Codex, DeepSeek Harness or OpenCode. The session runs the verifier for its harness, then the five probes a script cannot run (its own model, an unenveloped spawn, delegation to the planner, a 16-hex canary that proves a goldfish is fresh, and a human-lane write), and files a dated run report.",
       "when": "Read this BEFORE claiming a harness runs the model policy in MODELS.md, after a harness or its adapter updates, after the registry changes, and when confirming a model identifier still marked unverified. It owns the verify prompt and its pass criteria; MODELS.md owns the policy being verified. Don't skip because the checklist row is green - the row is configured and tested evidence, and the probes here are the part only a running session can show.",
-      "lines": 104,
+      "lines": 113,
       "lead": {
         "lines": [
           13,
@@ -2426,7 +2426,7 @@
           "anchor": "the-prompt",
           "lines": [
             19,
-            89
+            97
           ],
           "summary": "A fenced block, quoted whole: read the section.",
           "refs": []
@@ -2436,8 +2436,8 @@
           "heading": "What each probe proves",
           "anchor": "what-each-probe-proves",
           "lines": [
-            91,
-            104
+            99,
+            113
           ],
           "summary": "The policy behind every row is MODELS.md.",
           "refs": [
@@ -2470,7 +2470,7 @@
       "title": "MODELS — which model plays which role, on every harness",
       "summary": "The portable model policy of the loop. Six roles on three tiers, a main session on the execution tier, escalation by delegation rather than by switching models, the effort ceiling, one registry as the only home of model identifiers, five conformance levels, and how a device repairs its own drift.",
       "when": "Read this BEFORE pinning a model in an agent file, a settings file or a Codex config, before adding an agent, before reaching for a model switch mid-session, and before claiming a harness runs the loop's model policy. It owns which role sits on which tier and how the strong tier is reached; the registry in claude-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice. Don't skip because the agent file already names a model - a pin nobody checked against the registry is how five files came to disagree.",
-      "lines": 220,
+      "lines": 303,
       "lead": {
         "lines": [
           14,
@@ -2623,11 +2623,22 @@
         },
         {
           "level": 2,
+          "heading": "11. Cost and privacy",
+          "anchor": "11-cost-and-privacy",
+          "lines": [
+            215,
+            296
+          ],
+          "summary": "Phase A made one registry the home of every model choice.",
+          "refs": []
+        },
+        {
+          "level": 2,
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            215,
-            220
+            298,
+            303
           ],
           "summary": "The verifier for the harness run (the command is in MODELS-VERIFY step 1), no line FAIL.",
           "refs": []

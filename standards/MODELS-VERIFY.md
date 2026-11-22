@@ -75,15 +75,23 @@ repository. Ask-triggers: a check FAILs, or the verifier cannot run.
    on the strong tier: PASS when it carries on. FAIL if the real state directory changed during the
    fixture run. On any other harness the probe is UNSUPPORTED.
 
-8. Codex in claude-config only: for each registry id under harnesses.codex that you observed
+8. Route-check probe. Run this only in claude-config. Against the fixture registry, with every state
+   directory a fresh temporary one (ROUTE_CHECK_STATE_DIR, USAGE_LEDGER_DIR and MODEL_ROLES_PATH set to
+   shared/tools/fixtures/route-check/model-roles.json), run route-check pick opencode execution in a
+   repository cleared with route-check repo allow, then in a second repository cleared with route-check
+   repo deny. PASS when the first prints the free model fixture-free-a and the second prints the Codex
+   model gpt-6-luna, both with exit 0. An unanswered third repository exits 3. FAIL if the live state
+   directory changed during the run. On any other harness the probe is UNSUPPORTED.
+
+9. Codex in claude-config only: for each registry id under harnesses.codex that you observed
    running in steps 2 and 4, set "verified": true in shared/model-roles.json and commit that change
    locally under COMMIT-STANDARD. Do not push. Run outside claude-config, list the exact edit for
    the owner instead. OpenCode: if it is not installed, every row is UNSUPPORTED, which is the
    honest result and not a pass.
 
-9. Write artifacts/runs/<date>-mil-verify-<harness>.md in the repository you are in: the harness,
+10. Write artifacts/runs/<date>-mil-verify-<harness>.md in the repository you are in: the harness,
    the machine, the model id, then one table with columns Check, Level, Result and Evidence,
-   covering every verifier line and probes 2 to 7 (probes are level "assisted"). Never mark a
+   covering every verifier line and probes 2 to 8 (probes are level "assisted"). Never mark a
    capability PASS on configuration alone: a probe you could not run is NOT TESTED, with the reason.
    End with the list of checks that did not pass.
 ```
@@ -99,6 +107,7 @@ repository. Ask-triggers: a check FAILs, or the verifier cannot run.
 | Freshness | assisted | A goldfish starts without the parent's context. The canary is the evidence. |
 | Human lane | assisted | A session's own write to the permission surface is refused. |
 | Model guard | assisted | A session on the wrong model stops before any work, and the override lifts it. |
+| Route check | assisted | Light work on OpenCode takes a free model in a cleared repository and a Codex model in a denied one, and an unanswered repository asks. |
 
 The policy behind every row is [MODELS.md](MODELS.md). The envelope rule is [LOOP §4b](LOOP.md) and
 its guard is in [HOOKS](HOOKS.md).
