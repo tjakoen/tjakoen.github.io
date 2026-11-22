@@ -17,6 +17,9 @@ if (document.querySelector("[data-lightbox]")) {
 
 if (document.querySelector("[data-live-figure]")) tasks.push(import("/site/figures.js"));
 
+// A note that carries a GRAIN diagram gets its pan, zoom and hover tracing, and nothing else gets the script.
+if (document.querySelector(".diagram")) tasks.push(import("/site/diagram-island.js"));
+
 // The ant in the status bar is the door, not the colony. The small launcher below owns the ant,
 // the first click and the open API. The game module loads when someone opens the Nest or a stray
 // is due to appear.
