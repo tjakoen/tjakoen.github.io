@@ -19,6 +19,10 @@ touches:
   - claude-config:shared/tools/usage-ledger.test.ts
   - claude-config:shared/tools/usage-ledger.sh
   - claude-config:shared/tools/expected-hooks.txt
+  - claude-config:shared/tools/work-guard.sh
+  - claude-config:shared/tools/work-guard.test.ts
+  - claude-config:shared/shell/harness-gate.sh
+  - claude-config:shared/shell/harness-gate.ps1
   - claude-config:machines/tjakoens-windows-pc/settings.json
   - claude-config:machines/tjakoens-macbook-air/settings.json
   - claude-config:machines/tjakoens-macbook-pro/settings.json
@@ -267,6 +271,39 @@ These settle the second readiness review and override any looser wording above.
 - **Section 9 text.** The sentence in MODELS.md that begins "When every paid plan is spent, it falls back
   to a chain of free models" is replaced with the D3 order.
 
+## Hard guards (owner, 2026-11-22)
+
+The route check advises; these refuse. They are fixed in code, not registry settings or state, so no
+answer, flag or clearance can lift them.
+
+- **D11. Work context runs only on the company's Claude and Codex.** A session is in work context when
+  the machine is a work machine (tjakoens-windows-pc and tjakoens-macbook-pro) or the repository is a
+  work repository (its origin remote is under the CareerEdgeDevOps organization). In work context:
+  DeepSeek Harness and OpenCode do not start, and Claude Code and Codex run only when signed in to a
+  company account, an account whose email domain is the company's. The company accounts may still run
+  personal projects. The loop, its hooks and the standards apply in every context; this guard only
+  decides which provider and account may see the work.
+- **D12. A work repository is never cleared for non-private models,** on any machine. `route-check repo
+  allow` refuses it, and `pick` treats it as denied whatever repos.json says.
+- **The launch gate.** `route-check gate <harness> [--cwd <dir>]` exits 0 when the harness may start and
+  5 with the reason when it may not. It refuses DeepSeek Harness and OpenCode in work context, and in a
+  repository denied for non-private models. In an unanswered repository outside work context it asks yes
+  or no on the terminal, records the answer, and then passes or refuses. shared/shell/harness-gate.sh
+  (sourced from the shell profile on the Macs) and harness-gate.ps1 (the PowerShell profile on Windows)
+  define `dsh` and `opencode` as functions that run the gate and start the real binary only on exit 0.
+  Calling the binary by its full path skips the wrapper, so the wrapper is a guard against habit, and
+  the account guard below is the one a session cannot step around.
+- **The account guard.** work-guard.sh runs on SessionStart and UserPromptSubmit in Claude Code. In work
+  context it reads the signed-in account's email from ~/.claude.json, and if the domain is not the
+  company's it exits 2 on the prompt with the reason, so no prompt reaches a personal account. On Codex
+  the same script runs from ~/.codex hooks in the Mac phase, reading ~/.codex/auth.json. Tests feed it
+  fixture account files through `WORK_GUARD_HOME`; no test reads the real ones. The company domain and
+  the work organization live as constants in work-guard.sh and route-check.ts, each covered by a test,
+  and are never printed in output beyond the word "company".
+- **Wiring.** work-guard.sh is added to expected-hooks.txt and to the three machines settings files in the
+  model-guard entry shape. The profile lines that source the gate wrappers are for the owner to add,
+  printed in the run report, because the shell profiles sit outside the repository.
+
 ## Steps
 
 Steps 1 to 6 run on this Windows PC in Claude Code. Steps 7 to 9 run on the owner's Mac in OpenCode, from
@@ -325,5 +362,5 @@ rate limit, and PANTRY shows its records split free and metered, private and not
 - Scope cap: the touches list.
 - Hard stops: no push; no session writes live settings or state files outside a test's temporary
   directory; no Edge repository; no non-private model for a repository not cleared.
-- Ask-triggers: a test cannot be made red first; a gate goes red twice on the same cause; the SubagentStop
+- Ask-triggers: a company account cannot be identified from the account file; a test cannot be made red first; a gate goes red twice on the same cause; the SubagentStop
   payload does not identify the subagent's turns.
