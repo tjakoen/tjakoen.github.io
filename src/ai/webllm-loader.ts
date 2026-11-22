@@ -23,6 +23,8 @@ export interface ModelProfile {
   label: string;
   /** The one-time download-size line shown in the load bar (honest about first-visit cost). */
   downloadNote: string;
+  /** The first-visit download in whole megabytes, so the load bar can say "120 of about 350 MB". */
+  downloadMB: number;
   /** The engine's context window (context_window_size) — a bigger model earns a bigger window. */
   contextWindow: number;
   /** The approx-token budget prompt.ts holds the assembled prompt under (sized to the window). */
@@ -45,6 +47,7 @@ export const WEAK_PROFILE: ModelProfile = {
   id: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
   label: "Qwen2.5-0.5B",
   downloadNote: "About 350 MB the first time, then cached.",
+  downloadMB: 350,
   contextWindow: 2048,
   promptTokenBudget: 1400,
   maxTokens: 220,
@@ -66,6 +69,7 @@ export const STRONG_PROFILE: ModelProfile = {
   id: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
   label: "Qwen2.5-1.5B",
   downloadNote: "About 875 MB the first time, then cached.",
+  downloadMB: 875,
   contextWindow: 4096,
   promptTokenBudget: 3000,
   maxTokens: 320,

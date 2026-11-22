@@ -7,10 +7,13 @@ export function isMobileDevice(): boolean {
 }
 
 export function mountDeskBrowse({
-  canRun, downloadNote, mobile,
+  canRun, downloadNote, isWarm, mobile,
 }: {
   canRun: boolean;
   downloadNote: string;
+  /** True when this browser already holds a saved copy of the model, so the notice promises a short
+   *  load instead of a download. Read on every render; call refresh() after it changes. */
+  isWarm?: () => boolean;
   mobile: MediaQueryList;
 }) {
   // A phone, a viewport at phone width, or the shell's preview toggle set to mobile all count as
@@ -60,7 +63,9 @@ export function mountDeskBrowse({
     who.textContent = "Desk";
     const body = document.createElement("span");
     body.className = "chat-message__body";
-    body.textContent = `I run on your device. ${downloadNote}`;
+    body.textContent = isWarm?.()
+      ? "I run on your device. Your copy is saved here, so I'll be ready in a few seconds."
+      : `I run on your device. ${downloadNote}`;
     message.append(who, body);
     log.append(message);
   };
@@ -172,6 +177,7 @@ export function mountDeskBrowse({
 
   return {
     allowsModel,
+    refresh: render,
     markFailed() { failed = true; render(); },
   };
 }
