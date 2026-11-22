@@ -1,6 +1,6 @@
 ---
 id: model-tokenomics
-status: ready
+status: done
 track: ai
 depends: [model-intelligence-layer-phase-a, model-guard-respawn]
 touches:
