@@ -2,7 +2,7 @@
 // diagram organism and written into the notes as committed HTML, so a note carries a diagram that pans,
 // zooms and traces on hover without a build step.
 //
-//   bun tools/note-diagrams.ts           # rewrite every block between <!-- diagram:ID --> or <!-- stack:ID --> markers
+//   bun tools/note-diagrams.ts           # rewrite every block between <!-- diagram:ID --> or <!-- stack:ID --> or <!-- compare:ID --> markers
 //   bun tools/note-diagrams.ts --check   # exit 1 when a block is stale (the test runs the same comparison)
 //
 // A note holds a marker pair and the tool fills it. The definitions below are the source of truth: edit them,
@@ -17,9 +17,9 @@ const E = (from: string, to: string, label?: string, title?: string) => ({ from,
 export const DIAGRAMS: Record<string, LayeredInput> = {
   architecture: {
     kind: "layers",
-    label: "The architecture of the Model Intelligence Layer. The owner sets intent and approvals. The loop, made of public standards, plans and human gates, feeds a registry that holds every model identifier. Three enforcement parts sit on it: the model guard, the route check and the work guard. They govern three harnesses, Claude Code, OpenCode and the Codex app. The harnesses reach four groups of models: Claude, Codex models, the free chain and the DeepSeek API. Every session writes a usage record that PANTRY reports.",
+    label: "The architecture of the Model Intelligence Layer. I set intent and approvals. The loop, made of public standards, plans and human gates, feeds a registry that holds every model identifier. Three enforcement parts sit on it: the model guard, the route check and the work guard. They govern three harnesses, Claude Code, OpenCode and the Codex app. The harnesses reach four groups of models: Claude, Codex models, the free chain and the DeepSeek API. Every session writes a usage record that PANTRY reports.",
     nodes: [
-      { id: "owner", kind: "person", label: "Owner", sub: "intent and approvals" },
+      { id: "owner", kind: "person", label: "Me", sub: "requests, decisions, approvals" },
       { id: "loop", kind: "system", label: "The loop", sub: "standards, plans, human gates" },
       { id: "registry", kind: "container", label: "Registry", sub: "every model id lives here" },
       { id: "guard", kind: "container", label: "Model guard", sub: "wrong model restarts itself" },
@@ -220,18 +220,74 @@ export function stackSvg(id: string): string {
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${X(s.label)}" style="display:block;width:100%;max-width:600px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif">${parts.join("")}</svg>`;
 }
 
+
+// ── side by side: the same roles, before and now ───────────────────────────────────────────────────────────
+// Rows are roles, the left column is how a role was filled before and the right column is how it is filled
+// now. One cell may be heavy (the change that matters), a cell may be faint and dashed (something that is gone).
+// Drawn to the FIGURES flow scaffold: theme tokens only, a spoken name on the root, no style element.
+interface CompareCell { t: string; s?: string[]; heavy?: boolean; gone?: boolean }
+interface CompareRow { role: string; before: CompareCell; now: CompareCell }
+interface Compare { label: string; before: string; now: string; rows: CompareRow[] }
+
+export const COMPARES: Record<string, Compare> = {
+  setup: {
+    before: "Before", now: "Now",
+    label: "My setup before and now, side by side, by role. Main tool: Claude Code before, and Claude Code still, when I want Claude. Second tool: the Codex app before, as the backup and for a parallel project, and now OpenCode, which does all coding outside Claude with the Codex plan, the free models and the DeepSeek API plugged in. Last fallback: DeepSeek Harness before, and now deleted. Non-coding work: whichever app was open before, and now the Codex app, for the ChatGPT side and anything at work. Who picks the model: me, by hand, before, and now the Model Intelligence Layer.",
+    rows: [
+      { role: "Main tool", before: { t: "Claude Code", s: ["my main tool"] }, now: { t: "Claude Code", s: ["still, when I want Claude"] } },
+      { role: "Second tool", before: { t: "Codex app", s: ["backup, and a second", "project in parallel"] }, now: { t: "OpenCode", s: ["all coding outside Claude:", "Codex plan, free models,", "DeepSeek API"] } },
+      { role: "Last fallback", before: { t: "DeepSeek Harness", s: ["when both plans ran out"] }, now: { t: "Deleted", s: ["one app fewer"], gone: true } },
+      { role: "Non-coding work", before: { t: "Whichever was open", gone: true }, now: { t: "Codex app", s: ["the ChatGPT side,", "and anything at work"] } },
+      { role: "Picks the model", before: { t: "Me, by hand", s: ["when something ran out"] }, now: { t: "The layer", s: ["registry, route check,", "guards"], heavy: true } },
+    ],
+  },
+};
+
+export function compareSvg(id: string): string {
+  const c = COMPARES[id];
+  if (!c) throw new Error(`no comparison named ${id}`);
+  const W = 640, PAD = 20, ROLE_W = 112, G = 10;
+  const cw = (W - 2 * PAD - ROLE_W - 2 * G) / 2;
+  const x1 = PAD + ROLE_W + G, x2 = x1 + cw + G;
+  const parts: string[] = [];
+  parts.push(`<text x="${x1 + cw / 2}" y="26" text-anchor="middle" style="fill:var(--color-muted);font-size:12px;letter-spacing:2px">${X(c.before.toUpperCase())}</text>`);
+  parts.push(`<text x="${x2 + cw / 2}" y="26" text-anchor="middle" style="fill:var(--color-muted);font-size:12px;letter-spacing:2px">${X(c.now.toUpperCase())}</text>`);
+  let y = 40;
+  const cell = (x: number, yy: number, h: number, k: CompareCell) => {
+    const stroke = k.heavy ? "stroke:var(--color-fg);stroke-width:2.2" : "stroke:var(--color-line);stroke-width:1";
+    const dash = k.gone ? ";stroke-dasharray:5 4" : "";
+    parts.push(`<rect x="${x}" y="${yy}" width="${cw}" height="${h}" rx="8" style="fill:none;${stroke}${dash}"/>`);
+    const lines = k.s ?? [];
+    const top = yy + (h - (20 + lines.length * 15)) / 2 + 14;
+    const fill = k.gone ? "var(--color-muted)" : "var(--color-fg)";
+    parts.push(`<text x="${x + cw / 2}" y="${top}" text-anchor="middle" style="fill:${fill};font-size:13.5px">${X(k.t)}</text>`);
+    lines.forEach((ln, j) => parts.push(`<text x="${x + cw / 2}" y="${top + 18 + j * 15}" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">${X(ln)}</text>`));
+  };
+  c.rows.forEach((r) => {
+    const n = Math.max(r.before.s?.length ?? 0, r.now.s?.length ?? 0);
+    const h = 40 + Math.max(n, 1) * 15;
+    parts.push(`<text x="${PAD + ROLE_W - 8}" y="${y + h / 2 + 4}" text-anchor="end" style="fill:var(--color-muted);font-size:12.5px">${X(r.role)}</text>`);
+    cell(x1, y, h, r.before);
+    cell(x2, y, h, r.now);
+    y += h + 10;
+  });
+  const H = y + 6;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${X(c.label)}" style="display:block;width:100%;max-width:600px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif">${parts.join("")}</svg>`;
+}
+
 const clean = (html: string) => html.replace(/\n\s*\n/g, "\n").trim();
 export const block = (id: string) => {
   const def = DIAGRAMS[id];
   if (!def) throw new Error(`no diagram named ${id}`);
   return `<!-- diagram:${id} -->\n${clean(layeredDiagram(def))}\n<!-- /diagram:${id} -->`;
 };
+export const compareBlock = (id: string) => `<!-- compare:${id} -->\n${compareSvg(id)}\n<!-- /compare:${id} -->`;
 export const stackBlock = (id: string) => `<!-- stack:${id} -->\n${stackSvg(id)}\n<!-- /stack:${id} -->`;
-const MARK = /<!-- (diagram|stack):([a-z-]+) -->[\s\S]*?<!-- \/\1:\2 -->/g;
+const MARK = /<!-- (diagram|stack|compare):([a-z-]+) -->[\s\S]*?<!-- \/\1:\2 -->/g;
 
 /** Replace every marker pair in a note's text with the current drawing. */
 export function fill(text: string): string {
-  return text.replace(MARK, (_m, kind: string, id: string) => (kind === "stack" ? stackBlock(id) : block(id)));
+  return text.replace(MARK, (_m, kind: string, id: string) => (kind === "stack" ? stackBlock(id) : kind === "compare" ? compareBlock(id) : block(id)));
 }
 
 if (import.meta.main) {

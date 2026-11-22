@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { DIAGRAMS, STACKS, block, fill, stackBlock } from "./note-diagrams.ts";
+import { COMPARES, DIAGRAMS, STACKS, block, compareBlock, fill, stackBlock } from "./note-diagrams.ts";
 import { ISLAND_PATH, islandSource } from "./diagram-island.ts";
 
 const notes = join(import.meta.dir, "..", "content", "notes");
@@ -32,6 +32,17 @@ test("every stack carries a spoken name, theme tokens only and a closed marker p
     expect(html).not.toMatch(/#[0-9a-fA-F]{3,6}/);
     expect(html.startsWith(`<!-- stack:${id} -->`)).toBe(true);
     expect(html.endsWith(`<!-- /stack:${id} -->`)).toBe(true);
+  }
+});
+
+test("every comparison carries a spoken name, theme tokens only and a closed marker pair", () => {
+  for (const id of Object.keys(COMPARES)) {
+    const html = compareBlock(id);
+    expect(html).toContain('role="img"');
+    expect(html).toContain("aria-label=");
+    expect(html).not.toMatch(/#[0-9a-fA-F]{3,6}/);
+    expect(html.startsWith(`<!-- compare:${id} -->`)).toBe(true);
+    expect(html.endsWith(`<!-- /compare:${id} -->`)).toBe(true);
   }
 });
 
