@@ -15,33 +15,6 @@ import { layeredDiagram, type LayeredInput } from "@tjakoen/grain/components/org
 const E = (from: string, to: string, label?: string, title?: string) => ({ from, to, label, title });
 
 export const DIAGRAMS: Record<string, LayeredInput> = {
-  architecture: {
-    kind: "layers",
-    label: "The architecture of the Model Intelligence Layer. I set intent and approvals. The loop, made of public standards, plans and human gates, feeds a registry that holds every model identifier. Three enforcement parts sit on it: the model guard, the route check and the work guard. They govern three harnesses, Claude Code, OpenCode and the Codex app. The harnesses reach four groups of models: Claude, Codex models, the free chain and the DeepSeek API. Every session writes a usage record that PANTRY reports.",
-    nodes: [
-      { id: "owner", kind: "person", label: "Me", sub: "requests, decisions, approvals" },
-      { id: "loop", kind: "system", label: "The loop", sub: "standards, plans, human gates" },
-      { id: "registry", kind: "container", label: "Registry", sub: "every model id lives here" },
-      { id: "guard", kind: "container", label: "Model guard", sub: "wrong model restarts itself" },
-      { id: "route", kind: "container", label: "Route check", sub: "order, cooldowns, clearance" },
-      { id: "work", kind: "container", label: "Work guard", sub: "company accounts only at work" },
-      { id: "cc", kind: "container", label: "Claude Code" },
-      { id: "oc", kind: "container", label: "OpenCode" },
-      { id: "cx", kind: "container", label: "Codex app" },
-      { id: "claude", kind: "external", label: "Claude", sub: "private" },
-      { id: "codex", kind: "external", label: "Codex models", sub: "private" },
-      { id: "free", kind: "external", label: "Free chain", sub: "not private" },
-      { id: "ds", kind: "external", label: "DeepSeek API", sub: "paid, not private" },
-      { id: "ledger", kind: "system", label: "Usage record, then PANTRY", sub: "free and paid kept apart" },
-    ],
-    edges: [
-      E("owner", "loop"), E("loop", "registry"),
-      E("registry", "guard"), E("registry", "route"), E("registry", "work"),
-      E("guard", "cc"), E("route", "oc"), E("work", "cc"), E("work", "oc"), E("work", "cx"),
-      E("cc", "claude"), E("oc", "codex"), E("oc", "free"), E("oc", "ds"), E("cx", "codex"),
-      E("claude", "ledger"), E("codex", "ledger"), E("free", "ledger"), E("ds", "ledger"),
-    ],
-  },
   route: {
     kind: "flow",
     label: "How the route check picks a model for a delegated light task. First it checks whether the repository has been answered, and asks once if not. Then it walks the light chain in order and takes the first entry that is not skipped. An entry is skipped when it is not private and the repository is not cleared, when it is cooling down, when it is demoted for the day, or when its plan is out. If an entry is left, the task launches. If every entry is skipped, the paid DeepSeek API is used under a daily cap, and past the cap the route check stops and asks me. If the launched child hits a rate limit, the model is put on a cooldown and the route check picks once more.",
@@ -88,21 +61,23 @@ export const DIAGRAMS: Record<string, LayeredInput> = {
   },
   work: {
     kind: "flow",
-    label: "How the work lane is guarded. First the machine is identified from its own name, and a machine that cannot be identified counts as a work machine. In work context, every prompt passes the account check, which blocks it unless the signed-in account is a company account. Launching DeepSeek Harness or OpenCode is refused by the launch gate, whatever the repository's clearance says. Outside work context, a repository I have cleared may use the free chain, the Codex plan and the DeepSeek API.",
+    label: "How the work lane is guarded. A session starts and the machine is identified from its own name. A machine that cannot be identified counts as a work machine. A work machine, or a work repository, puts the session in work context. In work context every prompt passes the account check: a company account passes and any other account, a personal Claude or Codex included, is blocked. Launching DeepSeek Harness or OpenCode in work context is refused by the launch gate. Outside work context, a personal machine in a repository I have cleared may use the free chain.",
     nodes: [
       { id: "start", kind: "start", label: "A session starts" },
       { id: "id", kind: "decision", label: "Machine identified?" },
-      { id: "ctx", kind: "decision", label: "Work context?" },
+      { id: "ctx", kind: "decision", label: "Work machine or repo?" },
+      { id: "work", kind: "action", label: "Work context" },
+      { id: "personal", kind: "end", label: "Personal lane: a cleared repo may use the free chain" },
       { id: "acct", kind: "decision", label: "Company account?" },
+      { id: "gate", kind: "end", label: "Launch gate refuses dsh and opencode" },
       { id: "block", kind: "end", label: "Prompt blocked" },
-      { id: "only", kind: "end", label: "Company Claude and Codex only" },
-      { id: "gate", kind: "action", label: "Launch gate refuses dsh and opencode" },
-      { id: "personal", kind: "end", label: "Cleared repo: free chain allowed" },
+      { id: "pass", kind: "end", label: "Prompt passes" },
     ],
     edges: [
-      E("start", "id"), E("id", "ctx", "yes"), E("id", "gate", "no", "An unidentified machine counts as a work machine"),
-      E("ctx", "acct", "yes"), E("ctx", "personal", "no"),
-      E("acct", "block", "no"), E("acct", "only", "yes"), E("gate", "only"),
+      E("start", "id"), E("id", "ctx", "yes"), E("id", "work", "no", "A machine the setup cannot identify counts as a work machine"),
+      E("ctx", "work", "yes"), E("ctx", "personal", "no"),
+      E("work", "acct", "every prompt"), E("work", "gate", "launch attempt"),
+      E("acct", "block", "no", "Any account that is not a company account, or one the hook cannot read"), E("acct", "pass", "yes"),
     ],
   },
   review: {
@@ -159,6 +134,40 @@ export const STACKS: Record<string, Stack> = {
         { t: "Claude", s: ["private"] }, { t: "Codex models", s: ["private"] },
         { t: "Free models", s: ["not private"], dashed: true }, { t: "DeepSeek API", s: ["paid, not private"], dashed: true }] },
       { title: "Shared state", footer: true, sub: ["PANTRY, plans, usage records, run evidence, handoffs.", "Any session can read it, and no session owns it."] },
+    ],
+  },
+  parts: {
+    arrows: "both",
+    label: "Every part of the layer, top to bottom. I make the requests and approvals. Under me the loop holds public standards, plans, independent review and human gates. Under the loop the Model Intelligence Layer has five parts: the registry of model ids, tiers and roles; the model guard that restarts a session on the wrong model; the route check that picks a model with cooldowns and repository clearance; the work guard that allows only a company account at work; and the usage record, one line per session. Under the layer are three harnesses: Claude Code, which the model guard and the work guard cover; OpenCode, which the route check and the launch gate cover; and the Codex app, which the work guard covers. Under the harnesses are four groups of models: Claude and Codex models, which are private, and the free models and the DeepSeek API, which are not. The usage record feeds PANTRY, which keeps the shared state.",
+    layers: [
+      { title: "Me", sub: ["Requests and approvals"] },
+      { title: "The loop", tiles: [
+        { t: "Public standards" }, { t: "Plans" }, { t: "Independent review" }, { t: "Human gates" }] },
+      { title: "The Model Intelligence Layer", emphasis: true, tiles: [
+        { t: "Registry", s: ["model ids,", "tiers, roles"] },
+        { t: "Model guard", s: ["wrong model", "restarts"] },
+        { t: "Route check", s: ["order, cooldowns,", "clearance"] },
+        { t: "Work guard", s: ["company account", "only at work"] },
+        { t: "Usage record", s: ["one line per", "session"] }] },
+      { title: "Harnesses, and which parts cover them", tiles: [
+        { t: "Claude Code", s: ["model guard,", "work guard"] },
+        { t: "OpenCode", s: ["route check,", "launch gate"] },
+        { t: "Codex app", s: ["work guard"] }] },
+      { title: "Models", tiles: [
+        { t: "Claude", s: ["private"] }, { t: "Codex models", s: ["private"] },
+        { t: "Free models", s: ["not private"], dashed: true }, { t: "DeepSeek API", s: ["paid, not private"], dashed: true }] },
+      { title: "PANTRY", footer: true, sub: ["Reads the usage records, free and paid kept apart.", "Shared state that any session can read."] },
+    ],
+  },
+  delegation: {
+    arrows: "down",
+    label: "Escalation is delegation, not a switch. The main session runs on the execution tier and holds the conversation and its prompt cache. When the next piece is planning, architecture or review, the main session hands it to a subagent pinned to the strong tier. The subagent reads only the plan and the files it links, and its context ends when the piece ends. The answer returns to the main session, which keeps its cache and carries on at its own tier. Switching the main session's model instead would throw the cache away.",
+    layers: [
+      { title: "Main session, on the execution tier", sub: ["Sonnet on Claude Code, Sol at low effort on Codex.", "It keeps the conversation and its prompt cache."] },
+      { title: "The next piece needs judgment", tiles: [
+        { t: "Planning" }, { t: "Architecture" }, { t: "Review" }] },
+      { title: "A subagent pinned to the strong tier", emphasis: true, sub: ["Opus on Claude Code, Sol on Codex and OpenCode.", "It gets the plan and the files it links. Its context ends with the piece."] },
+      { title: "One answer comes back", sub: ["The main session carries on at its own tier, with its cache intact."] },
     ],
   },
   review: {
