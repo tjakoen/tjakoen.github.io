@@ -108,6 +108,7 @@ async function sendDirectly(page: Page) {
 
 async function fakeAvailableModel(page: Page, fail = false) {
   await page.addInitScript(() => {
+    try { for (const id of ["Qwen2.5-0.5B-Instruct-q4f16_1-MLC", "Qwen2.5-1.5B-Instruct-q4f16_1-MLC"]) sessionStorage.setItem("desk-download-ok:" + id, "yes"); } catch { /* storage blocked */ }   // the download question is answered: these tests script the model
     Object.defineProperty(navigator, "gpu", { value: { requestAdapter: async () => null }, configurable: true });
   });
   await page.route("**/modules/grain/ai/webllm.js", (route) => route.fulfill({

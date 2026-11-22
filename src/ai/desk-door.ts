@@ -754,6 +754,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     // choices, theme, routed page actions) and declines only the step that would load the model.
     modelAllowed: () => browse.allowsModel(),
     isWarm: () => savedCopy,
+    askDownload: (p) => browse.askDownload(p),
     modelDeclinedLine: "Use Browse to search the portfolio without local AI.",
     loadEngine,
     streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)
