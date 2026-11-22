@@ -344,8 +344,31 @@ output and then the green one. A step marked OWNER APPLIES stops at the `link-ma
     - the OpenCode plugin calling the supervisor, route-check and escalation-record;
     - verifying the free model ids;
     - the Codex envelope;
-    - MODELS-VERIFY runs on Codex, DSH and OpenCode;
+    - MODELS-VERIFY runs on Codex and OpenCode;
     - the brief's fallback scenarios.
+
+    DSH is on hold (owner, 2026-11-23). Its rows read UNSUPPORTED with the reason "on hold".
+
+19. **Main-session failover in OpenCode,** a first-class acceptance requirement (owner, 2026-11-23).
+    Today only bounded light subagents fall back, through `routed_subagent`. An OpenCode main
+    session running on the Codex-backed Sol allowance stops when that allowance runs out, and does
+    not move to DeepSeek Flash. A wired API token does not keep the main session going.
+    - **Investigate first.** Read OpenCode's actual request and failure hooks and what it can do to
+      switch models, from its source and documentation, before choosing an approach. Record the
+      findings in the run report.
+    - **Keep the rules.** The conversation context, the repository's privacy clearance, explicit
+      approval for metered spend (O1: paid Flash is escalation), the cooldowns, and a bounded retry
+      of at most two.
+    - **If seamless switching in place is supported,** wire it through route-check, so the quota
+      failure is recorded as a `transition` line and the next model comes from `pick`.
+    - **If it is not supported,** build an honest, resumable handoff instead: a recovery checkpoint
+      (step 12) plus a new session on the next eligible model, which carries the conversation
+      summary and the envelope. Document it as assisted, not automatic.
+    - **Acceptance needs a live event.** Deterministic tests are required but not enough. The check
+      `opencode.main-failover` stays NOT TESTED until a real transition from quota exhaustion to
+      the next provider has happened on its own and been recorded in the ledger and the run report.
+    - **Covers OpenCode and Codex.** The Codex side is the same: what happens to a Codex main
+      session when its plan runs out, recorded honestly as supported, assisted or unsupported.
 
 ## Order
 
