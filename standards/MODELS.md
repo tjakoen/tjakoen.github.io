@@ -83,8 +83,8 @@ default.
 
 1. **Preferred assignment.** Which tier a role or agent runs on when everything works. This file and
    the registry define it.
-2. **Operational fallback.** What runs when the preferred model is unavailable. Not defined yet; a
-   later phase.
+2. **Operational fallback.** What runs when the preferred model is unavailable. Section 11 defines
+   it: the light chain, its cooldowns, and the strong tier when both plans are out.
 3. **Capability escalation.** Moving a piece of work up a tier because it needs more judgment.
    Defined here only in its delegation form (section 3). Paid escalation to a model outside the
    tiers is recorded in the registry as approval-required and unwired, and stays that way until a
