@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { DIAGRAMS, block, fill } from "./note-diagrams.ts";
+import { DIAGRAMS, STACKS, block, fill, stackBlock } from "./note-diagrams.ts";
 import { ISLAND_PATH, islandSource } from "./diagram-island.ts";
 
 const notes = join(import.meta.dir, "..", "content", "notes");
@@ -21,6 +21,17 @@ test("every diagram carries a spoken name and a closed marker pair", () => {
     expect(html.startsWith(`<!-- diagram:${id} -->`)).toBe(true);
     expect(html.endsWith(`<!-- /diagram:${id} -->`)).toBe(true);
     expect(html).not.toMatch(/\n\s*\n/);
+  }
+});
+
+test("every stack carries a spoken name, theme tokens only and a closed marker pair", () => {
+  for (const id of Object.keys(STACKS)) {
+    const html = stackBlock(id);
+    expect(html).toContain('role="img"');
+    expect(html).toContain("aria-label=");
+    expect(html).not.toMatch(/#[0-9a-fA-F]{3,6}/);
+    expect(html.startsWith(`<!-- stack:${id} -->`)).toBe(true);
+    expect(html.endsWith(`<!-- /stack:${id} -->`)).toBe(true);
   }
 });
 

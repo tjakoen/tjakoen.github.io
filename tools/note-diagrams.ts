@@ -2,7 +2,7 @@
 // diagram organism and written into the notes as committed HTML, so a note carries a diagram that pans,
 // zooms and traces on hover without a build step.
 //
-//   bun tools/note-diagrams.ts           # rewrite every block between <!-- diagram:ID --> markers in content/notes
+//   bun tools/note-diagrams.ts           # rewrite every block between <!-- diagram:ID --> or <!-- stack:ID --> markers
 //   bun tools/note-diagrams.ts --check   # exit 1 when a block is stale (the test runs the same comparison)
 //
 // A note holds a marker pair and the tool fills it. The definitions below are the source of truth: edit them,
@@ -128,17 +128,110 @@ export const DIAGRAMS: Record<string, LayeredInput> = {
   },
 };
 
+
+// ── layered stacks: bands of tiles with an arrow between them ────────────────────────────────────────────────
+// A stack shows what sits on what: each layer is a band, a layer may hold tiles, and an arrow between two bands
+// says which way they talk. It is the picture for architecture and for "where each step fits", where a flow
+// would only add arrows. Drawn to the FIGURES flow scaffold: theme tokens only, one emphasized layer, no style
+// element, and a spoken name on the root.
+interface StackTile { t: string; s?: string[]; dashed?: boolean }
+interface StackLayer { title: string; sub?: string[]; tiles?: StackTile[]; emphasis?: boolean; footer?: boolean }
+interface Stack { label: string; arrows: "both" | "down"; layers: StackLayer[] }
+
+const X = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+export const STACKS: Record<string, Stack> = {
+  layers: {
+    arrows: "both",
+    label: "The layers of my setup, top to bottom. I make the requests, decisions and approvals. Under me the loop holds the public standards, the plans, independent review and the human gates. Under the loop sits the Model Intelligence Layer, made of a registry of every model, a route check that picks a model with cooldowns and repository clearance, a model guard that restarts a session on the wrong model, and a work guard that allows only company accounts at work. Under that are three harnesses, Claude Code, OpenCode and the Codex app. Under those are four groups of models: Claude and Codex models, which are private, and the free models and the DeepSeek API, which are not. Beside every layer, PANTRY and the usage records keep the shared state that any session can read.",
+    layers: [
+      { title: "Me", sub: ["Requests, decisions and approvals"] },
+      { title: "The loop", tiles: [
+        { t: "Public standards" }, { t: "Plans" }, { t: "Independent review" }, { t: "Human gates" }] },
+      { title: "The Model Intelligence Layer", emphasis: true, tiles: [
+        { t: "Registry", s: ["every model id,", "tiers and roles"] },
+        { t: "Route check", s: ["order, cooldowns,", "repo clearance"] },
+        { t: "Model guard", s: ["a wrong model", "restarts itself"] },
+        { t: "Work guard", s: ["company accounts", "only at work"] }] },
+      { title: "Harnesses", tiles: [
+        { t: "Claude Code", s: ["Claude only"] }, { t: "OpenCode", s: ["all other coding"] }, { t: "Codex app", s: ["non-coding work"] }] },
+      { title: "Models", tiles: [
+        { t: "Claude", s: ["private"] }, { t: "Codex models", s: ["private"] },
+        { t: "Free models", s: ["not private"], dashed: true }, { t: "DeepSeek API", s: ["paid, not private"], dashed: true }] },
+      { title: "Shared state", footer: true, sub: ["PANTRY, plans, usage records, run evidence, handoffs.", "Any session can read it, and no session owns it."] },
+    ],
+  },
+  review: {
+    arrows: "down",
+    label: "Where the elephant and the goldfish fit. The elephant, the long session with the project context, writes the canonical plan and stores it under plans with its linked dependencies. Three independent goldfish then review it cold: comprehension asks whether a fresh reader can explain the plan, the critic asks what assumptions, risks or dependencies are missing, and readiness asks whether an independent implementer could build it. The elephant resolves the findings and I approve the plan, with the review evidence kept under artifacts and reviews. A fresh session then builds against the approved plan and an independent auditor verifies the result.",
+    layers: [
+      { title: "Elephant: context-rich planning", sub: ["Holds the project history, the requirements and the decisions,", "and produces the canonical plan"] },
+      { title: "Canonical plan", sub: ["Stored under plans, with its linked dependencies"] },
+      { title: "Three independent goldfish reviews", tiles: [
+        { t: "Comprehension", s: ["Can a fresh reader", "explain the plan?"] },
+        { t: "Critic", s: ["What assumptions, risks", "or dependencies are missing?"] },
+        { t: "Readiness", s: ["Can an independent", "implementer build it?"] }] },
+      { title: "The elephant resolves the findings, then I approve", sub: ["Review evidence goes under artifacts and reviews"] },
+      { title: "Fresh implementation, then the auditor", emphasis: true, sub: ["Build against the approved plan, then verify the result on its own"] },
+    ],
+  },
+};
+
+export function stackSvg(id: string): string {
+  const s = STACKS[id];
+  if (!s) throw new Error(`no stack named ${id}`);
+  const W = 640, PAD = 20, GAP = 30;
+  let y = 14;
+  const parts: string[] = [];
+  s.layers.forEach((l, i) => {
+    const tiles = l.tiles ?? [];
+    const subLines = l.sub ?? [];
+    const tileH = tiles.length ? Math.max(...tiles.map((t) => 30 + (t.s?.length ?? 0) * 16)) : 0;
+    const head = 26 + subLines.length * 16;
+    const h = l.footer ? 22 + subLines.length * 16 + 22 : head + (tiles.length ? tileH + 12 : 0) + 10;
+    const stroke = l.emphasis ? "stroke:var(--color-fg);stroke-width:2.2" : "stroke:var(--color-line);stroke-width:1";
+    if (l.footer) {
+      parts.push(`<line x1="${PAD}" y1="${y}" x2="${W - PAD}" y2="${y}" style="stroke:var(--color-line);stroke-width:1"/>`);
+      parts.push(`<text x="${PAD + 4}" y="${y + 24}" style="fill:var(--color-fg);font-size:14px">${X(l.title)}</text>`);
+      subLines.forEach((ln, k) => parts.push(`<text x="${PAD + 4}" y="${y + 44 + k * 16}" style="fill:var(--color-muted);font-size:12px">${X(ln)}</text>`));
+    } else {
+      parts.push(`<rect x="${PAD}" y="${y}" width="${W - 2 * PAD}" height="${h}" rx="8" style="fill:none;${stroke}"/>`);
+      parts.push(`<text x="${W / 2}" y="${y + 22}" text-anchor="middle" style="fill:var(--color-fg);font-size:14.5px">${X(l.title)}</text>`);
+      subLines.forEach((ln, k) => parts.push(`<text x="${W / 2}" y="${y + 40 + k * 16}" text-anchor="middle" style="fill:var(--color-muted);font-size:12px">${X(ln)}</text>`));
+      const n = tiles.length, inner = W - 2 * PAD - 24, g = 10;
+      const tw = n ? (inner - (n - 1) * g) / n : 0;
+      tiles.forEach((tl, k) => {
+        const tx = PAD + 12 + k * (tw + g), ty = y + head;
+        parts.push(`<rect x="${tx}" y="${ty}" width="${tw}" height="${tileH}" rx="6" style="fill:none;stroke:var(--color-line);stroke-width:1${tl.dashed ? ";stroke-dasharray:5 4" : ""}"/>`);
+        parts.push(`<text x="${tx + tw / 2}" y="${ty + 20}" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">${X(tl.t)}</text>`);
+        (tl.s ?? []).forEach((ln, j) => parts.push(`<text x="${tx + tw / 2}" y="${ty + 38 + j * 15}" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">${X(ln)}</text>`));
+      });
+    }
+    y += h;
+    if (s.layers[i + 1]) {
+      const x = W / 2, a = y + 4, b = y + GAP - 4;
+      const down = `<path d="M${x - 4},${b - 6} L${x},${b} L${x + 4},${b - 6}"/>`;
+      const up = `<path d="M${x - 4},${a + 6} L${x},${a} L${x + 4},${a + 6}"/>`;
+      parts.push(`<g style="stroke:var(--color-muted);stroke-width:1.5;fill:none"><line x1="${x}" y1="${a}" x2="${x}" y2="${b}"/>${down}${s.arrows === "both" ? up : ""}</g>`);
+      y += GAP;
+    }
+  });
+  const H = y + 14;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${X(s.label)}" style="display:block;width:100%;max-width:600px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif">${parts.join("")}</svg>`;
+}
+
 const clean = (html: string) => html.replace(/\n\s*\n/g, "\n").trim();
 export const block = (id: string) => {
   const def = DIAGRAMS[id];
   if (!def) throw new Error(`no diagram named ${id}`);
   return `<!-- diagram:${id} -->\n${clean(layeredDiagram(def))}\n<!-- /diagram:${id} -->`;
 };
-const MARK = /<!-- diagram:([a-z-]+) -->[\s\S]*?<!-- \/diagram:\1 -->/g;
+export const stackBlock = (id: string) => `<!-- stack:${id} -->\n${stackSvg(id)}\n<!-- /stack:${id} -->`;
+const MARK = /<!-- (diagram|stack):([a-z-]+) -->[\s\S]*?<!-- \/\1:\2 -->/g;
 
 /** Replace every marker pair in a note's text with the current drawing. */
 export function fill(text: string): string {
-  return text.replace(MARK, (_m, id: string) => block(id));
+  return text.replace(MARK, (_m, kind: string, id: string) => (kind === "stack" ? stackBlock(id) : block(id)));
 }
 
 if (import.meta.main) {
