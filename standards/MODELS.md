@@ -195,15 +195,22 @@ only, and the stopped session tells the owner to add them again.
 **Per-harness equivalents.** The registry, shared/model-roles.json, is the only place these live, and the
 guard prints them in both its restart card and its blocking message.
 
-| Tier | Claude Code | Codex |
-|---|---|---|
-| strong | opus, low effort | gpt-6.2-sol, medium |
-| execution (main) | sonnet, medium effort | gpt-6.2-sol, low |
-| cheapest | haiku, low effort | gpt-6-luna, medium |
+| Tier | Claude Code | Codex | DeepSeek Harness | OpenCode |
+|---|---|---|---|---|
+| strong | opus, low effort | gpt-6.2-sol, medium | DeepSeek V4.1 Flash | the Codex model, gpt-6.2-sol, medium |
+| execution (main) | sonnet, medium effort | gpt-6.2-sol, low | DeepSeek V4.1 Flash | the Codex model, gpt-6.2-sol, low |
+| cheapest | haiku, low effort | gpt-6-luna, medium | DeepSeek V4.1 Flash | the Codex model, gpt-6-luna, medium |
+| escalation, on approval | none, delegate to strong | gpt-6.2-astra, low | DeepSeek V4.1 | the paid DeepSeek API, while credits remain |
 
-DeepSeek Harness and OpenCode are not pinned, so the guard reports no equivalent for them. The Codex
-rows and its restart flags are marked unverified in the registry, because Codex is not installed on the
-machine where the guard was proven. The guard is proven on the Claude Code desktop app only.
+DeepSeek Harness runs Flash on every tier and reaches the full DeepSeek V4.1 only as a rare escalation
+the owner approves. OpenCode borrows the Codex models while a Codex plan has usage left. When every paid
+plan is spent, it falls back to a chain of free models (DeepSeek V4.1 Flash Free, MiMo V2.6 Flash Free,
+LongCat 2.5 Free, Nemotron 3.5 Lightning Free, Flint 40B Free), so work can carry on with no paid plan
+at all. That chain is recorded in the registry and not yet wired.
+
+Every row outside Claude Code is marked unverified in the registry. Codex, DeepSeek Harness and OpenCode
+are not installed on the machine where the guard was proven, and OpenCode is not installed anywhere yet.
+The guard is proven on the Claude Code desktop app only.
 
 ## Verification
 
