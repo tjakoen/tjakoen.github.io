@@ -1921,3 +1921,64 @@ describe("makeDeskReasoner — C2 visitor memory (memory-set / memory-forget)", 
     expect(sys.content).not.toContain("VISITOR NOTES");
   });
 });
+
+describe("makeDeskReasoner, the download question", () => {
+  const modelQuestion = () => chat("Can you help me understand this site?");
+
+  test("a first model question asks before anything downloads, and a yes loads the model", async () => {
+    let loads = 0;
+    const asked: number[] = [];
+    const { deps } = makeDeps({
+      loadEngine: async () => { loads++; return fakeEngine(["Hello"]).engine; },
+      askDownload: async (p) => { asked.push(p.downloadMB); expect(loads).toBe(0); return true; },
+    });
+    const { tools, ops } = makeTools();
+    const d = await makeDeskReasoner(deps).decide(modelQuestion(), tools);
+    expect(asked).toEqual([350]);
+    expect(loads).toBe(1);
+    expect(d.ok).toBe(true);
+    expect(ops.some((op) => op.html?.includes("download about 350 MB"))).toBe(true);
+  });
+
+  test("not now downloads nothing, says so, and leaves the desk online", async () => {
+    let loads = 0;
+    const { deps, ...rest } = makeDeps({
+      loadEngine: async () => { loads++; return fakeEngine([]).engine; },
+      askDownload: async () => false,
+    });
+    const { tools, ops } = makeTools();
+    const d = await makeDeskReasoner(deps).decide(modelQuestion(), tools);
+    expect(loads).toBe(0);
+    expect(d.ok).toBe(false);
+    expect(d.reply).toContain("won't download anything");
+    expect(rest.offlineCalls).toBe(0);
+    expect(ops.some((op) => op.op === "replace" && op.html?.includes("won't download anything"))).toBe(true);
+  });
+
+  test("a saved copy is never asked, because nothing downloads", async () => {
+    let asked = 0;
+    const { deps } = makeDeps({
+      isWarm: () => true,
+      askDownload: async () => { asked++; return false; },
+    });
+    const d = await makeDeskReasoner(deps).decide(modelQuestion(), makeTools().tools);
+    expect(asked).toBe(0);
+    expect(d.ok).toBe(true);
+  });
+
+  test("the second question reuses the loaded engine and does not ask again", async () => {
+    let asked = 0;
+    const { deps } = makeDeps({ askDownload: async () => { asked++; return true; } });
+    const r = makeDeskReasoner(deps);
+    await r.decide(modelQuestion(), makeTools().tools);
+    await r.decide(chat("And what else can you tell me about it?"), makeTools().tools);
+    expect(asked).toBe(1);
+  });
+
+  test("a page with no consent step loads straight away, as before", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine(["Hi"]).engine; } });
+    await makeDeskReasoner(deps).decide(modelQuestion(), makeTools().tools);
+    expect(loads).toBe(1);
+  });
+});

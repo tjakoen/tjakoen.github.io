@@ -58,6 +58,7 @@ async function fakeModelDesk(page: Page) {
     return route.fulfill({ response: res, body: html });
   });
   await page.addInitScript(() => {
+    try { for (const id of ["Qwen2.5-0.5B-Instruct-q4f16_1-MLC", "Qwen2.5-1.5B-Instruct-q4f16_1-MLC"]) sessionStorage.setItem("desk-download-ok:" + id, "yes"); } catch { /* storage blocked */ }   // the download question is answered: these tests script the model
     try {
       Object.defineProperty(navigator, "gpu", {
         value: { requestAdapter: async () => ({}) }, configurable: true,

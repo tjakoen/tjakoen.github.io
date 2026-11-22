@@ -361,7 +361,7 @@
         if (!el || clearing) return;
         while (el.children.length > cap) el.removeChild(el.firstElementChild);
         const copy = el.cloneNode(true);
-        copy.querySelectorAll("[data-consent-notice]").forEach((notice) => notice.remove());
+        copy.querySelectorAll("[data-consent-notice], [data-download-choice]").forEach((notice) => notice.remove());
         putDesk(key, copy.innerHTML);
       };
       flushers.push(flush);

@@ -90,7 +90,7 @@ interface Turn {
   /** True while Browse mode keeps the model off (deps.modelAllowed). */
   modelBlocked: () => boolean;
   /** Settle the turn with the Browse pointer instead of loading the model; the desk stays online. */
-  declineModel: () => Promise<Decision>;
+  declineModel: (line?: string) => Promise<Decision>;
   narrate: (verb: string, desc: string) => void;
   minThink: () => Promise<void>;
   streamInto: (engine: DeskEngine, messages: ChatMessage[], maxTokens?: number) => Promise<string>;
@@ -219,6 +219,10 @@ export interface DeskDeps {
   /** Does this browser already hold a saved copy of the model? Read when a load starts, so the load bar
    *  says "from the saved copy" rather than counting a download that will not happen. Absent means no. */
   isWarm?: () => boolean;
+  /** Ask the visitor whether to download the model, showing the choice in the chat. Resolves true on yes
+   *  and false on "Not now". Called only when a load would start a download: never with a saved copy and
+   *  never once the engine exists. Absent means no question is asked (tests, and pages with no consent UI). */
+  askDownload?: (profile: ModelProfile) => Promise<boolean>;
   /** The reply when `modelAllowed` turns a model turn away. */
   modelDeclinedLine?: string;
   /** Load + warm the engine for the profile, reporting download progress. */
@@ -484,7 +488,11 @@ const THINKING = '<span class="desk-typing" aria-label="Thinking">Thinking<i></i
 // megabytes have arrived, so a 350 MB wait reads as progress rather than a stall. The percentage from
 // WebLLM covers the download and the move into GPU memory together, which is why the megabytes are
 // worded "of about".
-export const loadBar = (pct: number, profile: ModelProfile, warm: boolean): string => {
+/** The Desk's reply when a visitor answers "Not now" to the download question. */
+export const DOWNLOAD_DECLINED_LINE =
+  "No problem, I won't download anything. Use Browse to look around, or ask again whenever you want me to answer.";
+
+export const loadBar =(pct: number, profile: ModelProfile, warm: boolean): string => {
   const title = warm
     ? `Loading ${profile.label} from the copy saved on this device.`
     : `Downloading ${profile.label}: ${Math.round((pct / 100) * profile.downloadMB)} of about ${profile.downloadMB} MB. One time only.`;
@@ -528,6 +536,18 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
   // GRAIN's chat markup, via the injected kit (arg order adapted to the desk's call sites).
   const bubble = deps.kit.chatBubble;
   const bodySpan = (surface: string, inner = ""): string => deps.kit.chatBody(inner, surface);
+
+  // May this turn start the model download? A saved copy or an engine already on the page needs no
+  // question. Otherwise the desk says what it is asking in its own bubble, then waits for the visitor's
+  // choice. A "Not now" is a choice and not a failure, so it never marks the desk offline. A 350 MB
+  // download is too large to start for someone who was not told, which is why a first message no longer
+  // starts it on its own.
+  async function downloadAllowed(say: (html: string, commit: "committed") => void): Promise<boolean> {
+    if (enginePromise || deps.isWarm?.() === true || !deps.askDownload) return true;
+    say(esc(`To answer on your device I need to download about ${profile.downloadMB} MB, one time. ` +
+      `The model runs here, so your questions stay on this device.`), "committed");
+    return deps.askDownload(profile);
+  }
 
   // Load the engine once (probe-gated). Returns null on unavailable/failed and flips the desk
   // offline. Memoized so only the first chat.send pays the download; later sends reuse the engine.
@@ -794,6 +814,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           }
           if (modelBlocked()) return declineModel();
           if (degraded) return offline();
+          if (!(await downloadAllowed(setBody))) return declineModel(DOWNLOAD_DECLINED_LINE);
           const { label } = profile;
           const warm = deps.isWarm?.() === true;
           setBodyRaw(loadBar(0, profile, warm), "pending");
@@ -1438,7 +1459,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       return null;
     };
 
-    // The model turn: load the local model (an implicit opt-in on first send), then summarize, write
+    // The model turn: load the local model (after the visitor agrees to the download), then summarize, write
     // to the notepad, or answer a grounded chat. There is no stub fallback: an unavailable or failed
     // model marks the desk offline.
     const modelTurn = async (turn: Turn): Promise<Decision> => {
@@ -1458,12 +1479,13 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           return { ok: true, ops: [], reply: line };
         }
 
-        // 4) needs the model. Load it (implicit opt-in on first send): a real progress bar, honest
+        // 4) needs the model. Load it once the visitor has agreed to the download (downloadAllowed): a real progress bar, honest
         //    about the one-time cost. No stub fallback — unavailable/failed ⇒ Desk Offline.
         if (modelBlocked()) return declineModel();
         if (degraded) return offline();
+        if (!(await downloadAllowed(setBody))) return declineModel(DOWNLOAD_DECLINED_LINE);
         const { label } = profile;
-          const warm = deps.isWarm?.() === true;
+        const warm = deps.isWarm?.() === true;
         setBodyRaw(loadBar(0, profile, warm), "pending");
         narrate("loads", warm ? `${label} from the copy saved on this device` : `${label}, one time, cached, runs on your device`);
         let lastPct = -1;
@@ -1683,8 +1705,8 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       // Browse mode: the model is off by the visitor's choice, not broken, so this settles the bubble
       // with a pointer to Browse and leaves the desk online for every model-free verb.
       const modelBlocked = (): boolean => !!deps.modelAllowed && !deps.modelAllowed();
-      const declineModel = async (): Promise<Decision> => {
-        const line = deps.modelDeclinedLine ?? "Use Browse to search the portfolio without local AI.";
+      const declineModel = async (reason?: string): Promise<Decision> => {
+        const line = reason ?? deps.modelDeclinedLine ?? "Use Browse to search the portfolio without local AI.";
         if (held) { held = null; return { ok: false, ops: [], reason: line }; }   // nothing shown yet: leave no trace
         await minThink();
         setBody(esc(line), "committed");

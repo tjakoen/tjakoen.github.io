@@ -69,6 +69,52 @@ export function mountDeskBrowse({
     message.append(who, body);
     log.append(message);
   };
+  // The download question. The desk's own bubble already says what is being asked, so this adds only the
+  // two buttons to the newest Desk message and resolves with the visitor's choice. A yes is remembered for
+  // the tab, so a later page in the same tab does not ask again while the files are loading or saved. A
+  // second ask while one is open shares the same answer instead of stacking another pair of buttons.
+  const DOWNLOAD_KEY = "desk-download-ok:";
+  let pendingDownload: Promise<boolean> | null = null;
+  const askDownload = ({ id, downloadMB }: { id: string; downloadMB: number }): Promise<boolean> => {
+    try { if (sessionStorage.getItem(DOWNLOAD_KEY + id) === "yes") return Promise.resolve(true); } catch { /* storage may be blocked */ }
+    if (pendingDownload) return pendingDownload;
+    const bubbles = log?.querySelectorAll<HTMLElement>('.chat-message[data-role="ai"]');
+    const target = bubbles?.length ? bubbles[bubbles.length - 1] : null;
+    // With nowhere to show the question the answer is no, so nothing downloads without being asked.
+    if (!target) return Promise.resolve(false);
+    pendingDownload = new Promise<boolean>((resolve) => {
+      const actions = document.createElement("div");
+      actions.className = "chat-message__actions";
+      actions.dataset.downloadChoice = "";
+      actions.setAttribute("role", "group");
+      actions.setAttribute("aria-label", "Download the on-device model?");
+      const yes = document.createElement("button");
+      yes.type = "button";
+      yes.className = "btn";
+      yes.dataset.variant = "soft";
+      yes.dataset.download = "yes";
+      yes.textContent = `Download ${downloadMB} MB`;
+      const no = document.createElement("button");
+      no.type = "button";
+      no.className = "btn";
+      no.dataset.variant = "outline";
+      no.dataset.download = "no";
+      no.textContent = "Not now";
+      actions.append(yes, no);
+      target.append(actions);
+      actions.addEventListener("click", (event) => {
+        const button = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-download]") : null;
+        if (!button) return;
+        const agreed = button.dataset.download === "yes";
+        actions.remove();
+        pendingDownload = null;
+        if (agreed) { try { sessionStorage.setItem(DOWNLOAD_KEY + id, "yes"); } catch { /* the tab just asks again */ } }
+        resolve(agreed);
+      });
+      yes.focus();
+    });
+    return pendingDownload;
+  };
   const selectDeskPane = () => {
     if (!assistant || !panel) return;
     const browse = !allowsModel();
@@ -177,6 +223,7 @@ export function mountDeskBrowse({
 
   return {
     allowsModel,
+    askDownload,
     refresh: render,
     markFailed() { failed = true; render(); },
   };
