@@ -33,6 +33,11 @@ socialImage: "/media/notes/one-loop-three-harnesses-social.png"
 socialImageAlt: "One person running Claude Code, Codex and DeepSeek on one loop."
 ---
 
+> **Update, 2026-11-23.** Two things in this note changed. I deleted the DeepSeek Harness app, and DeepSeek now
+> reaches me through OpenCode instead, alongside free models and the Codex plan, behind a layer that
+> picks the model for me. The privacy line below became a hard rule enforced by guards. The full story is
+> [Necessity Is the Mother of Innovation](necessity-and-the-model-layer.md).
+
 ## The day one of them ran out
 
 I was all in on Claude. Work introduced me to it, and I liked that Anthropic built for developers
