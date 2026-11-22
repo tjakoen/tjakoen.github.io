@@ -1,6 +1,6 @@
 ---
 id: model-guard-respawn
-status: ready
+status: done
 track: ai
 depends: [model-intelligence-layer-phase-a]
 touches:
@@ -192,8 +192,8 @@ D4 was answered on 2026-11-22: respawn it too.
 
 ## Resume card
 
-- Stopped: Plan written, reviewed by goldfish to GO, marked ready and committed as 543e230a; nothing built.
-- Next: On owner approval, start a Sonnet build session in claude-config for steps 1 to 6, then a portfolio session for step 7.
-- Waiting on: The owner's approval of the plan.
-- Ended: blocked
-- Left: 2026-11-21T22:02:39.157Z by claude on TJ
+- Stopped: All seven steps are done. The guard passed live acceptance on 2026-11-22 after six runs, and step 7 added the Model guard section to MODELS.md and a probe to MODELS-VERIFY.md.
+- Next: The owner pushes claude-config and this repo.
+- Waiting on: Nothing.
+- Ended: done
+- Left: 2026-11-22 by claude

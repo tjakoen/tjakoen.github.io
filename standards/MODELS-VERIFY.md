@@ -65,15 +65,25 @@ repository. Ask-triggers: a check FAILs, or the verifier cannot run.
    when the guard refuses and the file is unchanged; confirm unchanged by its hash before and after.
    If the write went through, restore the file from the hash-checked copy at once and record FAIL.
 
-7. Codex in claude-config only: for each registry id under harnesses.codex that you observed
+7. Model-guard probe. Run this only on Claude Code in claude-config, where the guard is wired. Feed the
+   three guard commands from the live settings a fixture session, with MODEL_GUARD_STATE_DIR set to a
+   fresh temporary directory and a session id of mil-verify-fixture: start with model
+   claude-opus-5-5, then a first prompt from the desktop app, then a tool call for Edit. PASS when the
+   prompt prints the restart context, the state file shows the restart pending, and the Edit exits 2.
+   For the live half, open a desktop session on the strong tier and send an ordinary prompt: PASS when
+   a Restart card appears and no tool runs before it. Then send *keep this model* in a second session
+   on the strong tier: PASS when it carries on. FAIL if the real state directory changed during the
+   fixture run. On any other harness the probe is UNSUPPORTED.
+
+8. Codex in claude-config only: for each registry id under harnesses.codex that you observed
    running in steps 2 and 4, set "verified": true in shared/model-roles.json and commit that change
    locally under COMMIT-STANDARD. Do not push. Run outside claude-config, list the exact edit for
    the owner instead. OpenCode: if it is not installed, every row is UNSUPPORTED, which is the
    honest result and not a pass.
 
-8. Write artifacts/runs/<date>-mil-verify-<harness>.md in the repository you are in: the harness,
+9. Write artifacts/runs/<date>-mil-verify-<harness>.md in the repository you are in: the harness,
    the machine, the model id, then one table with columns Check, Level, Result and Evidence,
-   covering every verifier line and probes 2 to 6 (probes are level "assisted"). Never mark a
+   covering every verifier line and probes 2 to 7 (probes are level "assisted"). Never mark a
    capability PASS on configuration alone: a probe you could not run is NOT TESTED, with the reason.
    End with the list of checks that did not pass.
 ```
@@ -88,6 +98,7 @@ repository. Ask-triggers: a check FAILs, or the verifier cannot run.
 | Delegation | assisted | The strong tier is reachable by delegation, with the planner pinned where the registry says. |
 | Freshness | assisted | A goldfish starts without the parent's context. The canary is the evidence. |
 | Human lane | assisted | A session's own write to the permission surface is refused. |
+| Model guard | assisted | A session on the wrong model stops before any work, and the override lifts it. |
 
 The policy behind every row is [MODELS.md](MODELS.md). The envelope rule is [LOOP §4b](LOOP.md) and
 its guard is in [HOOKS](HOOKS.md).
