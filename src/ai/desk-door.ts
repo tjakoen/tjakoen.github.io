@@ -23,6 +23,7 @@ import { CONTACT_FIELD_SURFACE, CONTACT_SUBJECT_SURFACE, draftSubject } from "./
 import { buildCatalog, stripSlash, joinPhrases, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
 import { createKnowledgeCache } from "./knowledge-cache.ts";
+import { browserSavedCopyEnv, hasSavedCopy, rememberSavedCopy } from "./model-saved.ts";
 import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
 // A2 guided tour — the fixed stop list + the cursor codec (tour.ts). The door owns every leg of the
 // tour AFTER the first (no chat.send happens between stops, so the reasoner isn't in the loop then).
@@ -113,6 +114,9 @@ async function loadEngine(p: ModelProfile, onProgress: (progress: EngineProgress
   if (!browse.allowsModel()) throw new Error("Local AI is disabled in Browse.");
   const engine = await grainWebllm.loadEngine({ modelId: p.id, onProgress, contextWindow: p.contextWindow });
   try { ss()?.setItem("desk-model-warm:" + p.id, "1"); } catch { /* storage may be blocked */ }
+  // Keep the saved copy across visits and ask the browser not to evict it. Neither blocks the reply.
+  savedCopy = true;
+  void rememberSavedCopy(p.id, browserSavedCopyEnv());
   return engine;
 }
 
@@ -133,7 +137,13 @@ const knowledgeCache = createKnowledgeCache(async () => {
   return response.json() as Promise<Knowledge>;
 });
 const loadKnowledge = knowledgeCache.load;
-const browse = mountDeskBrowse({ canRun, downloadNote: profile.downloadNote, mobile });
+// Whether this browser already holds the model. It starts false (the cautious answer: expect a download),
+// flips true once the Cache Storage check confirms a saved copy, and flips true on a finished load.
+let savedCopy = false;
+const browse = mountDeskBrowse({ canRun, downloadNote: profile.downloadNote, isWarm: () => savedCopy, mobile });
+void hasSavedCopy(profile.id, browserSavedCopyEnv()).then((saved) => {
+  if (saved && !savedCopy) { savedCopy = true; browse.refresh(); }
+});
 
 // Newest-first notes for "open the latest note" — the frozen /notes.json (base-path aware). Memoized.
 let notesP: Promise<DeskNote[]> | null = null;
@@ -743,6 +753,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     // Browse turns the model off, not the desk. The reasoner runs every model-free path (navigation,
     // choices, theme, routed page actions) and declines only the step that would load the model.
     modelAllowed: () => browse.allowsModel(),
+    isWarm: () => savedCopy,
     modelDeclinedLine: "Use Browse to search the portfolio without local AI.",
     loadEngine,
     streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)

@@ -216,6 +216,9 @@ export interface DeskDeps {
    *  the model declines, with `modelDeclinedLine`, and without marking the desk offline. Absent means
    *  always allowed. */
   modelAllowed?: () => boolean;
+  /** Does this browser already hold a saved copy of the model? Read when a load starts, so the load bar
+   *  says "from the saved copy" rather than counting a download that will not happen. Absent means no. */
+  isWarm?: () => boolean;
   /** The reply when `modelAllowed` turns a model turn away. */
   modelDeclinedLine?: string;
   /** Load + warm the engine for the profile, reporting download progress. */
@@ -477,8 +480,18 @@ const THINKING = '<span class="desk-typing" aria-label="Thinking">Thinking<i></i
 // The model-load progress, as a real progress bar in the desk bubble (raw markup — no user input —
 // styled by portfolio-frame.css .desk-load). Honest about the one-time download cost; the label + size
 // note come from the active profile (webllm-loader.ts) so a bigger model reports its bigger download.
-const loadBar = (pct: number, label: string, note: string): string =>
-  `<span class="desk-load"><span class="desk-load__title">Loading ${label}. ${note}</span>` +
+// A visitor with a saved copy sees a short load from disk; a first-time visitor sees how many
+// megabytes have arrived, so a 350 MB wait reads as progress rather than a stall. The percentage from
+// WebLLM covers the download and the move into GPU memory together, which is why the megabytes are
+// worded "of about".
+export const loadBar = (pct: number, profile: ModelProfile, warm: boolean): string => {
+  const title = warm
+    ? `Loading ${profile.label} from the copy saved on this device.`
+    : `Downloading ${profile.label}: ${Math.round((pct / 100) * profile.downloadMB)} of about ${profile.downloadMB} MB. One time only.`;
+  return loadBarHtml(pct, title);
+};
+const loadBarHtml = (pct: number, title: string): string =>
+  `<span class="desk-load"><span class="desk-load__title">${title}</span>` +
   `<span class="desk-load__bar" aria-hidden="true"><span class="desk-load__fill" style="width:${pct}%"></span></span>` +
   `<span class="desk-load__pct">${pct}%</span></span>`;
 
@@ -781,13 +794,14 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           }
           if (modelBlocked()) return declineModel();
           if (degraded) return offline();
-          const { label, downloadNote } = profile;
-          setBodyRaw(loadBar(0, label, downloadNote), "pending");
-          narrate("loads", `${label}, one time, cached, runs on your device`);
+          const { label } = profile;
+          const warm = deps.isWarm?.() === true;
+          setBodyRaw(loadBar(0, profile, warm), "pending");
+          narrate("loads", warm ? `${label} from the copy saved on this device` : `${label}, one time, cached, runs on your device`);
           let lastPct = -1;
           const engine = await ensureEngine((p) => {
             const pct = Math.round((p.progress || 0) * 100);
-            if (pct !== lastPct) { lastPct = pct; setBodyRaw(loadBar(pct, label, downloadNote), "pending"); }
+            if (pct !== lastPct) { lastPct = pct; setBodyRaw(loadBar(pct, profile, warm), "pending"); }
           });
           if (!engine) return offline();
           if (tools.cancelled()) { setBody(esc("Stopped."), "committed"); return { ok: true, ops: [], reply: "Stopped." }; }
@@ -1448,13 +1462,14 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         //    about the one-time cost. No stub fallback — unavailable/failed ⇒ Desk Offline.
         if (modelBlocked()) return declineModel();
         if (degraded) return offline();
-        const { label, downloadNote } = profile;
-        setBodyRaw(loadBar(0, label, downloadNote), "pending");
-        narrate("loads", `${label}, one time, cached, runs on your device`);
+        const { label } = profile;
+          const warm = deps.isWarm?.() === true;
+        setBodyRaw(loadBar(0, profile, warm), "pending");
+        narrate("loads", warm ? `${label} from the copy saved on this device` : `${label}, one time, cached, runs on your device`);
         let lastPct = -1;
         const engine = await ensureEngine((p) => {
           const pct = Math.round((p.progress || 0) * 100);
-          if (pct !== lastPct) { lastPct = pct; setBodyRaw(loadBar(pct, label, downloadNote), "pending"); }
+          if (pct !== lastPct) { lastPct = pct; setBodyRaw(loadBar(pct, profile, warm), "pending"); }
         });
         if (!engine) return offline();
         if (tools.cancelled()) { setBody(esc("Stopped."), "committed"); return { ok: true, ops: [], reply: "Stopped." }; }

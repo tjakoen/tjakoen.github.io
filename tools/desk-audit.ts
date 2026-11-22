@@ -463,7 +463,7 @@ async function composeFor(page: Page): Promise<void> {
 // "Reading the page…" is the builder's thinking state, and it belongs here for the same reason
 // "Thinking" does: it is a settled, unchanging string, so without it `settle` would return the
 // moment the page said it had started rather than when the model answered.
-const BUSY = /Thinking|Loading Qwen|Reading (?:the page|that)|Applying the approved edit|\d+%$/;
+const BUSY = /Thinking|Loading Qwen|Downloading Qwen|Reading (?:the page|that)|Applying the approved edit|\d+%$/;
 
 /** Wait until the desk's reply settles: non-empty, not a load/thinking state, and UNCHANGED for
  *  `stableMs`. A cross-page navigation also ends the wait (nav scenarios). Returns the final text
