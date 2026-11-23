@@ -333,11 +333,21 @@ export function buildIndex(files: SourceFile[]): StandardsIndex {
   };
 }
 
-/** The real standards: every .md in standards/ that is a file, not a symlinked alias. */
+/**
+ * A symlinked alias as git leaves it on a checkout without symlinks: a tiny file whose whole text is the
+ * target's name. On Windows with symlinks off, standards/AGENTS.md arrives as the nine bytes "CLAUDE.md", and
+ * indexing it made the committed index disagree with the one CI builds on Linux, where it is a real link.
+ */
+export function isAliasStub(text: string): boolean {
+  return text.length < 128 && /^[\w./-]+\.md\s*$/.test(text);
+}
+
+/** The real standards: every .md in standards/ that is a file, not a symlinked alias in either form. */
 export function readStandards(dir = STANDARDS_DIR): SourceFile[] {
   return readdirSync(dir)
     .filter((f) => f.endsWith(".md") && !lstatSync(join(dir, f)).isSymbolicLink())
-    .map((file) => ({ file, text: readFileSync(join(dir, file), "utf8") }));
+    .map((file) => ({ file, text: readFileSync(join(dir, file), "utf8") }))
+    .filter(({ text }) => !isAliasStub(text));
 }
 
 export const render = (index: StandardsIndex): string => JSON.stringify(index, null, 2) + "\n";
