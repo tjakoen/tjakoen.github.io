@@ -220,8 +220,13 @@ test("a link to a DRAFT note points at its /drafts twin, a published one stays u
   const dir = mkdtempSync(join(tmpdir(), "drafts-"));
   writeFileSync(join(dir, "later.md"), "---\ntitle: Later\nstatus: DRAFT\n---\nbody\n");
   writeFileSync(join(dir, "now.md"), "---\ntitle: Now\nstatus: PUBLISHED\n---\nbody\n");
+  // A share block with long alt texts pushes the closing --- far down; it must still read as a draft.
+  writeFileSync(join(dir, "long.md"), `---\ntitle: Long\nstatus: DRAFT\nsocialImageAlt:\n  - "${"x".repeat(5000)}"\n---\nbody\n`);
+  writeFileSync(join(dir, "crlf.md"), "---\r\ntitle: Crlf\r\nstatus: DRAFT\r\n---\r\nbody\r\n");
   await new Promise((r) => setTimeout(r, 2100)); // let any cached read from another test expire
   const slugs = draftNoteSlugs(dir);
   expect(slugs.has("later")).toBe(true);
   expect(slugs.has("now")).toBe(false);
+  expect(slugs.has("long")).toBe(true);
+  expect(slugs.has("crlf")).toBe(true);
 });

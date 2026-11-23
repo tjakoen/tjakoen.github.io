@@ -160,7 +160,9 @@ export function draftNoteSlugs(dir = join(import.meta.dir, "..", "content", "not
   const slugs = new Set<string>();
   for (const file of readdirSync(dir)) {
     if (!file.endsWith(".md")) continue;
-    const head = readFileSync(join(dir, file), "utf8").slice(0, 2000).match(/^---\n[\s\S]*?\n---/);
+    // The whole frontmatter, however long: a share block with several images and their alt texts runs past
+    // any fixed cap, and a cap that cut it off read a DRAFT as published and sent its links to a dead /notes/.
+    const head = readFileSync(join(dir, file), "utf8").match(/^---\r?\n[\s\S]*?\r?\n---/);
     const status = head?.[0].match(/^status:\s*"?([A-Za-z]+)"?\s*$/m)?.[1];
     if (!isPublishedStatus(status)) slugs.add(mdSlug(file));
   }
