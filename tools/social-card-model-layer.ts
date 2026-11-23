@@ -25,7 +25,7 @@ const bands:Band[]=[
     {t:"Model guard",s:["wrong model","restarts itself"]},{t:"Work guard",s:["company accounts","only at work"]}]},
   {title:"Harnesses",tiles:[{t:"Claude Code",s:["Claude only"]},{t:"OpenCode",s:["all other coding"]},{t:"Codex app",s:["non-coding work"]}]},
   {title:"Models",tiles:[{t:"Claude",s:["private"]},{t:"Codex models",s:["private"]},
-    {t:"Free models",s:["not private"],dashed:true},{t:"DeepSeek API",s:["paid, not private"],dashed:true}]},
+    {t:"Free and Go",s:["not private"],dashed:true},{t:"DeepSeek API",s:["approval only"],dashed:true}]},
 ];
 let y=296;const out:string[]=[];
 bands.forEach((b,i)=>{
@@ -57,7 +57,7 @@ const card=`<!doctype html><html><head><meta charset="utf-8"><style>html,body{ma
 <text x="${X0}" y="192" style="fill:${INK};font-size:64px;letter-spacing:-1px">I ran out with hours left.</text>
 <text x="${X0}" y="264" style="fill:${INK};font-size:64px;letter-spacing:-1px;font-style:italic">So the model became a decision.</text>
 ${out.join("\n")}
-<text x="${X0}" y="${y+54}" style="fill:${INK};font-size:30px;font-style:italic">Free models and DeepSeek: personal projects only.</text>
+<text x="${X0}" y="${y+54}" style="fill:${INK};font-size:30px;font-style:italic">Free, Go and DeepSeek models: personal projects only.</text>
 <line x1="${X0}" y1="1104" x2="${W-X0}" y2="1104" style="stroke:${LINE};stroke-width:1"/>
 <text x="${X0}" y="1148" style="fill:${INK};font-size:22px">${TITLE}</text>
 <text x="${W-X0}" y="1148" text-anchor="end" style="fill:${MUTED};font-size:21px">${HOST}</text>
