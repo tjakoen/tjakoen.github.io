@@ -2502,7 +2502,7 @@
       "title": "MODELS — which model plays which role, on every harness",
       "summary": "The portable model policy of the loop. Six roles on three tiers, a main session on the execution tier, escalation by delegation rather than by switching models, the effort ceiling, one registry as the only home of model identifiers, five conformance levels, and how a device repairs its own drift.",
       "when": "Read this BEFORE pinning a model in an agent file, a settings file or a Codex config, before adding an agent, before reaching for a model switch mid-session, and before claiming a harness runs the loop's model policy. It owns which role sits on which tier and how the strong tier is reached; the registry in claude-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice. Don't skip because the agent file already names a model - a pin nobody checked against the registry is how five files came to disagree.",
-      "lines": 465,
+      "lines": 453,
       "lead": {
         "lines": [
           14,
@@ -2670,7 +2670,7 @@
           "anchor": "12-escalation-records-and-the-owners-typed-approval",
           "lines": [
             306,
-            351
+            339
           ],
           "summary": "Phase B gave every escalation a record and every paid call an approval with one source.",
           "refs": []
@@ -2680,8 +2680,8 @@
           "heading": "13. The supervisor and its limits",
           "anchor": "13-the-supervisor-and-its-limits",
           "lines": [
-            353,
-            373
+            341,
+            361
           ],
           "summary": "The supervisor is code, not an agent (decision M1).",
           "refs": [
@@ -2698,8 +2698,8 @@
           "heading": "14. Context metadata and the budget",
           "anchor": "14-context-metadata-and-the-budget",
           "lines": [
-            375,
-            393
+            363,
+            381
           ],
           "summary": "Each model entry in the registry may carry a context block: the advertised window, the usable window, the output reserve (maxOut), the overhead, the method it was measured by (transcript, provider...",
           "refs": [
@@ -2713,8 +2713,8 @@
           "heading": "15. Continuation and recovery checkpoints",
           "anchor": "15-continuation-and-recovery-checkpoints",
           "lines": [
-            395,
-            411
+            383,
+            399
           ],
           "summary": "A recovery checkpoint is not a handoff.",
           "refs": []
@@ -2724,8 +2724,8 @@
           "heading": "16. Model Scout",
           "anchor": "16-model-scout",
           "lines": [
-            413,
-            422
+            401,
+            410
           ],
           "summary": "model-scout.ts researches models and recommends them.",
           "refs": []
@@ -2735,8 +2735,8 @@
           "heading": "17. The runtime brief",
           "anchor": "17-the-runtime-brief",
           "lines": [
-            424,
-            431
+            412,
+            419
           ],
           "summary": "The session checklist keeps a healthy start to one row, Model Intelligence Layer verified.",
           "refs": [
@@ -2750,8 +2750,8 @@
           "heading": "18. Where each record lives",
           "anchor": "18-where-each-record-lives",
           "lines": [
-            433,
-            447
+            421,
+            435
           ],
           "summary": "Every new record has one home (decision M2), so a reader looking for one never has to search two places.",
           "refs": [
@@ -2768,8 +2768,8 @@
           "heading": "19. What is on hold and what is not tested",
           "anchor": "19-what-is-on-hold-and-what-is-not-tested",
           "lines": [
-            449,
-            458
+            437,
+            446
           ],
           "summary": "DeepSeek Harness is on hold (owner, 2026-11-23).",
           "refs": []
@@ -2779,8 +2779,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            460,
-            465
+            448,
+            453
           ],
           "summary": "The verifier for the harness run (the command is in MODELS-VERIFY step 1), no line FAIL.",
           "refs": []
