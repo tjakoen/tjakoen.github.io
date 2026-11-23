@@ -762,3 +762,43 @@
 :root[data-nest-open] .nest-still { display: block; }
 .nest-still__img--dark, :root[data-color-scheme="dark"] .nest-still__img--light { display: none; }
 :root[data-color-scheme="dark"] .nest-still__img--dark { display: block; }
+
+/* The Model Intelligence Layer walkthrough (scripts/figure-walk.js). The whole stack is buttons, so every
+   label is readable at every step; the request is shown by weight alone, in the GRAIN way: the tile it is
+   on turns solid ink, the tiles it passed keep a heavy outline, and a model tile carries a short mark
+   ("out for today", "skipped", "waits for my yes") once the walk has said it. */
+.live-fig--walk { max-width: 100%; }
+.walk { border: 1px solid var(--line-soft); border-radius: var(--radius-sm); background: var(--paper); padding: var(--space-4); }
+.walk__modes { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3); }
+.walk__mode, .walk__btn { min-height: 44px; padding: var(--space-2) var(--space-3); border: 1px solid var(--ink);
+  border-radius: 999px; background: var(--paper); color: var(--ink); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+.walk__mode[aria-pressed="true"], .walk__btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.walk__btn:disabled { opacity: .45; cursor: default; }
+.walk__say { display: flex; align-items: center; gap: var(--space-3); min-height: 3.2em; margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3); border-radius: 999px; background: var(--ink); color: var(--paper); }
+.walk__num { flex: none; display: grid; place-items: center; width: 1.9em; height: 1.9em; border-radius: 50%;
+  background: var(--paper); color: var(--ink); font-weight: 700; font-size: var(--text-sm); }
+.walk__stack { display: grid; gap: var(--space-2); }
+.walk__band { border: 1px solid var(--line-soft); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3) var(--space-3); }
+.walk__band--heavy { border: 2.5px solid var(--ink); }
+.walk__band--bare { border: 0; padding: 0; }
+.walk__band-title { margin: 0 0 var(--space-2); text-align: center; font-size: var(--text-sm); color: var(--ink-muted); }
+.walk__band--heavy .walk__band-title { color: var(--ink); font-weight: 700; }
+.walk__tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: var(--space-2); }
+.walk__tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 44px;
+  padding: var(--space-2); border: 1.5px solid var(--line-soft); border-radius: var(--radius-sm); background: transparent;
+  color: var(--ink); font: inherit; text-align: center; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.walk__tile--strong { border: 2.5px solid var(--ink); }
+.walk__name { font-weight: 400; font-size: var(--text-sm); }
+.walk__sub { font-size: var(--text-xs); color: var(--ink-muted); }
+.walk__mark { font-size: var(--text-xs); font-family: var(--font-mono); }
+.walk__mark:empty { display: none; }
+.walk__tile.is-seen { border: 2.5px solid var(--ink); }
+.walk__tile.is-here { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.walk__tile.is-here .walk__sub { color: var(--paper); opacity: .8; }
+.walk__tile.is-marked:not(.is-here) .walk__name { text-decoration: none; }
+.walk__detail { min-height: 2.6em; margin: var(--space-3) 0 var(--space-2); font-size: var(--text-sm); color: var(--ink-muted); }
+.walk__nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.walk__count { margin-left: auto; font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-muted); }
+.walk__outcome { margin: var(--space-3) 0 0; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .walk__tile { transition: none; } }

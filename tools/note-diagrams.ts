@@ -167,6 +167,28 @@ export const STACKS: Record<string, Stack> = {
       { title: "PANTRY", footer: true, sub: ["Reads the usage records, free and paid kept apart.", "Shared state that any session can read."] },
     ],
   },
+  // The stack the interactive walkthrough (scripts/figure-walk.js) runs on. This static version is what a
+  // reader without JavaScript, a print run or the static export gets, so its label tells all three walks.
+  walk: {
+    arrows: "both",
+    label: "The whole stack, top to bottom, and three requests through it. I make the requests and approvals. Under me the loop holds public standards, plans, independent review and human gates. Under the loop the Model Intelligence Layer has a registry that turns work into a tier, a router that picks the first model not out, a supervisor that allows four agents at a time, and recovery with checkpoints. Under the layer are the harnesses Claude Code, OpenCode and the Codex app. Under those are the models by role: Opus and Sol for planning and review, Luna for private light work, the free model and Go for light work that may keep prompts, and the DeepSeek API only on my yes. PANTRY records every call underneath. When the free model is out, a light request moves on to Go, so nothing stalls. In a private repository the router skips every model that may keep prompts and the request lands on Luna, so nothing leaks. A request that needs the paid model stops and waits for my typed approval, so nothing is spent without me.",
+    layers: [
+      { title: "Me", sub: ["Requests and approvals"] },
+      { title: "The loop", tiles: [
+        { t: "Public standards" }, { t: "Plans" }, { t: "Independent review" }, { t: "Human gates" }] },
+      { title: "The Model Intelligence Layer", emphasis: true, tiles: [
+        { t: "Registry", s: ["work becomes", "a tier"] },
+        { t: "Router", s: ["first model", "not out"] },
+        { t: "Supervisor", s: ["four agents", "at a time"] },
+        { t: "Recovery", s: ["checkpoint,", "hand-off"] }] },
+      { title: "Harnesses", tiles: [
+        { t: "Claude Code" }, { t: "OpenCode" }, { t: "Codex app" }] },
+      { title: "Models, by role", tiles: [
+        { t: "Opus · Sol", s: ["planning, review,", "private"] }, { t: "Luna", s: ["light work,", "private"] },
+        { t: "Free and Go", s: ["light work,", "keep prompts"] }, { t: "DeepSeek API", s: ["only on my yes,", "keeps prompts"] }] },
+      { title: "PANTRY", footer: true, sub: ["Records every call, free and paid apart."] },
+    ],
+  },
   delegation: {
     arrows: "down",
     label: "Escalation is delegation, not a switch. The main session runs on the execution tier and holds the conversation and its prompt cache. When the next piece is planning, architecture or review, the main session hands it to a subagent pinned to the strong tier. The subagent reads only the plan and the files it links, and its context ends when the piece ends. The answer returns to the main session, which keeps its cache and carries on at its own tier. Switching the main session's model instead would throw the cache away.",
