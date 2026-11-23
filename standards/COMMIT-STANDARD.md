@@ -84,7 +84,7 @@ of the log wins. This is the working set; the full list lives at <https://gitmoj
 
 A squash merge takes the same shape: the pull request title becomes the gitmoji and title line,
 and the bullets summarise the whole branch. A pull request title follows the title rule too, so
-the squash needs no editing. A plain merge commit keeps the 🔀 emoji and the title git writes.
+the squash needs no editing. A plain merge commit keeps the merge gitmoji from the table above and the title git writes.
 
 ## The prompt
 
