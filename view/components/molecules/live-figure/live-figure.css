@@ -816,3 +816,26 @@
 .rule-card__t { font-weight: 400; }
 .rule-card__d { font-size: var(--text-sm); color: var(--ink-muted); }
 @media (prefers-reduced-motion: reduce) { .rule-card { transition: none; } }
+
+/* The six rules as a stage and a list (scripts/figure-rules.js): the chosen rule's diagram plays on the
+   left, the six rules sit on the right, and a link scrolls to the section. On a phone the stage sits on
+   top. Weight carries the choice: the selected rule is solid ink. */
+.live-fig--rules { max-width: 100%; }
+.rules { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-4); align-items: start;
+  padding: var(--space-4); border: 1px solid var(--line-soft); border-radius: var(--radius-sm); background: var(--paper); }
+.rules__stage { display: flex; flex-direction: column; gap: var(--space-2); color: var(--ink); }
+.rules__svg { width: 100%; height: auto; border: 1px solid var(--line-soft); border-radius: var(--radius-sm); font-family: Georgia, 'Times New Roman', serif; }
+.rules__desc { margin: 0; min-height: 2.8em; font-size: var(--text-sm); }
+.rules__go { align-self: flex-start; min-height: 36px; display: inline-flex; align-items: center; padding: 0 var(--space-3);
+  border: 1px solid var(--ink); border-radius: 999px; color: var(--ink); text-decoration: none; font-size: var(--text-sm); }
+.rules__go::after { content: " ↓"; }
+.rules__list { display: grid; gap: var(--space-1); }
+.rules__item { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--line-soft); border-radius: var(--radius-sm); background: transparent; color: var(--ink);
+  font: inherit; font-size: var(--text-sm); text-align: left; cursor: pointer; transition: background .2s, color .2s; }
+.rules__n { flex: none; display: grid; place-items: center; width: 1.7em; height: 1.7em; border-radius: 50%;
+  background: var(--ink); color: var(--paper); font-size: var(--text-xs); font-weight: 700; }
+.rules__item[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.rules__item[aria-selected="true"] .rules__n { background: var(--paper); color: var(--ink); }
+@media (max-width: 40rem) { .rules { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .rules__item { transition: none; } }
