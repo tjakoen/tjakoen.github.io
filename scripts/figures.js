@@ -21,14 +21,14 @@ const needsColony = names.has("colony");
 // Static SVGs already carry the meaning when JavaScript is off. On routes with no live figure, do not
 // download the three interactive figure families just because this small upgrade hook is shared by
 // the shell. Notes and talk decks load only the family their own figures use.
-const [multiplier, widgets, floor, nest, colony, voice, walk] = await Promise.all([
+const [multiplier, widgets, floor, nest, colony, voice, pick] = await Promise.all([
   names.has("multiplier") ? import("/site/figure-multiplier.js") : null,
   needsWidgets ? import("/site/figure-widgets.js") : null,
   needsFloor ? import("/site/figure-floor.js") : null,
   needsNest ? import("/site/figure-nest.js") : null,
   needsColony ? import("/site/figure-colony.js") : null,
   names.has("voice") ? import("/site/figure-voice.js") : null,
-  names.has("walk") ? import("/site/figure-walk.js") : null,
+  names.has("pick") ? import("/site/figure-pick.js") : null,
 ]);
 
 const BUILDERS = {
@@ -47,7 +47,7 @@ const BUILDERS = {
   ...(nest ? { nest: nest.mountNest } : {}),
   ...(colony ? { colony: colony.mountColony } : {}),
   ...(voice ? { voice: voice.mountVoice } : {}),
-  ...(walk ? { walk: walk.mountWalk } : {}),
+  ...(pick ? { pick: pick.mountPick } : {}),
 };
 
 for (const host of hosts) {
