@@ -37,6 +37,28 @@ export const DIAGRAMS: Record<string, LayeredInput> = {
       E("launch", "limit"), E("limit", "retry", "yes"), E("limit", "done", "no"),
     ],
   },
+  worked: {
+    kind: "flow",
+    label: "One light task followed through every check, in order. The session's model is checked against the registry and matches. The repository is checked and is already cleared. The main session delegates the task to a light subagent. The route check walks the chain: the free model is skipped because the shared daily cap is spent, and Go is next. The plugin reads Go's five-hour, weekly and monthly allowance, finds room, and the child launches on Go. The child gets a 429, so Go is put on a cooldown and the route check takes its one new pick: the free model is still spent and Go is cooling, so Luna takes it. The child relaunches once on Luna and finishes. One usage record is written with the models, their cost class and their private flag.",
+    nodes: [
+      { id: "start", kind: "start", label: "A light task, in a personal repo" },
+      { id: "model", kind: "action", label: "Session model matches the registry" },
+      { id: "repo", kind: "action", label: "Repository already cleared" },
+      { id: "deleg", kind: "action", label: "Delegated to a light subagent" },
+      { id: "free", kind: "action", label: "Free model skipped: cap spent" },
+      { id: "allow", kind: "action", label: "Go allowance read: room left" },
+      { id: "launch", kind: "action", label: "Launch the child on Go" },
+      { id: "limit", kind: "action", label: "The child gets a 429" },
+      { id: "retry", kind: "action", label: "Cool Go, one new pick: Luna" },
+      { id: "luna", kind: "action", label: "Relaunch once on Luna" },
+      { id: "done", kind: "end", label: "Write one usage record" },
+    ],
+    edges: [
+      E("start", "model"), E("model", "repo"), E("repo", "deleg"), E("deleg", "free"),
+      E("free", "allow"), E("allow", "launch", undefined, "Five-hour, weekly and monthly meters read first"),
+      E("launch", "limit"), E("limit", "retry"), E("retry", "luna"), E("luna", "done"),
+    ],
+  },
   delegate: {
     kind: "flow",
     label: "How a piece of work is delegated. When the next piece needs judgment, such as planning, architecture or review, the main session hands it to a subagent on the strong tier, Opus or Sol, with the plan and the files it links. When the piece is light and bounded, such as a search, a read or a small edit, it goes to a subagent down the light chain. Anything else stays in the main session. Either way one answer comes back, and the main session keeps its conversation and its cache.",
