@@ -20,19 +20,21 @@ social: |
   I spent my Codex usage with four hours left on the five-hour refresh. I was in the zone and did not
   want to stop. The next tier up felt like too much pressure to maximize, so I built a layer instead.
 
-  It picks the model for me. A free model and a small plan take the light work, Opus and Sol keep the planning, and a
-  fallback order with cooldowns handles the day a model says 429. Hard guards keep the free model, Go
-  and DeepSeek off work machines and work repositories.
+  It picks the model for me. Opus and Sol keep the planning and review. Light work goes to one free
+  model, then a small monthly plan, then the plan I already pay for. The paid API waits for an approval
+  I type.
 
-  Necessity, mother of innovation. The story is in the note, and the technical version is in a second one.
+  So it never stalls, it never overspends, and it never leaks private code: no model that may keep
+  a prompt ever touches a work machine or a work repository.
+
+  Necessity, mother of innovation. The story is in the note, with a technical companion for anyone who
+  wants to build their own.
 socialImage:
   - "/media/notes/model-layer-architecture.gif"
   - "/media/notes/model-layer-infographic.gif"
-  - "/media/notes/necessity-and-the-model-layer-social.png"
 socialImageAlt:
   - "An animated diagram of the whole stack, from me through the loop, the Model Intelligence Layer, the harnesses and the models by role, with Opus and Sol for planning and review, down to PANTRY. A numbered caption follows one request: the registry gives it a tier, the free model is out for today, so OpenCode Go takes it, while private repositories stay on Claude and Codex and the paid API waits for my typed yes. PANTRY logs the call. The tagline reads: never stalls, never overspends, never leaks private code."
   - "Six cards titled 6 rules behind how my agents pick a model, and who pays: tiers, not models; one free model, then Go; paid only on a typed yes; four at a time; recover, don't stall; and checked every session. Each card's small diagram plays on a loop, and a banner reads: spend free and flat-rate first; real money only on a typed yes."
-  - "The layers of the setup stacked on one card: me, the loop of standards, plans, review and human gates, then the Model Intelligence Layer with a registry, route check, model guard and work guard, then the harnesses Claude Code, OpenCode and the Codex app, then the models, where the free and Go models and the DeepSeek API are dashed because they may keep prompts. A line says they are for personal projects only."
 ---
 
 I spent my Codex usage and still had four hours to go before the five-hour refresh. I was in the zone. I did not want to stop.
