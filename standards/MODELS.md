@@ -324,15 +324,23 @@ audits showed that a guard on the file's name can always be spelled around. So o
 command signs the line with a Windows Hello key that lives in the TPM, and every signature asks for
 the owner's PIN or fingerprint. A request to a metered destination counts an approval only when that
 signature verifies against the public key Windows itself holds, read through PowerShell at its fixed
-system path, with a clean environment. The signed id is the hash of source, destination and reason,
-so a metered request cannot borrow an id signed for another model, and it must state its estimated
-cost. The owner creates the key once with the setup-key command. A plan-cost escalation still accepts
-the typed phrase, because it spends no money.
+system path, with a clean environment. The signed id is a hash of the source, destination and reason,
+encoded so that no field can spill into the next, so a metered request cannot borrow an id signed for
+another model. A paid model is named by its registry id when its name is shared with a plan-cost
+entry, and a metered request must state an estimated cost above zero. The owner creates the key once
+with the setup-key command. A plan-cost escalation still accepts the typed phrase, because it spends
+no money.
+
+**Single use and the cap.** A request that uses an approval records which approval it used, and every
+copy of that approval is void afterwards. The cap counts reported spend plus the estimates of requests
+already approved. Both live in files an agent can write, so they hold against a careless agent and
+not against one that rewrites the files. The cap is advisory in that sense until the broker exists.
 
 **What the signature does not stop.** It makes the approval record trustworthy against a forged line
 and an ordinary request. It cannot stop an agent that runs its own code inside the tool, for example
-through a bun preload, and it cannot stop an agent that reads the provider key and calls the provider
-directly. Either is the same as editing the tool. The hard stop for those is a broker that holds the
+through a bun preload, it cannot stop an agent that rewrites the approvals file and the ledger
+together, and it cannot stop an agent that reads the provider key and calls the provider directly.
+Each is the same as editing the tool. The hard stop for those is a broker that holds the
 provider key outside every agent's reach and releases it only against a signed approval, which is a
 later piece of work. The Hello prompt also cannot show which request it signs, so the owner answers
 one only right after running approve. The Mac has no signer yet, so a paid approval there fails closed.
