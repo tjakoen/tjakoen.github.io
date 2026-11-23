@@ -34,6 +34,9 @@ const hasProseBacktick = (line: string) => [...line.matchAll(/`([^`]+)`/g)].some
 
 // Ordered loudest-first. `sev: "tell"` = a top machine fingerprint (backtick, em-dash, the not-just-X
 // shape); `sev: "warn"` = worth a look but sometimes legitimate in context (a lone "showcase", a three).
+const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2728}]/u;
+// One or more emoji with their variation selectors and joiners, and nothing else.
+const EMOJI_ONLY = /^(?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2728}][\u{FE0F}\u{200D}]*)+$/u;
 const RULES: Rule[] = [
   { id: "em-dash", sev: "tell", re: /—/, msg: "em-dash — now a top AI tell. Use a comma, period, colon, or parentheses." },
   { id: "backtick", sev: "tell", re: /`[^`]+`/, test: hasProseBacktick, msg: "backtick in prose — the loudest tell. Write the term as plain words, *italics*, or a link. (Slash commands, prefixed commit titles and dates are exempt; see VOICE's console exception.)" },
@@ -44,7 +47,9 @@ const RULES: Rule[] = [
   { id: "word-tell", sev: "warn", re: /\b(delve|tapestry|realm|underscore|testament|showcase|boasts?|robust|seamless(ly)?|elevate|unlock|empower|foster|myriad|plethora|ever-evolving|cutting-edge|game-changing)\b/i, msg: "word came free with the model — cut or replace." },
   { id: "corporate-verb", sev: "warn", re: /\b(leverage|utilize|streamline)\b/i, msg: "corporate verb — use a plain strong one (build, prove, ship, use)." },
   { id: "nominalization", sev: "warn", re: /\b(perform|provide|conduct|carry out|make use of|offer support)\b\s+(an?\s+)?\w*(analysis|solution|review|assessment|evaluation|support|utili)/i, msg: "nominalization — collapse to the verb (analyze, solve, review, use)." },
-  { id: "emoji", sev: "warn", re: /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2728}]/u, msg: "emoji in published prose — keep it clean." },
+  // A table cell holding nothing but an emoji is a palette entry, not prose: COMMIT-STANDARD's gitmoji table
+  // defines each emoji by showing it, so those cells are skipped. Any emoji beside words still counts.
+  { id: "emoji", sev: "warn", re: EMOJI, test: (line: string) => EMOJI.test(/^\s*\|.*\|\s*$/.test(line) ? line.split("|").map((cell) => (EMOJI_ONLY.test(cell.trim()) ? "" : cell)).join("|") : line), msg: "emoji in published prose — keep it clean." },
   // The four below are shapes rather than words, borrowed from petergyang/no-ai-slop (MIT) and
   // documented in VOICE.md under "Do not sound like the machine". All warn: each has a legitimate
   // use (a participle that carries a real consequence, a source genuinely worth naming), so a human
