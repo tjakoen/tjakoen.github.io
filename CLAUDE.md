@@ -28,12 +28,7 @@ described; and `.nimbalyst/` plus `nimbalyst-local/` are gitignored private work
 site content. The standards state the capability and name the tool only as the example. See
 [`plans/done/nimbalyst-in-the-loop.md`](plans/done/nimbalyst-in-the-loop.md).
 
-When the session opens in DeepSeek Harness (DSH), the front door is this same file and the skills come
-from .agents/skills, a symlink to .claude/skills. DSH runs none of the Claude Code hooks: the loop
-plugin carries the human-lane guard, the spawn envelope, the graph refresh and the session checklist,
-which runs on the first step and whose block is shown at the top of the first reply. The profile mounts
-the pantry, tokensave and headroom MCP servers. Its commands are `bun tools/dsh-loop/cli.mjs start` at
-the first turn and `end` before calling work done. See [docs/HARNESS-DSH.md](docs/HARNESS-DSH.md).
+DSH work is on hold; [docs/HARNESS-DSH.md](docs/HARNESS-DSH.md) keeps how it was wired.
 
 ## Start here (reading order)
 
@@ -42,8 +37,7 @@ The standards are installed here as **skills**. Invoke them, do not fetch them: 
 published URL is the human-readable copy of the same file, so fetching a standard this repo already
 ships is a wasted round trip. The source of every one lives in `standards/`; edit there and regenerate
 the gitignored skills with `bun cli.ts skills sync ../tjakoen.github.io` from the pantry repo (reach for
-it through bun, since no pantry binary is on PATH here). DSH reads the same mount through the
-.agents/skills symlink, so one sync serves both harnesses.
+it through bun, since no pantry binary is on PATH here).
 
 **Read the tree before the file.** Most questions live under one heading of one standard, so drill
 down instead of loading: bun tools/standards-index.ts toc, then toc voice, then read voice#anchor.
@@ -124,11 +118,8 @@ a growing suite. The lint gate compares against its committed baseline and is ad
 image comparisons because the committed visual baselines are macOS-specific; use the unmodified
 visual suite on macOS when changing presentation. See .github/workflows/ci.yml for runner details.
 
-On DSH, bun tools/dsh-loop/cli.mjs end runs the typecheck, the lint gate and the graph refresh;
-bun tools/dsh-loop/cli.mjs start runs the doctor, the mount check and the freshness check, which
-names a mounted skill whose standard changed since the sync or a graph older than the code it indexes.
-In Claude Code the same check runs as a SessionStart hook and speaks only when something is behind. See
-[docs/HARNESS-DSH.md](docs/HARNESS-DSH.md).
+A SessionStart hook names a mounted skill whose standard changed since the last sync, or a graph older
+than the code it indexes, and stays quiet when nothing is behind.
 
 The earlier container command depended on a sibling compose file absent from this checkout.
 Do not prescribe it unless that setup is restored and verified. Windows runs that exercise symlinks
