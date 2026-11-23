@@ -276,8 +276,8 @@ export function compareSvg(id: string): string {
     parts.push(`<rect x="${x}" y="${yy}" width="${cw}" height="${h}" rx="8" style="fill:none;${stroke}${dash}"/>`);
     const lines = k.s ?? [];
     const top = yy + (h - (20 + lines.length * 15)) / 2 + 14;
-    const fill = k.gone ? "var(--color-muted)" : "var(--color-fg)";
-    parts.push(`<text x="${x + cw / 2}" y="${top}" text-anchor="middle" style="fill:${fill};font-size:13.5px">${X(k.t)}</text>`);
+    const fillColour = k.gone ? "var(--color-muted)" : "var(--color-fg)";
+    parts.push(`<text x="${x + cw / 2}" y="${top}" text-anchor="middle" style="fill:${fillColour};font-size:13.5px">${X(k.t)}</text>`);
     lines.forEach((ln, j) => parts.push(`<text x="${x + cw / 2}" y="${top + 18 + j * 15}" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">${X(ln)}</text>`));
   };
   c.rows.forEach((r) => {

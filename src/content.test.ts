@@ -216,7 +216,6 @@ test("note credits resolve to /people and /reading, and /people lists every note
 test("a link to a DRAFT note points at its /drafts twin, a published one stays under /notes", async () => {
   const { mkdtempSync, writeFileSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
-  const { join } = await import("node:path");
   const { draftNoteSlugs } = await import("./content.ts");
   const dir = mkdtempSync(join(tmpdir(), "drafts-"));
   writeFileSync(join(dir, "later.md"), "---\ntitle: Later\nstatus: DRAFT\n---\nbody\n");

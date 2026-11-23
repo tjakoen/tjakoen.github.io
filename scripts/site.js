@@ -628,13 +628,13 @@
         const back = mobileNav.querySelector("[data-mobile-back]");
         const segs = location.pathname.replace(/\/+$/, "").split("/").filter(Boolean);
         if (back && segs.length > 1) {
-          const linkFor = (path) => [...document.querySelectorAll(".app-dock__item[href], .mobile-menu__item[href], .app-shell__rail a[href]")]
-            .find((a) => a.getAttribute("href").replace(/\/+$/, "") === path);
+          const linkFor = (href) => [...document.querySelectorAll(".app-dock__item[href], .mobile-menu__item[href], .app-shell__rail a[href]")]
+            .find((a) => a.getAttribute("href").replace(/\/+$/, "") === href);
           let target = "/" + segs[0];
           for (let n = segs.length - 1; n >= 1; n--) {
-            const path = "/" + segs.slice(0, n).join("/");
-            const found = linkFor(path);
-            if (found) { target = path; break; }
+            const ancestor = "/" + segs.slice(0, n).join("/");
+            const found = linkFor(ancestor);
+            if (found) { target = ancestor; break; }
           }
           // the dock or Menu's own name for the section when it has one ("Notes"), else the path
           // segment itself, so a file-tree entry such as index.html never becomes the label
