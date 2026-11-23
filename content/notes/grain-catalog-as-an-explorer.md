@@ -52,7 +52,7 @@ text. The catalog renders the doc's first example as a live preview beside that 
   </g>
   <g style="fill:var(--color-muted);font-size:11px">
     <text x="200" y="60">state: stale</text>
-    <text x="200" y="78">☐ pending</text>
+    <text x="200" y="78">pending</text>
     <text x="200" y="96">title: Signups</text>
   </g>
   <text x="34" y="136" style="fill:var(--color-bg);font-family:ui-monospace,monospace;font-size:10.5px">&lt;section class="dash-panel" data-state="stale"&gt;</text>
