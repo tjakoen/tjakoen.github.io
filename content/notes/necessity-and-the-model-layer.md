@@ -45,6 +45,48 @@ So I did what I usually do when something annoys me enough. I built infrastructu
 
 > This continues [The Loop Outlives the Model](one-loop-three-harnesses.md), where I explained bringing DeepSeek in when both plans ran out. This is the short story of what came next. [How the Model Intelligence Layer Works](how-the-model-layer-works.md) is the technical one.
 
+<svg viewBox="0 0 600 400" width="100%" role="img"
+     aria-label="The loop runs around the front door: plan, session with the checklist first, report, second reader, human, then the next plan. The arrows circle the loop."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-loop0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <rect x="10" y="10" width="580" height="380" rx="6" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:5 5"/>
+  <text x="30" y="34" style="fill:var(--color-muted);font-size:11px">The front door: the rules</text>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="235" y="43" width="130" height="44" rx="6"/>
+    <rect x="363" y="136" width="130" height="44" rx="6"/>
+    <rect x="314" y="287" width="130" height="44" rx="6"/>
+    <rect x="156" y="287" width="130" height="44" rx="6"/>
+    <rect x="107" y="136" width="130" height="44" rx="6"/>
+  </g>
+  <rect x="107" y="136" width="130" height="44" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <path d="M 300 135 A 65 65 0 0 1 361.8 179.9" marker-end="url(#fl-loop0)"/>
+    <path d="M 361.8 179.9 A 65 65 0 0 1 338.2 252.6" marker-end="url(#fl-loop0)"/>
+    <path d="M 338.2 252.6 A 65 65 0 0 1 261.8 252.6" marker-end="url(#fl-loop0)"/>
+    <path d="M 261.8 252.6 A 65 65 0 0 1 238.2 179.9" marker-end="url(#fl-loop0)"/>
+    <path d="M 238.2 179.9 A 65 65 0 0 1 300 135" marker-end="url(#fl-loop0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="300" y="63" style="fill:var(--color-fg);font-size:14px">Plan</text>
+    <text x="300" y="80" style="fill:var(--color-muted);font-size:11px">one markdown file</text>
+    <text x="428" y="156" style="fill:var(--color-fg);font-size:14px">Session</text>
+    <text x="428" y="173" style="fill:var(--color-muted);font-size:11px">the checklist runs first</text>
+    <text x="379" y="307" style="fill:var(--color-fg);font-size:14px">Report</text>
+    <text x="379" y="324" style="fill:var(--color-muted);font-size:11px">the checks it ran</text>
+    <text x="221" y="307" style="fill:var(--color-fg);font-size:14px">Second reader</text>
+    <text x="221" y="324" style="fill:var(--color-muted);font-size:11px">someone else checks</text>
+    <text x="172" y="156" style="fill:var(--color-bg);font-size:13px">The human lands it</text>
+    <text x="172" y="173" style="fill:var(--color-bg);font-size:11px">the judgment is human</text>
+    <text x="300" y="200" style="fill:var(--color-muted);font-size:12px">The loop</text>
+  </g>
+</svg>
+
+*The loop this layer sits on, from [Set Up the Loop With One Prompt](loop-setup.md): a plan, a session with the checklist first, a report, a second reader, and me. The model is not one of the pieces, which is why it could become a decision.*
+
 ## The night I went looking for a way out
 
 The first thing I tried was running a model on my own machine. I have an RTX 3050 with 8 GB of memory. It runs small models fine and runs the ones I would want for coding badly, and a coding model that is worse than the one I am paying for is not a saving, it is a hobby. I put that idea back on the shelf for a year or two.
@@ -191,48 +233,6 @@ Three guards enforce it, and a mistake has to get past all three. A machine the 
 The first change is the one I wanted. So far, I have not run out in the middle of something. The free model and the small plan take the light work, so the strong plans last longer, and when one of them does empty, the next model is a lookup and not a decision.
 
 The second is that I work at low effort now. Opus runs low and Sonnet runs medium, because the architecture carries the load: the plan is written, the review is fresh, the guards are hooks. A model that does not have to hold the whole project in its head can think less and be right more often. I have worked this way since the loop and the harness were in place, and the work has held up. That is my experience, not a controlled comparison.
-
-<svg viewBox="0 0 600 400" width="100%" role="img"
-     aria-label="The loop runs around the front door: plan, session with the checklist first, report, second reader, human, then the next plan. The arrows circle the loop."
-     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
-  <defs>
-    <marker id="fl-loop0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-    </marker>
-  </defs>
-  <rect x="10" y="10" width="580" height="380" rx="6" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:5 5"/>
-  <text x="30" y="34" style="fill:var(--color-muted);font-size:11px">The front door: the rules</text>
-  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="235" y="43" width="130" height="44" rx="6"/>
-    <rect x="363" y="136" width="130" height="44" rx="6"/>
-    <rect x="314" y="287" width="130" height="44" rx="6"/>
-    <rect x="156" y="287" width="130" height="44" rx="6"/>
-    <rect x="107" y="136" width="130" height="44" rx="6"/>
-  </g>
-  <rect x="107" y="136" width="130" height="44" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
-  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <path d="M 300 135 A 65 65 0 0 1 361.8 179.9" marker-end="url(#fl-loop0)"/>
-    <path d="M 361.8 179.9 A 65 65 0 0 1 338.2 252.6" marker-end="url(#fl-loop0)"/>
-    <path d="M 338.2 252.6 A 65 65 0 0 1 261.8 252.6" marker-end="url(#fl-loop0)"/>
-    <path d="M 261.8 252.6 A 65 65 0 0 1 238.2 179.9" marker-end="url(#fl-loop0)"/>
-    <path d="M 238.2 179.9 A 65 65 0 0 1 300 135" marker-end="url(#fl-loop0)"/>
-  </g>
-  <g text-anchor="middle">
-    <text x="300" y="63" style="fill:var(--color-fg);font-size:14px">Plan</text>
-    <text x="300" y="80" style="fill:var(--color-muted);font-size:11px">one markdown file</text>
-    <text x="428" y="156" style="fill:var(--color-fg);font-size:14px">Session</text>
-    <text x="428" y="173" style="fill:var(--color-muted);font-size:11px">the checklist runs first</text>
-    <text x="379" y="307" style="fill:var(--color-fg);font-size:14px">Report</text>
-    <text x="379" y="324" style="fill:var(--color-muted);font-size:11px">the checks it ran</text>
-    <text x="221" y="307" style="fill:var(--color-fg);font-size:14px">Second reader</text>
-    <text x="221" y="324" style="fill:var(--color-muted);font-size:11px">someone else checks</text>
-    <text x="172" y="156" style="fill:var(--color-bg);font-size:13px">The human lands it</text>
-    <text x="172" y="173" style="fill:var(--color-bg);font-size:11px">the judgment is human</text>
-    <text x="300" y="200" style="fill:var(--color-muted);font-size:12px">The loop</text>
-  </g>
-</svg>
-
-*The loop from [Set Up the Loop With One Prompt](loop-setup.md): a plan, a session with the checklist first, a report, a second reader, and me. That is what carries the load, so the model can run at low effort.*
 
 The third is fewer apps and fewer moods. I do not choose between four programs when something runs out. I open the one I always open.
 
