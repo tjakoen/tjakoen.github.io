@@ -1703,7 +1703,7 @@
       "title": "HOOKS.md — the gates that fire before you do",
       "summary": "The machine-level hooks that enforce parts of the loop on every session in every repo - what each one fires on, what it deliberately cannot do, how to turn it off, and the adapter contract that holds Claude Code, Codex and DeepSeek Harness to the same six signals with a ten-case conformance list.",
       "when": "Read this BEFORE trusting that a rule in LOOP or SESSION-LOOP is enforced rather than merely written, before a session-start report or a blocked write surprises you, and before adding, editing or switching off anything under the machine's tools directory or wiring a new harness into the loop. It owns the machinery: which event each hook fires on, the limits that are deliberate, the off switch for each one, and the adapter contract with the case list that proves an adapter against it. Don't skip because you have read LOOP - LOOP says what the rules are, and this says which of them a machine actually stops you over, and in which harness.",
-      "lines": 533,
+      "lines": 537,
       "lead": {
         "lines": [
           15,
@@ -1718,10 +1718,13 @@
           "anchor": "1-where-they-live-and-how-a-machine-gets-them",
           "lines": [
             36,
-            72
+            76
           ],
           "summary": "The scripts live in a private config repo, under shared/tools.",
           "refs": [
+            {
+              "to": "models"
+            },
             {
               "to": "session-loop"
             }
@@ -1732,8 +1735,8 @@
           "heading": "2. session-doctor.sh, at session start",
           "anchor": "2-session-doctorsh-at-session-start",
           "lines": [
-            76,
-            109
+            80,
+            113
           ],
           "summary": "Fires on: SessionStart, in whatever directory the session opened.",
           "refs": [
@@ -1747,8 +1750,8 @@
           "heading": "3. human-lane.sh, before a write",
           "anchor": "3-human-lanesh-before-a-write",
           "lines": [
-            113,
-            172
+            117,
+            176
           ],
           "summary": "Fires on: PreToolUse, on the file-writing tools.",
           "refs": [
@@ -1762,8 +1765,8 @@
           "heading": "4. spawn-envelope.sh, before a spawn",
           "anchor": "4-spawn-envelopesh-before-a-spawn",
           "lines": [
-            176,
-            249
+            180,
+            253
           ],
           "summary": "Fires on: PreToolUse on the tools that start a session or send an unsolicited prompt to a running one.",
           "refs": [
@@ -1777,8 +1780,8 @@
           "heading": "4a. goldfish-gate.sh, before a plan starts",
           "anchor": "4a-goldfish-gatesh-before-a-plan-starts",
           "lines": [
-            253,
-            279
+            257,
+            283
           ],
           "summary": "Fires on: PreToolUse, on three triggers.",
           "refs": [
@@ -1792,8 +1795,8 @@
           "heading": "4b. The output gates",
           "anchor": "4b-the-output-gates",
           "lines": [
-            283,
-            348
+            287,
+            352
           ],
           "summary": "Fires on: PostToolUse. Three scripts, wired 2026-08-21: bash-output-bound.sh at a 4,000 character bound, tool-output-bound.sh, and code-discovery.sh.",
           "refs": []
@@ -1803,8 +1806,8 @@
           "heading": "4c. The adapter contract (one set of rules, three harnesses)",
           "anchor": "4c-the-adapter-contract-one-set-of-rules-three-harnesses",
           "lines": [
-            352,
-            434
+            356,
+            438
           ],
           "summary": "A harness is the program that runs a session, and three of them run here: Claude Code, Codex and DeepSeek Harness.",
           "refs": [
@@ -1818,8 +1821,8 @@
           "heading": "5. Three limits that cost something to learn",
           "anchor": "5-three-limits-that-cost-something-to-learn",
           "lines": [
-            438,
-            471
+            442,
+            475
           ],
           "summary": "None of these are guessable from the harness documentation, and each was found by building the wrong thing first.",
           "refs": [
@@ -1833,8 +1836,8 @@
           "heading": "6. The off switch is part of the design",
           "anchor": "6-the-off-switch-is-part-of-the-design",
           "lines": [
-            475,
-            493
+            479,
+            497
           ],
           "summary": "Every hook here ships with a documented way to stop it, and that is a design requirement rather than a courtesy.",
           "refs": []
@@ -1844,8 +1847,8 @@
           "heading": "7. Red flags",
           "anchor": "7-red-flags",
           "lines": [
-            497,
-            506
+            501,
+            510
           ],
           "summary": "A hook edited without running it the way the harness runs it (section 5).",
           "refs": []
@@ -1855,8 +1858,8 @@
           "heading": "8. Before you change one of these",
           "anchor": "8-before-you-change-one-of-these",
           "lines": [
-            510,
-            533
+            514,
+            537
           ],
           "summary": "Evidence-shaped, in the manner of LOOP.md section 9, and short because the blast radius is the whole machine rather than one repo.",
           "refs": [

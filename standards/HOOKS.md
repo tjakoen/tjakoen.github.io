@@ -62,7 +62,11 @@ Two consequences worth knowing before you go looking for a wire:
 **More than four hooks are wired here, and this file covers four.** The others are housekeeping
 and turn-end readouts: a config drift check at session start, a skill refresh, the token proxy in
 front of the shell tool, the turn-end gate and session guard on Stop, and the context trigger on
-PostToolUse that carries the handoff. The last of those belongs to
+PostToolUse that carries the handoff. One more is a PreToolUse filter, approval-guard.sh, which
+refuses a write to the escalation approvals file by any tool other than the owner's typed approve,
+and which turns off with APPROVAL_GUARD=off in the harness environment. It is a check against a
+careless agent and not a lock; [MODELS.md](MODELS.md) section 12 says what holds the money. The last
+of the housekeeping hooks, the context trigger, belongs to
 [SESSION-LOOP.md](SESSION-LOOP.md) section 5 and is not repeated here. The three below are the ones
 that decide whether work proceeds, which is why they earn a standard and a shell alias does not.
 
