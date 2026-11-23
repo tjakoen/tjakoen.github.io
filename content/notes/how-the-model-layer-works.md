@@ -15,9 +15,6 @@ summary: >
   with its fallback order, cooldowns and repository clearance, the approval I type before any paid call,
   the limits on spawning, the hard guards that keep free models off work, and the usage record PANTRY
   reads. It ends with what is public, what is private, and a list of the steps to build your own.
-
-  This is the technical note. Every diagram can be dragged and zoomed. It shows how each piece works, what
-  it proves, which parts of my setup are public and which are private, and the steps to build your own.
 ---
 
 
@@ -308,13 +305,16 @@ Two habits fall out of having a layer, and they are the ones I did not plan.
 
 ## Build your own
 
-Before the line between what to copy and what to keep, here is the whole layer as six rules, each with the small diagram it comes down to.
+Before the line between what to copy and what to keep, here is the whole layer as six rules. Each card jumps to the section that explains it.
 
-<figure class="shot">
-  <img class="shot__img" src="/media/notes/model-layer-infographic.gif" width="1200" height="1110" loading="lazy" data-lightbox
-       alt="Six cards under the title 6 rules behind how my agents pick a model, and who pays. One, tiers, not models: work asks for a tier and the registry says which model that is today. Two, one free model, then Go: free models share one daily cap, so the chain is one free model, then Go, then Luna and Sol. Three, paid only on a typed yes: agents hold no key, and I approve each paid call against a prepaid balance. Four, four at a time: the supervisor caps live agents per session, their depth and their retries. Five, recover, don't stall: when a model runs out the session moves down the chain and writes a checkpoint. Six, checked every session: the checklist proves the layer and PANTRY's usage before work starts. A banner reads: spend free and flat-rate first; real money only on a typed yes. Each card's small diagram plays on a loop.">
-  <figcaption class="shot__cap">The layer as six rules. Each card's diagram plays the rule; the words stay put.</figcaption>
-</figure>
+<nav class="rule-cards" aria-label="The layer as six rules, each linking to the section that explains it">
+<a class="rule-card" href="#orchestration-stays-on-the-strong-tier-and-the-way-it-gets-there-matters"><span class="rule-card__n">1</span><b class="rule-card__t">Tiers, not models</b><span class="rule-card__d">Work asks for a tier; the registry says which model that is today.</span></a>
+<a class="rule-card" href="#the-light-chain-in-order"><span class="rule-card__n">2</span><b class="rule-card__t">One free model, then Go</b><span class="rule-card__d">The free models share one daily cap, so the chain holds one, then the small plan.</span></a>
+<a class="rule-card" href="#the-paid-route-needs-my-typed-approval"><span class="rule-card__n">3</span><b class="rule-card__t">Paid only on a typed yes</b><span class="rule-card__d">No agent holds the key, and each paid call waits for my approval.</span></a>
+<a class="rule-card" href="#limits-on-spawning-advice-on-context-and-a-record-for-recovery"><span class="rule-card__n">4</span><b class="rule-card__t">Four at a time</b><span class="rule-card__d">The supervisor caps live agents per session, their depth and their retries.</span></a>
+<a class="rule-card" href="#work-is-a-different-lane-enforced-three-ways"><span class="rule-card__n">5</span><b class="rule-card__t">Work stays in its lane</b><span class="rule-card__d">On a work computer only company accounts and private models are allowed.</span></a>
+<a class="rule-card" href="#what-gets-recorded-and-why-free-and-paid-sit-apart"><span class="rule-card__n">6</span><b class="rule-card__t">Checked every session</b><span class="rule-card__d">The checklist proves the layer, and PANTRY's record, before work starts.</span></a>
+</nav>
 
 The shape is portable, and so is most of the code, but not all of it should be published. This is the line I drew, and why.
 
