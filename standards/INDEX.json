@@ -10,26 +10,6 @@
   ],
   "standards": [
     {
-      "slug": "agents",
-      "file": "standards/AGENTS.md",
-      "url": "https://portfolio.tjakoen.com/standards/agents",
-      "skill": null,
-      "title": "AGENTS.md",
-      "summary": "",
-      "when": null,
-      "lines": 1,
-      "lead": {
-        "lines": [
-          1,
-          1
-        ],
-        "summary": "CLAUDE.md"
-      },
-      "sections": [],
-      "refsOut": [],
-      "refsIn": []
-    },
-    {
       "slug": "ai-development",
       "file": "standards/AI-DEVELOPMENT.md",
       "url": "https://portfolio.tjakoen.com/standards/ai-development",

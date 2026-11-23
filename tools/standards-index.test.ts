@@ -10,9 +10,18 @@ import { test, expect, describe } from "bun:test";
 import { readFileSync } from "node:fs";
 import { slugifyHeading } from "@tjakoen/mill/core/slug.ts";
 import {
-  buildIndex, findRefs, summarize, plainInline, readStandards, render, INDEX_PATH,
+  buildIndex, findRefs, summarize, plainInline, readStandards, render, INDEX_PATH, isAliasStub,
   type Section,
 } from "./standards-index.ts";
+
+describe("symlinked aliases on a checkout without symlinks", () => {
+  test("the stub git leaves for standards/AGENTS.md is not a standard, so Windows and CI build the same index", () => {
+    expect(isAliasStub("CLAUDE.md")).toBe(true);
+    expect(isAliasStub("CLAUDE.md\n")).toBe(true);
+    expect(isAliasStub("---\ntitle: VOICE.md\n---\n# Voice\n")).toBe(false);
+    expect(readStandards().map((s) => s.file)).not.toContain("AGENTS.md");
+  });
+});
 
 const ALPHA = `---
 title: ALPHA.md — the first fixture

@@ -1,3 +1,9 @@
+---
+title: AI fluency and Codex token economy
+date: 2026-11-21
+status: complete
+consulted: [PROMPT.md, INTAKE.md, SESSION-LOOP.md]
+---
 # AI fluency and Codex token economy
 
 The sourced 4D check now lives in PROMPT and is applied by INTAKE. SESSION-LOOP describes portable role routing and context costs. Two personal page skills reuse the existing standards. Routine signals now distinguish action and object and discover Codex skills.

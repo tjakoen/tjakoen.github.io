@@ -1,6 +1,7 @@
 ---
 status: needs-verification
-consulted: [plans/memory-dream.md, standards/COMMIT-STANDARD.md]
+consulted: [COMMIT-STANDARD.md]
+plan: plans/memory-dream.md
 verifiedBy: Independent dream_verify reviewer returned PASS.
 unpushed: 0
 doctor: The session-start doctor reported 15 checks with no failures or due items. Existing skill-link and settings drift warnings remain outside this run.
