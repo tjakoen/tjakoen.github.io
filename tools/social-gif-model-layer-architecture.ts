@@ -31,7 +31,7 @@ const left = (x: number, y: number, s: string, size: number, fill = INK, extra =
 const right = (x: number, y: number, s: string, size: number, fill = INK, extra = "") =>
   `<text x="${x}" y="${y}" text-anchor="end" style="fill:${fill};font-size:${size}px${extra}">${esc(s)}</text>`;
 
-interface Tile { key: string; t: string; s?: string; dashed?: boolean }
+interface Tile { key: string; t: string; s?: string; strong?: boolean }
 interface Band { key: string; y: number; h: number; title: string; sub?: string; heavy?: boolean; tileH?: number; tiles?: Tile[] }
 
 const bands: Band[] = [
@@ -43,11 +43,15 @@ const bands: Band[] = [
     { key: "supervisor", t: "Supervisor", s: "4 agents at a time" }, { key: "recovery", t: "Recovery", s: "checkpoint, hand-off" }] },
   { key: "harness", y: 674, h: 120, title: "Harnesses", tileH: 50, tiles: [
     { key: "claude", t: "Claude Code" }, { key: "opencode", t: "OpenCode" }, { key: "codex", t: "Codex app" }] },
-  { key: "models", y: 824, h: 180, title: "Models", tileH: 78, tiles: [
-    { key: "free", t: "Free model", s: "one, shared daily cap", dashed: true },
-    { key: "go", t: "OpenCode Go", s: "flat monthly plan", dashed: true },
-    { key: "private", t: "Claude · Codex", s: "private, on plan" },
-    { key: "paid", t: "DeepSeek API", s: "paid per call", dashed: true }] },
+  // Models by role, strongest first: the strong models do the planning and review, the light ones take
+  // bounded work, and the paid API waits for my yes. Whether a model keeps prompts is a note on the tile,
+  // not its outline, so the row reads as what each model is for.
+  { key: "models", y: 824, h: 180, title: "Models: strong work stays on Opus and Sol", tileH: 78, tiles: [
+    { key: "private", t: "Opus · Sol", s: "planning, review", strong: true },
+    { key: "free", t: "Free model", s: "light · keeps prompts" },
+    { key: "go", t: "OpenCode Go", s: "light · keeps prompts" },
+    { key: "luna", t: "Luna", s: "light · private" },
+    { key: "paid", t: "DeepSeek API", s: "on my yes · keeps prompts" }] },
 ];
 
 // Tile geometry, fixed for every frame.
@@ -99,10 +103,10 @@ function frame(t: number): string {
     else out.push(mid(W / 2, g.y + 38, band.title, 26, on ? PAPER : INK), mid(W / 2, g.y + 66, band.sub!, 17, on ? "#B9B6AC" : MUTED));
     for (const tile of band.tiles ?? []) {
       const tg = geo[tile.key], hot = lit.has(tile.key), struck = tile.key === "free" && freeOut;
-      out.push(`<rect x="${tg.x}" y="${tg.y}" width="${tg.w}" height="${tg.h}" rx="9" style="fill:${hot ? INK : "none"};stroke:${hot || seen.has(tile.key) ? INK : LINE};stroke-width:${!hot && seen.has(tile.key) ? 3 : 2}${tile.dashed && !hot ? ";stroke-dasharray:9 7" : ""}"/>`);
+      out.push(`<rect x="${tg.x}" y="${tg.y}" width="${tg.w}" height="${tg.h}" rx="9" style="fill:${hot ? INK : "none"};stroke:${hot || seen.has(tile.key) || tile.strong ? INK : LINE};stroke-width:${tile.strong ? 3.5 : !hot && seen.has(tile.key) ? 3 : 2}"/>`);
       const ty = tile.s ? tg.y + 32 : tg.y + tg.h / 2 + 7;
       out.push(mid(tg.x + tg.w / 2, ty, tile.t, 19, hot ? PAPER : struck ? MUTED : INK, struck ? ";text-decoration:line-through" : ""));
-      if (tile.s) out.push(mid(tg.x + tg.w / 2, tg.y + 58, struck ? "out for today" : tile.s, 15, hot ? "#B9B6AC" : MUTED, ";font-style:italic"));
+      if (tile.s) out.push(mid(tg.x + tg.w / 2, tg.y + 58, struck ? "out for today" : tile.s, 14, hot ? "#B9B6AC" : MUTED, ";font-style:italic"));
     }
   }
   // Arrows between the bands.
@@ -112,8 +116,8 @@ function frame(t: number): string {
   }
   // The two locks, flashed while the request is on Go.
   if (locks > 0) {
-    for (const [key, label] of [["private", "private repos stay here"], ["paid", "waits for my typed yes"]] as const) {
-      const tg = geo[key], wpx = 210;
+    for (const [key, label] of [["private", "private repos stay private"], ["paid", "waits for my typed yes"]] as const) {
+      const tg = geo[key], wpx = 200;
       out.push(`<g style="opacity:${locks}"><rect x="${tg.x + tg.w / 2 - wpx / 2}" y="${tg.y + tg.h + 6}" width="${wpx}" height="26" rx="14" style="fill:${INK}"/>${mid(tg.x + tg.w / 2, tg.y + tg.h + 24, label, 14.5, PAPER)}</g>`);
     }
   }
