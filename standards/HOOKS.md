@@ -56,9 +56,10 @@ Two consequences worth knowing before you go looking for a wire:
 |---|---|---|---|
 | session-doctor.sh | SessionStart | every session | Print. Always exits 0. |
 | human-lane.sh | PreToolUse | the write tools | Block the write, with a reason. |
-| spawn-envelope.sh | PreToolUse | spawn and follow-up prompt tools | Block the spawn, naming what is missing. |
+| spawn-envelope.sh | PreToolUse | spawn and follow-up prompt tools | Block the spawn, naming what is missing, a worktree problem or a supervisor limit. |
+| goldfish-gate.sh | PreToolUse | Edit, Write, Bash and the PANTRY claim | Block a gated plan from moving to doing without its review. |
 
-**More than three hooks are wired here, and this file covers three.** The others are housekeeping
+**More than four hooks are wired here, and this file covers four.** The others are housekeeping
 and turn-end readouts: a config drift check at session start, a skill refresh, the token proxy in
 front of the shell tool, the turn-end gate and session guard on Stop, and the context trigger on
 PostToolUse that carries the handoff. The last of those belongs to
@@ -223,6 +224,59 @@ itself, and it is the reason this file tells a reader to check the settings rath
 - Entirely: remove the matcher entry from the machine settings.
 - There is no per-repo exclusion, on purpose. A spawn is not a path, so there is nothing to exclude
   against.
+
+**The worktree rule** (Model Intelligence Layer Phase B, step 7). Once the four headings are present,
+an editing spawn must name a Worktree heading whose path is not the parent's folder and is not claimed
+by another live session. A scope cap that points outside the repository must also name its Repo.
+Read-only agent types are exempt, and so is the short follow-up above. When the spawn is admitted,
+the hook writes a claim line to the worktrees file in the state directory. The per-tool session event
+hook refreshes every claim the session holds, so a working session never expires, and the finish
+gate releases them at the stop. A claim with no refresh for thirty minutes, PANTRY's own expiry, is no
+longer live. The rules live in a Python helper beside the script, because the claim store needs a
+lock and an atomic rename. A crash in the helper admits, and a missing or unreadable store denies
+nothing and prints a warning, so a bad file cannot lock every spawn out.
+
+**The supervisor seam.** After every check above has passed, the hook asks the supervisor to admit
+the spawn, with the session id as the task. That call comes before the claim is written, so a refusal
+leaves no claim behind, and it applies to read-only spawns too. Exit 0 admits. Exit 3 is a limit, and
+the denial carries the reason the supervisor printed. Any other exit is a crash and **fails closed**,
+the one place in this hook that does, because a supervisor that cannot count cannot hold a limit. A
+machine without the supervisor file or without bun admits with a warning. The limits themselves are
+[MODELS](MODELS.md) section 13.
+
+**The worktree rule's off switch** is ENVELOPE_WORKTREE=off, which skips the worktree and repo checks
+and leaves the supervisor in place. Reverting the commit that added the rule also restores the old
+behavior.
+
+---
+
+## 4a. goldfish-gate.sh, before a plan starts
+
+**Fires on:** PreToolUse, on three triggers. An Edit or Write of a plan file that sets the status to
+doing, a Bash command that writes under plans/ and contains that status, and the PANTRY claim on a plan
+that qualifies. auto-plan.py is not a trigger, because it only ever writes exempt chat plans.
+
+**What it does.** A plan is gated when it is marked lane: gated, or when its touches name hooks,
+settings or standards/ (owner decision O3). Chat plans and small fixes, meaning three numbered or
+checkbox lines or fewer under the Steps heading, are never gated. A gated plan may not move to doing
+unless artifacts/reviews/ beside it holds a review named for the plan id, with Comprehension, Critic
+and Readiness as headings in that order and GO as its last line. A failed Comprehension ends the
+sequence there, and a review filed under plans/ is refused. Exit 2 is the block.
+
+**What it cannot do.** It checks the order, the location and the findings of a review. It cannot prove
+the review's context was isolated; that is the canary probe in [MODELS-VERIFY](MODELS-VERIFY.md), and
+a pass here is not proof of it.
+
+**It fails open** on malformed input, an unreadable plan or a missing repository, because a gate that
+blocks over its own parse error is a gate that gets switched off.
+
+**Wired where.** The committed Claude Code settings for all three machines carry it. No committed Codex
+hooks file does yet. The live file changes only when the owner applies the settings, so until then the
+verifier's goldfish.gated row reads NOT TESTED.
+
+**How to turn it off.** GOLDFISH_GATE=off makes the script exit at once. Removing the matcher entry
+from the machine settings unwires it, and reverting the commit that added it restores the old
+behavior.
 
 ---
 
