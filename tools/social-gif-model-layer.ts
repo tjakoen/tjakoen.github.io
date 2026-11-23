@@ -19,7 +19,7 @@ const ROOT = join(import.meta.dir, "..");
 const W = 1200, H = 1110;
 const PAPER = "#E2E0D8", CARD = "#ECEAE3", INK = "#1C1B17", MUTED = "#6E6C64", LINE = "rgba(28,27,23,.28)";
 const HOST = "portfolio.tjakoen.com";
-const FPS = 10, HOLD_MS = 3500;
+const FPS = 10;
 
 const X0 = 60, GAP = 24, CW = (W - 2 * X0 - 2 * GAP) / 3, CH = 340, ROW = [172, 172 + CH + GAP];
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
@@ -113,17 +113,17 @@ const cards: Card[] = [
   },
 ];
 
-const T_TITLE = 0.6, T_CARD0 = 0.8, T_STEP = 0.9, T_FADE = 0.35, T_PLAY = 0.9;
-const T_BANNER = T_CARD0 + cards.length * T_STEP + 0.3;
-const T_END = T_BANNER + 0.6;
+// Everything that reads is on every frame, so the card is readable the moment it appears and at any point
+// in the loop. Only the diagrams move: each plays over the first PLAY of a PERIOD-second loop, holds its end
+// state for the rest, and starts a little after the card before it, so the grid ripples rather than blinks.
+const PERIOD = 4, PLAY = 0.65, STAGGER = 0.06;
 
 function frame(t: number): string {
   const out: string[] = [];
   cards.forEach((c, i) => {
-    const start = T_CARD0 + i * T_STEP, a = clamp((t - start) / T_FADE), p = clamp((t - start - T_FADE * 0.6) / T_PLAY);
-    if (a <= 0) return;
-    const x = X0 + (i % 3) * (CW + GAP), y = ROW[Math.floor(i / 3)], lift = (1 - a) * 14;
-    out.push(`<g style="opacity:${a}" transform="translate(0,${lift})">`,
+    const phase = (((t / PERIOD) - i * STAGGER) % 1 + 1) % 1, p = clamp(phase / PLAY);
+    const x = X0 + (i % 3) * (CW + GAP), y = ROW[Math.floor(i / 3)];
+    out.push(`<g>`,
       `<rect x="${x}" y="${y}" width="${CW}" height="${CH}" rx="12" style="fill:${CARD};stroke:${LINE};stroke-width:1.5"/>`,
       `<circle cx="${x + 32}" cy="${y + 36}" r="15" style="fill:${INK}"/>`, mid(x + 32, y + 42, String(i + 1), 17, PAPER),
       text(x + 58, y + 44, c.title, 25),
@@ -133,17 +133,16 @@ function frame(t: number): string {
       mid(x + CW / 2, y + 308, `Best for: ${c.best}`, 15.5),
       `</g>`);
   });
-  const b = clamp((t - T_BANNER) / 0.5), by = ROW[1] + CH + 30;
-  if (b > 0) out.push(`<g style="opacity:${b}">`,
+  const by = ROW[1] + CH + 30;
+  out.push(`<g>`,
     `<rect x="${X0}" y="${by}" width="${W - 2 * X0}" height="84" rx="12" style="fill:${INK}"/>`,
     text(X0 + 28, by + 36, "Rule of thumb: spend free and flat-rate first; real money only on a typed yes.", 22, PAPER),
     text(X0 + 28, by + 64, "Free stays ahead of Go until a week of usage says otherwise. The review is on 30 November.", 15.5, "#B9B6AC", ";font-style:italic"),
     `</g>`);
-  const ta = clamp(t / T_TITLE);
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="Georgia, 'Times New Roman', serif">
 <rect width="${W}" height="${H}" style="fill:${PAPER}"/>
 <rect x="20" y="20" width="${W - 40}" height="${H - 40}" rx="10" style="fill:none;stroke:${LINE};stroke-width:1.5"/>
-<g style="opacity:${ta}">
+<g>
 ${text(X0, 76, "THE MODEL INTELLIGENCE LAYER", 17, MUTED, ";letter-spacing:5px")}
 ${text(X0, 128, "6 rules behind how my agents pick a model", 42, INK, ";letter-spacing:-0.5px")}
 ${text(W - X0, 128, "and who pays", 26, MUTED, ";font-style:italic").replace("<text ", '<text text-anchor="end" ')}
@@ -156,8 +155,8 @@ ${text(W - X0, H - 34, HOST, 18, MUTED).replace("<text ", '<text text-anchor="en
 }
 
 const frames: { svg: string; delay: number }[] = [];
-for (let k = 0, n = Math.ceil(T_END * FPS); k <= n; k++) frames.push({ svg: frame(k / FPS), delay: 1000 / FPS });
-frames[frames.length - 1].delay = HOLD_MS;
+// One loop exactly, so the last frame leads straight back into the first.
+for (let k = 0, n = PERIOD * FPS; k < n; k++) frames.push({ svg: frame(k / FPS), delay: 1000 / FPS });
 
 const gifenc = await readFile(join(ROOT, "node_modules", "gifenc", "dist", "gifenc.esm.js"), "utf8");
 const b = await chromium.launch();
@@ -184,9 +183,11 @@ try {
   const OUT = join(ROOT, "content", "media", "notes");
   await mkdir(OUT, { recursive: true });
   await writeFile(join(OUT, "model-layer-infographic.gif"), new Uint8Array(bytes));
-  await pg.setContent(`<!doctype html><html><body style="margin:0">${frames[frames.length - 1].svg}</body></html>`);
+  // The still is the moment every diagram has finished: just before the loop restarts the first card.
+  const still = frame(PERIOD * (PLAY + (cards.length - 1) * STAGGER + 0.02));
+  await pg.setContent(`<!doctype html><html><body style="margin:0">${still}</body></html>`);
   await writeFile(join(OUT, "model-layer-infographic-final.png"), await pg.screenshot({ clip: { x: 0, y: 0, width: W, height: H } }));
-  console.log(`[social:gif:model-layer] wrote content/media/notes/model-layer-infographic.gif (${W}x${H}, ${frames.length} frames, ${(bytes.length / 1024).toFixed(0)} KB) and the final frame as a PNG`);
+  console.log(`[social:gif:model-layer] wrote content/media/notes/model-layer-infographic.gif (${W}x${H}, ${frames.length} frames, ${(bytes.length / 1024).toFixed(0)} KB) and the finished state as a PNG`);
 } finally {
   await b.close();
 }
