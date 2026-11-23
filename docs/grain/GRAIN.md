@@ -230,3 +230,19 @@ components with its own domain components without moving either source tree.
 The detailed contract is in **[AI-INTERFACE.md](./AI-INTERFACE.md)**; the visual identity
 and grade mechanics are in **[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)**. The package README
 contains the current installation and usage reference: **[GRAIN on GitHub](https://github.com/tjakoen/grain/blob/main/README.md)**.
+
+## Adopting updated standards
+
+For a dashboard, start with the decision the reader needs to make. Give each comparison a
+visible baseline and put the next action beside the panel that explains it.
+[GRAIN dashboard components](https://github.com/tjakoen/grain/tree/7b92fe7/packages/grain/components/dashboards)
+
+For an installable app, check how someone gets back from a deep link, what they see offline,
+and which actions still work in a browser tab. The native PWA guide covers the manifest,
+icons, safe areas, installation and accessible controls.
+[Native PWA guide](https://github.com/tjakoen/grain/blob/7b92fe7/packages/grain/skills/native-pwa-design-system/SKILL.md)
+
+On machines with the shared session doctor, opening a project that declares GRAIN creates
+a proposed plan for each new catalog revision. The plan starts by checking whether the
+standard applies to that app. Keep the completed or declined plan in the plans directory
+or its archive so the next session recognizes the decision.
