@@ -309,6 +309,17 @@ interface CompareRow { role: string; before: CompareCell; now: CompareCell }
 interface Compare { label: string; before: string; now: string; rows: CompareRow[] }
 
 export const COMPARES: Record<string, Compare> = {
+  lanes: {
+    before: "Work computer", now: "Personal computer",
+    label: "The same setup on a work computer and a personal computer. Accounts: on the work computer only the company's Claude and Codex; on my own, my own plans. Models: at work only Claude and Codex, which are private; on my own computer the free model, Go and DeepSeek as well, which may keep prompts. Repositories: at work only work repositories; on my own computer my own, each one cleared before a model that keeps prompts may touch it. OpenCode and the light chain: refused at work, running on my own computer. A computer the setup cannot identify is treated as a work computer.",
+    rows: [
+      { role: "Accounts", before: { t: "Company only", s: ["Claude and Codex,", "checked every prompt"] }, now: { t: "My own plans", s: ["Claude, Codex", "and OpenCode Go"] } },
+      { role: "Models", before: { t: "Claude and Codex", s: ["private, nothing else"], heavy: true }, now: { t: "Plus free, Go, DeepSeek", s: ["these may keep prompts"] } },
+      { role: "Repositories", before: { t: "Work repositories", s: ["never leave the lane"] }, now: { t: "My own", s: ["each cleared before a", "model that keeps prompts"] } },
+      { role: "Light chain", before: { t: "Refused", s: ["OpenCode will not start"], gone: true }, now: { t: "Running", s: ["free, then Go, then Codex"] } },
+      { role: "Unknown computer", before: { t: "Treated as work", s: ["the safe default"], heavy: true }, now: { t: "Never assumed", s: ["it must name itself"] } },
+    ],
+  },
   setup: {
     before: "Before", now: "Now",
     label: "My setup before and now, side by side, by role. Main tool: Claude Code before, and Claude Code still, when I want Claude. Second tool: the Codex app before, as the backup and for a parallel project, and now OpenCode, which does all coding outside Claude with the Codex plan, a free model, a small monthly plan and the DeepSeek API plugged in. Last fallback: DeepSeek Harness before, and now deleted. Non-coding work: whichever app was open before, and now the Codex app, for the ChatGPT side and anything at work. Who picks the model: me, by hand, before, and now the Model Intelligence Layer.",
