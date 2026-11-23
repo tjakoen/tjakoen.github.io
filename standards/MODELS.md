@@ -321,9 +321,10 @@ An agent has no terminal input, so the command refuses it with exit 3.
 
 **What the approval guarantees.** The request id is a hash of the source, destination and reason,
 encoded so that no field can spill into the next, so an approval given for one destination cannot be
-spent on another. A paid model is named by its registry id when its name is shared with a plan-cost
-entry, and a metered request states an estimated cost above zero. A request that uses an approval
-records which approval it used, and every copy of that approval is void afterwards. The cap counts
+spent on another, and a request may not name an id of its own. A model is named by its registry id
+when its name is shared by entries of different costs, and a metered request states an estimated
+cost above zero. A request that uses an approval records which approval it used, and every copy of
+that approval is void afterwards. An approval expires 24 hours after it was given. The cap counts
 reported spend plus the estimates of requests already approved.
 
 **What holds the money.** The approvals file and the ledger are files an agent can write, so the
