@@ -803,3 +803,16 @@
   .pick__chain .pick__model:nth-child(2)::after { content: none; }
 }
 @media (prefers-reduced-motion: reduce) { .pick__model, .pick__gate { transition: none; } }
+
+/* The layer as six rules, in the technical note: a grid of cards that each link to the section that
+   explains the rule. Plain links, so it needs no script and reads the same in print and the export. */
+.rule-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: var(--space-3); margin: var(--space-6) 0; }
+.rule-card { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: var(--space-2); row-gap: 2px;
+  padding: var(--space-3); border: 1px solid var(--line-soft); border-radius: var(--radius-sm); color: var(--ink); text-decoration: none;
+  transition: border-color .2s, background .2s; }
+.rule-card:hover, .rule-card:focus-visible { border-color: var(--ink); }
+.rule-card__n { grid-row: span 2; display: grid; place-items: center; width: 1.8em; height: 1.8em; border-radius: 50%;
+  background: var(--ink); color: var(--paper); font-size: var(--text-xs); font-weight: 700; }
+.rule-card__t { font-weight: 400; }
+.rule-card__d { font-size: var(--text-sm); color: var(--ink-muted); }
+@media (prefers-reduced-motion: reduce) { .rule-card { transition: none; } }
