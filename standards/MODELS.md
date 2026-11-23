@@ -360,18 +360,20 @@ and it is decided before any network call. The tool makes no network call at all
 
 The supervisor is code, not an agent (decision M1). It is supervisor.ts in claude-config, and it does
 two jobs. The decide command returns a role's tier, the model the route check gives for it, and
-whether the piece should be delegated. The admit-spawn command counts spawns per task and refuses
-past the owner's limits (O4):
+whether the piece should be delegated. The admit-spawn command counts the agents a task has live and
+refuses past the owner's limits (O4). A task is one session, so each session, and each project running
+its own sessions, has its own count:
 
 | Limit | Value |
 |---|---|
-| Agents live at once, per task | 3 |
+| Agents live at once, per session | 4 |
 | Delegation depth | 2 |
 | Retries | 2 |
-| Spawns per task | 4 |
 
-The values are read from the registry's supervisor block, and those four numbers are the fallback when
-the block is absent. A limit refusal exits 3 with a reason that names the limit. An agent that has not
+The owner settled O4 on 2026-11-23 as four spawns per task at a time. The registry keeps two numbers for
+it, maxConcurrency and maxSpawnsPerTask, both 4, and the live cap is the smaller of the two; nothing
+counts spawns over a session's lifetime. The values are read from the registry's supervisor block, and
+the same numbers are the fallback when the block is absent. A limit refusal exits 3 with a reason that names the limit. An agent that has not
 been heard from in thirty minutes stops counting as live.
 
 It defers to the human lane and never overrides it. A path in the lane is held for the owner, and the
