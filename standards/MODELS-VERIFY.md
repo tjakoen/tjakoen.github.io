@@ -109,5 +109,27 @@ repository. Ask-triggers: a check FAILs, or the verifier cannot run.
 | Model guard | assisted | A session on the wrong model stops before any work, and the override lifts it. |
 | Route check | assisted | Light work on OpenCode takes a free model in a cleared repository and a Codex model in a denied one, and an unanswered repository asks. |
 
+## The Phase B checks
+
+Phase B emptied the verifier's LATER list. Each capability that used to wait there now has a live
+check id, and each line below says what its row proves and what the session adds to it in the run
+report. A check that does not apply to the harness prints UNSUPPORTED with the reason *not on* and the
+harness name. While DeepSeek Harness is on hold, every DSH row reads UNSUPPORTED with the reason *on
+hold*.
+
+| Check id | Harnesses | What the row proves | What the session adds |
+|---|---|---|---|
+| fallback.recorded | all | A route check failure writes a transition line, a pick with --prefer-return brings the preferred model back after its cooldown, a done side-effect key refuses a retry, and a spent chain exits 7. Verified by test. | Paste the row. Nothing live is needed. |
+| escalation.recorded | Claude Code, Codex | A request without approval exits 3 and writes no approved line, a fixture approval yields all seven fields, and missing credentials exit 6 with no network call. | Run a request and confirm it exits 3. Never run approve from the session; it has to refuse. |
+| context.budgeted | Claude Code | Every context block in the registry is valid, and the budget fixtures return the expected decisions. | Name how many entries are measured, estimated and unverified, from the runtime brief. |
+| recovery.lineage | Claude Code | In a throwaway directory, a checkpoint writes and validates, a complete one refuses a red gate, and supersede waits for *recovered: verified*. | Paste the row. |
+| scout.readonly | all | Recommend runs against a copy of the registry and the copy's hash is unchanged afterwards. | Paste the row. |
+| goldfish.fresh | Claude Code, Codex, OpenCode | On Claude Code, by test: the goldfish agent is read-only and not a fork, and the canary verdict passes a clean reply and fails a leaked one. Codex and OpenCode read NOT TESTED, Mac run pending. | Probe 5 above is the live half. Its canary is the only proof of isolation. |
+| goldfish.gated | Claude Code | The goldfish gate, run as the live hook file names it, refuses an unreviewed gated plan and admits a reviewed one, on Edit, Write, Bash and the PANTRY claim. | NOT TESTED with *owner apply pending* until the owner has applied the settings. |
+| opencode.main-failover | OpenCode | Nothing yet. It is configured and NOT TESTED. | Record it NOT TESTED until a real quota transition has happened on its own and is in the ledger and a run report. A test does not move it. |
+
+A green goldfish.gated row is not evidence that a review was isolated. The gate checks a review's
+order, location and findings, and only the canary in probe 5 checks freshness.
+
 The policy behind every row is [MODELS.md](MODELS.md). The envelope rule is [LOOP §4b](LOOP.md) and
 its guard is in [HOOKS](HOOKS.md).
