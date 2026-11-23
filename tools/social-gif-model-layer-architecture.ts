@@ -16,10 +16,10 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const ROOT = join(import.meta.dir, "..");
-const W = 1200, H = 1240;
+const W = 1200, H = 1300;
 const PAPER = "#E2E0D8", CARD = "#ECEAE3", INK = "#1C1B17", MUTED = "#6E6C64", LINE = "rgba(28,27,23,.28)";
 const HOST = "portfolio.tjakoen.com";
-const FPS = 10, PERIOD = 5;
+const FPS = 6, PERIOD = 10;
 const X0 = 60, BW = W - 2 * X0;
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
@@ -35,15 +35,15 @@ interface Tile { key: string; t: string; s?: string; dashed?: boolean }
 interface Band { key: string; y: number; h: number; title: string; sub?: string; heavy?: boolean; tileH?: number; tiles?: Tile[] }
 
 const bands: Band[] = [
-  { key: "you", y: 170, h: 84, title: "Me", sub: "requests · decisions · approvals" },
-  { key: "loop", y: 284, h: 120, title: "The loop", tileH: 50, tiles: [
+  { key: "you", y: 230, h: 84, title: "Me", sub: "requests · decisions · approvals" },
+  { key: "loop", y: 344, h: 120, title: "The loop", tileH: 50, tiles: [
     { key: "standards", t: "Standards" }, { key: "plans", t: "Plans" }, { key: "review", t: "Independent review" }, { key: "gates", t: "Human gates" }] },
-  { key: "mil", y: 434, h: 150, title: "The Model Intelligence Layer", heavy: true, tileH: 78, tiles: [
+  { key: "mil", y: 494, h: 150, title: "The Model Intelligence Layer", heavy: true, tileH: 78, tiles: [
     { key: "registry", t: "Registry", s: "work → a tier" }, { key: "router", t: "Router", s: "free → Go → Codex" },
     { key: "supervisor", t: "Supervisor", s: "4 agents at a time" }, { key: "recovery", t: "Recovery", s: "checkpoint, hand-off" }] },
-  { key: "harness", y: 614, h: 120, title: "Harnesses", tileH: 50, tiles: [
+  { key: "harness", y: 674, h: 120, title: "Harnesses", tileH: 50, tiles: [
     { key: "claude", t: "Claude Code" }, { key: "opencode", t: "OpenCode" }, { key: "codex", t: "Codex app" }] },
-  { key: "models", y: 764, h: 180, title: "Models", tileH: 78, tiles: [
+  { key: "models", y: 824, h: 180, title: "Models", tileH: 78, tiles: [
     { key: "free", t: "Free model", s: "one, shared daily cap", dashed: true },
     { key: "go", t: "OpenCode Go", s: "flat monthly plan", dashed: true },
     { key: "private", t: "Claude · Codex", s: "private, on plan" },
@@ -62,21 +62,24 @@ const centre = (k: string) => ({ x: geo[k].x + geo[k].w / 2, y: geo[k].y });
 
 // The request's day, as stations on a loop from 0 to 1. The dot moves between stations; the station it last
 // reached is lit. Stations listed twice hold the dot there.
-const STATIONS: { s: number; at: string; lit: string[] }[] = [
-  { s: 0.00, at: "you", lit: ["you"] },
-  { s: 0.06, at: "you", lit: ["you"] },
-  { s: 0.14, at: "plans", lit: ["plans"] },
-  { s: 0.22, at: "gates", lit: ["gates"] },
-  { s: 0.31, at: "registry", lit: ["registry"] },
-  { s: 0.39, at: "router", lit: ["router"] },
-  { s: 0.46, at: "opencode", lit: ["opencode"] },
-  { s: 0.53, at: "free", lit: ["free"] },
-  { s: 0.60, at: "free", lit: [] },
-  { s: 0.66, at: "go", lit: ["go"] },
-  { s: 0.80, at: "go", lit: ["go"] },
-  { s: 0.92, at: "you", lit: ["you"] },
-  { s: 1.00, at: "you", lit: ["you"] },
+const STATIONS: { s: number; at: string; lit: string[]; say: string }[] = [
+  { s: 0.00, at: "you", lit: ["you"], say: "I ask for some light work: read a few files and sum them up." },
+  { s: 0.07, at: "you", lit: ["you"], say: "I ask for some light work: read a few files and sum them up." },
+  { s: 0.15, at: "plans", lit: ["plans"], say: "It becomes a plan, so the work and its cost are tracked." },
+  { s: 0.23, at: "gates", lit: ["gates"], say: "It passes the human gates: nothing here needs my approval." },
+  { s: 0.31, at: "registry", lit: ["registry"], say: "The registry turns \"light work\" into a tier, not a fixed model." },
+  { s: 0.39, at: "router", lit: ["router"], say: "The router picks the first model in that tier that is not out." },
+  { s: 0.46, at: "opencode", lit: ["opencode"], say: "It runs as a subagent in OpenCode." },
+  { s: 0.53, at: "free", lit: ["free"], say: "It tries the free model first. It costs nothing..." },
+  { s: 0.59, at: "free", lit: [], say: "...but the free model has hit its daily cap. It is out for today." },
+  { s: 0.66, at: "go", lit: ["go"], say: "So Go takes the work, on the flat monthly plan. Nothing stalls." },
+  { s: 0.74, at: "go", lit: ["go"], say: "Meanwhile private repos stay on Claude and Codex, and paid calls wait for my yes." },
+  { s: 0.84, at: "go", lit: ["go"], say: "The answer is ready." },
+  { s: 0.92, at: "you", lit: ["you"], say: "It comes back to me, and PANTRY logs which model did the work." },
+  { s: 1.00, at: "you", lit: ["you"], say: "It comes back to me, and PANTRY logs which model did the work." },
 ];
+// The tiles a request has passed keep a dark outline for the rest of the loop: the trail.
+const visitedBy = (ph: number) => new Set(STATIONS.filter((st) => st.s <= ph).map((st) => st.at));
 const ease = (v: number) => v * v * (3 - 2 * v);
 
 function frame(t: number): string {
@@ -85,7 +88,8 @@ function frame(t: number): string {
   while (i < STATIONS.length - 2 && STATIONS[i + 1].s <= ph) i++;
   const a = STATIONS[i], b = STATIONS[i + 1], k = ease(clamp((ph - a.s) / Math.max(1e-6, b.s - a.s)));
   const pa = centre(a.at), pb = centre(b.at), dot = { x: pa.x + (pb.x - pa.x) * k, y: pa.y + (pb.y - pa.y) * k };
-  const lit = new Set(a.lit), freeOut = ph >= 0.56, locks = clamp(Math.min((ph - 0.66) / 0.04, (0.86 - ph) / 0.04)), logged = ph >= 0.9;
+  const lit = new Set(a.lit), seen = visitedBy(ph), freeOut = ph >= 0.59, locks = clamp(Math.min((ph - 0.74) / 0.03, (0.86 - ph) / 0.03)), logged = ph >= 0.92;
+  const step = STATIONS.slice(0, i + 1).filter((st, j, all) => j === 0 || st.say !== all[j - 1].say).length;
 
   const out: string[] = [];
   for (const band of bands) {
@@ -95,7 +99,7 @@ function frame(t: number): string {
     else out.push(mid(W / 2, g.y + 38, band.title, 26, on ? PAPER : INK), mid(W / 2, g.y + 66, band.sub!, 17, on ? "#B9B6AC" : MUTED));
     for (const tile of band.tiles ?? []) {
       const tg = geo[tile.key], hot = lit.has(tile.key), struck = tile.key === "free" && freeOut;
-      out.push(`<rect x="${tg.x}" y="${tg.y}" width="${tg.w}" height="${tg.h}" rx="9" style="fill:${hot ? INK : "none"};stroke:${hot ? INK : LINE};stroke-width:2${tile.dashed && !hot ? ";stroke-dasharray:9 7" : ""}"/>`);
+      out.push(`<rect x="${tg.x}" y="${tg.y}" width="${tg.w}" height="${tg.h}" rx="9" style="fill:${hot ? INK : "none"};stroke:${hot || seen.has(tile.key) ? INK : LINE};stroke-width:${!hot && seen.has(tile.key) ? 3 : 2}${tile.dashed && !hot ? ";stroke-dasharray:9 7" : ""}"/>`);
       const ty = tile.s ? tg.y + 32 : tg.y + tg.h / 2 + 7;
       out.push(mid(tg.x + tg.w / 2, ty, tile.t, 19, hot ? PAPER : struck ? MUTED : INK, struck ? ";text-decoration:line-through" : ""));
       if (tile.s) out.push(mid(tg.x + tg.w / 2, tg.y + 58, struck ? "out for today" : tile.s, 15, hot ? "#B9B6AC" : MUTED, ";font-style:italic"));
@@ -114,7 +118,7 @@ function frame(t: number): string {
     }
   }
   // PANTRY, underneath everything.
-  const py = 974;
+  const py = 1034;
   out.push(`<rect x="${X0}" y="${py}" width="${BW}" height="76" rx="12" style="fill:none;stroke:${LINE};stroke-width:1.5;stroke-dasharray:4 5"/>`,
     left(X0 + 24, py + 33, "PANTRY", 21, INK, ";letter-spacing:3px"),
     left(X0 + 24, py + 58, "plans, claims, and every call's usage by model", 16, MUTED, ";font-style:italic"),
@@ -123,13 +127,17 @@ function frame(t: number): string {
   // The request itself.
   out.push(`<circle cx="${dot.x}" cy="${dot.y}" r="11" style="fill:${PAPER};stroke:${INK};stroke-width:4"/>`);
 
-  const by = 1080;
+  const by = 1140;
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="Georgia, 'Times New Roman', serif">
 <rect width="${W}" height="${H}" style="fill:${PAPER}"/>
 <rect x="20" y="20" width="${W - 40}" height="${H - 40}" rx="10" style="fill:none;stroke:${LINE};stroke-width:1.5"/>
 ${left(X0, 76, "THE MODEL INTELLIGENCE LAYER", 17, MUTED, ";letter-spacing:5px")}
 ${left(X0, 128, "One request, through the whole stack", 42, INK, ";letter-spacing:-0.5px")}
-${right(W - X0, 128, "follow the dot", 26, MUTED, ";font-style:italic")}
+${right(W - X0, 128, "follow the request", 26, MUTED, ";font-style:italic")}
+<rect x="${X0}" y="164" width="${BW}" height="48" rx="24" style="fill:${INK}"/>
+<circle cx="${X0 + 26}" cy="188" r="15" style="fill:${PAPER}"/>
+${mid(X0 + 26, 194, String(step), 16, INK, ";font-weight:bold")}
+${left(X0 + 54, 195, a.say, 19, PAPER)}
 ${out.join("\n")}
 <rect x="${X0}" y="${by}" width="${BW}" height="80" rx="12" style="fill:${INK}"/>
 ${mid(W / 2, by + 36, "Never stalls. Never overspends. Never leaks private code.", 25, PAPER)}
@@ -170,7 +178,7 @@ try {
   await mkdir(OUT, { recursive: true });
   await writeFile(join(OUT, "model-layer-architecture.gif"), new Uint8Array(bytes));
   // Two stills for review: the request on the free model, and on Go with both locks showing.
-  for (const [name, at] of [["free", 0.55], ["go", 0.75]] as const) {
+  for (const [name, at] of [["free", 0.62], ["go", 0.78]] as const) {
     await pg.setContent(`<!doctype html><html><body style="margin:0">${frame(at * PERIOD)}</body></html>`);
     await writeFile(join(OUT, `model-layer-architecture-${name}.png`), await pg.screenshot({ clip: { x: 0, y: 0, width: W, height: H } }));
   }
