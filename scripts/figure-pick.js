@@ -47,7 +47,12 @@ export const PICK_MARKUP = `<div class="pick" data-pick>
     ${Object.entries(PICKS).map(([k, p]) => `<button type="button" class="pick__mode" data-pick-mode="${k}" aria-pressed="false">${esc(p.label)}</button>`).join('')}
   </div>
   <p class="pick__ask"><span class="pick__tag">Request</span> <span data-pick-ask></span></p>
-  <p class="pick__lead">Planning and review never enter this chain; they stay on Opus and Sol. Light work goes down it in order:</p>
+  <p class="pick__label">Strong tier: planning and review, never in the chain below</p>
+  <div class="pick__strong">
+    <div class="pick__model pick__model--strong"><b class="pick__name">Opus</b><span class="pick__role">Claude plan · private</span></div>
+    <div class="pick__model pick__model--strong"><b class="pick__name">Sol</b><span class="pick__role">Codex plan · private</span></div>
+  </div>
+  <p class="pick__label">Light tier: the chain the router walks, in order</p>
   <ol class="pick__chain">
     ${CHAIN.map((m) => `<li class="pick__model" data-model="${m.key}">
       <b class="pick__name">${esc(m.name)}</b><span class="pick__role">${esc(m.role)}</span><span class="pick__verdict" data-verdict></span>

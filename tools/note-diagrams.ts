@@ -10,6 +10,7 @@
 // diagram); nothing here draws a shape.
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { draftNoteSlugs } from "../src/content.ts";
 import { layeredDiagram, type LayeredInput } from "@tjakoen/grain/components/organisms/diagram/diagram.ts";
 
 const E = (from: string, to: string, label?: string, title?: string) => ({ from, to, label, title });
@@ -107,8 +108,20 @@ export const DIAGRAMS: Record<string, LayeredInput> = {
 // says which way they talk. It is the picture for architecture and for "where each step fits", where a flow
 // would only add arrows. Drawn to the FIGURES flow scaffold: theme tokens only, one emphasized layer, no style
 // element, and a spoken name on the root.
-interface StackTile { t: string; s?: string[]; dashed?: boolean }
-interface StackLayer { title: string; sub?: string[]; tiles?: StackTile[]; emphasis?: boolean; footer?: boolean }
+interface StackTile { t: string; s?: string[]; dashed?: boolean; href?: string }
+interface StackLayer { title: string; sub?: string[]; tiles?: StackTile[]; emphasis?: boolean; footer?: boolean; href?: string }
+
+// A tile or layer may point at the note that explains it. "note:<slug>" resolves the way prose links do: a
+// draft goes to its unlisted /drafts page, so the static export never meets a dead /notes address. Anything
+// else is used as given (an absolute site path such as /standards).
+const linkTo = (href: string) => {
+  if (!href.startsWith("note:")) return href;
+  const slug = href.slice(5);
+  return `${draftNoteSlugs().has(slug) ? "/drafts" : "/notes"}/${slug}`;
+};
+const linked = (href: string | undefined, name: string, inner: string) =>
+  href ? `<a href="${X(linkTo(href))}"><title>${X(name)}: read more</title>${inner}</a>` : inner;
+const UNDER = ";text-decoration:underline;text-decoration-color:var(--color-muted)";
 interface Stack { label: string; arrows: "both" | "down"; layers: StackLayer[] }
 
 const X = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -149,22 +162,23 @@ export const STACKS: Record<string, Stack> = {
     label: "Every part of the layer, top to bottom. I make the requests and approvals. Under me the loop holds public standards, plans, independent review and human gates. Under the loop the Model Intelligence Layer has five parts: the registry of model ids, tiers and roles; the model guard that restarts a session on the wrong model; the route check that picks a model with cooldowns and repository clearance; the work guard that allows only a company account at work; and the usage record, one line per session. Under the layer are three harnesses: Claude Code, which the model guard and the work guard cover; OpenCode, which the route check and the launch gate cover; and the Codex app, which the work guard covers. Under the harnesses are the models by role: Opus and Sol, private, for planning and review; Luna, private, for light work; the free model and Go for light work, which may keep prompts; and the DeepSeek API, only on my yes, which may keep prompts too. The usage record feeds PANTRY, which keeps the shared state.",
     layers: [
       { title: "Me", sub: ["Requests and approvals"] },
-      { title: "The loop", tiles: [
-        { t: "Public standards" }, { t: "Plans" }, { t: "Independent review" }, { t: "Human gates" }] },
+      { title: "The loop", href: "note:loop-setup", tiles: [
+        { t: "Public standards", href: "/standards" }, { t: "Plans", href: "note:plan-big-type-small" },
+        { t: "Independent review", href: "note:same-reviewer-twice" }, { t: "Human gates" }] },
       { title: "The Model Intelligence Layer", emphasis: true, tiles: [
         { t: "Registry", s: ["model ids,", "tiers, roles"] },
         { t: "Model guard", s: ["wrong model", "restarts"] },
         { t: "Route check", s: ["order, cooldowns,", "clearance"] },
         { t: "Work guard", s: ["company account", "only at work"] },
         { t: "Usage record", s: ["one line per", "session"] }] },
-      { title: "Harnesses, and which parts cover them", tiles: [
+      { title: "Harnesses, and which parts cover them", href: "note:one-loop-three-harnesses", tiles: [
         { t: "Claude Code", s: ["model guard,", "work guard"] },
         { t: "OpenCode", s: ["route check,", "launch gate"] },
         { t: "Codex app", s: ["work guard"] }] },
       { title: "Models, by role", tiles: [
         { t: "Opus · Sol", s: ["planning, review,", "private"] }, { t: "Luna", s: ["light work,", "private"] },
         { t: "Free and Go", s: ["light work,", "keep prompts"] }, { t: "DeepSeek API", s: ["only on my yes,", "keeps prompts"] }] },
-      { title: "PANTRY", footer: true, sub: ["Reads the usage records, free and paid kept apart.", "Shared state that any session can read."] },
+      { title: "PANTRY", footer: true, href: "note:pantry-beside-the-work", sub: ["Reads the usage records, free and paid kept apart.", "Shared state that any session can read."] },
     ],
   },
   delegation: {
@@ -209,19 +223,20 @@ export function stackSvg(id: string): string {
     const stroke = l.emphasis ? "stroke:var(--color-fg);stroke-width:2.2" : "stroke:var(--color-line);stroke-width:1";
     if (l.footer) {
       parts.push(`<line x1="${PAD}" y1="${y}" x2="${W - PAD}" y2="${y}" style="stroke:var(--color-line);stroke-width:1"/>`);
-      parts.push(`<text x="${PAD + 4}" y="${y + 24}" style="fill:var(--color-fg);font-size:14px">${X(l.title)}</text>`);
+      parts.push(linked(l.href, l.title, `<text x="${PAD + 4}" y="${y + 24}" style="fill:var(--color-fg);font-size:14px${l.href ? UNDER : ""}">${X(l.title)}</text>`));
       subLines.forEach((ln, k) => parts.push(`<text x="${PAD + 4}" y="${y + 44 + k * 16}" style="fill:var(--color-muted);font-size:12px">${X(ln)}</text>`));
     } else {
       parts.push(`<rect x="${PAD}" y="${y}" width="${W - 2 * PAD}" height="${h}" rx="8" style="fill:none;${stroke}"/>`);
-      parts.push(`<text x="${W / 2}" y="${y + 22}" text-anchor="middle" style="fill:var(--color-fg);font-size:14.5px">${X(l.title)}</text>`);
+      parts.push(linked(l.href, l.title, `<text x="${W / 2}" y="${y + 22}" text-anchor="middle" style="fill:var(--color-fg);font-size:14.5px${l.href ? UNDER : ""}">${X(l.title)}</text>`));
       subLines.forEach((ln, k) => parts.push(`<text x="${W / 2}" y="${y + 40 + k * 16}" text-anchor="middle" style="fill:var(--color-muted);font-size:12px">${X(ln)}</text>`));
       const n = tiles.length, inner = W - 2 * PAD - 24, g = 10;
       const tw = n ? (inner - (n - 1) * g) / n : 0;
       tiles.forEach((tl, k) => {
         const tx = PAD + 12 + k * (tw + g), ty = y + head;
-        parts.push(`<rect x="${tx}" y="${ty}" width="${tw}" height="${tileH}" rx="6" style="fill:none;stroke:var(--color-line);stroke-width:1${tl.dashed ? ";stroke-dasharray:5 4" : ""}"/>`);
-        parts.push(`<text x="${tx + tw / 2}" y="${ty + 20}" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">${X(tl.t)}</text>`);
-        (tl.s ?? []).forEach((ln, j) => parts.push(`<text x="${tx + tw / 2}" y="${ty + 38 + j * 15}" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">${X(ln)}</text>`));
+        const tile = [`<rect x="${tx}" y="${ty}" width="${tw}" height="${tileH}" rx="6" style="fill:${tl.href ? "transparent" : "none"};stroke:var(--color-line);stroke-width:1${tl.dashed ? ";stroke-dasharray:5 4" : ""}"/>`,
+          `<text x="${tx + tw / 2}" y="${ty + 20}" text-anchor="middle" style="fill:var(--color-fg);font-size:13px${tl.href ? UNDER : ""}">${X(tl.t)}</text>`,
+          ...(tl.s ?? []).map((ln, j) => `<text x="${tx + tw / 2}" y="${ty + 38 + j * 15}" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">${X(ln)}</text>`)].join("");
+        parts.push(linked(tl.href, tl.t, tile));
       });
     }
     y += h;
