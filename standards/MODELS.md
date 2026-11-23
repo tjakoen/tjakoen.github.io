@@ -319,31 +319,19 @@ line to the approvals file under the escalation state directory, and that file i
 approval lives. An answer in the DECISIONS inbox is not approval, and neither is a sentence in chat.
 An agent has no terminal input, so the command refuses it with exit 3.
 
-**A paid approval carries the owner's signature.** A file is something any agent can write, and five
-audits showed that a guard on the file's name can always be spelled around. So on Windows the approve
-command signs the line with a Windows Hello key that lives in the TPM, and every signature asks for
-the owner's PIN or fingerprint. A request to a metered destination counts an approval only when that
-signature verifies against the public key Windows itself holds, read through PowerShell at its fixed
-system path, with a clean environment. The signed id is a hash of the source, destination and reason,
-encoded so that no field can spill into the next, so a metered request cannot borrow an id signed for
-another model. A paid model is named by its registry id when its name is shared with a plan-cost
-entry, and a metered request must state an estimated cost above zero. The owner creates the key once
-with the setup-key command. A plan-cost escalation still accepts the typed phrase, because it spends
-no money.
+**What the approval guarantees.** The request id is a hash of the source, destination and reason,
+encoded so that no field can spill into the next, so an approval given for one destination cannot be
+spent on another. A paid model is named by its registry id when its name is shared with a plan-cost
+entry, and a metered request states an estimated cost above zero. A request that uses an approval
+records which approval it used, and every copy of that approval is void afterwards. The cap counts
+reported spend plus the estimates of requests already approved.
 
-**Single use and the cap.** A request that uses an approval records which approval it used, and every
-copy of that approval is void afterwards. The cap counts reported spend plus the estimates of requests
-already approved. Both live in files an agent can write, so they hold against a careless agent and
-not against one that rewrites the files. The cap is advisory in that sense until the broker exists.
-
-**What the signature does not stop.** It makes the approval record trustworthy against a forged line
-and an ordinary request. It cannot stop an agent that runs its own code inside the tool, for example
-through a bun preload, it cannot stop an agent that rewrites the approvals file and the ledger
-together, and it cannot stop an agent that reads the provider key and calls the provider directly.
-Each is the same as editing the tool. The hard stop for those is a broker that holds the
-provider key outside every agent's reach and releases it only against a signed approval, which is a
-later piece of work. The Hello prompt also cannot show which request it signs, so the owner answers
-one only right after running approve. The Mac has no signer yet, so a paid approval there fails closed.
+**What holds the money.** The approvals file and the ledger are files an agent can write, so the
+record guards against a careless or mistaken agent, not a determined one. Six audits in Phase B
+showed that a file cannot be made forgery proof from inside the tool that reads it, and the owner
+chose not to chase that. The money is held by two plain facts instead: agents never hold a provider
+key, and the paid provider runs on a prepaid balance the owner tops up, which is a ceiling no agent
+can raise. The approval record is the audit trail and the check against mistakes.
 
 The exit codes are the route check's. Exit 3 means ask the owner, for an unapproved request or for
 the same denial twice inside the cooldown window, and in the second case the stderr line starts with
@@ -438,7 +426,7 @@ places.
 | Record | Home |
 |---|---|
 | Fallback transitions and escalation lines | The usage ledger, as transition and escalation lines in format version 2. A version 1 reader skips them. |
-| Approvals | The approvals file under the escalation state directory, written only by the owner's approve; a paid approval also carries the owner's Windows Hello signature. |
+| Approvals | The approvals file under the escalation state directory, written only by the owner's typed approve. |
 | Side-effect keys | The effects file under the route check's state directory. A retry against a key already done is refused with exit 5. |
 | Supervisor counts | One file per task under the supervisor's state directory. |
 | Worktree claims | The worktrees file under the state directory ([HOOKS](HOOKS.md) section 4). |
