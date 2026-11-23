@@ -36,6 +36,12 @@ Everything here comes from the setup I run every day. Each diagram can be dragge
 
 I call it a layer because it sits between the harness (the program that runs a session) and the models (the rented part), and it stays the same when either one changes. The loop contract from the earlier notes says the model is not part of the contract. The layer is where that sentence gets a mechanism.
 
+<figure class="shot">
+  <img class="shot__img" src="/media/notes/model-layer-architecture.gif" width="1200" height="1300" loading="lazy" data-lightbox
+       alt="An animated diagram of the whole stack: me at the top, then the loop of standards, plans, independent review and human gates, then the Model Intelligence Layer with its registry, router, supervisor and recovery, then the harnesses Claude Code, OpenCode and the Codex app, then the models, with PANTRY underneath. A numbered caption follows one request: it becomes a plan, passes the gates, the registry gives it a tier, the router sends it through OpenCode to the free model, which is out for today, so OpenCode Go takes it. While it runs, two labels show that private repositories stay on Claude and Codex and that the paid DeepSeek API waits for my typed yes. The answer comes back and PANTRY logs one more usage row. The tagline reads: never stalls, never overspends, never leaks private code.">
+  <figcaption class="shot__cap">One request through the whole stack. The free model is out, so Go takes the work, and nothing private or paid moves without the rule that guards it.</figcaption>
+</figure>
+
 It rests on three pieces of vocabulary, all from [MODELS](/standards/models), the public standard that holds the policy.
 
 | Piece | What it is | Mine |
@@ -295,6 +301,14 @@ Two habits fall out of having a layer, and they are the ones I did not plan.
 **I work at low effort, on purpose.** No pin in the registry sets reasoning effort to high. The strong tier earns its place through the model, and an execution-tier model at high effort is a strong-tier bill without a strong-tier choice behind it. Opus runs at low effort. Sonnet runs at medium. I wrote the argument for working this way, with its figure of the four boxes that let a session on low effort stay right, in [Plan on the Big Model, Type on the Small One](plan-big-type-small.md). The layer is one more of those boxes: it takes the model choice off the session, so the session has less to hold. I have worked at low effort ever since, and the work has held up, which is the evidence I have.
 
 ## Build your own
+
+Before the line between what to copy and what to keep, here is the whole layer as six rules, each with the small diagram it comes down to.
+
+<figure class="shot">
+  <img class="shot__img" src="/media/notes/model-layer-infographic.gif" width="1200" height="1110" loading="lazy" data-lightbox
+       alt="Six cards under the title 6 rules behind how my agents pick a model, and who pays. One, tiers, not models: work asks for a tier and the registry says which model that is today. Two, one free model, then Go: free models share one daily cap, so the chain is one free model, then Go, then Luna and Sol. Three, paid only on a typed yes: agents hold no key, and I approve each paid call against a prepaid balance. Four, four at a time: the supervisor caps live agents per session, their depth and their retries. Five, recover, don't stall: when a model runs out the session moves down the chain and writes a checkpoint. Six, checked every session: the checklist proves the layer and PANTRY's usage before work starts. A banner reads: spend free and flat-rate first; real money only on a typed yes. Each card's small diagram plays on a loop.">
+  <figcaption class="shot__cap">The layer as six rules. Each card's diagram plays the rule; the words stay put.</figcaption>
+</figure>
 
 The shape is portable, and so is most of the code, but not all of it should be published. This is the line I drew, and why.
 
