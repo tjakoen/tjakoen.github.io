@@ -201,15 +201,16 @@ guard prints them in both its restart card and its blocking message.
 | Tier | Claude Code | Codex | DeepSeek Harness | OpenCode | Privacy |
 |---|---|---|---|---|---|
 | strong | opus, low effort | gpt-6.2-sol, medium | DeepSeek V4.1 Flash | the Codex model, gpt-6.2-sol, medium | Claude and Codex private; DeepSeek not private |
-| execution (main) | sonnet, medium effort | gpt-6.2-sol, low | DeepSeek V4.1 Flash | the free chain first, then the Codex model, gpt-6.2-sol, low | free models and DeepSeek not private; Claude and Codex private |
-| cheapest | haiku, low effort | gpt-6-luna, medium | DeepSeek V4.1 Flash | the free chain first, then the Codex model, gpt-6-luna, medium | free models and DeepSeek not private; Claude and Codex private |
+| execution (main) | sonnet, medium effort | gpt-6.2-sol, low | DeepSeek V4.1 Flash | the light chain, then the Codex model, gpt-6.2-sol, low | free, Go and DeepSeek models not private; Claude and Codex private |
+| cheapest | haiku, low effort | gpt-6-luna, medium | DeepSeek V4.1 Flash | the light chain, then the Codex model, gpt-6-luna, medium | free, Go and DeepSeek models not private; Claude and Codex private |
 | escalation, on approval | none, delegate to strong | gpt-6.2-astra, low | DeepSeek V4.1 | the paid DeepSeek API, while credits remain | Codex private; DeepSeek, paid API included, not private |
 
 DeepSeek Harness runs Flash on every tier and reaches the full DeepSeek V4.1 only as a rare escalation
-the owner approves. OpenCode borrows the Codex models while a Codex plan has usage left. Light work on OpenCode tries the free chain first (DeepSeek V4.1 Flash Free, MiMo V2.6 Flash Free,
-LongCat 2.5 Free, Nemotron 3.5 Lightning Free, Flint 40B Free), then the cheaper Codex models while the
-Codex plan has usage left. The paid API is no longer part of that order; it is an escalation the owner
-approves (section 12). Section 11 holds that order and the privacy rules behind it. The chain is recorded in the registry and not yet wired.
+the owner approves. OpenCode borrows the Codex models while a Codex plan has usage left. Light work on OpenCode tries
+DeepSeek V4.1 Flash Free first, then the same model on the OpenCode Go plan, then the cheaper Codex
+models while the Codex plan has usage left. The paid API is no longer part of that order; it is an
+escalation the owner approves (section 12). Section 11 holds that order, the privacy rules behind it,
+and why the chain holds one free model and one Go model (D11).
 
 Every row outside Claude Code is marked unverified in the registry. Codex, DeepSeek Harness and OpenCode
 are not installed on the machine where the guard was proven, and OpenCode is not installed anywhere yet.
@@ -256,12 +257,28 @@ last step of D3 and the whole of D10 no longer apply. The chain now ends at the 
 paid call is an escalation that needs a recorded approval (section 12). D3 and D10 stay listed above
 so the history reads straight.
 
+**One free model, then OpenCode Go (2026-11-23).** The owner made D11 after the free chain ran out in
+one go on the Mac.
+
+- D11. OpenCode's free models share one daily message cap, so when one runs out they all do, and a
+  chain of five free models was one fallback in practice. The light chain now holds a single free
+  model, DeepSeek V4.1 Flash Free, then DeepSeek V4.1 Flash on the OpenCode Go plan, then the Codex
+  models. Go is a fixed monthly subscription whose models share one allowance, with a five-hour, a
+  weekly and a monthly limit, so the chain holds one Go model as well. Go counts as plan cost and
+  not private. Its Extra Usage setting stays off, because with it on, an exhausted allowance would
+  bill console credits with no approval in between. Iceman Contributor Free stays out of the chain:
+  it is free only for a limited time and trains on what it is sent.
+
+The same model id is now served at two costs: DeepSeek V4.1 Flash is plan cost on Go and metered on
+the DeepSeek API. An escalation therefore refuses that id alone and takes it with its provider, the
+usage ledger counts an id it cannot place as the costlier entry, and the registry checks id agreement
+per provider.
+
 **What the registry holds.** Every per-model entry carries a cost, which is free, plan or metered, and a
-private flag. The OpenCode fallback is an ordered list named lightChain, ending in the Codex entries and
-the paid API, plus one entry named strongWhenPlansOut for D2. A routing block holds the four numbers the
+private flag. The OpenCode fallback is an ordered list named lightChain, ending in the Codex entries, plus one entry named strongWhenPlansOut for D2. A routing block holds the four numbers the
 route check uses: the default cooldown in minutes, the failures in a row that demote a model for the day,
 the default hours a plan stays marked out, and the daily cap in dollars. Validation fails when an entry
-lacks a cost or a private flag, when a chain entry is incomplete, when two entries with one id disagree,
+lacks a cost or a private flag, when a chain entry is incomplete, when two entries with one provider and id disagree,
 and when a routing number is missing or not positive. A free entry keeps a null id until a run on the
 Mac proves it, and validation accepts a null id only where verified is false.
 
