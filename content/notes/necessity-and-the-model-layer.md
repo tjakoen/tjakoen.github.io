@@ -37,7 +37,7 @@ socialImageAlt:
   - "Six cards titled 6 rules behind how my agents pick a model, and who pays: tiers, not models; one free model, then Go; paid only on a typed yes; four at a time; recover, don't stall; and checked every session. Each card's small diagram plays on a loop, and a banner reads: spend free and flat-rate first; real money only on a typed yes."
 ---
 
-I spent my Codex usage and still had four hours to go before the five-hour refresh. I was in the zone. I did not want to stop.
+I spent my Codex usage and still had four hours to go before its five-hour usage window refreshed. I was in the zone. I did not want to stop.
 
 The Claude weekly limit had already put me three days from a refresh, and Codex was halfway out with six days left on its own. I do a lot of work with AI, and once again I ran out. I did not want to spend more. The $100 plans feel like too much pressure to maximize, because paying that much turns every idle evening into a small failure to use what I bought.
 
@@ -93,7 +93,7 @@ The first thing I tried was running a model on my own machine. I have an RTX 305
 
 The second thing was free models online. They exist, they are better than I expected, and the catch is printed on the label: a free endpoint may keep whatever you send it. I decided I could accept that trade for my own projects, where the code is public anyway, and for nothing else. That decision is the most important one in this note, and most of what I built exists to enforce it.
 
-None of this was a new idea about the work. I already handed light work down from Sonnet to Haiku before I built any of it, so the strong plan was never doing everything. The free models are one more rung on that same ladder, at the cheap end. What is new is that the rung costs nothing and the ladder now crosses providers.
+None of this was a new idea about the work. I already handed light work down from Sonnet to Haiku, my smallest Claude model, before I built any of it, so the strong plan was never doing everything. The free models are one more rung on that same ladder, at the cheap end. What is new is that the rung costs nothing and the ladder now crosses providers.
 
 <svg viewBox="0 0 620 290" width="100%" role="img"
      aria-label="Two lanes. In the top lane, Opus runs the main session: it plans, then sends a short brief to each of two Sonnet subagents in the bottom lane. Each subagent reads its files and does the typing inside its own context, so those files never enter the main session. Only the result travels back up to Opus, which reviews it against the plan: a miss is sent back to planning as a new brief, and a pass is done. The main context stays small because the file reading happens below."
@@ -160,11 +160,11 @@ The new shape has fewer programs and one decision-maker. A few things about it.
 
 - Claude Code is still where I work when I want Claude.
 - OpenCode does all my coding outside Claude. Codex usage, a free model, a small monthly plan and the DeepSeek API all plug into it directly.
-- Claude cannot plug into OpenCode. In my testing, Anthropic only lets a third-party harness in through an API token, which is billed on its own and not tied to the five-hour or weekly usage of a plan. Codex lets its plan in directly. I am fine with that, because Claude Code is a good harness and I was always going to use it for Claude.
-- I deleted the DSH app. Fewer apps is a feature.
+- Claude cannot plug into OpenCode: in my testing, Anthropic lets another harness in only through an API token billed apart from the plan. Codex lets its plan in directly, and Claude Code is a good harness for Claude anyway.
+- I deleted the DSH app and put that side on hold. Fewer apps is a feature.
 - I kept the Codex app, but for work that is not coding: the ChatGPT side, and anything at work.
 
-The decision-maker is the thing I am calling a Model Intelligence Layer.
+The decision-maker is the thing I am calling a Model Intelligence Layer: the part of my setup that decides which model does which job, and what happens when one runs out.
 
 ## What a Model Intelligence Layer does
 
@@ -178,7 +178,7 @@ The decision-maker is the thing I am calling a Model Intelligence Layer.
 
 In plain words, here is how it behaves.
 
-Planning and review stay on the strong models, Opus on Claude and Sol on Codex, because that is where judgment pays for itself. Everything lighter goes down a fixed order: one free model first, then the same model on a small monthly plan, then the Codex plan I have already paid for. The paid DeepSeek API is not in that order at all. It is an escalation, and it runs only after I type an approval in a terminal. Before it picks Go, it reads how much of Go's allowance is left and skips it when a limit is reached. When a model says no anyway, the layer cools it down and picks the next one, and a main session that runs out moves to Go on its own before it would ever ask me about the paid route. If a session starts on the wrong model, it stops before doing any work and offers me a restart. Every session and subagent leaves one record of what it used, and my desk, PANTRY, shows free and paid apart.
+**Judgment goes up, typing goes down.** Planning and review stay on the strong models, Opus on Claude and Sol on Codex, because that is where judgment pays for itself. When the main session reaches a piece that needs judgment, it hands that piece to a strong subagent and gets one answer back. A search, a read or a small edit goes the other way, to a light subagent.
 
 <!-- diagram:delegate -->
 <figure class="diagram" data-diagram="flow">
@@ -194,6 +194,16 @@ Planning and review stay on the strong models, Opus on Claude and Sol on Codex, 
 
 *Plan big, type small. Judgment goes up to Opus and Sol, bounded typing goes down the chain, and the main session keeps its place. [Plan Big, Type Small](plan-big-type-small.md) is the habit this makes automatic.*
 
+**Light work falls down a fixed order.** One free model first, then the same model on a small monthly plan, then the Codex plan I have already paid for. Before it picks the monthly plan, it reads how much of that plan's allowance is left, and skips it when a limit is reached. When a model says no anyway, the layer cools it down and moves to the next one. If every model is out, it stops and asks me rather than reaching for money.
+
+<!-- stack:ladder -->
+<svg viewBox="0 0 640 134" width="100%" role="img" aria-label="The order for light work. First DeepSeek V4.1 Flash Free, the one free model, since the free models share one daily message cap. Second the same model on the OpenCode Go plan, a small monthly plan with one shared allowance. Third the Codex models, Luna and then Sol at low effort, while the Codex plan has usage left. Fourth, when none is left, the route check stops and asks me. The paid DeepSeek API is never in this order. It is an escalation that needs an approval I type in a terminal." style="display:block;width:100%;max-width:640px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif"><rect x="20" y="14" width="133.5" height="66" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1"/><text x="86.75" y="36" text-anchor="middle" style="fill:var(--color-fg);font-size:13.5px">1. Free model</text><text x="86.75" y="56" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">DeepSeek Flash Free,</text><text x="86.75" y="72" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">one shared daily cap</text><g style="stroke:var(--color-muted);stroke-width:1.5;fill:none"><line x1="156.5" y1="47" x2="172.5" y2="47"/><path d="M166.5,43 L172.5,47 L166.5,51"/></g><rect x="175.5" y="14" width="133.5" height="66" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1"/><text x="242.25" y="36" text-anchor="middle" style="fill:var(--color-fg);font-size:13.5px">2. OpenCode Go</text><text x="242.25" y="56" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">the same model on</text><text x="242.25" y="72" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">a small monthly plan</text><g style="stroke:var(--color-muted);stroke-width:1.5;fill:none"><line x1="312" y1="47" x2="328" y2="47"/><path d="M322,43 L328,47 L322,51"/></g><rect x="331" y="14" width="133.5" height="66" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1"/><text x="397.75" y="36" text-anchor="middle" style="fill:var(--color-fg);font-size:13.5px">3. Codex models</text><text x="397.75" y="56" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">Luna, then Sol,</text><text x="397.75" y="72" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">on my Codex plan</text><g style="stroke:var(--color-muted);stroke-width:1.5;fill:none"><line x1="467.5" y1="47" x2="483.5" y2="47"/><path d="M477.5,43 L483.5,47 L477.5,51"/></g><rect x="486.5" y="14" width="133.5" height="66" rx="8" style="fill:none;stroke:var(--color-fg);stroke-width:2.2"/><text x="553.25" y="36" text-anchor="middle" style="fill:var(--color-fg);font-size:13.5px">4. Stop and ask me</text><text x="553.25" y="56" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">when every model</text><text x="553.25" y="72" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">is out</text><line x1="20" y1="94" x2="620" y2="94" style="stroke:var(--color-line);stroke-width:1;stroke-dasharray:4 4"/><text x="320" y="118" text-anchor="middle" style="fill:var(--color-fg);font-size:12.5px">The paid DeepSeek API is never in this order. It is an escalation, and it needs the approval I type.</text></svg>
+<!-- /stack:ladder -->
+
+*Free first, then a small monthly plan, then the plan I already pay for. The paid DeepSeek API is never in the order.*
+
+**The paid model sits outside the order on purpose.** The paid DeepSeek API is an escalation. No agent holds its key, it runs on a prepaid balance I topped up myself, and a call only happens after I type an approval in a terminal. The daily cap counts an approved call as spent the moment I approve it, before any money moves. Pick one of the three requests below to see where each rule bites.
+
 <div class="live-fig live-fig--pick" data-live-figure="pick" data-surface="figure:pick">
 <table class="pick-static">
 <caption>How the router picks a model for light work. Planning and review never enter this chain; they stay on Opus and Sol.</caption>
@@ -208,11 +218,7 @@ Planning and review stay on the strong models, Opus on Claude and Sol on Codex, 
 
 *Pick a request to see how the router decides. The paid API is never in the chain; it waits for my typed yes.*
 
-<!-- stack:ladder -->
-<svg viewBox="0 0 640 134" width="100%" role="img" aria-label="The order for light work. First DeepSeek V4.1 Flash Free, the one free model, since the free models share one daily message cap. Second the same model on the OpenCode Go plan, a small monthly plan with one shared allowance. Third the Codex models, Luna and then Sol at low effort, while the Codex plan has usage left. Fourth, when none is left, the route check stops and asks me. The paid DeepSeek API is never in this order. It is an escalation that needs an approval I type in a terminal." style="display:block;width:100%;max-width:640px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif"><rect x="20" y="14" width="133.5" height="66" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1"/><text x="86.75" y="36" text-anchor="middle" style="fill:var(--color-fg);font-size:13.5px">1. Free model</text><text x="86.75" y="56" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">DeepSeek Flash Free,</text><text x="86.75" y="72" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">one shared daily cap</text><g style="stroke:var(--color-muted);stroke-width:1.5;fill:none"><line x1="156.5" y1="47" x2="172.5" y2="47"/><path d="M166.5,43 L172.5,47 L166.5,51"/></g><rect x="175.5" y="14" width="133.5" height="66" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1"/><text x="242.25" y="36" text-anchor="middle" style="fill:var(--color-fg);font-size:13.5px">2. OpenCode Go</text><text x="242.25" y="56" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">the same model on</text><text x="242.25" y="72" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">a small monthly plan</text><g style="stroke:var(--color-muted);stroke-width:1.5;fill:none"><line x1="312" y1="47" x2="328" y2="47"/><path d="M322,43 L328,47 L322,51"/></g><rect x="331" y="14" width="133.5" height="66" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1"/><text x="397.75" y="36" text-anchor="middle" style="fill:var(--color-fg);font-size:13.5px">3. Codex models</text><text x="397.75" y="56" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">Luna, then Sol,</text><text x="397.75" y="72" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">on my Codex plan</text><g style="stroke:var(--color-muted);stroke-width:1.5;fill:none"><line x1="467.5" y1="47" x2="483.5" y2="47"/><path d="M477.5,43 L483.5,47 L477.5,51"/></g><rect x="486.5" y="14" width="133.5" height="66" rx="8" style="fill:none;stroke:var(--color-fg);stroke-width:2.2"/><text x="553.25" y="36" text-anchor="middle" style="fill:var(--color-fg);font-size:13.5px">4. Stop and ask me</text><text x="553.25" y="56" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">when every model</text><text x="553.25" y="72" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">is out</text><line x1="20" y1="94" x2="620" y2="94" style="stroke:var(--color-line);stroke-width:1;stroke-dasharray:4 4"/><text x="320" y="118" text-anchor="middle" style="fill:var(--color-fg);font-size:12.5px">The paid DeepSeek API is never in this order. It is an escalation, and it needs the approval I type.</text></svg>
-<!-- /stack:ladder -->
-
-*Free first, then a small monthly plan, then the plan I already pay for. The paid DeepSeek API is never in the order.*
+Two more things happen in every session. If a session starts on the wrong model, it stops before doing any work and offers me a restart. And every session and subagent leaves one record of what it used, so my desk, PANTRY, shows free and paid apart.
 
 ## What is built, and what is still ahead
 
@@ -224,14 +230,14 @@ The second round is for the moments that go wrong.
 
 - A paid call leaves a record and waits until I type approve.
 - No more than four agents run at once.
-- Before a big task, a check says whether it fits in what the model can hold.
+- Before a big task, a check says whether it fits in what the model can hold. It advises; it never blocks.
 - A session that gets cut off leaves a checkpoint the next one can pick up from.
-- A plan that changes the setup itself cannot start until a fresh reviewer has read it. I call that reviewer the goldfish, because it has seen nothing of the conversation that produced the plan, so it reads only what is written down.
+- A plan that changes the setup itself, anything that touches my hooks, settings or standards, cannot start until a fresh reviewer has read it. I call that reviewer the goldfish, because it has seen nothing of the conversation that produced the plan, so it reads only what is written down.
 - A scout researches new models when I ask, and never adds one on its own.
 
-Several independent audits went through the second round before I called it ready.
+Seven rounds of independent audit went through the second round before I called it ready.
 
-**What I have seen work, and what I have not.** I have seen Go take light work after its allowance was checked, live on my Mac, and every session on my Windows machine check the layer before it starts. I have not yet seen the free model run out in the middle of a task and Go take over by itself, the Codex side of the checks, or Sol take light work on OpenCode. Continuing a cut-off session is still half by hand: I click to archive the old one. On 30 November I look at a week of records and decide whether free should still go first.
+**What I have seen work, and what I have not.** I have seen Go take light work after its allowance was checked, live on my Mac, and every session on my Windows machine check the layer before it starts. I have not yet seen the free model run out in the middle of a task and Go take over by itself, a main session move on when it runs out, the Codex side of the checks, or Sol take light work on OpenCode. Those are tested, not yet seen. Continuing a cut-off session is still half by hand: I click to archive the old one. On 30 November I look at a week of records and decide whether free should still go first.
 
 ## The rule I will not bend
 
@@ -243,15 +249,15 @@ Several independent audits went through the second round before I called it read
 
 *The same setup on two computers. Anything the setup cannot place is treated as work.*
 
-Three guards hold the line, and a mistake has to get past all three. A computer the setup cannot identify is treated as a work computer. In work context, every prompt checks the signed-in account and is blocked unless it is a company one. And OpenCode, which runs the light chain, refuses to start in work context at all, whatever I have said about the repository. Even on my own computer, a repository has to be cleared before a model that keeps prompts may touch it. I decided I would not let a tired evening be the reason one of them saw something that was not mine.
+Three guards hold the line, and a mistake has to get past all three. A computer the setup cannot identify is treated as a work computer. In work context, every prompt checks the signed-in account and is blocked unless it is a company one. And OpenCode, which runs the light chain, refuses to start in work context at all, whatever I have said about the repository. That is the work side. My own computer has one more rule: I clear each repository myself, one at a time, before a model that keeps prompts may touch it. I decided I would not let a tired evening be the reason one of them saw something that was not mine.
 
 ## What it changed
 
-**It never stalls, it never overspends, and it never leaks private code.** That is the whole pitch, and each part has a mechanism behind it rather than a promise: the fallback order, the typed approval with a prepaid cap, and the guards that keep anything not mine away from models that may keep it.
+**It never stalls, it never overspends, and it never leaks private code.** That is the whole pitch, and each part has a mechanism behind it rather than a promise: the fallback order, the typed approval against a prepaid balance, and the guards that keep anything not mine away from models that may keep it.
 
 The first change is the one I wanted. So far, I have not run out in the middle of something. The free model and the small plan take the light work, so the strong plans last longer, and when one of them does empty, the next model is a lookup and not a decision.
 
-The second is that I work at low effort now. Opus runs low and Sonnet runs medium, because the architecture carries the load: the plan is written, the review is fresh, the guards are hooks. A model that does not have to hold the whole project in its head can think less and be right more often. I have worked this way since the loop and the harness were in place, and the work has held up. That is my experience, not a controlled comparison.
+The second is that I work at low effort now, a setting for how long a model thinks before it answers. Opus runs low and Sonnet runs medium, because the architecture carries the load: the plan is written, the review is fresh, the guards are hooks. A model that does not have to hold the whole project in its head can think less and be right more often. I have worked this way since the loop and the harness were in place, and the work has held up. That is my experience, not a controlled comparison.
 
 The third is fewer apps and fewer moods. I do not choose between four programs when something runs out. I open the one I always open.
 
