@@ -2484,8 +2484,8 @@
       "skill": "models",
       "title": "MODELS — which model plays which role, on every harness",
       "summary": "The portable model policy of the loop. Six roles on three tiers, a main session on the execution tier, escalation by delegation rather than by switching models, the effort ceiling, one registry as the only home of model identifiers, five conformance levels, and how a device repairs its own drift.",
-      "when": "Read this BEFORE pinning a model in an agent file, a settings file or a Codex config, before adding an agent, before reaching for a model switch mid-session, and before claiming a harness runs the loop's model policy. It owns which role sits on which tier and how the strong tier is reached; the registry in claude-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice. Don't skip because the agent file already names a model - a pin nobody checked against the registry is how five files came to disagree.",
-      "lines": 478,
+      "when": "Read this BEFORE pinning a model in an agent file, a settings file or a Codex config, before adding an agent, before reaching for a model switch mid-session, and before claiming a harness runs the loop's model policy. It owns which role sits on which tier and how the strong tier is reached; the registry in agent-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice. Don't skip because the agent file already names a model - a pin nobody checked against the registry is how five files came to disagree.",
+      "lines": 482,
       "lead": {
         "lines": [
           14,
@@ -2577,7 +2577,7 @@
             107,
             118
           ],
-          "summary": "The concrete table lives in claude-config, in its shared model-roles file: the tiers, the roles, the main tier, each agent's tier, each harness's model for each tier, the forbidden defaults and the...",
+          "summary": "The concrete table lives in agent-config, in its shared model-roles file: the tiers, the roles, the main tier, each agent's tier, each harness's model for each tier, the forbidden defaults and the...",
           "refs": []
         },
         {
@@ -2631,7 +2631,7 @@
           "anchor": "10-the-model-guard",
           "lines": [
             160,
-            217
+            221
           ],
           "summary": "Every main session runs the registry's main tier, and nothing in a menu or a spawner's defaults changes that.",
           "refs": []
@@ -2641,8 +2641,8 @@
           "heading": "11. Cost and privacy",
           "anchor": "11-cost-and-privacy",
           "lines": [
-            219,
-            326
+            223,
+            330
           ],
           "summary": "Phase A made one registry the home of every model choice.",
           "refs": []
@@ -2652,8 +2652,8 @@
           "heading": "12. Escalation records and the owner's typed approval",
           "anchor": "12-escalation-records-and-the-owners-typed-approval",
           "lines": [
-            328,
-            362
+            332,
+            366
           ],
           "summary": "Phase B gave every escalation a record and every paid call an approval with one source.",
           "refs": []
@@ -2663,8 +2663,8 @@
           "heading": "13. The supervisor and its limits",
           "anchor": "13-the-supervisor-and-its-limits",
           "lines": [
-            364,
-            386
+            368,
+            390
           ],
           "summary": "The supervisor is code, not an agent (decision M1).",
           "refs": [
@@ -2681,8 +2681,8 @@
           "heading": "14. Context metadata and the budget",
           "anchor": "14-context-metadata-and-the-budget",
           "lines": [
-            388,
-            406
+            392,
+            410
           ],
           "summary": "Each model entry in the registry may carry a context block: the advertised window, the usable window, the output reserve (maxOut), the overhead, the method it was measured by (transcript, provider...",
           "refs": [
@@ -2696,8 +2696,8 @@
           "heading": "15. Continuation and recovery checkpoints",
           "anchor": "15-continuation-and-recovery-checkpoints",
           "lines": [
-            408,
-            424
+            412,
+            428
           ],
           "summary": "A recovery checkpoint is not a handoff.",
           "refs": []
@@ -2707,8 +2707,8 @@
           "heading": "16. Model Scout",
           "anchor": "16-model-scout",
           "lines": [
-            426,
-            435
+            430,
+            439
           ],
           "summary": "model-scout.ts researches models and recommends them.",
           "refs": []
@@ -2718,8 +2718,8 @@
           "heading": "17. The runtime brief",
           "anchor": "17-the-runtime-brief",
           "lines": [
-            437,
-            444
+            441,
+            448
           ],
           "summary": "The session checklist keeps a healthy start to one row, Model Intelligence Layer verified.",
           "refs": [
@@ -2733,8 +2733,8 @@
           "heading": "18. Where each record lives",
           "anchor": "18-where-each-record-lives",
           "lines": [
-            446,
-            460
+            450,
+            464
           ],
           "summary": "Every new record has one home (decision M2), so a reader looking for one never has to search two places.",
           "refs": [
@@ -2751,8 +2751,8 @@
           "heading": "19. What is on hold and what is not tested",
           "anchor": "19-what-is-on-hold-and-what-is-not-tested",
           "lines": [
-            462,
-            471
+            466,
+            475
           ],
           "summary": "DeepSeek Harness is on hold (owner, 2026-11-23).",
           "refs": []
@@ -2762,8 +2762,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            473,
-            478
+            477,
+            482
           ],
           "summary": "The verifier for the harness run (the command is in MODELS-VERIFY step 1), no line FAIL.",
           "refs": []

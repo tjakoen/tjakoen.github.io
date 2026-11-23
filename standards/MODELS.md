@@ -5,7 +5,7 @@ when: >
   Read this BEFORE pinning a model in an agent file, a settings file or a Codex config, before adding
   an agent, before reaching for a model switch mid-session, and before claiming a harness runs the
   loop's model policy. It owns which role sits on which tier and how the strong tier is reached; the
-  registry in claude-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice.
+  registry in agent-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice.
   Don't skip because the agent file already names a model - a pin nobody checked against the
   registry is how five files came to disagree.
 ---
@@ -106,7 +106,7 @@ paid escalation entry, gated as section 4 says.
 
 ## 6. The registry is the only home of identifiers
 
-The concrete table lives in claude-config, in its shared model-roles file: the tiers, the roles, the
+The concrete table lives in agent-config, in its shared model-roles file: the tiers, the roles, the
 main tier, each agent's tier, each harness's model for each tier, the forbidden defaults and the
 gated escalation entries. Every agent file, every Codex agent, every machine's settings and every
 machine's Codex config is a pin, and a pin is correct only when it matches that file.
@@ -153,8 +153,8 @@ on, and what would earn it a higher one, is [LOOP §2a](LOOP.md).
 ## 9. Harnesses
 
 Claude Code and Codex pin every tier. DeepSeek Harness sets its model outside the repository, so it
-is not pinned and its pin checks report unsupported. OpenCode is not installed on any machine, so it
-is unsupported, with its preferred models kept in the registry as notes. Handoffs between them follow
+is not pinned and its pin checks report unsupported. OpenCode is installed and runs on the MacBook Air,
+where its route check, its launch plugin and the Go allowance read have run live. Handoffs between them follow
 [SESSION-LOOP §5](SESSION-LOOP.md).
 
 ## 10. The model guard
@@ -162,9 +162,9 @@ is unsupported, with its preferred models kept in the registry as notes. Handoff
 Every main session runs the registry's main tier, and nothing in a menu or a spawner's defaults changes
 that. A session started by another session inherits that session's model, and the owner can pick any
 model from the picker, so the rule needed something that enforces it. The model guard is that: one
-script in claude-config, shared/tools/model-guard.sh, wired to SessionStart, UserPromptSubmit, PreToolUse
+script in agent-config, shared/tools/model-guard.sh, wired to SessionStart, UserPromptSubmit, PreToolUse
 and Stop. It was built and passed live acceptance on 2026-11-22, after six runs, and the run report in
-claude-config holds the evidence. The desktop app's SessionStart carries no model, so the guard reads
+agent-config holds the evidence. The desktop app's SessionStart carries no model, so the guard reads
 it from the transcript at the first tool call or the first Stop, with grep and sed only.
 
 **The override.** The phrase *keep this model*, in the owner's first prompt, records an exception for
@@ -212,9 +212,13 @@ models while the Codex plan has usage left. The paid API is no longer part of th
 escalation the owner approves (section 12). Section 11 holds that order, the privacy rules behind it,
 and why the chain holds one free model and one Go model (D11).
 
+The main OpenCode session has a recovery order of its own. When the Codex allowance stops Sol, it moves
+to the free model and then to Go automatically, and only after those to a paid request, which is an
+escalation the owner approves (section 12). That order is tested and has not yet been seen live.
+
 Every row outside Claude Code is marked unverified in the registry. Codex, DeepSeek Harness and OpenCode
-are not installed on the machine where the guard was proven, and OpenCode is not installed anywhere yet.
-The guard is proven on the Claude Code desktop app only.
+are not installed on the machine where the guard was proven. OpenCode is installed and runs on the
+MacBook Air. The guard is proven on the Claude Code desktop app only.
 
 ## 11. Cost and privacy
 
@@ -232,7 +236,7 @@ below, each of which the owner can change in the registry.
   Code, Sol on Codex and OpenCode.
 - D2. Flash takes the strong tier only when both paid plans are out. With the Claude and Codex plans
   both marked out, the strong tier on OpenCode runs on DeepSeek V4.1 Flash.
-- D3. The fallback order for light work on OpenCode is the free chain in registry order, then the
+- D3, superseded (see below). The fallback order for light work on OpenCode is the free chain in registry order, then the
   cheaper Codex models while the Codex plan is not marked out (gpt-6-luna, then gpt-6.2-sol at low
   effort), then DeepSeek V4.1 Flash on the paid DeepSeek API.
 - D4. Every model is private or not private. Claude and Codex models are private. Every free model and
@@ -241,14 +245,14 @@ below, each of which the owner can change in the registry.
   runs in a repository with no entry, it stops and asks, and records the answer. On yes the full D3
   chain applies. On no only Claude and Codex are candidates, so work still runs but never leaves those
   two providers. Nothing is cleared by default.
-- D6. The route check and the usage record are built in claude-config, with every limit a registry
+- D6. The route check and the usage record are built in agent-config, with every limit a registry
   setting.
 - D7. Every session and subagent writes usage records, and PANTRY reports them, split by harness, model,
   cost class and privacy.
 - D8. Codex comes before the paid API in D3, because the Codex plan is already paid for.
 - D9. A plan is marked out by its quota error, until the reset time the error gives, or six hours when
   it gives none.
-- D10. The paid API runs up to a daily cap of five dollars. Past the cap each further use asks the owner
+- D10, superseded (see below). The paid API runs up to a small daily cap. Past the cap each further use asks the owner
   first. This replaces the approval gate on the OpenCode escalation for the D3 fallback only, and a
   deliberate escalation still asks.
 
@@ -287,7 +291,7 @@ lacks a cost or a private flag, when a chain entry is incomplete, when two entri
 and when a routing number is missing or not positive. A free entry keeps a null id until a run on the
 Mac proves it, and validation accepts a null id only where verified is false.
 
-**The route check.** One script, route-check.ts in claude-config, decides which model a light task
+**The route check.** One script, route-check.ts in agent-config, decides which model a light task
 takes. It is the contract OpenCode's plugin calls before a delegation and after a model call. Claude Code
 never calls it, because its subagents are pinned in their agent files and stay private.
 
@@ -328,7 +332,7 @@ wait for a run on the Mac, so every free entry stays unverified until then.
 ## 12. Escalation records and the owner's typed approval
 
 Phase B gave every escalation a record and every paid call an approval with one source. The tool is
-escalation-record.ts in claude-config, and it has three commands: request, approve and outcome.
+escalation-record.ts in agent-config, and it has three commands: request, approve and outcome.
 
 A request writes one escalation line to the usage ledger carrying the seven fields the owner's brief
 asks for: the reason, the source model and role, the destination model, the capability
@@ -363,7 +367,7 @@ and it is decided before any network call. The tool makes no network call at all
 
 ## 13. The supervisor and its limits
 
-The supervisor is code, not an agent (decision M1). It is supervisor.ts in claude-config, and it does
+The supervisor is code, not an agent (decision M1). It is supervisor.ts in agent-config, and it does
 two jobs. The decide command returns a role's tier, the model the route check gives for it, and
 whether the piece should be delegated. The admit-spawn command counts the agents a task has live and
 refuses past the owner's limits (O4). A task is one session, so each session, and each project running
