@@ -8,22 +8,22 @@
 // highlight, the marks on the model tiles and the caption change.
 
 const BANDS = [
-  { key: 'me', title: null, tiles: [{ key: 'me', t: 'Me', s: 'requests, approvals' }] },
+  { key: 'me', title: 'Me', tiles: [{ key: 'me', t: 'Me', s: 'requests, approvals' }] },
   { key: 'loop', title: 'The loop', tiles: [
     { key: 'standards', t: 'Standards' }, { key: 'plans', t: 'Plans' },
     { key: 'review', t: 'Independent review' }, { key: 'gates', t: 'Human gates' }] },
-  { key: 'mil', title: 'The Model Intelligence Layer', heavy: true, tiles: [
+  { key: 'mil', title: 'The layer', heavy: true, tiles: [
     { key: 'registry', t: 'Registry', s: 'work becomes a tier' }, { key: 'router', t: 'Router', s: 'first model not out' },
     { key: 'supervisor', t: 'Supervisor', s: 'four at a time' }, { key: 'recovery', t: 'Recovery', s: 'checkpoint, hand-off' }] },
   { key: 'harness', title: 'Harnesses', tiles: [
     { key: 'claude', t: 'Claude Code' }, { key: 'opencode', t: 'OpenCode' }, { key: 'codex', t: 'Codex app' }] },
-  { key: 'models', title: 'Models, by role', tiles: [
+  { key: 'models', title: 'Models', tiles: [
     { key: 'strong', t: 'Opus · Sol', s: 'planning, review · private', strong: true },
     { key: 'luna', t: 'Luna', s: 'light · private' },
     { key: 'free', t: 'Free model', s: 'light · keeps prompts' },
     { key: 'go', t: 'OpenCode Go', s: 'light · keeps prompts' },
     { key: 'paid', t: 'DeepSeek API', s: 'on my yes · keeps prompts' }] },
-  { key: 'pantry', title: null, tiles: [{ key: 'pantry', t: 'PANTRY', s: 'records every call' }] },
+  { key: 'pantry', title: 'Records', tiles: [{ key: 'pantry', t: 'PANTRY', s: 'records every call' }] },
 ];
 
 const WHAT = {
@@ -95,26 +95,28 @@ const WALKS = {
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 export const WALK_MARKUP = `<div class="walk" data-walk>
-  <div class="walk__modes" role="group" aria-label="Pick a request to follow">
-    ${Object.entries(WALKS).map(([k, w]) => `<button type="button" class="walk__mode" data-walk-mode="${k}" aria-pressed="false">${esc(w.label)}</button>`).join('')}
+  <div class="walk__bar">
+    <div class="walk__modes" role="group" aria-label="Pick a request to follow">
+      ${Object.entries(WALKS).map(([k, w]) => `<button type="button" class="walk__mode" data-walk-mode="${k}" aria-pressed="false">${esc(w.label)}</button>`).join('')}
+    </div>
+    <div class="walk__nav">
+      <button type="button" class="walk__btn" data-walk-back aria-label="Back one step">Back</button>
+      <button type="button" class="walk__btn" data-walk-play aria-pressed="false">Play</button>
+      <button type="button" class="walk__btn" data-walk-next aria-label="Next step">Next</button>
+      <span class="walk__count" data-walk-count></span>
+    </div>
   </div>
   <p class="walk__say" aria-live="polite"><span class="walk__num" data-walk-num>1</span><span data-walk-say></span></p>
   <div class="walk__stack">
-    ${BANDS.map((b) => `<div class="walk__band${b.heavy ? ' walk__band--heavy' : ''}${b.title ? '' : ' walk__band--bare'}">
+    ${BANDS.map((b) => `<div class="walk__band${b.heavy ? ' walk__band--heavy' : ''}" data-band="${b.key}">
       ${b.title ? `<p class="walk__band-title">${esc(b.title)}</p>` : ''}
       <div class="walk__tiles">${b.tiles.map((t) => `<button type="button" class="walk__tile${t.strong ? ' walk__tile--strong' : ''}" data-node="${t.key}" aria-describedby="walk-detail">
         <b class="walk__name">${esc(t.t)}</b>${t.s ? `<em class="walk__sub">${esc(t.s)}</em>` : ''}<span class="walk__mark" data-mark></span>
       </button>`).join('')}</div>
     </div>`).join('')}
   </div>
-  <p class="walk__detail" id="walk-detail" data-walk-detail>Tap any box to see what it does.</p>
-  <div class="walk__nav">
-    <button type="button" class="walk__btn" data-walk-back>Back</button>
-    <button type="button" class="walk__btn" data-walk-play aria-pressed="false">Play</button>
-    <button type="button" class="walk__btn" data-walk-next>Next</button>
-    <span class="walk__count" data-walk-count></span>
-  </div>
   <p class="walk__outcome" data-walk-outcome hidden></p>
+  <p class="walk__detail" id="walk-detail" data-walk-detail>Tap any box to see what it does.</p>
 </div>`;
 
 export function mountWalk(host) {
@@ -137,7 +139,7 @@ export function mountWalk(host) {
     }
     q('[data-walk-num]').textContent = String(step + 1);
     q('[data-walk-say]').textContent = cur.say;
-    q('[data-walk-count]').textContent = `Step ${step + 1} of ${steps.length}`;
+    q('[data-walk-count]').textContent = `${step + 1} / ${steps.length}`;
     q('[data-walk-back]').disabled = step === 0;
     q('[data-walk-next]').disabled = step === steps.length - 1;
     const out = q('[data-walk-outcome]');
