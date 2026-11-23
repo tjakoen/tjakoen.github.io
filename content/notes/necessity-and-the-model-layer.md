@@ -53,6 +53,57 @@ The second thing was free models online. They exist, they are better than I expe
 
 None of this was a new idea about the work. I already handed light work down from Sonnet to Haiku before I built any of it, so the strong plan was never doing everything. The free models are one more rung on that same ladder, at the cheap end. What is new is that the rung costs nothing and the ladder now crosses providers.
 
+<svg viewBox="0 0 620 290" width="100%" role="img"
+     aria-label="Two lanes. In the top lane, Opus runs the main session: it plans, then sends a short brief to each of two Sonnet subagents in the bottom lane. Each subagent reads its files and does the typing inside its own context, so those files never enter the main session. Only the result travels back up to Opus, which reviews it against the plan: a miss is sent back to planning as a new brief, and a pass is done. The main context stays small because the file reading happens below."
+     style="display:block;width:100%;max-width:620px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-planbig0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:4 4">
+    <rect x="6" y="28" width="608" height="64" rx="8"/>
+    <rect x="6" y="150" width="608" height="134" rx="8"/>
+  </g>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="20" y="42" width="110" height="36" rx="6"/>
+    <rect x="360" y="42" width="150" height="36" rx="6"/>
+    <rect x="150" y="166" width="100" height="100" rx="6"/>
+    <rect x="270" y="166" width="100" height="100" rx="6"/>
+  </g>
+  <g style="fill:none;stroke:var(--color-muted);stroke-width:1"><rect x="172" y="214" width="14" height="18" rx="2"/><rect x="192" y="214" width="14" height="18" rx="2"/><rect x="212" y="214" width="14" height="18" rx="2"/><rect x="292" y="214" width="14" height="18" rx="2"/><rect x="312" y="214" width="14" height="18" rx="2"/><rect x="332" y="214" width="14" height="18" rx="2"/></g>
+  <rect x="528" y="42" width="72" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <path d="M60,78 C60,130 180,118 180,162" marker-end="url(#fl-planbig0)"/>
+    <path d="M90,78 C90,128 300,112 300,162" marker-end="url(#fl-planbig0)"/>
+    <path d="M225,166 C225,120 410,128 410,82" marker-end="url(#fl-planbig0)"/>
+    <path d="M345,166 C345,130 440,128 440,82" marker-end="url(#fl-planbig0)"/>
+    <line x1="510" y1="60" x2="524" y2="60" marker-end="url(#fl-planbig0)"/>
+    <path d="M400,42 C400,4 75,4 75,38" marker-end="url(#fl-planbig0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="75" y="64.3" style="fill:var(--color-fg)">Opus plans</text>
+    <text x="435" y="64.3" style="fill:var(--color-fg)">Opus reviews</text>
+    <text x="564" y="64.3" style="fill:var(--color-bg)">Done</text>
+    <text x="200" y="196" style="fill:var(--color-fg)">Sonnet</text>
+    <text x="320" y="196" style="fill:var(--color-fg)">Sonnet</text>
+    <text x="200" y="254" style="fill:var(--color-muted);font-size:11.5px">reads, types</text>
+    <text x="320" y="254" style="fill:var(--color-muted);font-size:11.5px">reads, types</text>
+  </g>
+  <g style="fill:var(--color-muted);font-size:11.5px">
+    <text x="190" y="110" style="stroke:var(--color-bg);stroke-width:3;paint-order:stroke">main session: its context stays small</text>
+    <text x="390" y="230">subagents: the files they</text><text x="390" y="246">read stay down here</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="118" y="132">brief</text>
+    <text x="470" y="132">result only</text>
+    <text x="238" y="16">sent back</text>
+  </g>
+</svg>
+
+*The split from [Plan Big, Type Small](plan-big-type-small.md): Opus plans and reviews, the smaller model types in between, and the files it reads stay down there. The layer only makes the bottom lane cheaper.*
+
 ## The old setup and the new one
 
 Before this, Claude Code was my main tool, the Codex app was the backup and the way I ran a second project, and DeepSeek Harness, which I call DSH, was the last fallback when both plans were out. Making those three work together is what [The Loop Outlives the Model](one-loop-three-harnesses.md) was about, so I will not retell it. Here they are side by side with where each role sits now.
@@ -140,6 +191,48 @@ Three guards enforce it, and a mistake has to get past all three. A machine the 
 The first change is the one I wanted. So far, I have not run out in the middle of something. The free model and the small plan take the light work, so the strong plans last longer, and when one of them does empty, the next model is a lookup and not a decision.
 
 The second is that I work at low effort now. Opus runs low and Sonnet runs medium, because the architecture carries the load: the plan is written, the review is fresh, the guards are hooks. A model that does not have to hold the whole project in its head can think less and be right more often. I have worked this way since the loop and the harness were in place, and the work has held up. That is my experience, not a controlled comparison.
+
+<svg viewBox="0 0 600 400" width="100%" role="img"
+     aria-label="The loop runs around the front door: plan, session with the checklist first, report, second reader, human, then the next plan. The arrows circle the loop."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-loop0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <rect x="10" y="10" width="580" height="380" rx="6" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:5 5"/>
+  <text x="30" y="34" style="fill:var(--color-muted);font-size:11px">The front door: the rules</text>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="235" y="43" width="130" height="44" rx="6"/>
+    <rect x="363" y="136" width="130" height="44" rx="6"/>
+    <rect x="314" y="287" width="130" height="44" rx="6"/>
+    <rect x="156" y="287" width="130" height="44" rx="6"/>
+    <rect x="107" y="136" width="130" height="44" rx="6"/>
+  </g>
+  <rect x="107" y="136" width="130" height="44" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <path d="M 300 135 A 65 65 0 0 1 361.8 179.9" marker-end="url(#fl-loop0)"/>
+    <path d="M 361.8 179.9 A 65 65 0 0 1 338.2 252.6" marker-end="url(#fl-loop0)"/>
+    <path d="M 338.2 252.6 A 65 65 0 0 1 261.8 252.6" marker-end="url(#fl-loop0)"/>
+    <path d="M 261.8 252.6 A 65 65 0 0 1 238.2 179.9" marker-end="url(#fl-loop0)"/>
+    <path d="M 238.2 179.9 A 65 65 0 0 1 300 135" marker-end="url(#fl-loop0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="300" y="63" style="fill:var(--color-fg);font-size:14px">Plan</text>
+    <text x="300" y="80" style="fill:var(--color-muted);font-size:11px">one markdown file</text>
+    <text x="428" y="156" style="fill:var(--color-fg);font-size:14px">Session</text>
+    <text x="428" y="173" style="fill:var(--color-muted);font-size:11px">the checklist runs first</text>
+    <text x="379" y="307" style="fill:var(--color-fg);font-size:14px">Report</text>
+    <text x="379" y="324" style="fill:var(--color-muted);font-size:11px">the checks it ran</text>
+    <text x="221" y="307" style="fill:var(--color-fg);font-size:14px">Second reader</text>
+    <text x="221" y="324" style="fill:var(--color-muted);font-size:11px">someone else checks</text>
+    <text x="172" y="156" style="fill:var(--color-bg);font-size:13px">The human lands it</text>
+    <text x="172" y="173" style="fill:var(--color-bg);font-size:11px">the judgment is human</text>
+    <text x="300" y="200" style="fill:var(--color-muted);font-size:12px">The loop</text>
+  </g>
+</svg>
+
+*The loop from [Set Up the Loop With One Prompt](loop-setup.md): a plan, a session with the checklist first, a report, a second reader, and me. That is what carries the load, so the model can run at low effort.*
 
 The third is fewer apps and fewer moods. I do not choose between four programs when something runs out. I open the one I always open.
 
