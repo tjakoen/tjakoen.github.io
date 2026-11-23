@@ -37,6 +37,24 @@ export const DIAGRAMS: Record<string, LayeredInput> = {
       E("launch", "limit"), E("limit", "retry", "yes"), E("limit", "done", "no"),
     ],
   },
+  delegate: {
+    kind: "flow",
+    label: "How a piece of work is delegated. When the next piece needs judgment, such as planning, architecture or review, the main session hands it to a subagent on the strong tier, Opus or Sol, with the plan and the files it links. When the piece is light and bounded, such as a search, a read or a small edit, it goes to a subagent down the light chain. Anything else stays in the main session. Either way one answer comes back, and the main session keeps its conversation and its cache.",
+    nodes: [
+      { id: "start", kind: "start", label: "The next piece of work" },
+      { id: "judge", kind: "decision", label: "Needs judgment?" },
+      { id: "strong", kind: "action", label: "Strong subagent: Opus or Sol" },
+      { id: "light", kind: "decision", label: "Light and bounded?" },
+      { id: "chain", kind: "action", label: "Light subagent, down the chain" },
+      { id: "main", kind: "end", label: "Stays in the main session" },
+      { id: "back", kind: "end", label: "One answer comes back" },
+    ],
+    edges: [
+      E("start", "judge"), E("judge", "strong", "yes", "Planning, architecture or review"), E("judge", "light", "no"),
+      E("light", "chain", "yes", "A search, a read or a small edit"), E("light", "main", "no"),
+      E("strong", "back"), E("chain", "back"),
+    ],
+  },
   guard: {
     kind: "flow",
     label: "How the model guard handles a session on the wrong model. At the first prompt it reads the model from the transcript and compares it with the registry's main model. If they match, the work starts. If not, the session stops before doing any work and proposes a restart card with the right model and effort. I click the card and a replacement session runs the task. The stopped session then offers Archive it or Keep it. On Archive it, it detaches the replacement first and archives itself second. A replacement that is still on the wrong model is blocked and never respawns.",
@@ -122,20 +140,22 @@ const linkTo = (href: string) => {
 const linked = (href: string | undefined, name: string, inner: string) =>
   href ? `<a href="${X(linkTo(href))}"><title>${X(name)}: read more</title>${inner}</a>` : inner;
 const UNDER = ";text-decoration:underline;text-decoration-color:var(--color-muted)";
-interface Stack { label: string; arrows: "both" | "down"; layers: StackLayer[] }
+interface Stack { label: string; arrows: "both" | "down"; layers: StackLayer[]; across?: boolean; note?: string }
 
 const X = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 export const STACKS: Record<string, Stack> = {
   ladder: {
     arrows: "down",
+    across: true,
     label: "The order for light work. First DeepSeek V4.1 Flash Free, the one free model, since the free models share one daily message cap. Second the same model on the OpenCode Go plan, a small monthly plan with one shared allowance. Third the Codex models, Luna and then Sol at low effort, while the Codex plan has usage left. Fourth, when none is left, the route check stops and asks me. The paid DeepSeek API is never in this order. It is an escalation that needs an approval I type in a terminal.",
     layers: [
-      { title: "1. DeepSeek V4.1 Flash Free", sub: ["The one free model. The free models share one daily message cap,", "so a chain of five was one fallback in practice."] },
-      { title: "2. DeepSeek V4.1 Flash on OpenCode Go", sub: ["The same model on a small monthly plan with one shared allowance"] },
-      { title: "3. The Codex models", sub: ["Luna, then Sol at low effort, while the plan has usage left"] },
-      { title: "4. Stop and ask me", emphasis: true, sub: ["The paid DeepSeek API is never in this order.", "It is an escalation, and it needs the approval I type."] },
+      { title: "1. Free model", sub: ["DeepSeek Flash Free,", "one shared daily cap"] },
+      { title: "2. OpenCode Go", sub: ["the same model on", "a small monthly plan"] },
+      { title: "3. Codex models", sub: ["Luna, then Sol,", "on my Codex plan"] },
+      { title: "4. Stop and ask me", emphasis: true, sub: ["when every model", "is out"] },
     ],
+    note: "The paid DeepSeek API is never in this order. It is an escalation, and it needs the approval I type.",
   },
   layers: {
     arrows: "both",
@@ -208,9 +228,36 @@ export const STACKS: Record<string, Stack> = {
   },
 };
 
+function acrossSvg(s: Stack): string {
+  const W = 640, PAD = 20, GAP = 22, n = s.layers.length;
+  const bw = (W - 2 * PAD - (n - 1) * GAP) / n;
+  const lines = Math.max(...s.layers.map((l) => l.sub?.length ?? 0));
+  const bh = 34 + lines * 16, y = 14;
+  const parts: string[] = [];
+  s.layers.forEach((l, i) => {
+    const x = PAD + i * (bw + GAP);
+    const stroke = l.emphasis ? "stroke:var(--color-fg);stroke-width:2.2" : "stroke:var(--color-line);stroke-width:1";
+    parts.push(`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="8" style="fill:none;${stroke}"/>`);
+    parts.push(`<text x="${x + bw / 2}" y="${y + 22}" text-anchor="middle" style="fill:var(--color-fg);font-size:13.5px">${X(l.title)}</text>`);
+    (l.sub ?? []).forEach((ln, k) => parts.push(`<text x="${x + bw / 2}" y="${y + 42 + k * 16}" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">${X(ln)}</text>`));
+    if (i < n - 1) {
+      const ax = x + bw + 3, bx = x + bw + GAP - 3, ay = y + bh / 2;
+      parts.push(`<g style="stroke:var(--color-muted);stroke-width:1.5;fill:none"><line x1="${ax}" y1="${ay}" x2="${bx}" y2="${ay}"/><path d="M${bx - 6},${ay - 4} L${bx},${ay} L${bx - 6},${ay + 4}"/></g>`);
+    }
+  });
+  let H = y + bh + 14;
+  if (s.note) {
+    parts.push(`<line x1="${PAD}" y1="${H}" x2="${W - PAD}" y2="${H}" style="stroke:var(--color-line);stroke-width:1;stroke-dasharray:4 4"/>`);
+    parts.push(`<text x="${W / 2}" y="${H + 24}" text-anchor="middle" style="fill:var(--color-fg);font-size:12.5px">${X(s.note)}</text>`);
+    H += 40;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${X(s.label)}" style="display:block;width:100%;max-width:640px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif">${parts.join("")}</svg>`;
+}
+
 export function stackSvg(id: string): string {
   const s = STACKS[id];
   if (!s) throw new Error(`no stack named ${id}`);
+  if (s.across) return acrossSvg(s);
   const W = 640, PAD = 20, GAP = 30;
   let y = 14;
   const parts: string[] = [];
