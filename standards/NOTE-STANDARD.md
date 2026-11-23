@@ -74,8 +74,8 @@ changelog:               # optional, newest first, one line per major change
 | `readingTime` | Honest estimate | `"~N min"`. Don't inflate it. |
 | `tags` | Topics | Lowercase, real, ~3–6. Reuse existing tags where they fit. |
 | `summary` | Abstract for listings + AI/SEO | A real answer in his voice. This is the AEO payload; treat it as first-class. |
-| `social` | Ready-to-post copy | Required. A short post, not the summary. The page renders it at the bottom with the canonical link. |
-| `socialImage` | Social image path | Required. Supply a 1200×1200 PNG the reader can download and attach to the post. |
+| `social` | Ready-to-post copy | Required, except on a technical companion whose main note's post already points to it. A short post, not the summary. The page renders it at the bottom with the canonical link. |
+| `socialImage` | Social image path | Required wherever `social` is. Supply a 1200×1200 PNG the reader can download and attach to the post, or an animated GIF when the post needs motion. A list posts several; do not list the same picture twice, still and moving. |
 | `socialImageAlt` | Social image alt | Required for every social image. Describe what the card shows. |
 | `updated` | The day of the last major change | Optional. ISO date. Renders as an edited line under the masthead. `date` never moves. |
 | `changelog` | What changed, and when | Optional. A list of `"YYYY-MM-DD \| sentence"` strings. Renders as a block at the foot of the note. |
@@ -100,7 +100,7 @@ for the reader who came back: say what is different, and leave out how the edit 
 
 ### The share block
 
-Every note ships with social post copy, a 1200×1200 image and the image's alt text, made in the same pass as the note. The
+Every note ships with social post copy, a 1200×1200 image (or an animated GIF) and the image's alt text, made in the same pass as the note. The one exception is a technical companion: when the main note's post already sends readers there, the companion carries no post of its own. The
 collapsed block at the bottom of the note gives the reader the copy, the canonical link, and the
 image to download. The subtitle supplies the social preview. Write the post copy for the feed.
 

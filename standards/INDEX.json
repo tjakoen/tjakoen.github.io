@@ -2850,7 +2850,7 @@
             99,
             117
           ],
-          "summary": "Every note ships with social post copy, a 1200×1200 image and the image's alt text, made in the same pass as the note.",
+          "summary": "Every note ships with social post copy, a 1200×1200 image (or an animated GIF) and the image's alt text, made in the same pass as the note.",
           "refs": [],
           "children": [
             {
@@ -2861,7 +2861,7 @@
                 101,
                 117
               ],
-              "summary": "Every note ships with social post copy, a 1200×1200 image and the image's alt text, made in the same pass as the note.",
+              "summary": "Every note ships with social post copy, a 1200×1200 image (or an animated GIF) and the image's alt text, made in the same pass as the note.",
               "refs": [
                 {
                   "to": "voice"
