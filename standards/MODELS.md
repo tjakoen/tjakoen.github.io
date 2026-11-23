@@ -257,7 +257,7 @@ last step of D3 and the whole of D10 no longer apply. The chain now ends at the 
 paid call is an escalation that needs a recorded approval (section 12). D3 and D10 stay listed above
 so the history reads straight.
 
-**One free model, then OpenCode Go (2026-11-23).** The owner made D11 after the free chain ran out in
+**One free model, then OpenCode Go (2026-11-23).** The owner made D11 and D12 after the free chain ran out in
 one go on the Mac.
 
 - D11. OpenCode's free models share one daily message cap, so when one runs out they all do, and a
@@ -268,6 +268,11 @@ one go on the Mac.
   not private. Its Extra Usage setting stays off, because with it on, an exhausted allowance would
   bill console credits with no approval in between. Iceman Contributor Free stays out of the chain:
   it is free only for a limited time and trains on what it is sent.
+- D12. The free model stays ahead of Go (owner, 2026-11-23). Free first spends nothing until the shared
+  daily cap runs out and keeps the Go allowance for after it; Go first would buy steadier service and
+  readable limits from the first request at the cost of allowance spent on work the free model does
+  for nothing. The order is reviewed on 2026-11-30 against a week of usage records in PANTRY, split by
+  provider: how often the free cap ran out, and how much of the Go allowance was left.
 
 The same model id is now served at two costs: DeepSeek V4.1 Flash is plan cost on Go and metered on
 the DeepSeek API. An escalation therefore refuses that id alone and takes it with its provider, the
