@@ -14,7 +14,10 @@
     fig.querySelectorAll("[data-zoom]").forEach((b) => b.addEventListener("click", () => {
       const z = b.dataset.zoom; if (z === "reset") { vb = [0, 0, W, H]; set(); } else zoom(z === "in" ? 0.8 : 1.25);
     }));
-    svg.addEventListener("wheel", (ev) => { ev.preventDefault(); const [x, y] = pt(ev); zoom(ev.deltaY < 0 ? 0.88 : 1.14, x, y); }, { passive: false });
+    // A plain wheel scrolls the page; only Ctrl (or Cmd) and the wheel zoom. A trackpad pinch arrives as a
+    // wheel with ctrlKey set, so pinch still zooms. Taking every wheel turned the page into a trap: a reader
+    // scrolling past a diagram got stuck zooming it instead.
+    svg.addEventListener("wheel", (ev) => { if (!ev.ctrlKey && !ev.metaKey) return; ev.preventDefault(); const [x, y] = pt(ev); zoom(ev.deltaY < 0 ? 0.88 : 1.14, x, y); }, { passive: false });
     let drag = null, moved = false;
     svg.addEventListener("pointerdown", (ev) => { drag = [ev.clientX, ev.clientY, vb[0], vb[1]]; moved = false; });
     addEventListener("pointermove", (ev) => {
