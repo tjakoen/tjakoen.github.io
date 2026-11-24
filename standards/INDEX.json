@@ -2054,11 +2054,11 @@
       "title": "HOOKS.md — the gates that fire before you do",
       "summary": "The machine-level hooks that enforce parts of the loop on every session in every repo - what each one fires on, what it deliberately cannot do, how to turn it off, and the adapter contract that holds Claude Code, Codex and DeepSeek Harness to the same six signals with a ten-case conformance list.",
       "when": "Read this BEFORE trusting that a rule in LOOP or SESSION-LOOP is enforced rather than merely written, before a session-start report or a blocked write surprises you, and before adding, editing or switching off anything under the machine's tools directory or wiring a new harness into the loop. It owns the machinery: which event each hook fires on, the limits that are deliberate, the off switch for each one, and the adapter contract with the case list that proves an adapter against it. Don't skip because you have read LOOP - LOOP says what the rules are, and this says which of them a machine actually stops you over, and in which harness.",
-      "lines": 537,
+      "lines": 542,
       "lead": {
         "lines": [
           15,
-          32
+          33
         ],
         "summary": "A standard is a sentence until something enforces it."
       },
@@ -2068,8 +2068,8 @@
           "heading": "1. Where they live, and how a machine gets them",
           "anchor": "1-where-they-live-and-how-a-machine-gets-them",
           "lines": [
-            36,
-            76
+            37,
+            77
           ],
           "summary": "The scripts live in a private config repo, under shared/tools.",
           "refs": [
@@ -2086,8 +2086,8 @@
           "heading": "2. session-doctor.sh, at session start",
           "anchor": "2-session-doctorsh-at-session-start",
           "lines": [
-            80,
-            113
+            81,
+            114
           ],
           "summary": "Fires on: SessionStart, in whatever directory the session opened.",
           "refs": [
@@ -2101,8 +2101,8 @@
           "heading": "3. human-lane.sh, before a write",
           "anchor": "3-human-lanesh-before-a-write",
           "lines": [
-            117,
-            176
+            118,
+            177
           ],
           "summary": "Fires on: PreToolUse, on the file-writing tools.",
           "refs": [
@@ -2116,8 +2116,8 @@
           "heading": "4. spawn-envelope.sh, before a spawn",
           "anchor": "4-spawn-envelopesh-before-a-spawn",
           "lines": [
-            180,
-            253
+            181,
+            254
           ],
           "summary": "Fires on: PreToolUse on the tools that start a session or send an unsolicited prompt to a running one.",
           "refs": [
@@ -2131,8 +2131,8 @@
           "heading": "4a. goldfish-gate.sh, before a plan starts",
           "anchor": "4a-goldfish-gatesh-before-a-plan-starts",
           "lines": [
-            257,
-            283
+            258,
+            284
           ],
           "summary": "Fires on: PreToolUse, on three triggers.",
           "refs": [
@@ -2146,8 +2146,8 @@
           "heading": "4b. The output gates",
           "anchor": "4b-the-output-gates",
           "lines": [
-            287,
-            352
+            288,
+            353
           ],
           "summary": "Fires on: PostToolUse. Three scripts, wired 2026-08-21: bash-output-bound.sh at a 4,000 character bound, tool-output-bound.sh, and code-discovery.sh.",
           "refs": []
@@ -2157,11 +2157,14 @@
           "heading": "4c. The adapter contract (one set of rules, three harnesses)",
           "anchor": "4c-the-adapter-contract-one-set-of-rules-three-harnesses",
           "lines": [
-            356,
-            438
+            357,
+            443
           ],
           "summary": "A harness is the program that runs a session, and three of them run here: Claude Code, Codex and DeepSeek Harness.",
           "refs": [
+            {
+              "to": "models-verify"
+            },
             {
               "to": "models"
             }
@@ -2172,8 +2175,8 @@
           "heading": "5. Three limits that cost something to learn",
           "anchor": "5-three-limits-that-cost-something-to-learn",
           "lines": [
-            442,
-            475
+            447,
+            480
           ],
           "summary": "None of these are guessable from the harness documentation, and each was found by building the wrong thing first.",
           "refs": [
@@ -2187,8 +2190,8 @@
           "heading": "6. The off switch is part of the design",
           "anchor": "6-the-off-switch-is-part-of-the-design",
           "lines": [
-            479,
-            497
+            484,
+            502
           ],
           "summary": "Every hook here ships with a documented way to stop it, and that is a design requirement rather than a courtesy.",
           "refs": []
@@ -2198,8 +2201,8 @@
           "heading": "7. Red flags",
           "anchor": "7-red-flags",
           "lines": [
-            501,
-            510
+            506,
+            515
           ],
           "summary": "A hook edited without running it the way the harness runs it (section 5).",
           "refs": []
@@ -2209,8 +2212,8 @@
           "heading": "8. Before you change one of these",
           "anchor": "8-before-you-change-one-of-these",
           "lines": [
-            514,
-            537
+            519,
+            542
           ],
           "summary": "Evidence-shaped, in the manner of LOOP.md section 9, and short because the blast radius is the whole machine rather than one repo.",
           "refs": [
@@ -2935,7 +2938,7 @@
       "title": "MODELS — which model plays which role, on every harness",
       "summary": "The portable model policy of the loop. Six roles on three tiers, a main session on the execution tier, escalation by delegation rather than by switching models, the effort ceiling, one registry as the only home of model identifiers, five conformance levels, and how a device repairs its own drift.",
       "when": "Read this BEFORE pinning a model in an agent file, a settings file or a Codex config, before adding an agent, before reaching for a model switch mid-session, and before claiming a harness runs the loop's model policy. It owns which role sits on which tier and how the strong tier is reached; the registry in agent-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice. Don't skip because the agent file already names a model - a pin nobody checked against the registry is how five files came to disagree.",
-      "lines": 510,
+      "lines": 512,
       "lead": {
         "lines": [
           14,
@@ -3081,7 +3084,7 @@
           "anchor": "10-the-model-guard",
           "lines": [
             160,
-            232
+            234
           ],
           "summary": "Every main session runs the registry's main tier, and nothing in a menu or a spawner's defaults changes that.",
           "refs": []
@@ -3091,8 +3094,8 @@
           "heading": "11. Cost and privacy",
           "anchor": "11-cost-and-privacy",
           "lines": [
-            234,
-            350
+            236,
+            352
           ],
           "summary": "Phase A made one registry the home of every model choice.",
           "refs": []
@@ -3102,8 +3105,8 @@
           "heading": "12. Escalation records and the owner's typed approval",
           "anchor": "12-escalation-records-and-the-owners-typed-approval",
           "lines": [
-            352,
-            386
+            354,
+            388
           ],
           "summary": "Phase B gave every escalation a record and every paid call an approval with one source.",
           "refs": []
@@ -3113,8 +3116,8 @@
           "heading": "13. The supervisor and its limits",
           "anchor": "13-the-supervisor-and-its-limits",
           "lines": [
-            388,
-            410
+            390,
+            412
           ],
           "summary": "The supervisor is code, not an agent (decision M1).",
           "refs": [
@@ -3131,8 +3134,8 @@
           "heading": "14. Context metadata and the budget",
           "anchor": "14-context-metadata-and-the-budget",
           "lines": [
-            412,
-            430
+            414,
+            432
           ],
           "summary": "Each model entry in the registry may carry a context block: the advertised window, the usable window, the output reserve (maxOut), the overhead, the method it was measured by (transcript, provider...",
           "refs": [
@@ -3146,8 +3149,8 @@
           "heading": "15. Continuation and recovery checkpoints",
           "anchor": "15-continuation-and-recovery-checkpoints",
           "lines": [
-            432,
-            448
+            434,
+            450
           ],
           "summary": "A recovery checkpoint is not a handoff.",
           "refs": []
@@ -3157,8 +3160,8 @@
           "heading": "16. Model Scout",
           "anchor": "16-model-scout",
           "lines": [
-            450,
-            459
+            452,
+            461
           ],
           "summary": "model-scout.ts researches models and recommends them.",
           "refs": []
@@ -3168,8 +3171,8 @@
           "heading": "17. The runtime brief",
           "anchor": "17-the-runtime-brief",
           "lines": [
-            461,
-            468
+            463,
+            470
           ],
           "summary": "The session checklist keeps a healthy start to one row, Model Intelligence Layer verified.",
           "refs": [
@@ -3183,8 +3186,8 @@
           "heading": "18. Where each record lives",
           "anchor": "18-where-each-record-lives",
           "lines": [
-            470,
-            484
+            472,
+            486
           ],
           "summary": "Every new record has one home (decision M2), so a reader looking for one never has to search two places.",
           "refs": [
@@ -3201,8 +3204,8 @@
           "heading": "19. What is on hold and what is not tested",
           "anchor": "19-what-is-on-hold-and-what-is-not-tested",
           "lines": [
-            486,
-            503
+            488,
+            505
           ],
           "summary": "DeepSeek Harness is on hold (owner, 2026-11-23).",
           "refs": []
@@ -3212,8 +3215,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            505,
-            510
+            507,
+            512
           ],
           "summary": "The verifier for the harness run (the command is in MODELS-VERIFY step 1), no line FAIL.",
           "refs": []

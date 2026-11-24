@@ -68,7 +68,7 @@ changelog:               # optional, newest first, one line per major change
 | `title` | The hook | Specific and human, a stake or a confession, never a generic label. |
 | `subtitle` | The stake / social preview | 1–2 sentences. The pull-quote energy, not a summary. |
 | `author` | Byline | Always `"Tjakoen Stolk"`. |
-| `status` | Publish state | `DRAFT` by default. Only he flips it to `PUBLISHED`. |
+| `status` | Publish state | `DRAFT` by default. Only he flips it to `PUBLISHED`. A draft is not secret: it is exported to `/drafts/<slug>` and its raw Markdown is served, unlinked and `noindex`, so DRAFT means not announced rather than unreachable. |
 | `type` | Kind | `note` for a blog post; `whitepaper` for the long-form formal piece. |
 | `date` | ISO date | The write/update day. |
 | `readingTime` | Honest estimate | `"~N min"`. Don't inflate it. |
