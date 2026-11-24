@@ -5,5 +5,6 @@
     "./docs"
   ],
   "standardsSource": "canon",
-  "previewTarget": "http://localhost:3001"
+  "previewTarget": "http://localhost:3001",
+  "ownerLayer": true
 }
