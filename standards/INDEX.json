@@ -546,9 +546,9 @@
       "url": "https://portfolio.tjakoen.com/standards/brief",
       "skill": "brief",
       "title": "BRIEF.md — a run talks to the person, not about the work",
-      "summary": "The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, and the words he already uses. One shape on every harness and every surface.",
+      "summary": "The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, the words he already uses, and a closing line on whether the session can be archived. One shape on every harness and every surface.",
       "when": "Read this BEFORE writing anything addressed to Tjakoen rather than to the code: a chat reply, a run report, an audit, a PANTRY plan or task note, a handoff prompt, a decision request, a review or ticket reply. It owns the shape of the message; DECISIONS owns which surface it goes on, SESSION-LOOP owns what a handoff carries, VOICE owns anything published in his name. Don't skip because the model is a light one or the reply feels short - the shape is what carries the clarity a small model cannot, and a brief he has to ask about has already cost more than it saved.",
-      "lines": 311,
+      "lines": 377,
       "lead": {
         "lines": [
           14,
@@ -724,11 +724,29 @@
         },
         {
           "level": 2,
+          "heading": "11. End with whether the session can be archived",
+          "anchor": "11-end-with-whether-the-session-can-be-archived",
+          "lines": [
+            269,
+            323
+          ],
+          "summary": "Only the owner archives a session, and he does it with a glance at the end of a message.",
+          "refs": [
+            {
+              "to": "loop"
+            },
+            {
+              "to": "session-loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
           "heading": "The checklist",
           "anchor": "the-checklist",
           "lines": [
-            269,
-            286
+            325,
+            345
           ],
           "summary": "Before anything reaches the reader: The first line says what he has to do, or that nothing is needed.",
           "refs": []
@@ -738,8 +756,8 @@
           "heading": "Rationalizations",
           "anchor": "rationalizations",
           "lines": [
-            288,
-            300
+            347,
+            362
           ],
           "summary": "A table: The excuse, The answer.",
           "refs": []
@@ -749,8 +767,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            302,
-            311
+            364,
+            377
           ],
           "summary": "Every item under the ask can be done without a follow-up question.",
           "refs": []
@@ -1814,7 +1832,7 @@
       "title": "GLOSSARY — the words this estate uses, so a session spends fewer tokens decoding them",
       "summary": "The working vocabulary of the portfolio and the loop around it: desk, door, surface, intent, grade, grain, lane, envelope, brief, run report, handoff, claim. One line each, the word as it is used here rather than as the framework invented it, so a cold session can read a plan or a note without inferring the meaning from context.",
       "when": "Read this BEFORE writing a plan, a note, a review or a handoff in this estate, and the moment a term in a ticket or a standard does not resolve in one read. It owns the shared vocabulary, not the process: LOOP, SESSION-LOOP and the standards they point at own what to do, and this file only says what the words mean. Don't skip because the term looks obvious - half of the estate's confusion is two people using one word for two things.",
-      "lines": 78,
+      "lines": 79,
       "lead": {
         "lines": [
           17,
@@ -1829,7 +1847,7 @@
           "anchor": "the-loop",
           "lines": [
             22,
-            34
+            35
           ],
           "summary": "A table: Word, What it means here.",
           "refs": [
@@ -1840,10 +1858,10 @@
               "to": "session-loop"
             },
             {
-              "to": "intake"
+              "to": "brief"
             },
             {
-              "to": "brief"
+              "to": "intake"
             }
           ]
         },
@@ -1852,8 +1870,8 @@
           "heading": "The portfolio's own vocabulary",
           "anchor": "the-portfolios-own-vocabulary",
           "lines": [
-            36,
-            48
+            37,
+            49
           ],
           "summary": "A table: Word, What it means here.",
           "refs": []
@@ -1863,8 +1881,8 @@
           "heading": "Work and ownership",
           "anchor": "work-and-ownership",
           "lines": [
-            50,
-            59
+            51,
+            60
           ],
           "summary": "A table: Word, What it means here.",
           "refs": [
@@ -1878,8 +1896,8 @@
           "heading": "Models and routing",
           "anchor": "models-and-routing",
           "lines": [
-            61,
-            70
+            62,
+            71
           ],
           "summary": "A table: Word, What it means here.",
           "refs": []
@@ -1889,8 +1907,8 @@
           "heading": "Rules about words",
           "anchor": "rules-about-words",
           "lines": [
-            72,
-            78
+            73,
+            79
           ],
           "summary": "A term with a row above is written in lower case in prose unless it is a product name (GRAIN, PANTRY, MILL, BATCH, PROOF, CRUMB).",
           "refs": []
