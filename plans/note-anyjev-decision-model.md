@@ -3,11 +3,11 @@ id: note-anyjev-decision-model
 status: doing
 track: content
 depends: []
-touches: [content/notes/the-planner-i-said-i-had.md, content/media/notes/the-planner-i-said-i-had-social.png, tools/social-card-planner.ts, package.json, docs/CONTENT-BACKLOG.md]
+touches: [content/notes/the-decision-model-i-did-not-install.md, content/media/notes/the-decision-model-i-did-not-install-social.png, tools/social-card-decision-model.ts, package.json, docs/CONTENT-BACKLOG.md]
 owner: ai
 ---
 
-# The note on AnyJev, and the planner my loop did not have
+# The note on AnyJev, and what it changed in the loop
 
 The owner shared AnyJev as a possible way to make the agent loop smarter, more deterministic and
 faster, and asked for a note because the repo was trending. Reading it surfaced a live gap: OpenCode
@@ -39,7 +39,7 @@ as the receipt.
 
 ## Acceptance
 
-- A DRAFT note at `content/notes/the-planner-i-said-i-had.md` with complete frontmatter.
+- A DRAFT note at `content/notes/the-decision-model-i-did-not-install.md` with complete frontmatter.
 - Two figures built to FIGURES, each with an accessible name.
 - The four wiring receipts named, with the exact commands and the model ids.
 - AnyJev's four benchmark numbers attributed in the sentence that uses them.
