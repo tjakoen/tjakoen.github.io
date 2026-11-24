@@ -548,7 +548,7 @@
       "title": "BRIEF.md — a run talks to the person, not about the work",
       "summary": "The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, and the words he already uses. One shape on every harness and every surface.",
       "when": "Read this BEFORE writing anything addressed to Tjakoen rather than to the code: a chat reply, a run report, an audit, a PANTRY plan or task note, a handoff prompt, a decision request, a review or ticket reply. It owns the shape of the message; DECISIONS owns which surface it goes on, SESSION-LOOP owns what a handoff carries, VOICE owns anything published in his name. Don't skip because the model is a light one or the reply feels short - the shape is what carries the clarity a small model cannot, and a brief he has to ask about has already cost more than it saved.",
-      "lines": 259,
+      "lines": 260,
       "lead": {
         "lines": [
           14,
@@ -589,7 +589,7 @@
           "anchor": "3-if-it-renders-it-is-running-and-it-is-linked",
           "lines": [
             85,
-            115
+            116
           ],
           "summary": "A sentence about a page is not a page.",
           "refs": [
@@ -603,8 +603,8 @@
           "heading": "4. Bullets carry the detail, one point each",
           "anchor": "4-bullets-carry-the-detail-one-point-each",
           "lines": [
-            117,
-            126
+            118,
+            127
           ],
           "summary": "Prose is for the argument. Anything listable is a bullet: what changed, what was read, what remains, what it costs.",
           "refs": [
@@ -618,8 +618,8 @@
           "heading": "5. A table when there is state, a figure when there is shape",
           "anchor": "5-a-table-when-there-is-state-a-figure-when-there-is-shape",
           "lines": [
-            128,
-            136
+            129,
+            137
           ],
           "summary": "Three or more things compared on the same two or three facts is a table.",
           "refs": [
@@ -633,8 +633,8 @@
           "heading": "6. Write in the words he already uses",
           "anchor": "6-write-in-the-words-he-already-uses",
           "lines": [
-            138,
-            148
+            139,
+            149
           ],
           "summary": "Plain words, short sentences, the term he uses rather than the one the framework invented.",
           "refs": [
@@ -648,8 +648,8 @@
           "heading": "7. Cut what he cannot act on",
           "anchor": "7-cut-what-he-cannot-act-on",
           "lines": [
-            150,
-            162
+            151,
+            163
           ],
           "summary": "Not in a brief: a restatement of the question",
           "refs": []
@@ -659,8 +659,8 @@
           "heading": "8. One shape, in the container each surface gives it",
           "anchor": "8-one-shape-in-the-container-each-surface-gives-it",
           "lines": [
-            164,
-            175
+            165,
+            176
           ],
           "summary": "The container changes where the reader meets the brief.",
           "refs": [
@@ -680,8 +680,8 @@
           "heading": "9. A light model needs the shape more, not a shorter answer",
           "anchor": "9-a-light-model-needs-the-shape-more-not-a-shorter-answer",
           "lines": [
-            177,
-            189
+            178,
+            190
           ],
           "summary": "The run that prompted this file was on DeepSeek V4.1 Flash, a light model by the registry's own label, because the Codex plan was out and the free model had already been rate-limited.",
           "refs": []
@@ -691,8 +691,8 @@
           "heading": "10. Say where the work stands",
           "anchor": "10-say-where-the-work-stands",
           "lines": [
-            191,
-            219
+            192,
+            220
           ],
           "summary": "A run that takes more than one step owes a state table every time it reports, on every surface.",
           "refs": []
@@ -702,8 +702,8 @@
           "heading": "The checklist",
           "anchor": "the-checklist",
           "lines": [
-            221,
-            235
+            222,
+            236
           ],
           "summary": "Before anything reaches the reader: The first line says what he has to do, or that nothing is needed.",
           "refs": []
@@ -713,8 +713,8 @@
           "heading": "Rationalizations",
           "anchor": "rationalizations",
           "lines": [
-            237,
-            248
+            238,
+            249
           ],
           "summary": "A table: The excuse, The answer.",
           "refs": []
@@ -724,8 +724,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            250,
-            259
+            251,
+            260
           ],
           "summary": "Every item under the ask can be done without a follow-up question.",
           "refs": []

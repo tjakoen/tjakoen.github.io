@@ -105,8 +105,9 @@ judging rather than a glance.
 project and nothing after that moves it, so by the second project of the day it is showing the wrong
 one. When a reply ends with actions he has to take:
 
-1. Move his window first, with *pantry_act* to the plan the reply is about. A link he has to find
-   and click is a step he did not ask for.
+1. Move his window to the plan before he reads: *pantry_act* to the plans view first, then to the
+   plan. The door only moves to something already on screen, and when it refuses it names the legal
+   moves, so take the hop it names instead of guessing a URL.
 2. Then put the link under the actions, on its own line:
    <pantry://project/tjakoen.github.io>. In a browser the same page is
    <http://localhost:4400/open/tjakoen.github.io>.
