@@ -18,13 +18,14 @@ he has to do next, or the one thing he has to look at.
 
 The brief gives him that first, then the detail, in blocks small enough to scan.
 
-The shape came from Kercwin Ocampo, the tech lead on my team. Before he built his epic checker he
-showed the team how he makes Claude talk to him: tables, diagrams, a fixed wording, a format his
-brain reads fast. That is the same move as [VOICE](VOICE.md), pointed the other way. VOICE tells the
-model how to sound like me. This file tells it how to sound like something I can use.
+The shape came from [Kercwin Ocampo](/people#kercwin), the tech lead on my team. Before he built his
+epic checker he showed the team how he makes Claude talk to him: tables, diagrams, a fixed wording, a
+format his brain reads fast. That is the same move as [VOICE](VOICE.md), pointed the other way. VOICE
+tells the model how to sound like me. This file tells it how to sound like something I can use.
 
 **The standard in one line:** the ask comes first, a step he runs arrives numbered and complete,
-anything that renders arrives running and linked, and every block is small enough to scan.
+anything that renders arrives running and linked, the run says where it stands, and every block is
+small enough to scan.
 
 ---
 
@@ -173,6 +174,36 @@ part the model cannot supply and the run can.
 - Prefer a worked example to an instruction, in this file and in any brief that hands work on. A
   light model copies a shape and interprets a rule.
 
+## 10. Say where the work stands
+
+A run that takes more than one step owes a state table every time it reports, on every surface. The
+table answers three questions before he asks any of them: what is done, what is happening now, and
+what waits on him.
+
+| # | Step | State | Evidence |
+|---|---|---|---|
+| 1 | Read the standard and its neighbours | done | BRIEF.md drafted |
+| 2 | Push and watch the deploy | now | run 4534, failed at the index test |
+| 3 | Read the live page | next | waits on you |
+
+- One row per step, in order, and the step in progress says "now".
+- A row says "done" only when its evidence sits on the row. A done row with no evidence is a claim.
+- Update the table as the work moves, instead of writing a fresh account at the end.
+
+Anything stuck gets its own line under the table, with what it is stuck on and what frees it. Waiting
+on the owner is a blocker, not a status.
+
+| What | Blocked on | Unblocks when |
+|---|---|---|
+| The deploy | a test that fails only in CI | the index is rebuilt from the committed standards |
+
+An open question that has not been answered gets a line there too, even when the run is not blocked.
+A question buried in paragraph four is a question the run will ask again next week.
+
+At the end of a run, the table is the run report's summary, so a reader who opens it later meets the
+same shape. A decision request inherits the row it blocks, so the person answering knows what moves
+when they answer.
+
 ## The checklist
 
 Before anything reaches the reader:
@@ -185,6 +216,8 @@ Before anything reaches the reader:
 6. Three or more comparable things are a table, and a shape is a figure on a page.
 7. Every acronym is expanded once, and every number says what it means.
 8. No line restates, apologizes, or invites questions.
+9. A run with more than one step shows a state table, and every blocker and open question sits under
+   it.
 
 ## Rationalizations
 
@@ -205,5 +238,6 @@ Before anything reaches the reader:
 - Every URL answers with the page it claims, and it was opened once before sending.
 - Every linked prompt file exists, opens, and starts with what to do with it.
 - No table cell is longer than a sentence.
+- The state table's current row matches the last thing the session actually did.
 - The message contains no invitation to ask questions, no summary of itself, and no wish that it
   helped.

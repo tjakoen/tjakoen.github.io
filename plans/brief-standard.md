@@ -20,6 +20,9 @@ own file pointed the other way first.
 - [x] Extend content/notes/the-voice-file.md with the other half of a voice file, and update its frontmatter.
 - [x] Run the gates: typecheck, 1,052 tests, link lint, voice lint, lint gate, diagram cache, standards index.
 - [x] Render both pages on the dev server and screenshot them.
+- [x] Add the state table to BRIEF: one row per step, the current one, the evidence, then the blockers and open questions under it.
+- [x] Link Kercwin Ocampo to his people page, and link the note's section to the standard.
+- [x] Regenerate the index from the committed standards after the first push failed the CI index check.
 
 ## What we learned
 

@@ -542,11 +542,11 @@
       "title": "BRIEF.md — a run talks to the person, not about the work",
       "summary": "The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, and the words he already uses. One shape on every harness and every surface.",
       "when": "Read this BEFORE writing anything addressed to Tjakoen rather than to the code: a chat reply, a run report, an audit, a PANTRY plan or task note, a handoff prompt, a decision request, a review or ticket reply. It owns the shape of the message; DECISIONS owns which surface it goes on, SESSION-LOOP owns what a handoff carries, VOICE owns anything published in his name. Don't skip because the model is a light one or the reply feels short - the shape is what carries the clarity a small model cannot, and a brief he has to ask about has already cost more than it saved.",
-      "lines": 209,
+      "lines": 243,
       "lead": {
         "lines": [
           14,
-          27
+          28
         ],
         "summary": "Every message a run writes is read by one person: the owner, usually between two other things, with the tab open and the cursor waiting."
       },
@@ -556,8 +556,8 @@
           "heading": "1. The ask comes first",
           "anchor": "1-the-ask-comes-first",
           "lines": [
-            31,
-            55
+            32,
+            56
           ],
           "summary": "Open with what the reader has to do, before any account of what the run did.",
           "refs": []
@@ -567,8 +567,8 @@
           "heading": "2. A step he runs arrives numbered and complete",
           "anchor": "2-a-step-he-runs-arrives-numbered-and-complete",
           "lines": [
-            57,
-            82
+            58,
+            83
           ],
           "summary": "Anything with an order is numbered, one action per number, and each number can be pasted or typed as written.",
           "refs": [
@@ -582,8 +582,8 @@
           "heading": "3. If it renders, it is running and it is linked",
           "anchor": "3-if-it-renders-it-is-running-and-it-is-linked",
           "lines": [
-            84,
-            101
+            85,
+            102
           ],
           "summary": "A sentence about a page is not a page.",
           "refs": [
@@ -597,8 +597,8 @@
           "heading": "4. Bullets carry the detail, one point each",
           "anchor": "4-bullets-carry-the-detail-one-point-each",
           "lines": [
-            103,
-            112
+            104,
+            113
           ],
           "summary": "Prose is for the argument. Anything listable is a bullet: what changed, what was read, what remains, what it costs.",
           "refs": [
@@ -612,8 +612,8 @@
           "heading": "5. A table when there is state, a figure when there is shape",
           "anchor": "5-a-table-when-there-is-state-a-figure-when-there-is-shape",
           "lines": [
-            114,
-            122
+            115,
+            123
           ],
           "summary": "Three or more things compared on the same two or three facts is a table.",
           "refs": [
@@ -627,8 +627,8 @@
           "heading": "6. Write in the words he already uses",
           "anchor": "6-write-in-the-words-he-already-uses",
           "lines": [
-            124,
-            134
+            125,
+            135
           ],
           "summary": "Plain words, short sentences, the term he uses rather than the one the framework invented.",
           "refs": [
@@ -642,8 +642,8 @@
           "heading": "7. Cut what he cannot act on",
           "anchor": "7-cut-what-he-cannot-act-on",
           "lines": [
-            136,
-            148
+            137,
+            149
           ],
           "summary": "Not in a brief: a restatement of the question",
           "refs": []
@@ -653,8 +653,8 @@
           "heading": "8. One shape, in the container each surface gives it",
           "anchor": "8-one-shape-in-the-container-each-surface-gives-it",
           "lines": [
-            150,
-            161
+            151,
+            162
           ],
           "summary": "The container changes where the reader meets the brief.",
           "refs": [
@@ -674,10 +674,21 @@
           "heading": "9. A light model needs the shape more, not a shorter answer",
           "anchor": "9-a-light-model-needs-the-shape-more-not-a-shorter-answer",
           "lines": [
-            163,
-            174
+            164,
+            175
           ],
           "summary": "The run that prompted this file was on DeepSeek V4.1 Flash, the third link in the OpenCode main chain and a light model by the registry's own label.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "10. Say where the work stands",
+          "anchor": "10-say-where-the-work-stands",
+          "lines": [
+            177,
+            205
+          ],
+          "summary": "A run that takes more than one step owes a state table every time it reports, on every surface.",
           "refs": []
         },
         {
@@ -685,8 +696,8 @@
           "heading": "The checklist",
           "anchor": "the-checklist",
           "lines": [
-            176,
-            187
+            207,
+            220
           ],
           "summary": "Before anything reaches the reader: The first line says what he has to do, or that nothing is needed.",
           "refs": []
@@ -696,8 +707,8 @@
           "heading": "Rationalizations",
           "anchor": "rationalizations",
           "lines": [
-            189,
-            199
+            222,
+            232
           ],
           "summary": "A table: The excuse, The answer.",
           "refs": []
@@ -707,8 +718,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            201,
-            209
+            234,
+            243
           ],
           "summary": "Every item under the ask can be done without a follow-up question.",
           "refs": []
