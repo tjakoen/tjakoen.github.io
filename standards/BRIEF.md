@@ -1,6 +1,6 @@
 ---
 title: BRIEF.md — a run talks to the person, not about the work
-summary: The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, and the words he already uses. One shape on every harness and every surface.
+summary: The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, the words he already uses, and a closing line on whether the session can be archived. One shape on every harness and every surface.
 when: >
   Read this BEFORE writing anything addressed to Tjakoen rather than to the code: a chat reply, a run
   report, an audit, a PANTRY plan or task note, a handoff prompt, a decision request, a review or
@@ -24,8 +24,8 @@ format his brain reads fast. That is the same move as [VOICE](VOICE.md), pointed
 tells the model how to sound like me. This file tells it how to sound like something I can use.
 
 **The standard in one line:** the ask comes first, a step he runs arrives numbered and complete,
-anything that renders arrives running and linked, the run says where it stands, and every block is
-small enough to scan.
+anything that renders arrives running and linked, the run says where it stands and whether the session
+can be archived, and every block is small enough to scan.
 
 ---
 
@@ -266,6 +266,62 @@ At the end of a run, the table is the run report's summary, so a reader who open
 same shape. A decision request inherits the row it blocks, so the person answering knows what moves
 when they answer.
 
+## 11. End with whether the session can be archived
+
+Only the owner archives a session, and he does it with a glance at the end of a message. A run that
+ends without saying whether it is finished makes him open the session to find out, which is the cost
+this line removes.
+
+The line sits last, under its own heading, after the state table, and carries four facts in this order:
+
+1. **What the session was for**, in the words of its label, so the line and the session list agree.
+2. **What is still open**, named: the task, the file, the ticket or the person it waits on. "Nothing"
+   is a complete answer. "A few things" is not an answer.
+3. **The parent, when there is one.** A child says whether it has sent its report to the parent, and
+   says so only after the report has landed, never when it is about to. A child that has not reported
+   is not archivable: the parent's next step depends on that report and an archived session cannot
+   send one.
+4. **The verdict**, one of three words, with the fact that makes it true.
+
+| Verdict | True when | What it tells him |
+|---|---|---|
+| **Archive now** | The work is committed, pushed and recorded, its plan is closed, and its parent has been told | Nothing here needs him, and archiving loses nothing he cannot reopen |
+| **Archive after this answer** | The work is finished and only his decision, review or deploy is left | One answer, then the line becomes Archive now |
+| **Keep open** | Work remains in this session, or he may have more for it | What remains, and whether the rest is cheaper in a fresh session |
+
+Two rules keep the line honest:
+
+- **The verdict follows the evidence, not the mood.** A session with an open plan, an uncommitted path
+  of its own or an unpushed commit on its branch says Keep open and names which one. [LOOP](LOOP.md)
+  owns the gates that decide it.
+- **The line is not a second summary.** One line, the four facts, no repeat of the state table and no
+  walk through the work. A reader who wants the detail has the table above it.
+
+**A parent asks about its children once.** When the last child reports, the parent's message ends with
+the question rather than a verdict of its own: name the children and ask whether to archive them, in one
+line, or one in-thread card when a single answer covers the batch. The default if he says nothing is to
+keep them, because archiving a parent archives its children, and a child's work is not recoverable from
+the parent's thread. [SESSION-LOOP](SESSION-LOOP.md) section 8 owns what a child's report carries and
+how it reaches the parent.
+
+Three worked lines:
+
+```
+**Archive:** Archive now. A1.1 put the favicon on a white disc, committed as 19abe80 and pushed,
+plan closed, parent A1 told at 14:20. Nothing open.
+```
+
+```
+**Archive:** Keep open. A2 has 3 of 7 tasks left in plans/016-desk-demo-ready.md and waits on your
+call between the two disc sizes. The rest shares no context with this one, so a fresh session is
+cheaper than keeping it.
+```
+
+```
+**Archive:** Keep open, and the children hold it. A1.2 has reported and A1.3 has not, so there is
+nothing to archive yet. Archive A1.2 now if you want it gone from the list.
+```
+
 ## The checklist
 
 Before anything reaches the reader:
@@ -284,6 +340,9 @@ Before anything reaches the reader:
 11. A decision that needs him is one card, recommended option first, with the default named.
 12. A visual decision shows every option rendered on one page, and the chosen letters are recorded
     before the build.
+13. The message ends with the archive line: what the session was for, what is still open, the parent
+    when there is one, and Archive now, Archive after this answer or Keep open, with the fact that
+    makes the verdict true.
 
 ## Rationalizations
 
@@ -298,6 +357,9 @@ Before anything reaches the reader:
 | "I already showed him this in the last message." | He scrolled past it. A link costs one line to repeat. |
 | "He knows where PANTRY is." | It shows one project at a time and he runs fourteen. Point it at this one. |
 | "I listed the three options in prose." | Then he is choosing between three sentences, and the sentence is the part he cannot see. Render them. |
+| "The reply already said the work was finished." | He skims the end and acts on that line. A finish buried mid-message is one he has to hunt for. |
+| "I will send the parent's report after this message." | A child that has not reported says Keep open. The message after this one may never come once the tab closes. |
+| "The parent can see that the child finished." | It sees one report per child, not a list. Name the children and ask once. |
 
 ## Verification
 
@@ -307,5 +369,9 @@ Before anything reaches the reader:
 - Every linked prompt file exists, opens, and starts with what to do with it.
 - No table cell is longer than a sentence.
 - The state table's current row matches the last thing the session actually did.
+- The archive line's verdict matches the gates the run actually ran: no Archive now over an open plan,
+  a dirty path of its own or an unpushed commit.
+- A child names the parent report as sent only when it was sent, and a parent asks about its children
+  by name rather than assuming they are done.
 - The message contains no invitation to ask questions, no summary of itself, and no wish that it
   helped.

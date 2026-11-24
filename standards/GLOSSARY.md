@@ -25,6 +25,7 @@ the standard that owns the behaviour wins and this file changes.
 |---|---|
 | **The loop** | The workflow that runs across every repository: start oriented, work under a plan, verify by second pass, close with evidence. [`LOOP.md`](LOOP.md) owns it. |
 | **Session** | One run of one harness in one directory. Disposable. The repo is what survives. [`SESSION-LOOP.md`](SESSION-LOOP.md) owns the inside of one. |
+| **Archive** | What the owner does to a finished session: it leaves his list and stops taking work, and its children go with it. [`BRIEF.md`](BRIEF.md) section 11 owns the line a run ends with to say whether it is time. |
 | **Lane** | How much scrutiny a change earns, decided before the work starts: production, prototype or throwaway. [`INTAKE.md`](INTAKE.md) owns the envelope that carries it. |
 | **Envelope** | The four answers a nontrivial brief gets before work: lane, scope cap, hard stops, ask-triggers, plus a finish line. |
 | **Brief** | Anything a run says to the owner. It opens with the ask, numbers every step he runs, and links whatever renders. [`BRIEF.md`](BRIEF.md) owns the shape. |
