@@ -161,19 +161,19 @@ const browser = await chromium.launch();
 try {
   const pg = await browser.newPage({ viewport: { width: W, height: H } });
   await pg.setContent(`<!doctype html><html><body style="margin:0"><canvas id="c" width="${W}" height="${H}"></canvas></body></html>`);
-  const bytes: number[] = await pg.evaluate(async ({ src, frames, W, H }) => {
+  const bytes: number[] = await pg.evaluate(async ({ src, frames: framesIn, W: width, H: height }) => {
     const { GIFEncoder, quantize, applyPalette } = await import(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
     const ctx = (document.getElementById("c") as HTMLCanvasElement).getContext("2d", { willReadFrequently: true })!;
     const gif = GIFEncoder();
-    for (const f of frames) {
+    for (const f of framesIn) {
       const img = new Image();
       img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(f.svg);
       await img.decode();
-      ctx.clearRect(0, 0, W, H);
+      ctx.clearRect(0, 0, width, height);
       ctx.drawImage(img, 0, 0);
-      const { data } = ctx.getImageData(0, 0, W, H);
+      const { data } = ctx.getImageData(0, 0, width, height);
       const palette = quantize(data, 32);
-      gif.writeFrame(applyPalette(data, palette), W, H, { palette, delay: f.delay });
+      gif.writeFrame(applyPalette(data, palette), width, height, { palette, delay: f.delay });
     }
     gif.finish();
     return Array.from(gif.bytes() as Uint8Array);

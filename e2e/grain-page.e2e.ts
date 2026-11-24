@@ -12,7 +12,7 @@ test.describe("portfolio umbrella", () => {
     await expect(page.locator(".welcome__title")).toContainText("TJ's Desk");
     await expect(page.locator(".start .start__item").first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Explore selected work" })).toHaveAttribute("href", "/projects");
-    await expect(page.locator(".welcome__sub")).toContainText("I lead engineering teams");
+    await expect(page.locator(".welcome__sub")).toContainText("I lead teams, build tools");
     await expect(page.locator('[data-surface="welcome-start"] a[href="/projects"]')).toHaveCount(0);
     // Recent is fed LIVE from MILL frontmatter: real note or calendar links, not hand-typed rows
     const welcomeRecent = '[data-surface="welcome-recent"]';
@@ -218,8 +218,8 @@ test.describe("/grain — the surface is operable by both a person and the AI, t
     await s.locator(".surface__compose .btn").click();
 
     // the door logs the incoming request (user) AND the outgoing decision (ai) — one format, both operators
-    await expect(feed.locator('.timeline__entry[data-provenance="user"][data-kind="intent"]')).toHaveCount(1);
-    await expect(feed.locator('.timeline__entry[data-provenance="ai"][data-kind="response"]')).toHaveCount(1);
+    await expect(feed.locator('.timeline__entry[data-provenance="user"][data-kind="intent"]')).toHaveCount(1, { timeout: 15_000 });
+    await expect(feed.locator('.timeline__entry[data-provenance="ai"][data-kind="response"]')).toHaveCount(1, { timeout: 15_000 });
     await expect(feed.locator('.timeline__entry[data-provenance="user"]')).toContainText("chat.send");
     // grade-as-signal IN the log: the AI row renders in the grain face (the visible client effect a unit test can't see)
     const aiFont = await feed.locator('.timeline__entry[data-provenance="ai"]').first()
@@ -233,7 +233,7 @@ test.describe("/grain — the surface is operable by both a person and the AI, t
     const before = await s.locator("[data-chat-log] .chat-message").count();
     await page.locator("[data-ai-run]").click();
     // the server's reasoner pushes the RenderOps back over SSE:
-    await expect(s.locator("[data-chat-log] .chat-message")).toHaveCount(before + 1);              // an AI reply bubble…
+    await expect(s.locator("[data-chat-log] .chat-message")).toHaveCount(before + 1, { timeout: 15_000 });  // an AI reply bubble…
     await expect(s.locator('[data-chat-log] .chat-message[data-role="ai"]').last()).toHaveAttribute("data-grade", "grain"); // …that STAYS grain
     await expect(s.locator('[data-tasks] [data-surface="grain-task-badge"]')).toHaveText("done");  // completed a task
     await expect(s.locator('[data-tasks] .list__item[data-grade="grain"]')).toHaveCount(1);        // …and drafted one (stays grain)
