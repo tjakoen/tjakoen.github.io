@@ -494,8 +494,8 @@ places.
 - **The Go plan carries no Sonnet, so its strong lane is DeepSeek V4 Pro.** The registry briefly named
   opencode-go/claude-sonnet-5-5 on 2026-11-24. The provider serves Haiku 5.5 and no Sonnet, and Sonnet
   is metered on the opencode provider, so that lane could not run. It now names V4 Pro, which the Go
-  plan does carry. The entry is executable and not yet observed live, so the row reads unverified until
-  a session lands on it.
+  plan does carry. A spawned session answered on it on 2026-11-24, so the entry is verified for
+  serving. Its quality on real work is unmeasured, and that is the next thing the ledger can show.
 
 ## Verification
 
