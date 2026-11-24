@@ -214,7 +214,13 @@ and why the chain holds one free model and one Go model (D11).
 
 The main OpenCode session has a recovery order of its own. When the Codex allowance stops Sol, it moves
 to the free model and then to Go automatically, and only after those to a paid request, which is an
-escalation the owner approves (section 12). That order is tested and has not yet been seen live.
+escalation the owner approves (section 12). That order was seen live for the first time on 2026-11-24:
+gpt-6.2-sol stopped on its quota at 05:15 UTC, the free model had already been rate-limited at 05:09,
+and the session landed on DeepSeek Flash on the Go plan.
+
+The owner then asked why that hop is not Claude Sonnet 5.5. It cannot be on the Go plan, for the reason
+in section 19: the Go provider does not serve Sonnet at all. That question is open, and it is a decision
+about money rather than a routing bug.
 
 Every row outside Claude Code is marked unverified in the registry. Codex, DeepSeek Harness and OpenCode
 are not installed on the machine where the guard was proven. OpenCode is installed and runs on the
@@ -467,12 +473,17 @@ places.
 
 - **DeepSeek Harness is on hold** (owner, 2026-11-23). The verifier reports every DSH row as
   UNSUPPORTED with the reason *on hold*, so none of them is a claim about a working harness.
-- **OpenCode main-session failover is NOT TESTED.** Today only bounded light subagents fall back. A
-  main session on the Codex-backed Sol allowance stops when that allowance runs out. Plan step 19
-  investigates what OpenCode can do and builds either an in-place switch through the route check or a
-  resumable handoff, and the check opencode.main-failover stays NOT TESTED until a real quota
-  transition has happened on its own and been recorded in the ledger and a run report. Deterministic
-  tests are required for it and are not enough.
+- **OpenCode main-session failover passed on 2026-11-24.** A real quota transition happened on its own:
+  gpt-6.2-sol stopped at 05:15 UTC, the free model had already been rate-limited at 05:09, and the
+  session moved down the chain to the Go plan. The receipt is in the mil-probes file and the transition
+  is in the usage ledger.
+- **The Go plan carries no Sonnet, and the registry says it does.** On 2026-11-24 the registry gained a
+  strongGo lane naming opencode-go/claude-sonnet-5-5. The OpenCode Go provider serves neither that id
+  nor any Sonnet: its Claude model is Haiku 5.5. Sonnet 5.5 is served by the opencode provider at 2 in
+  and 10 out per million tokens, which is a metered call, not a plan one. Until that lane is corrected,
+  a strong decision on OpenCode with the Codex plan out routes at a model the provider cannot serve. The
+  fix is a decision, not a patch: name a Go model that can stand in for the execution tier, or approve
+  the metered Sonnet.
 
 ## Verification
 

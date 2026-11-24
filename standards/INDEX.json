@@ -542,7 +542,7 @@
       "title": "BRIEF.md — a run talks to the person, not about the work",
       "summary": "The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, and the words he already uses. One shape on every harness and every surface.",
       "when": "Read this BEFORE writing anything addressed to Tjakoen rather than to the code: a chat reply, a run report, an audit, a PANTRY plan or task note, a handoff prompt, a decision request, a review or ticket reply. It owns the shape of the message; DECISIONS owns which surface it goes on, SESSION-LOOP owns what a handoff carries, VOICE owns anything published in his name. Don't skip because the model is a light one or the reply feels short - the shape is what carries the clarity a small model cannot, and a brief he has to ask about has already cost more than it saved.",
-      "lines": 243,
+      "lines": 244,
       "lead": {
         "lines": [
           14,
@@ -675,9 +675,9 @@
           "anchor": "9-a-light-model-needs-the-shape-more-not-a-shorter-answer",
           "lines": [
             164,
-            175
+            176
           ],
-          "summary": "The run that prompted this file was on DeepSeek V4.1 Flash, the third link in the OpenCode main chain and a light model by the registry's own label.",
+          "summary": "The run that prompted this file was on DeepSeek V4.1 Flash, a light model by the registry's own label, because the Codex plan was out and the free model had already been rate-limited.",
           "refs": []
         },
         {
@@ -685,8 +685,8 @@
           "heading": "10. Say where the work stands",
           "anchor": "10-say-where-the-work-stands",
           "lines": [
-            177,
-            205
+            178,
+            206
           ],
           "summary": "A run that takes more than one step owes a state table every time it reports, on every surface.",
           "refs": []
@@ -696,8 +696,8 @@
           "heading": "The checklist",
           "anchor": "the-checklist",
           "lines": [
-            207,
-            220
+            208,
+            221
           ],
           "summary": "Before anything reaches the reader: The first line says what he has to do, or that nothing is needed.",
           "refs": []
@@ -707,8 +707,8 @@
           "heading": "Rationalizations",
           "anchor": "rationalizations",
           "lines": [
-            222,
-            232
+            223,
+            233
           ],
           "summary": "A table: The excuse, The answer.",
           "refs": []
@@ -718,8 +718,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            234,
-            243
+            235,
+            244
           ],
           "summary": "Every item under the ask can be done without a follow-up question.",
           "refs": []
@@ -2692,7 +2692,7 @@
       "title": "MODELS — which model plays which role, on every harness",
       "summary": "The portable model policy of the loop. Six roles on three tiers, a main session on the execution tier, escalation by delegation rather than by switching models, the effort ceiling, one registry as the only home of model identifiers, five conformance levels, and how a device repairs its own drift.",
       "when": "Read this BEFORE pinning a model in an agent file, a settings file or a Codex config, before adding an agent, before reaching for a model switch mid-session, and before claiming a harness runs the loop's model policy. It owns which role sits on which tier and how the strong tier is reached; the registry in agent-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice. Don't skip because the agent file already names a model - a pin nobody checked against the registry is how five files came to disagree.",
-      "lines": 482,
+      "lines": 493,
       "lead": {
         "lines": [
           14,
@@ -2838,7 +2838,7 @@
           "anchor": "10-the-model-guard",
           "lines": [
             160,
-            221
+            227
           ],
           "summary": "Every main session runs the registry's main tier, and nothing in a menu or a spawner's defaults changes that.",
           "refs": []
@@ -2848,8 +2848,8 @@
           "heading": "11. Cost and privacy",
           "anchor": "11-cost-and-privacy",
           "lines": [
-            223,
-            330
+            229,
+            336
           ],
           "summary": "Phase A made one registry the home of every model choice.",
           "refs": []
@@ -2859,8 +2859,8 @@
           "heading": "12. Escalation records and the owner's typed approval",
           "anchor": "12-escalation-records-and-the-owners-typed-approval",
           "lines": [
-            332,
-            366
+            338,
+            372
           ],
           "summary": "Phase B gave every escalation a record and every paid call an approval with one source.",
           "refs": []
@@ -2870,8 +2870,8 @@
           "heading": "13. The supervisor and its limits",
           "anchor": "13-the-supervisor-and-its-limits",
           "lines": [
-            368,
-            390
+            374,
+            396
           ],
           "summary": "The supervisor is code, not an agent (decision M1).",
           "refs": [
@@ -2888,8 +2888,8 @@
           "heading": "14. Context metadata and the budget",
           "anchor": "14-context-metadata-and-the-budget",
           "lines": [
-            392,
-            410
+            398,
+            416
           ],
           "summary": "Each model entry in the registry may carry a context block: the advertised window, the usable window, the output reserve (maxOut), the overhead, the method it was measured by (transcript, provider...",
           "refs": [
@@ -2903,8 +2903,8 @@
           "heading": "15. Continuation and recovery checkpoints",
           "anchor": "15-continuation-and-recovery-checkpoints",
           "lines": [
-            412,
-            428
+            418,
+            434
           ],
           "summary": "A recovery checkpoint is not a handoff.",
           "refs": []
@@ -2914,8 +2914,8 @@
           "heading": "16. Model Scout",
           "anchor": "16-model-scout",
           "lines": [
-            430,
-            439
+            436,
+            445
           ],
           "summary": "model-scout.ts researches models and recommends them.",
           "refs": []
@@ -2925,8 +2925,8 @@
           "heading": "17. The runtime brief",
           "anchor": "17-the-runtime-brief",
           "lines": [
-            441,
-            448
+            447,
+            454
           ],
           "summary": "The session checklist keeps a healthy start to one row, Model Intelligence Layer verified.",
           "refs": [
@@ -2940,8 +2940,8 @@
           "heading": "18. Where each record lives",
           "anchor": "18-where-each-record-lives",
           "lines": [
-            450,
-            464
+            456,
+            470
           ],
           "summary": "Every new record has one home (decision M2), so a reader looking for one never has to search two places.",
           "refs": [
@@ -2958,8 +2958,8 @@
           "heading": "19. What is on hold and what is not tested",
           "anchor": "19-what-is-on-hold-and-what-is-not-tested",
           "lines": [
-            466,
-            475
+            472,
+            486
           ],
           "summary": "DeepSeek Harness is on hold (owner, 2026-11-23).",
           "refs": []
@@ -2969,8 +2969,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            477,
-            482
+            488,
+            493
           ],
           "summary": "The verifier for the harness run (the command is in MODELS-VERIFY step 1), no line FAIL.",
           "refs": []

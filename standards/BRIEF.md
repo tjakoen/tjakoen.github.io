@@ -163,8 +163,9 @@ The container changes where the reader meets the brief. It never changes the ord
 
 ## 9. A light model needs the shape more, not a shorter answer
 
-The run that prompted this file was on DeepSeek V4.1 Flash, the third link in the OpenCode main chain
-and a light model by the registry's own label. A light model writes the same content with less
+The run that prompted this file was on DeepSeek V4.1 Flash, a light model by the registry's own label,
+because the Codex plan was out and the free model had already been rate-limited. A light model writes
+the same content with less
 structure around it: fewer headings, longer paragraphs, the ask somewhere in the middle. The fix is
 not a shorter reply. It is the same reply with its blocks fixed in place, because the shape is the
 part the model cannot supply and the run can.
