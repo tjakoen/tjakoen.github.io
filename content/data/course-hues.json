@@ -1,0 +1,11 @@
+{
+  "//": [
+    "Per-course medallion hue. Data, not a design token: a course carries its own identity colour,",
+    "and the badge medallion is the only place colour enters this monochrome site. Rendered into",
+    "the badge stylesheet by src/content.ts; an unknown course falls back to --color-accent.",
+    "Add a course here and it is styled; nothing else changes."
+  ],
+  "apsi": "#d07f4a",
+  "adet": "#3fa89e",
+  "introweb": "#8877d6"
+}

@@ -3,6 +3,7 @@ id: similarity-layer-assessment
 status: blocked
 track: ai
 depends: []
+waits: "a pile big enough that grep stops finding the file in one or two tries; the triggers are below"
 touches:
   - content/notes/
   - artifacts/runs/

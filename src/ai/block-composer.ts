@@ -367,20 +367,22 @@ export function reconcileBuildPlan(
     const target = targets[targetOffset] ?? -1;
     if (target >= 0) wordingTargetCounts.set(block, targetOffset + 1);
     if (target < 0) continue;
-    const copy = grounded[target]!.copy;
+    const picked = grounded[target];
+    if (!picked) continue;
+    const copy = picked.copy;
     const prior = copy.body ?? "";
     const foldedPhrase = phrase.toLocaleLowerCase();
     if (prior.toLocaleLowerCase().includes(foldedPhrase)) continue;
     copy.body = phrase;
-    if (!grounded[target]!.changedFields.includes("body")) grounded[target]!.changedFields.push("body");
+    if (!picked.changedFields.includes("body")) picked.changedFields.push("body");
   }
   const introSentence = groundedIntroSentence(brief);
   const intro = grounded.findIndex((result, index) => keptNames[index] === "lede");
   if (introSentence && intro >= 0 && introSentence.length <= (blockCopyLimit("lede", "body") ?? 0)) {
-    const copy = grounded[intro]!.copy;
-    if (copy.body !== introSentence) {
-      copy.body = introSentence;
-      if (!grounded[intro]!.changedFields.includes("body")) grounded[intro]!.changedFields.push("body");
+    const picked = grounded[intro];
+    if (picked && picked.copy.body !== introSentence) {
+      picked.copy.body = introSentence;
+      if (!picked.changedFields.includes("body")) picked.changedFields.push("body");
     }
   }
   let missing = briefAnchorsMissingFromDraft(
@@ -394,7 +396,9 @@ export function reconcileBuildPlan(
     if (target >= 0) {
       const name = keptNames[target] ?? "";
       const limit = blockCopyLimit(name, "body") ?? 0;
-      const copy = grounded[target]!.copy;
+      const picked = grounded[target];
+      const copy = picked?.copy;
+      if (!picked || !copy) return { names: keptNames, copies: grounded, droppedBlocks };
       let prior = copy.body ?? "";
       const priorTokens = new Set(prior.match(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu)
         ?.map((token) => token.toLocaleLowerCase().replaceAll("’", "'")) ?? []);
@@ -420,7 +424,7 @@ export function reconcileBuildPlan(
       }
       if (anchors) {
         copy.body = prior ? anchors + " · " + prior : anchors;
-        if (!grounded[target]!.changedFields.includes("body")) grounded[target]!.changedFields.push("body");
+        if (!picked.changedFields.includes("body")) picked.changedFields.push("body");
       }
     }
   }
