@@ -75,9 +75,9 @@ export function formatCount(n: number): string {
 // normal case here rather than an edge case worth skipping.
 const plural = (n: number, one: string, many: string) => `${formatCount(n)} ${n === 1 ? one : many}`;
 
-// "2026-08-11" → "11 Aug". The parsing lives in src/day.ts, so the mail list and this bar cannot
-// disagree about a month, and neither can shift under the build machine's timezone. Anything
-// unparseable yields "" and the suffix is simply dropped.
+// "2026-08-11" → "11 Aug". The parse and the month table live in src/day.ts, so this bar and the
+// mail list cannot disagree about a month; the formats stay their own (mail is month-first), because
+// they are different rules. Unparseable input yields "" and the suffix is simply dropped.
 export const shortDate = (iso: string | undefined): string => dayLabel(iso);
 
 // The counts are a SNAPSHOT taken when the site was last built, so the bar says "as of <date>".
