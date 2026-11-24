@@ -1,6 +1,6 @@
 ---
 id: brief-standard
-status: doing
+status: done
 track: standards
 depends: []
 touches: [standards/BRIEF.md, standards/README.md, standards/INDEX.json, content/notes/the-voice-file.md]
