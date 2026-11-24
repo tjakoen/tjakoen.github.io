@@ -186,10 +186,22 @@ console.log(`[export] preflight: every component the templates reference resolve
 console.log(`[export] starting server on ${PORT}…`);
 const server = Bun.spawn(["bun", join(import.meta.dir, "..", "src", "server.ts")], {
   env: { ...process.env, PORT: String(PORT), NODE_ENV: "production" },
-  stdout: "ignore", stderr: "ignore",
+  stdout: "ignore", stderr: "pipe",
 });
 try {
-  await waitForServer(BASE);
+  try {
+    // 30s, not the helper's 15: a cold boot on a loaded machine measured 8.75s, which left the wake-up
+    // one CPU spike from a failure that looked like a crash.
+    await waitForServer(BASE, 30_000);
+  } catch (error) {
+    // The child's reason used to be discarded, so a boot failure read as "server didn't come up".
+    // Kill it first (so the pipe closes), then print its last lines and rethrow the timeout.
+    server.kill();
+    const log = await new Response(server.stderr).text().catch(() => "");
+    const tail = log.trim().split("\n").slice(-10).join("\n");
+    if (tail) console.error(`[export] the server failed to start:\n${tail}`);
+    throw error;
+  }
   const pages = await pageRoutes();
   console.log(`[export] pages: ${pages.join(", ")}`);
 
