@@ -298,7 +298,7 @@ const BADGE_STYLE = `<style>
 ${COURSE_HUE_RULES}
 .badge-cert, .badge-class { margin: var(--space-l, 1.5rem) 0; }
 .badge-criteria { margin: var(--space-l, 1.5rem) 0; }
-.badge-criteria__heading { font-size: var(--text-md); margin: var(--space-m, 1rem) 0 0.35em; }
+.badge-criteria__heading { font-size: var(--text-lg); margin: var(--space-m, 1rem) 0 0.35em; }
 .badge-cert__head, .badge-class__head { display: flex; gap: var(--space-l, 1.5rem); align-items: center; flex-wrap: wrap; }
 .badge-art svg { display: block; }
 .badge-cert__awarded { color: var(--ink-muted); margin: 0; }

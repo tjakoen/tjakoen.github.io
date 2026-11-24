@@ -65,7 +65,7 @@
 [data-screen="builder"] .wb-bar__draft[hidden] { display: none; }
 [data-screen="builder"] .wb-bar__draft-head { display: flex; align-items: flex-start; justify-content: space-between;
   gap: var(--space-4); }
-[data-screen="builder"] .wb-bar__draft-head h2 { margin: 0 0 var(--space-1); font-size: var(--text-md); }
+[data-screen="builder"] .wb-bar__draft-head h2 { margin: 0 0 var(--space-1); font-size: var(--text-lg); }
 [data-screen="builder"] .wb-bar__draft-head p { margin: 0; font-size: var(--text-sm); }
 [data-screen="builder"] .wb-bar__draft-brief { margin-top: var(--space-3); padding: var(--space-3);
   border: 1px solid var(--line-soft); border-radius: var(--radius-sm); background: var(--paper); }

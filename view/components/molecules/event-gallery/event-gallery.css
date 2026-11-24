@@ -6,7 +6,7 @@
    The GRID inside it is GRAIN's `gallery` molecule. This file owns only what is genuinely the
    portfolio's: the rule above it, the spacing that separates it from the prose, and the small
    uppercase heading that matches the share block's. New design work belongs up in grain. */
-.event-gallery { margin: var(--space-7) 0 0; padding: var(--space-5) 0 0;
+.event-gallery { margin: var(--space-8) 0 0; padding: var(--space-5) 0 0;
   border-top: 1px solid var(--line-soft); }
 .event-gallery__heading { margin: 0 0 var(--space-4); font-size: var(--text-xs);
   font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .04em;

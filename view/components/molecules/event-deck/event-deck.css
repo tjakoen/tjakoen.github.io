@@ -13,7 +13,7 @@
      a wide screen does not hand it the whole column. */
 .event-deck { margin: 0 0 var(--space-6); }
 
-.event-video { margin: var(--space-7) 0 0; padding: var(--space-5) 0 0;
+.event-video { margin: var(--space-8) 0 0; padding: var(--space-5) 0 0;
   border-top: 1px solid var(--line-soft); }
 .event-video__heading, .event-gallery__heading { margin: 0 0 var(--space-4);
   font-size: var(--text-xs); font-family: var(--font-mono); text-transform: uppercase;
