@@ -200,8 +200,8 @@ guard prints them in both its restart card and its blocking message.
 
 | Tier | Claude Code | Codex | DeepSeek Harness | OpenCode | Privacy |
 |---|---|---|---|---|---|
-| strong | opus, low effort | gpt-6.2-sol, medium | DeepSeek V4.1 Flash | the Codex model, gpt-6.2-sol, medium | Claude and Codex private; DeepSeek not private |
-| execution (main) | sonnet, medium effort | gpt-6.2-sol, low | DeepSeek V4.1 Flash | the light chain, then the Codex model, gpt-6.2-sol, low | free, Go and DeepSeek models not private; Claude and Codex private |
+| strong | opus, low effort | gpt-6.2-sol, medium | DeepSeek V4.1 Flash | the Codex model, gpt-6.2-sol, medium; then DeepSeek V4 Pro on the Go plan | Claude and Codex private; DeepSeek not private |
+| execution (main) | sonnet, medium effort | gpt-6.2-sol, low | DeepSeek V4.1 Flash | the Codex model, gpt-6.2-sol, low; then DeepSeek V4 Pro on the Go plan; then the light chain | free, Go and DeepSeek models not private; Claude and Codex private |
 | cheapest | haiku, low effort | gpt-6-luna, medium | DeepSeek V4.1 Flash | the light chain, then the Codex model, gpt-6-luna, medium | free, Go and DeepSeek models not private; Claude and Codex private |
 | escalation, on approval | none, delegate to strong | gpt-6.2-astra, low | DeepSeek V4.1 | the paid DeepSeek API, while credits remain | Codex private; DeepSeek, paid API included, not private |
 
@@ -210,17 +210,22 @@ the owner approves. OpenCode borrows the Codex models while a Codex plan has usa
 DeepSeek V4.1 Flash Free first, then the same model on the OpenCode Go plan, then the cheaper Codex
 models while the Codex plan has usage left. The paid API is no longer part of that order; it is an
 escalation the owner approves (section 12). Section 11 holds that order, the privacy rules behind it,
-and why the chain holds one free model and one Go model (D11).
+and why the light chain holds one free model and one Go model (D11). The main chain holds a second Go
+model, DeepSeek V4 Pro, for the reason D13 gives.
 
 The main OpenCode session has a recovery order of its own. When the Codex allowance stops Sol, it moves
-to the free model and then to Go automatically, and only after those to a paid request, which is an
-escalation the owner approves (section 12). That order was seen live for the first time on 2026-11-24:
-gpt-6.2-sol stopped on its quota at 05:15 UTC, the free model had already been rate-limited at 05:09,
-and the session landed on DeepSeek Flash on the Go plan.
+to DeepSeek V4 Pro on the Go plan, and only when that route is unavailable does it fall to the free
+model and then to the cheaper Go DeepSeek. A paid request comes last, as an escalation the owner
+approves (section 12).
 
-The owner then asked why that hop is not Claude Sonnet 5.5. It cannot be on the Go plan, for the reason
-in section 19: the Go provider does not serve Sonnet at all. That question is open, and it is a decision
-about money rather than a routing bug.
+The order was settled on 2026-11-24, in two steps. The old order was seen live for the first time that
+day: gpt-6.2-sol stopped on its quota at 05:15 UTC, the free model had already been rate-limited at
+05:09, and the session landed on Flash, a light model writing the main conversation. The owner asked
+why that hop was not Claude Sonnet 5.5. It cannot be: the Go provider serves Haiku 5.5 and no Sonnet,
+and Sonnet is metered on the opencode provider at 2 in and 10 out per million tokens. The hop is
+DeepSeek V4 Pro instead, the cheapest model on Go that sits above Flash: 0.66 in, 1.98 out and cache at
+0.022, against Flash's 0.15, 0.6 and 0.003. It burns the shared Go allowance about four times as fast
+per token, and it is still the cheapest strong option the plan carries (D13, section 11).
 
 Every row outside Claude Code is marked unverified in the registry. Codex, DeepSeek Harness and OpenCode
 are not installed on the machine where the guard was proven. OpenCode is installed and runs on the
@@ -283,6 +288,15 @@ one go on the Mac.
   readable limits from the first request at the cost of allowance spent on work the free model does
   for nothing. The order is reviewed on 2026-11-30 against a week of usage records in PANTRY, split by
   provider: how often the free cap ran out, and how much of the Go allowance was left.
+- D13. The main session takes a strong Go model, not a light one (owner, 2026-11-24). D12 stays for
+  light work. The conversation the owner sits in does not drop to a light model while the Go plan can
+  answer, because the cost of a light model there is the reader's clarity rather than tokens. DeepSeek
+  V4 Pro is the cheapest strong model on Go: 0.66 in, 1.98 out and cache at 0.022, against Kimi K3.1
+  Pro and Gemini 4 Argon at 2 and 10, Qwen4 Max at 1.5 and 4.5, and Flash at 0.15 and 0.6. It therefore
+  comes second in the main chain, ahead of the free model and ahead of Flash on the same plan. Sonnet
+  5.5 was the first choice and is not available: the Go provider serves Haiku, and Sonnet is metered
+  on the opencode provider. The shared Go allowance is the limit that matters, and V4 Pro burns it
+  about four times as fast per token as Flash, so the meter is worth watching for the first week.
 
 The same model id is now served at two costs: DeepSeek V4.1 Flash is plan cost on Go and metered on
 the DeepSeek API. An escalation therefore refuses that id alone and takes it with its provider, the
@@ -477,13 +491,11 @@ places.
   gpt-6.2-sol stopped at 05:15 UTC, the free model had already been rate-limited at 05:09, and the
   session moved down the chain to the Go plan. The receipt is in the mil-probes file and the transition
   is in the usage ledger.
-- **The Go plan carries no Sonnet, and the registry says it does.** On 2026-11-24 the registry gained a
-  strongGo lane naming opencode-go/claude-sonnet-5-5. The OpenCode Go provider serves neither that id
-  nor any Sonnet: its Claude model is Haiku 5.5. Sonnet 5.5 is served by the opencode provider at 2 in
-  and 10 out per million tokens, which is a metered call, not a plan one. Until that lane is corrected,
-  a strong decision on OpenCode with the Codex plan out routes at a model the provider cannot serve. The
-  fix is a decision, not a patch: name a Go model that can stand in for the execution tier, or approve
-  the metered Sonnet.
+- **The Go plan carries no Sonnet, so its strong lane is DeepSeek V4 Pro.** The registry briefly named
+  opencode-go/claude-sonnet-5-5 on 2026-11-24. The provider serves Haiku 5.5 and no Sonnet, and Sonnet
+  is metered on the opencode provider, so that lane could not run. It now names V4 Pro, which the Go
+  plan does carry. The entry is executable and not yet observed live, so the row reads unverified until
+  a session lands on it.
 
 ## Verification
 
