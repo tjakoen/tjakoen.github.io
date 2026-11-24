@@ -58,3 +58,15 @@ A1.1: Token audit                  grandchild
 The last two are separate builds and stay on the board. Until the plugin lands, an OpenCode session
 is labelled by `session-name.sh` and by `spawn-session.sh --parent`, which is every session this
 estate starts on purpose.
+
+Two things the build taught, both now written down:
+
+- PANTRY's move needs two hops, the plans view and then the plan, because the door only moves to a
+  surface already on screen. BRIEF says so.
+- `git rev-parse --show-toplevel` answers with the resolved path on macOS, so the registry match has
+  to resolve both sides. Comparing them raw found no project and quietly renamed the title only.
+
+The sidebar panel is a GUI plugin: an `./gui-experimental` export whose `main` creates a
+`WebContentsView` on the project's `/__pantry/` page, rendered through `ctx.embeds.View` in a `Panel`
+in the session side region. The API exists and is marked experimental.
+
