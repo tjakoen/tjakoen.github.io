@@ -195,6 +195,33 @@ the same thread.
 [DECISIONS](DECISIONS.md) owns which surface a question belongs on and how the answer returns; this
 section owns the shape it takes in chat.
 
+### When the decision is between visual implementations
+
+A visual choice is not one the reader can make from a description. When two or more ways exist to
+build something that renders, a layout, a section of a page, a figure, a component, the options are
+built and shown, not described.
+
+The run that produced this rule put four such choices to Tjakoen in one page review. He took the
+run's recommendation on three and went the other way on the fourth, so the recommendation is not the
+decider and the rendered comparison is what let him choose.
+
+1. **One page, one section per question.** Each option is real markup in the site's own type, colour
+   and width, with the copy that would ship. No lorem, no wireframe, no sentence naming a component.
+2. **Every option, not the shortlist.** A, B and C, each with one line on what changes, and a line
+   each for what it is good at and what it costs to keep.
+3. **The recommended one is marked.** It still goes first, and the mark is a tiebreaker. The pick is
+   his, and a shortlist of one is not a choice.
+4. **Serve it from the site's own origin.** A comparison page opened from another origin drops the
+   fonts and the tokens, and the thing being judged stops being the thing that ships.
+5. **Ask for a letter per group, once.** One message, one table naming the groups and the letters,
+   with no pre-selection and no second ask.
+6. **Write the letters into the plan before building**, so a later session does not reopen a choice
+   that was already made.
+
+The note beside an option says what it costs to keep, not only how it looks. A screenshot needs a
+re-capture after every change to the app it shows, and a rebuilt mock needs a hand edit each time.
+That cost is often the deciding fact, and it is invisible in a picture.
+
 ## 9. A light model needs the shape more, not a shorter answer
 
 The run that prompted this file was on DeepSeek V4.1 Flash, a light model by the registry's own label,
@@ -255,6 +282,8 @@ Before anything reaches the reader:
    it.
 10. A reply that ends with actions moves PANTRY to the plan and links it, under the actions.
 11. A decision that needs him is one card, recommended option first, with the default named.
+12. A visual decision shows every option rendered on one page, and the chosen letters are recorded
+    before the build.
 
 ## Rationalizations
 
@@ -268,6 +297,7 @@ Before anything reaches the reader:
 | "He knows what that acronym means." | Today he does. The next session reading this thread has no context. |
 | "I already showed him this in the last message." | He scrolled past it. A link costs one line to repeat. |
 | "He knows where PANTRY is." | It shows one project at a time and he runs fourteen. Point it at this one. |
+| "I listed the three options in prose." | Then he is choosing between three sentences, and the sentence is the part he cannot see. Render them. |
 
 ## Verification
 
