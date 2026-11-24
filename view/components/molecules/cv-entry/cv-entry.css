@@ -8,7 +8,7 @@
 :is([data-screen="resume"], [data-screen="about"]) .cv-entry { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
   padding: var(--space-4); background: var(--paper-2); scroll-margin-top: var(--space-6); }
 
-:is([data-screen="resume"], [data-screen="about"]) .cv-entry__title { margin: 0 0 var(--space-1); font-size: var(--text-md); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__title { margin: 0 0 var(--space-1); font-size: var(--text-lg); }
 :is([data-screen="resume"], [data-screen="about"]) .cv-entry__meta { margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-2);
   align-items: baseline; font-family: var(--font-mono); font-size: var(--text-xs); }
 :is([data-screen="resume"], [data-screen="about"]) .cv-entry__company { color: var(--ink); }

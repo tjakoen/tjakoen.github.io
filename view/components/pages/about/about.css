@@ -17,7 +17,7 @@
   gap: var(--space-3); cursor: pointer; list-style: none; padding: var(--space-2) 0; }
 [data-screen="about"] .role-accordion__summary::-webkit-details-marker { display: none; }
 [data-screen="about"] .role-accordion__summary::after { content: "+"; flex: 0 0 auto; color: var(--color-accent);
-  font: var(--text-md) var(--font-mono); }
+  font: var(--text-lg) var(--font-mono); }
 [data-screen="about"] .role-accordion[open] > .role-accordion__summary::after { content: "−"; }
 [data-screen="about"] .role-accordion__summary:focus-visible { outline: 2px solid var(--color-accent);
   outline-offset: 3px; }

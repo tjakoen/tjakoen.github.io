@@ -156,7 +156,7 @@ body.app-window-backdrop[data-viewport="mobile"] { padding-block: 0; }
 }
 .project-links a:hover { text-decoration-color: currentColor; }
 .project-toc {
-  margin: 0 0 var(--space-7);
+  margin: 0 0 var(--space-8);
   padding: var(--space-3) var(--space-4);
   border-left: 2px solid var(--color-accent, var(--color-muted));
   background: color-mix(in srgb, var(--color-surface) 55%, transparent);
