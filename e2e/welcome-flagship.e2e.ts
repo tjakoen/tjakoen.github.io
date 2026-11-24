@@ -67,7 +67,7 @@ test.describe("welcome mobile layout", () => {
   test("the first proof links show AI adoption and course scale on desktop and phone", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/");
-    await expect(page.locator(".welcome__sub")).toContainText("mentor software developers");
+    await expect(page.locator(".welcome__sub")).toContainText("teach software engineering");
 
     const proofLinks = page.locator(".welcome__proof-links");
     const featured = proofLinks.getByRole("link");

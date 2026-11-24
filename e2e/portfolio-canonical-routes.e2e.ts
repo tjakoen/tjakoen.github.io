@@ -2,8 +2,10 @@ import { test, expect } from "@playwright/test";
 
 // The sitemap holds a few hundred routes and each one gets a desktop and a phone layout pass. One
 // test over the whole list outgrew its 180s budget as the site grew, so the sweep is split into
-// parallel chunks that each fit; every route is still checked at both widths.
-const CHUNKS = 6;
+// parallel chunks that each fit; every route is still checked at both widths. Twelve chunks at 504
+// routes (2026-11-24) leaves each part about half its budget; raise the count when a part times out
+// again rather than raising the timeout, so a slow page still shows up as a slow page.
+const CHUNKS = 12;
 for (let chunk = 0; chunk < CHUNKS; chunk++) {
   test(`every canonical route fits desktop and phone viewports (part ${chunk + 1} of ${CHUNKS})`, async ({ page }) => {
     test.setTimeout(180_000);

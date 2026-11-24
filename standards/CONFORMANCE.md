@@ -31,7 +31,7 @@ both: read first, then say something you can defend, then stop.
 
 ## What this does not do
 
-**It never re-implements the doctor.** `bunx pantry doctor` is the mechanical tier of the loop
+**It never re-implements the doctor.** The doctor is the mechanical tier of the loop
 (LOOP §2) and it already owns the mechanical checks: `CLAUDE.md` present, the `AGENTS.md` symlink, forked
 standards, `plans/`, `pantry.config.json`, audit freshness, graphify freshness, an e2e suite, doc
 links, doc symbols, layer pins, mounted skills, run-ledger evidence, and scope growth against the
@@ -57,12 +57,14 @@ do not fix, do not commit, do not install anything. Work in four phases.
 
 PHASE 0 - Mechanical tier first, so you do not spend judgment on grep.
   Run, from the repo root:
-    bunx pantry doctor          # 14 kit + staleness checks; paste the output VERBATIM
+    pantry_doctor                # the mounted MCP tool; kit + staleness checks, paste the output VERBATIM
     git status --short          # uncommitted work is LOOP section 8's first red flag
     git rev-list --count @{u}.. # unpushed commits, and 'no upstream' is itself a finding
     git log -1 --format=%cr     # how long since anything landed here at all
-  If PANTRY is not installed, `bunx pantry doctor` will fail. Say so in one line, mark
-  every doctor-owned row "not run", and DO NOT hand-roll its checks. Note whether the
+  If no doctor tool is mounted, run it from the PANTRY checkout instead:
+    bun /path/to/pantry/cli.ts doctor
+  `bunx pantry doctor` does not resolve: PANTRY is not on the public registry (LOOP section 6).
+  If no doctor can run, say so in one line, mark every doctor-owned row "not run", and DO NOT hand-roll its checks. Note whether the
   repo could reasonably install it, which is a finding in its own right (C8).
 
 PHASE 1 - Read the canon you are checking against. Fetch it, do not recall it:

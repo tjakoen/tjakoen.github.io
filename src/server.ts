@@ -7,6 +7,7 @@ import { watchComponents } from "@tjakoen/batch/platform/watch.ts";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { watch, readFileSync } from "node:fs";   // the portfolio's own client modules: see the hot-reload block below
+import { stat, readdir } from "node:fs/promises";
 import { makeStatic } from "@tjakoen/batch/http/static.ts";
 import { makePageServer } from "@tjakoen/batch/http/pages.ts";
 import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
@@ -529,9 +530,31 @@ body[data-screen="plans"] .board { max-width: none; }
   .proof-facts dd { overflow-wrap: anywhere; }
 }
 `;
+// PROOF asks each plan file when it last changed, and its default answer is one `git log` per file.
+// On this board that is forty-plus subprocesses per request, measured at 2.9s for /plans against 8ms
+// for the rest of the site, and it is why the canonical-route sweep ran out of its 180s budget.
+// The dates do not move between requests, so memoise them for thirty seconds: one request pays the
+// git cost, the rest read the map. On a miss the mtime is the fallback PROOF itself uses.
+const planDateCache = new Map<string, { at: number; value: string | null }>();
+const cachedPlanDate = async (file: string): Promise<string | null> => {
+  const hit = planDateCache.get(file);
+  if (hit && Date.now() - hit.at < 30_000) return hit.value;
+  let value: string | null = null;
+  try {
+    const p = Bun.spawn(["git", "log", "-1", "--format=%cI", "--", file], { stdout: "pipe", stderr: "ignore" });
+    const out = (await new Response(p.stdout).text()).trim();
+    if ((await p.exited) === 0 && out !== "") value = out;
+  } catch { /* not a git repo, or git absent — fall through to mtime */ }
+  if (value === null) {
+    try { value = (await stat(file)).mtime.toISOString(); } catch { value = null; }
+  }
+  planDateCache.set(file, { at: Date.now(), value });
+  return value;
+};
 const proofRoutes = createProofRoutes({
   plansDir: PLANS_DIR,
   prefix: PLANS_PREFIX,
+  lastModified: cachedPlanDate,
   chrome: (title, body) => renderAppPage(shellPage({
     title: title === "Plans" ? title : `${title} · Plans`,
     description: proofDescription(title, body),
@@ -1083,6 +1106,15 @@ Bun.serve({
     return new Response(body, { status: 500, headers: { "Content-Type": "text/plain; charset=utf-8" } });
   },
 });
+
+// Warm the plan dates once at boot, so the first visitor to /plans never pays forty git calls.
+void (async () => {
+  try {
+    for (const file of await readdir(PLANS_DIR)) {
+      if (file.endsWith(".md")) await cachedPlanDate(join(PLANS_DIR, file));
+    }
+  } catch { /* an unreadable plans dir is the board's own empty state, not a boot failure */ }
+})();
 
 console.log(`Running on http://localhost:${config.port} (${config.isDev ? "dev" : "prod"})`);
 }
