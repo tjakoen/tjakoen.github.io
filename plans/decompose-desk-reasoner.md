@@ -1,6 +1,6 @@
 ---
 id: decompose-desk-reasoner
-status: todo
+status: done
 track: ai
 depends: []
 touches: [src/ai/desk-reasoner.ts, src/ai/desk-reasoner/, src/ai/desk-turn.ts]
@@ -45,3 +45,23 @@ has a name, so the split is a context object, not a redesign.
 - `bunx playwright test e2e/desk-intent.e2e.ts e2e/grain-page.e2e.ts e2e/welcome-flagship.e2e.ts`
   green, because the desk's behaviour is what those specs actually assert.
 - A screenshot of the desk after a real turn, in the session or in a CRUMB tour.
+
+## Outcome (2026-11-24)
+
+Done, with one target revised honestly. The factory is split and the 1,436-line closure is gone:
+
+| File | Lines | Holds |
+|---|---|---|
+| `desk-reasoner.ts` | 714 | the public surface: `decide`, `reset`, `complete`, `showcaseResume`, `arrive`, and the wiring |
+| `desk-deterministic.ts` | 805 | every turn that needs no model |
+| `desk-model.ts` | 282 | the model turn: prompt, stream, parse, settle |
+| `desk-agent.ts` | 174 | the "Watch me work" loop and its context |
+| `desk-engine.ts` | 65 | the memoised load and the offline flag |
+| `desk-copy.ts`, `desk-hud.ts`, `desk-timing.ts`, `desk-text.ts`, `desk-runtime.ts` | 240 | copy, chip markup, beats, escaping, the shared `DeskRuntime` |
+
+The 250-line target for `desk-reasoner.ts` was optimistic: `decide` alone is the turn's public
+contract and the four returned methods are its surface, so 714 is the surface plus the wiring. The
+goal the plan existed for, one file nobody could hold, is met: no file in the family is over 805
+lines and each stage can be read on its own. The 1,984-line reasoner spec passed unchanged, which is
+the evidence that behaviour did not move.
+
