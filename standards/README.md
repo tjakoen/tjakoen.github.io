@@ -25,6 +25,9 @@ six.
 | Read this when you're… | Standard | In one line |
 |---|---|---|
 | **Building anything with an AI** | [AI-DEVELOPMENT.md](AI-DEVELOPMENT.md) | The working relationship, the definition of done, the conventions and pitfalls every change is held to. The rulebook. |
+| **Starting a whole piece of work, or feeling stuck in one** | [MAIN-FLOW.md](MAIN-FLOW.md) | The seven stages from orient to close, the standard that owns each, the artifact it leaves and the gate that ends it. The ordered view of this folder. |
+| **Not sure which standard applies** | [WHICH-SKILL.md](WHICH-SKILL.md) | One table from the task in front of you to the standard that governs it, so a cold session loads one file instead of four. Routes only; the named standard owns the rule. |
+| **Meeting a word that does not resolve in one read** | [GLOSSARY.md](GLOSSARY.md) | The estate's working vocabulary: desk, door, surface, intent, grade, lane, envelope, claim, handoff. One line each, the word as it is used here. |
 | **Adding or tuning browser-local AI** | [LOCAL-AI-STANDARD.md](LOCAL-AI-STANDARD.md) | Decide which tasks need a model, measure real outcomes, tune the failing layer, and account for browser costs and limits. |
 | **Structuring a repo so AI sessions compound** | [AI-REPO-STANDARD.md](AI-REPO-STANDARD.md) | The repo-side companion to AI-DEVELOPMENT: the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned. AI-DEVELOPMENT owns the working relationship; this owns the repo. |
 | **Auditing a repo (or writing its AUDIT.md)** | [AUDIT-STANDARD.md](AUDIT-STANDARD.md) | The whole-repo pass: the nine quality dimensions, the severity words, the parallel subagent fan-out that runs it, and the report it owes. AI-REPO-STANDARD owns the per-repo runbook file; this owns what an audit actually looks at. |

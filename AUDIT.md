@@ -40,6 +40,7 @@ output into the report verbatim.
 | G10 | `bun run diagrams:check` | `every diagram fence in served content is named and has a committed SVG` |
 | G11 | `bunx playwright test --ignore-snapshots` | `0 failed`. On macOS, a presentation change also runs the suite without `--ignore-snapshots`, because the committed visual baselines are darwin-only |
 | G12 | `PUBLIC_ORIGIN=https://portfolio.tjakoen.com bun run export && bun run verify:export` | the export writes `dist/` and the verifier reports `OK` (no dead links, no stale diagram). Without `PUBLIC_ORIGIN` the sitemap bakes `http://localhost:3330` into every `<loc>` and the verifier refuses all 507, which is the verifier doing its job. |
+| G13 | `bun tools/skills-library.ts --page --check` | `skills page is current`: the `/skills` index was regenerated after the last standard changed |
 
 The lint gate is advisory by the owner's decision of 2026-08-13: it exits 0 on a regression so no
 push is refused over a style flag. Advisory does not mean ignorable. A `regressed` line is a finding
@@ -69,7 +70,7 @@ The notes are the most-read surface here, and NOTE-STANDARD is explicit, so each
 | N1 | `for f in content/notes/*.md; do for k in title subtitle author status type date readingTime tags summary; do grep -q "^$k:" "$f" \|\| echo "$f missing $k"; done; done` | no output |
 | N2 | `grep -rn '^status:' content/notes \| grep -vE 'DRAFT\|PUBLISHED'` | no output. A missing status publishes, so the field is required. |
 | N3 | `for f in $(grep -l '^status: PUBLISHED' content/notes/*.md); do tail -6 "$f" \| grep -q 'judgment is human' \|\| echo "NO FOOTER: $f"; done` | no output. `ten-times-zero.md` is the one exception and still carries the line. |
-| N4 | `for f in $(grep -l '^status: PUBLISHED' content/notes/*.md); do grep -q '^social:' "$f" \|\| echo "NO SOCIAL: $f"; done` | no output, except a technical companion whose main note's post already points to it, named in the report |
+| N4 | `for f in $(grep -l '^status: PUBLISHED' content/notes/*.md); do grep -q '^social:' "$f" \|\| echo "NO SOCIAL: $f"; done` | no output, except a note dated before 2026-09-01 (a snapshot, per NOTE-STANDARD), a technical companion whose main note's post already points to it, and `ten-times-zero.md`, the flagship, which is required either way. Name every exception in the report. |
 | N5 | `for f in content/notes/*.md; do grep -qE '<svg\|<img\|mermaid\|<!-- (diagram\|stack\|compare):\|data-live-figure' "$f" \|\| echo "NO FIGURE: $f"; done` | no output for a published note. A prose placeholder is a to-do, not a figure. |
 | N6 | `for f in content/notes/*.md; do for img in $(sed -n '/^socialImage:/,/^[a-zA-Z]/p' "$f" \| grep -oE '/media/[^" ]+'); do p="content$img"; [ -f "$p" ] \|\| { echo "MISSING $p <- $f"; continue; }; d=$(sips -g pixelWidth -g pixelHeight "$p" \| awk '/pixelWidth/{w=$2}/pixelHeight/{h=$2}END{print w"x"h}'); case "$p" in *.gif) [ "${d%%x*}" = "1200" ] \|\| echo "GIF WIDTH NOT 1200 ($d): $p <- $f";; *) [ "$d" = "1200x1200" ] \|\| echo "NOT 1200x1200 ($d): $p <- $f";; esac; done; done` | no output. A PNG card is 1200×1200; an animated GIF must be 1200 wide; the alt text is required beside every card. |
 | N7 | `grep -rnE '\]\(https://portfolio\.tjakoen\.com/(notes\|drafts)/' content/notes` | no output. Sibling notes link as `slug.md`, never by absolute URL. |
@@ -89,6 +90,7 @@ note with no figure, so nothing catches either except this pass.
 | D3 | Pick every command a doc tells a reader to run | it exists in `package.json`, `tools/`, or the shell, and it still works. A path that moved is a finding against the doc, not against the reader. |
 | D4 | Read `plans/README.md`, then every plan with `owner: ai` or a `blocked:` line | the status matches the evidence, a ticked task has a `done:` reference, and a blocked plan names what would unblock it. |
 | D5 | `git status --porcelain` after the pass | empty. The report and its fixes are committed together. |
+| D6 | `bun tools/skills-library.ts --publish ../skills && git -C ../skills status --porcelain` | empty output: the published library at `tjakoen/skills` matches canon. A non-empty list is drift; commit it in the same change as the standard that caused it. Skip with a note when the sibling checkout is absent. |
 
 ## 5. The report
 
