@@ -1,6 +1,6 @@
 ---
 id: session-labels-and-pantry-link
-status: doing
+status: todo
 track: ai
 depends: []
 touches:
