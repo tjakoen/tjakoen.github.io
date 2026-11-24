@@ -67,14 +67,14 @@ export function parseToolCall(raw: string): ToolCall {
   if (!line) return { kind: "invalid", raw };
   const done = /^done\b/i.exec(line);
   if (done) return { kind: "done" };
-  const go = /^go\s+(\/\S+)/i.exec(line);
-  if (go) return { kind: "go", route: go[1]!.replace(/[.,;]+$/, "") };
-  const hi = /^(?:highlight|show)\s+([A-Za-z0-9][\w-]*)/i.exec(line);
-  if (hi) return { kind: "highlight", anchor: hi[1]! };
-  const note = /^note[:\s]+(.+)/i.exec(line);
-  if (note) return { kind: "note", text: note[1]!.trim() };
-  const draft = /^draft[:\s]+(.+)/i.exec(line);
-  if (draft) return { kind: "draft", text: draft[1]!.trim() };
+  const go = /^go\s+(\/\S+)/i.exec(line)?.[1];
+  if (go) return { kind: "go", route: go.replace(/[.,;]+$/, "") };
+  const hi = /^(?:highlight|show)\s+([A-Za-z0-9][\w-]*)/i.exec(line)?.[1];
+  if (hi) return { kind: "highlight", anchor: hi };
+  const note = /^note[:\s]+(.+)/i.exec(line)?.[1];
+  if (note) return { kind: "note", text: note.trim() };
+  const draft = /^draft[:\s]+(.+)/i.exec(line)?.[1];
+  if (draft) return { kind: "draft", text: draft.trim() };
   return { kind: "invalid", raw };
 }
 

@@ -3,6 +3,7 @@ id: pantry-review-layer
 status: blocked
 track: ai
 depends: [crumb-prefilled-demo, agent-autonomy-tiers]
+waits: "the prefilled tour demo and the autonomy tiers"
 touches:
   - ../pantry/answers.ts
   - ../pantry/answers.test.ts

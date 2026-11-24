@@ -3,6 +3,7 @@ id: pantry-control-center
 status: blocked
 track: ai
 depends: [pantry-review-layer, runs-surface-polish]
+waits: "the PANTRY review layer and the runs surface, both still open"
 touches:
   - ../pantry/app.ts
   - ../pantry/app.test.ts

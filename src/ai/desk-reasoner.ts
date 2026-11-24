@@ -126,8 +126,9 @@ const FOLLOWUP_DEICTIC_RE =
 const MODEL_CHOICES_RE = /^choices:\s*(.+)$/is;
 export function parseModelChoices(raw: string): { prompt: string; choices: { label: string; value: string }[] } | null {
   const m = MODEL_CHOICES_RE.exec(raw.trim());
-  if (!m) return null;
-  const parts = m[1]!.split("|").map((s) => s.replace(/\s+/g, " ").trim()).filter(Boolean);
+  const body = m?.[1];
+  if (!body) return null;
+  const parts = body.split("|").map((s) => s.replace(/\s+/g, " ").trim()).filter(Boolean);
   const prompt = parts.shift() ?? "";
   const opts = parts.slice(0, 5).filter((s) => s.length <= 48);
   if (!prompt || opts.length < 2) return null;
@@ -189,7 +190,7 @@ function navLinkFor(route: string): string {
 }
 function humanizeSeg(route: string): string {
   const seg = route.split("/").filter(Boolean).pop();
-  return seg ? seg.split("-").map((w) => w[0]!.toUpperCase() + w.slice(1)).join(" ") : "Home";
+  return seg ? seg.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : "Home";
 }
 const OFFLINE_LINE =
   "The desk runs a small AI model in your browser, and this browser can't run it, so the desk is offline. Everything else on the site works as usual.";
@@ -777,8 +778,8 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             return { ok: false, ops: [], reply: line, reason: "no navigate dep" };
           }
           const here = stripSlash(deps.pageInfo?.().route ?? "/");
-          const first = TOUR_STOPS[0]!;
-          const second = TOUR_STOPS[1]!;
+          const [first, second] = TOUR_STOPS;
+          if (!first || !second) return { ok: false, ops: [], reply: "The tour has no stops configured.", reason: "no tour stops" };
           await minThink();
           if (here === stripSlash(first.route)) {
             // Already standing on stop 0 — fold the intro and stop 0's own announce into one typed
@@ -1594,8 +1595,9 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // navigate intent, so the visitor never sees a raw slug as an "answer". Only when the ENTIRE
         // trimmed reply is a single path (a path mentioned mid-sentence is left as prose).
         const bareRoute = !navMatch && /^\/[^\s]*$/.test(acc.trim()) ? acc.trim() : null;
-        if ((navMatch || bareRoute) && deps.navigate) {
-          const route = (navMatch ? navMatch[1]! : bareRoute!).split("#")[0]!;
+        const navPath = navMatch?.[1] ?? bareRoute;
+        if (navPath && deps.navigate) {
+          const route = navPath.split("#")[0] ?? "";
           const dest = catalog.find((d) => d.route === route);
           if (dest) {
             try {
@@ -1622,9 +1624,9 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // The model chose to start the contact flow (CONTACT: protocol, prompt.ts). It only decides;
         // the message it hands back runs through the SAME deterministic branch the fixed pattern
         // reaches, so the draft is still contact-draft.ts's and sending stays the visitor's.
-        const contact = MODEL_CONTACT_RE.exec(acc.trim());
+        const contact = MODEL_CONTACT_RE.exec(acc.trim())?.[1];
         if (contact) {
-          const decided = await deterministicTurn({ ...turn, action: { kind: "contact-message", message: contact[1]!.trim() } });
+          const decided = await deterministicTurn({ ...turn, action: { kind: "contact-message", message: contact.trim() } });
           if (decided) return decided;
         }
 
