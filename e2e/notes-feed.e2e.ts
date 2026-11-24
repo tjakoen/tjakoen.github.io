@@ -112,6 +112,16 @@ test.describe("the /notes feed (JS on)", () => {
     await expect(page.locator("[data-feed-controls]")).toBeVisible();
   });
 
+  test("the feed scrolls inside the main pane, not the document", async ({ page }) => {
+    await page.goto("/notes");
+    await expect(page.locator(".app-shell__main")).toBeVisible();
+    await page.mouse.move(400, 400);          // inside the main pane, over the feed
+    await page.mouse.wheel(0, 600);
+    await page.waitForTimeout(200);
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    expect(await page.evaluate(() => document.querySelector(".app-shell__main")!.scrollTop)).toBeGreaterThan(0);
+  });
+
   test("Top sorts cards by their reading-minutes score, descending (pinned flagship still leads)", async ({ page }) => {
     await page.goto("/notes");
     const cards = page.locator(".note-card");

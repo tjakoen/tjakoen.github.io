@@ -61,7 +61,7 @@ export const DIAGRAMS: Record<string, LayeredInput> = {
   },
   delegate: {
     kind: "flow",
-    label: "How a piece of work is delegated. When the next piece needs judgment, such as planning, architecture or review, the main session hands it to a subagent on the strong tier, Opus or Sol, with the plan and the files it links. When the piece is light and bounded, such as a search, a read or a small edit, it goes to a subagent down the light chain. Anything else stays in the main session. Either way one answer comes back, and the main session keeps its conversation and its cache.",
+    label: "How a piece of work is delegated. When the next piece needs judgment, such as planning, architecture or review, the main session hands it to a subagent on the strong tier, Opus or Sol, or Claude Sonnet on the Go plan when Codex is spent, with the plan and the files it links. When the piece is light and bounded, such as a search, a read or a small edit, it goes to a subagent down the light chain. Anything else stays in the main session. Either way one answer comes back, and the main session keeps its conversation and its cache.",
     nodes: [
       { id: "start", kind: "start", label: "The next piece of work" },
       { id: "judge", kind: "decision", label: "Needs judgment?" },

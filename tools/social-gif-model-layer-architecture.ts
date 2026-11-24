@@ -19,7 +19,10 @@ const ROOT = join(import.meta.dir, "..");
 const W = 1200, H = 1300;
 const PAPER = "#E2E0D8", CARD = "#ECEAE3", INK = "#1C1B17", MUTED = "#6E6C64", LINE = "rgba(28,27,23,.28)";
 const HOST = "portfolio.tjakoen.com";
-const FPS = 6, PERIOD = 10;
+// One step at a time. Each caption holds long enough to read, then the dot travels in half a second, so the
+// card moves at a pace a feed can follow without crawling. A short hold at the end lets the loop restart
+// without snapping.
+const HOLD_MS = 1500, MOVE_MS = 500, MOVE_STEPS = 5, END_HOLD_MS = 1800;
 const X0 = 60, BW = W - 2 * X0;
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
@@ -46,7 +49,7 @@ const bands: Band[] = [
   // Models by role, strongest first: the strong models do the planning and review, the light ones take
   // bounded work, and the paid API waits for my yes. Whether a model keeps prompts is a note on the tile,
   // not its outline, so the row reads as what each model is for.
-  { key: "models", y: 824, h: 180, title: "Models: strong work stays on Opus and Sol", tileH: 78, tiles: [
+  { key: "models", y: 824, h: 180, title: "Models: judgment up, typing down", tileH: 78, tiles: [
     { key: "private", t: "Opus · Sol", s: "planning, review", strong: true },
     { key: "free", t: "Free model", s: "light · keeps prompts" },
     { key: "go", t: "OpenCode Go", s: "light · keeps prompts" },
@@ -65,34 +68,31 @@ for (const b of bands) {
 const centre = (k: string) => ({ x: geo[k].x + geo[k].w / 2, y: geo[k].y });
 
 // The request's day, as stations on a loop from 0 to 1. The dot moves between stations; the station it last
-// reached is lit. Stations listed twice hold the dot there.
-const STATIONS: { s: number; at: string; lit: string[]; say: string }[] = [
-  { s: 0.00, at: "you", lit: ["you"], say: "I ask for some light work: read a few files and sum them up." },
-  { s: 0.07, at: "you", lit: ["you"], say: "I ask for some light work: read a few files and sum them up." },
-  { s: 0.15, at: "plans", lit: ["plans"], say: "It becomes a plan, so the work and its cost are tracked." },
-  { s: 0.23, at: "gates", lit: ["gates"], say: "It passes the human gates: nothing here needs my approval." },
-  { s: 0.31, at: "registry", lit: ["registry"], say: "The registry turns \"light work\" into a tier, not a fixed model." },
-  { s: 0.39, at: "router", lit: ["router"], say: "The router picks the first model in that tier that is not out." },
-  { s: 0.46, at: "opencode", lit: ["opencode"], say: "It runs as a subagent in OpenCode." },
-  { s: 0.53, at: "free", lit: ["free"], say: "It tries the free model first. It costs nothing..." },
-  { s: 0.59, at: "free", lit: [], say: "...but the free model has hit its daily cap. It is out for today." },
-  { s: 0.66, at: "go", lit: ["go"], say: "So Go takes the work, on the flat monthly plan. Nothing stalls." },
-  { s: 0.74, at: "go", lit: ["go"], say: "Meanwhile private repos stay on Claude and Codex, and paid calls wait for my yes." },
-  { s: 0.84, at: "go", lit: ["go"], say: "The answer is ready." },
-  { s: 0.92, at: "you", lit: ["you"], say: "It comes back to me, and PANTRY logs which model did the work." },
-  { s: 1.00, at: "you", lit: ["you"], say: "It comes back to me, and PANTRY logs which model did the work." },
+// reached is lit. A flag on a station turns its state on for that step: the free model is out, the two locks
+// show, or the usage row is written.
+const STATIONS: { s: number; at: string; lit: string[]; say: string; freeOut?: boolean; locks?: boolean; logged?: boolean }[] = [
+  { s: 0.00, at: "you", lit: ["you"], say: "I ask for a light task: read a few files and sum them up." },
+  { s: 0.10, at: "plans", lit: ["plans"], say: "It becomes a plan, so the work and its cost are tracked." },
+  { s: 0.20, at: "gates", lit: ["gates"], say: "It passes the human gates. Nothing here needs my approval." },
+  { s: 0.30, at: "registry", lit: ["registry"], say: "The registry turns light work into a tier, not a fixed model." },
+  { s: 0.40, at: "router", lit: ["router"], say: "The router walks that tier and takes the first model that is not out." },
+  { s: 0.50, at: "opencode", lit: ["opencode"], say: "It runs as a child session in OpenCode." },
+  { s: 0.58, at: "free", lit: ["free"], say: "The free model is first. It costs nothing." },
+  { s: 0.66, at: "free", lit: [], freeOut: true, say: "But the free models share one daily cap, and it is out for today." },
+  { s: 0.76, at: "go", lit: ["go"], freeOut: true, say: "Go takes it on the flat monthly plan. Nothing stalls." },
+  { s: 0.86, at: "go", lit: ["go"], freeOut: true, locks: true, say: "Private repos stay on Claude and Codex. Paid calls wait for my yes." },
+  { s: 0.94, at: "you", lit: ["you"], freeOut: true, logged: true, say: "The answer comes back to me, and PANTRY logs one row." },
 ];
 // The tiles a request has passed keep a dark outline for the rest of the loop: the trail.
 const visitedBy = (ph: number) => new Set(STATIONS.filter((st) => st.s <= ph).map((st) => st.at));
 const ease = (v: number) => v * v * (3 - 2 * v);
 
-function frame(t: number): string {
-  const ph = (t / PERIOD) % 1;
+function frame(ph: number): string {
   let i = 0;
-  while (i < STATIONS.length - 2 && STATIONS[i + 1].s <= ph) i++;
-  const a = STATIONS[i], b = STATIONS[i + 1], k = ease(clamp((ph - a.s) / Math.max(1e-6, b.s - a.s)));
+  while (i < STATIONS.length - 1 && STATIONS[i + 1].s <= ph) i++;
+  const a = STATIONS[i], b = STATIONS[i + 1] ?? a, k = a === b ? 1 : ease(clamp((ph - a.s) / Math.max(1e-6, b.s - a.s)));
   const pa = centre(a.at), pb = centre(b.at), dot = { x: pa.x + (pb.x - pa.x) * k, y: pa.y + (pb.y - pa.y) * k };
-  const lit = new Set(a.lit), seen = visitedBy(ph), freeOut = ph >= 0.59, locks = clamp(Math.min((ph - 0.74) / 0.03, (0.86 - ph) / 0.03)), logged = ph >= 0.92;
+  const lit = new Set(a.lit), seen = visitedBy(ph), freeOut = a.freeOut === true, locks = a.locks ? 1 : 0, logged = a.logged === true;
   const step = STATIONS.slice(0, i + 1).filter((st, j, all) => j === 0 || st.say !== all[j - 1].say).length;
 
   const out: string[] = [];
@@ -114,7 +114,7 @@ function frame(t: number): string {
     const y1 = bands[j].y + bands[j].h, y2 = bands[j + 1].y;
     out.push(`<g style="stroke:${MUTED};stroke-width:2.5;fill:none"><line x1="${W / 2}" y1="${y1 + 6}" x2="${W / 2}" y2="${y2 - 6}"/><path d="M${W / 2 - 7},${y1 + 13} L${W / 2},${y1 + 6} L${W / 2 + 7},${y1 + 13}"/><path d="M${W / 2 - 7},${y2 - 13} L${W / 2},${y2 - 6} L${W / 2 + 7},${y2 - 13}"/></g>`);
   }
-  // The two locks, flashed while the request is on Go.
+  // The two locks, shown for the whole lock step.
   if (locks > 0) {
     for (const [key, label] of [["private", "private repos stay private"], ["paid", "waits for my typed yes"]] as const) {
       const tg = geo[key], wpx = 200;
@@ -126,8 +126,8 @@ function frame(t: number): string {
   out.push(`<rect x="${X0}" y="${py}" width="${BW}" height="76" rx="12" style="fill:none;stroke:${LINE};stroke-width:1.5;stroke-dasharray:4 5"/>`,
     left(X0 + 24, py + 33, "PANTRY", 21, INK, ";letter-spacing:3px"),
     left(X0 + 24, py + 58, "plans, claims, and every call's usage by model", 16, MUTED, ";font-style:italic"),
-    right(X0 + BW - 24, py + 33, `usage rows today: ${logged ? 42 : 41}`, 19, INK, ";font-family:Consolas,monospace"),
-    right(X0 + BW - 24, py + 58, logged ? "+ opencode-go · plan · not private" : " ", 15, logged ? INK : MUTED, ";font-family:Consolas,monospace"));
+    right(X0 + BW - 24, py + 33, "one row per call", 18, INK, ";font-style:italic"),
+    right(X0 + BW - 24, py + 58, logged ? "opencode-go · plan · not private" : "waiting for the answer", 15, logged ? INK : MUTED, ";font-family:Consolas,monospace"));
   // The request itself.
   out.push(`<circle cx="${dot.x}" cy="${dot.y}" r="11" style="fill:${PAPER};stroke:${INK};stroke-width:4"/>`);
 
@@ -138,23 +138,33 @@ function frame(t: number): string {
 ${left(X0, 76, "THE MODEL INTELLIGENCE LAYER", 17, MUTED, ";letter-spacing:5px")}
 ${left(X0, 128, "One request, through the whole stack", 42, INK, ";letter-spacing:-0.5px")}
 ${right(W - X0, 128, "follow the request", 26, MUTED, ";font-style:italic")}
-<rect x="${X0}" y="164" width="${BW}" height="48" rx="24" style="fill:${INK}"/>
-<circle cx="${X0 + 26}" cy="188" r="15" style="fill:${PAPER}"/>
-${mid(X0 + 26, 194, String(step), 16, INK, ";font-weight:bold")}
-${left(X0 + 54, 195, a.say, 19, PAPER)}
+<rect x="${X0}" y="164" width="${BW}" height="52" rx="26" style="fill:${INK}"/>
+<circle cx="${X0 + 27}" cy="190" r="15" style="fill:${PAPER}"/>
+${mid(X0 + 27, 196, String(step), 17, INK, ";font-weight:bold")}
+${left(X0 + 56, 198, a.say, 22, PAPER)}
 ${out.join("\n")}
 <rect x="${X0}" y="${by}" width="${BW}" height="80" rx="12" style="fill:${INK}"/>
 ${mid(W / 2, by + 36, "Never stalls. Never overspends. Never leaks private code.", 25, PAPER)}
 ${mid(W / 2, by + 63, "When a model runs out it moves on; real money needs my yes; private repositories stay on private models.", 15, "#B9B6AC", ";font-style:italic")}
 <line x1="${X0}" y1="${H - 62}" x2="${W - X0}" y2="${H - 62}" style="stroke:${LINE};stroke-width:1"/>
-${left(X0, H - 34, "How the Model Layer Works", 19)}
+${left(X0, H - 34, "I Ran Out With Hours Left", 19)}
 ${right(W - X0, H - 34, HOST, 18, MUTED)}
 </svg>`;
 }
 
-// One loop exactly, so the last frame leads straight back into the first.
+// One step at a time. Each station holds for HOLD_MS, then the dot travels over MOVE_MS. The last frame holds
+// a little longer, then the loop restarts on the same spot.
 const frames: { svg: string; delay: number }[] = [];
-for (let k = 0, n = PERIOD * FPS; k < n; k++) frames.push({ svg: frame(k / FPS), delay: 1000 / FPS });
+for (let i = 0; i < STATIONS.length; i++) {
+  frames.push({ svg: frame(STATIONS[i].s), delay: HOLD_MS });
+  const next = STATIONS[i + 1];
+  if (!next) continue;
+  for (let j = 1; j < MOVE_STEPS; j++) {
+    const ph = STATIONS[i].s + (next.s - STATIONS[i].s) * (j / MOVE_STEPS);
+    frames.push({ svg: frame(ph), delay: MOVE_MS / (MOVE_STEPS - 1) });
+  }
+}
+frames[frames.length - 1].delay = END_HOLD_MS;
 
 const gifenc = await readFile(join(ROOT, "node_modules", "gifenc", "dist", "gifenc.esm.js"), "utf8");
 const browser = await chromium.launch();
@@ -181,9 +191,9 @@ try {
   const OUT = join(ROOT, "content", "media", "notes");
   await mkdir(OUT, { recursive: true });
   await writeFile(join(OUT, "model-layer-architecture.gif"), new Uint8Array(bytes));
-  // Two stills for review: the request on the free model, and on Go with both locks showing.
-  for (const [name, at] of [["free", 0.62], ["go", 0.78]] as const) {
-    await pg.setContent(`<!doctype html><html><body style="margin:0">${frame(at * PERIOD)}</body></html>`);
+  // Two stills for review: the free model out, and Go with both locks showing.
+  for (const [name, ph] of [["free", 0.66], ["go", 0.86]] as const) {
+    await pg.setContent(`<!doctype html><html><body style="margin:0">${frame(ph)}</body></html>`);
     await writeFile(join(OUT, `model-layer-architecture-${name}.png`), await pg.screenshot({ clip: { x: 0, y: 0, width: W, height: H } }));
   }
   console.log(`[social:gif:model-layer-architecture] wrote content/media/notes/model-layer-architecture.gif (${W}x${H}, ${frames.length} frames, ${(bytes.length / 1024).toFixed(0)} KB) and two stills`);

@@ -13,6 +13,12 @@ body.app-window-backdrop {
   --frame-gutter: clamp(var(--space-2), 2vh, var(--space-6));
   padding-inline: 0;
 }
+/* The shell owns the scroll: .app-shell__main is the scroller, so the document behind it must not
+   scroll. Without this, a long page (the notes feed is the one that shows it) gives the document a
+   phantom scroll range and the whole shell can be dragged out of the viewport instead of the feed
+   scrolling inside it. */
+html:has(body.app-window-backdrop),
+body.app-window-backdrop { overflow: hidden; }
 body.app-window-backdrop[data-viewport="tablet"] { --shell-viewport-w: 56rem; }
 body.app-window-backdrop[data-viewport="mobile"] { padding-block: 0; }
 @container shell-frame (width > 640px) {

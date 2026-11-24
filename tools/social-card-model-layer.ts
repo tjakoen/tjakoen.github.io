@@ -12,7 +12,7 @@ import { chromium } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 const W=1200,H=1200,PAPER="#E2E0D8",INK="#1C1B17",MUTED="#6E6C64",LINE="rgba(28,27,23,.28)",HOST="portfolio.tjakoen.com";
-const TITLE="Necessity Is the Mother of Innovation";
+const TITLE="I Ran Out With Hours Left";
 const ROOT=join(import.meta.dir,"..");
 const X0=84,BW=W-2*X0;
 interface Tile{t:string;s?:string[];dashed?:boolean}

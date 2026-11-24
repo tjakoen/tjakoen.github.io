@@ -3,8 +3,8 @@
 //
 // Six rules of the layer as a three by two grid of cards, in the paper and ink family of the other social
 // cards: each card has a numbered title, a small diagram that plays as the card arrives, one line on what the
-// rule does, and a "Best for" pill. A rule of thumb closes it, then the host in the footer. It is a companion
-// to the square card (social-card-model-layer.ts), made for posting by hand, so no note points at it yet.
+// rule does, and a "Best for" pill. A rule of thumb closes it, then the host in the footer. It is the second
+// image on the why note, beside the architecture GIF.
 //
 // Each frame is an SVG built here. Chromium draws it on a canvas, and gifenc encodes the frames in the page,
 // so no frame image crosses back to this process. The palette is paper and ink, so 32 colours per frame keep
@@ -19,7 +19,6 @@ const ROOT = join(import.meta.dir, "..");
 const W = 1200, H = 1110;
 const PAPER = "#E2E0D8", CARD = "#ECEAE3", INK = "#1C1B17", MUTED = "#6E6C64", LINE = "rgba(28,27,23,.28)";
 const HOST = "portfolio.tjakoen.com";
-const FPS = 10;
 
 const X0 = 60, GAP = 24, CW = (W - 2 * X0 - 2 * GAP) / 3, CH = 340, ROW = [172, 172 + CH + GAP];
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
@@ -114,20 +113,19 @@ const cards: Card[] = [
 ];
 
 // Everything that reads is on every frame, so the card is readable the moment it appears and at any point
-// in the loop. Only the diagrams move: each plays over the first PLAY of a PERIOD-second loop, holds its end
-// state for the rest, and starts a little after the card before it, so the grid ripples rather than blinks.
-const PERIOD = 4, PLAY = 0.65, STAGGER = 0.06;
+// in the loop. One card at a time gets the heavy border and replays its diagram; the rest hold their finished
+// state. Six turns of 3 seconds, then a 3-second rest, so the eye can follow each rule instead of six at once.
 
-function frame(t: number): string {
+function frame(active: number, p: number): string {
   const out: string[] = [];
   cards.forEach((c, i) => {
-    const phase = (((t / PERIOD) - i * STAGGER) % 1 + 1) % 1, p = clamp(phase / PLAY);
+    const on = i === active, pp = on ? p : 1;
     const x = X0 + (i % 3) * (CW + GAP), y = ROW[Math.floor(i / 3)];
     out.push(`<g>`,
-      `<rect x="${x}" y="${y}" width="${CW}" height="${CH}" rx="12" style="fill:${CARD};stroke:${LINE};stroke-width:1.5"/>`,
+      `<rect x="${x}" y="${y}" width="${CW}" height="${CH}" rx="12" style="fill:${CARD};stroke:${on ? INK : LINE};stroke-width:${on ? 3.5 : 1.5}"/>`,
       `<circle cx="${x + 32}" cy="${y + 36}" r="15" style="fill:${INK}"/>`, mid(x + 32, y + 42, String(i + 1), 17, PAPER),
       text(x + 58, y + 44, c.title, 25),
-      c.draw(x + (CW - 300) / 2, y + 70, p),
+      c.draw(x + (CW - 300) / 2, y + 70, pp),
       mid(x + CW / 2, y + 236, c.line[0], 16.5), mid(x + CW / 2, y + 260, c.line[1], 16.5),
       `<rect x="${x + 22}" y="${y + 284}" width="${CW - 44}" height="36" rx="18" style="fill:${PAPER};stroke:${INK};stroke-width:1.5"/>`,
       mid(x + CW / 2, y + 308, `Best for: ${c.best}`, 15.5),
@@ -149,14 +147,19 @@ ${text(W - X0, 128, "and who pays", 26, MUTED, ";font-style:italic").replace("<t
 </g>
 ${out.join("\n")}
 <line x1="${X0}" y1="${H - 62}" x2="${W - X0}" y2="${H - 62}" style="stroke:${LINE};stroke-width:1"/>
-${text(X0, H - 34, "How the Model Layer Works", 19)}
+${text(X0, H - 34, "I Ran Out With Hours Left", 19)}
 ${text(W - X0, H - 34, HOST, 18, MUTED).replace("<text ", '<text text-anchor="end" ')}
 </svg>`;
 }
 
 const frames: { svg: string; delay: number }[] = [];
-// One loop exactly, so the last frame leads straight back into the first.
-for (let k = 0, n = PERIOD * FPS; k < n; k++) frames.push({ svg: frame(k / FPS), delay: 1000 / FPS });
+// One card at a time: 2.2 seconds of diagram, 0.8 of hold, six cards, then the finished grid for 3 seconds.
+const PLAY_MS = 2200, HOLD_MS = 800, END_MS = 3000, PLAY_STEPS = 8;
+for (let i = 0; i < cards.length; i++) {
+  for (let j = 0; j < PLAY_STEPS; j++) frames.push({ svg: frame(i, j / PLAY_STEPS), delay: PLAY_MS / PLAY_STEPS });
+  frames.push({ svg: frame(i, 1), delay: HOLD_MS });
+}
+frames.push({ svg: frame(-1, 1), delay: END_MS });
 
 const gifenc = await readFile(join(ROOT, "node_modules", "gifenc", "dist", "gifenc.esm.js"), "utf8");
 const b = await chromium.launch();
@@ -183,8 +186,8 @@ try {
   const OUT = join(ROOT, "content", "media", "notes");
   await mkdir(OUT, { recursive: true });
   await writeFile(join(OUT, "model-layer-infographic.gif"), new Uint8Array(bytes));
-  // The still is the moment every diagram has finished: just before the loop restarts the first card.
-  const still = frame(PERIOD * (PLAY + (cards.length - 1) * STAGGER + 0.02));
+  // The still is the finished grid after every card has had its turn.
+  const still = frame(-1, 1);
   await pg.setContent(`<!doctype html><html><body style="margin:0">${still}</body></html>`);
   await writeFile(join(OUT, "model-layer-infographic-final.png"), await pg.screenshot({ clip: { x: 0, y: 0, width: W, height: H } }));
   console.log(`[social:gif:model-layer] wrote content/media/notes/model-layer-infographic.gif (${W}x${H}, ${frames.length} frames, ${(bytes.length / 1024).toFixed(0)} KB) and the finished state as a PNG`);
