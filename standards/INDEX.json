@@ -3574,7 +3574,7 @@
       "title": "standards/ — how I build, write, and work with AI",
       "summary": "The index - one line per standard, so a reader loads one file, not nineteen.",
       "when": null,
-      "lines": 117,
+      "lines": 120,
       "lead": null,
       "sections": [
         {
@@ -3582,8 +3582,8 @@
           "heading": "The standards",
           "anchor": "the-standards",
           "lines": [
-            23,
-            54
+            26,
+            57
           ],
           "summary": "A table: Read this when you're…, Standard, In one line.",
           "refs": [
@@ -3678,8 +3678,8 @@
           "heading": "How they fit together",
           "anchor": "how-they-fit-together",
           "lines": [
-            56,
-            108
+            59,
+            111
           ],
           "summary": "AI-DEVELOPMENT + SESSION-LOOP are the engineering pair: the first is the standards, the second is the session mechanics that run against them.",
           "refs": []
@@ -3689,8 +3689,8 @@
           "heading": "The one rule this folder lives by",
           "anchor": "the-one-rule-this-folder-lives-by",
           "lines": [
-            110,
-            117
+            113,
+            120
           ],
           "summary": "Single source of truth, everywhere.",
           "refs": []

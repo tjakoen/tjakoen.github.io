@@ -20,6 +20,9 @@ applicability line on each page says when it applies; read the linked file befor
 front of you needs. Each line below is the whole hook: that's the point, so you load one file, not
 six.
 
+Every standard here is also mounted as a skill, so an agent can reach it without being told the name.
+The library, its install command and the way in are at [the skills page](/skills).
+
 ## The standards
 
 | Read this when you're… | Standard | In one line |
