@@ -15,6 +15,7 @@ status: todo            # one of: todo, doing, done, blocked
 track: A                # optional; a free grouping label
 depends: []              # ids of other plans this one waits on
 touches: []              # optional; code paths this plan affects
+waits: ""               # required when status is blocked: what it waits on, in one line
 owner: ai                # one of: ai, human
 ---
 ```
@@ -30,6 +31,9 @@ Field by field:
 - depends. A list of other plan ids this plan is waiting on. Empty list if none.
 - touches. Optional. A list of code paths this plan is expected to affect, used to scope
   related tooling and show blast radius. Empty list if not applicable.
+- waits. Required when status is blocked. One line naming what the plan waits on, and the only field
+  PANTRY reads for that reason. A blocked plan without it shows the label and "no reason recorded",
+  which is a question the board cannot answer for you.
 - owner. One of ai or human, marking whose intent the plan represents.
 
 ## The one rule

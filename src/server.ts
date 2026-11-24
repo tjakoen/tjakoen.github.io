@@ -1,6 +1,7 @@
 // portfolio/server.ts — the composition root: the ONLY place BATCH + GRAIN + MILL + portfolio meet.
 import { join, normalize, resolve, sep } from "node:path";
 import { config } from "./config.ts";
+import { dayLabel } from "./day.ts";
 // --- BATCH (substrate) ---
 import { bunRuntime } from "@tjakoen/batch/platform/bun-runtime.ts";
 import { watchComponents } from "@tjakoen/batch/platform/watch.ts";
@@ -227,24 +228,18 @@ interface MailMessageRaw {
 }
 interface MailboxData { folders: Array<{ id: string; label: string }>; messages: MailMessageRaw[]; }
 const mailbox: MailboxData = await loadDataJson<MailboxData>("mailbox.json");
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-// Parse the ISO date's own digits (no Date(), so a machine timezone can't shift "Jul 14" to the 13th).
-const fmtDate = (iso: string, withYear: boolean): string => {
-  const [y, m, d] = iso.split("-").map(Number);
-  if (!y || !m || !d) return "";
-  return `${MONTHS[m - 1]} ${d}${withYear ? `, ${y}` : ""}`;
-};
+// One day formatter for the whole site; see src/day.ts for why the digits are parsed by hand.
 const mailFolders = mailbox.folders.map((f) => ({
   ...f, count: mailbox.messages.filter((m) => m.folder === f.id).length,
 }));
 const mailMessages = mailbox.messages.map((m) => {
-  const whenFull = m.date ? fmtDate(m.date, true) : (m.whenLabel ?? "");
+  const whenFull = m.date ? dayLabel(m.date, true) : (m.whenLabel ?? "");
   return {
     id: m.id, folder: m.folder, from: m.from, subject: m.subject, snippet: m.snippet,
     body: m.body, links: m.links,
     domId: `msg-${m.id}`, href: `#msg-${m.id}`,
     surface: `item:mail-${m.id}`,                                        // AI target address (AI-INTERFACE §4): item.archive accepts kind "item"
-    whenText: m.date ? fmtDate(m.date, false) : (m.whenLabel ?? ""),   // list column: short "Jul 14" or the literal label
+    whenText: m.date ? dayLabel(m.date, false) : (m.whenLabel ?? ""),   // list column: short "Jul 14" or the literal label
     whenDate: m.date,                                                   // "" for undated → binding omits data-date (no relativize)
     whenTitle: m.date ? whenFull : "",                                  // absolute stays in title when the list span relativizes
     metaLabel: `The Desk → You · ${whenFull}`,                          // reader meta line (always absolute)

@@ -16,6 +16,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { canonicalPath } from "./seo.ts";
+import { dayLabel } from "./day.ts";
 
 const HERE = join(fileURLToPath(import.meta.url), "..");
 
@@ -74,17 +75,10 @@ export function formatCount(n: number): string {
 // normal case here rather than an edge case worth skipping.
 const plural = (n: number, one: string, many: string) => `${formatCount(n)} ${n === 1 ? one : many}`;
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-// "2026-08-11" → "11 Aug". Parsed by hand rather than through Date, so the rendered day cannot
-// shift under the build machine's timezone: `new Date("2026-08-11")` is UTC midnight, which is the
-// 10th anywhere west of Greenwich. Anything unparseable yields "" and the suffix is simply dropped.
-export function shortDate(iso: string | undefined): string {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso ?? "");
-  if (!m) return "";
-  const month = MONTHS[Number(m[2]) - 1];
-  return month ? `${Number(m[3])} ${month}` : "";
-}
+// "2026-08-11" → "11 Aug". The parsing lives in src/day.ts, so the mail list and this bar cannot
+// disagree about a month, and neither can shift under the build machine's timezone. Anything
+// unparseable yields "" and the suffix is simply dropped.
+export const shortDate = (iso: string | undefined): string => dayLabel(iso);
 
 // The counts are a SNAPSHOT taken when the site was last built, so the bar says "as of <date>".
 // Not "since last deploy": these are cumulative since the beacon went live and do not reset on a
