@@ -156,24 +156,16 @@ const GROUPS: Group[] = [
 
 const chip = (s: Skill) => `<a class="skills-chip" data-skill="${esc(s.slug)}" href="/standards/${esc(s.route)}">${esc(s.slug)}</a>`;
 
-/** Skills installed from someone else's repo. They run beside the library and are credited upstream. */
+/** Skills installed from someone else's repo. They run beside the library and are credited upstream.
+ *
+ * A committed list on purpose. `skills-lock.json` is gitignored, so CI never sees it, and a page that
+ * read the lock would render one set on this machine and another on the runner. Update this list in
+ * the same change that installs another third-party skill; the lock is still the local record. */
 export interface ExternalSkill { source: string; names: string[] }
 
-export function readExternalSkills(): ExternalSkill[] {
-  try {
-    const lock = JSON.parse(readFileSync(join(ROOT, "skills-lock.json"), "utf8")) as {
-      skills?: Record<string, { source?: string }>;
-    };
-    const bySource = new Map<string, string[]>();
-    for (const [name, meta] of Object.entries(lock.skills ?? {})) {
-      const source = typeof meta.source === "string" && meta.source ? meta.source : "an unknown source";
-      bySource.set(source, [...(bySource.get(source) ?? []), name]);
-    }
-    return [...bySource].map(([source, names]) => ({ source, names: names.toSorted() }));
-  } catch {
-    return [];                                  // no lock file: the section simply does not render
-  }
-}
+export const EXTERNAL_SKILLS: ExternalSkill[] = [
+  { source: "addyosmani/agent-skills", names: ["doubt-driven-development", "incremental-implementation"] },
+];
 
 const groupCard = (g: Group, bySlug: Map<string, Skill>, n: number): string => {
   const members = g.skills.map((slug) => bySlug.get(slug)).filter((s): s is Skill => !!s);
@@ -255,7 +247,7 @@ export function renderPage(skills = readSkills()): string {
     cards.push(groupCard({ name: "New and ungrouped", caption: "A standard that has not been placed in a family yet. It is mounted like the rest.", best: "the newest rule", skills: extra.map((s) => s.slug), figure: figWayIn }, bySlug, cards.length + 1));
   }
 
-  const external = readExternalSkills();
+  const external = EXTERNAL_SKILLS;
   const externalSection = external.length ? `
     <h2 class="skills-h2">Installed from elsewhere</h2>
     <div class="skills-also">
