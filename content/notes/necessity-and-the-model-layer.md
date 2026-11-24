@@ -17,14 +17,35 @@ summary: >
   the short version of why, and what changed, and it says plainly what is still ahead. The technical note
   shows how it works.
 social: |
-  I ran out of Codex with four hours left on the clock. I refused to pay for the next tier, so I built
-  a layer that picks the model for me.
+  My weekly Claude limit ran out with 3 days to go, and I burned through Codex with four hours
+  left on the clock.
 
-  Light work falls to one free model, then a small monthly plan, then the plan I already pay for.
-  Planning and review stay on Opus and Sol. The paid API waits for an approval I type. Nothing that
-  may keep a prompt sees work code.
+  Instead of upgrading to a higher tier, where every idle evening feels like wasted quota, I
+  built a Model Intelligence Layer to route my work.
 
-  The next model is a lookup now. I stayed in the zone.
+  Routine tasks fall down a chain that gets cheaper as it goes:
+
+  A free model endpoint (DeepSeek V4.1 Flash Free)
+
+  A small flat-rate plan (DeepSeek V4.1 Flash on OpenCode Go)
+
+  The subscriptions I already pay for (Codex)
+
+  Outside that chain, the pay-per-token DeepSeek API waits for an approval I type.
+
+  Planning and review start on Opus and Sol. When Codex is spent, DeepSeek V4 Pro on Go takes
+  the strong tier, behind repository clearance.
+
+  Hard guards also ensure no free model, and no model that may keep what you send it, ever
+  touches a private or work repo. Only Claude and Codex, directly through their own harnesses,
+  are allowed there.
+
+  It never stalls, never overspends, and never leaks private code, swapping models behind the
+  scenes so I stay in the zone.
+
+  The why, with the full build linked inside:
+
+  #AIEngineering #DeveloperWorkflow #SoftwareEngineering #LLM #CodingAgents
 socialImage:
   - "/media/notes/model-layer-architecture.gif"
   - "/media/notes/model-layer-infographic.gif"
