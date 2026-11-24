@@ -27,7 +27,8 @@ test("every diagram carries a spoken name and a closed marker pair", () => {
 test("every stack carries a spoken name, theme tokens only and a closed marker pair", () => {
   for (const id of Object.keys(STACKS)) {
     const html = stackBlock(id);
-    expect(html).toContain('role="img"');
+    // A stack whose tiles are links is a group; one without links is an image. Both carry the name.
+    expect(html).toMatch(/role="(?:img|group)"/);
     expect(html).toContain("aria-label=");
     expect(html).not.toMatch(/#[0-9a-fA-F]{3,6}/);
     expect(html.startsWith(`<!-- stack:${id} -->`)).toBe(true);
