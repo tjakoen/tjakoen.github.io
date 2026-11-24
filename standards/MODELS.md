@@ -227,9 +227,11 @@ DeepSeek V4 Pro instead, the cheapest model on Go that sits above Flash: 0.66 in
 0.022, against Flash's 0.15, 0.6 and 0.003. It burns the shared Go allowance about four times as fast
 per token, and it is still the cheapest strong option the plan carries (D13, section 11).
 
-Every row outside Claude Code is marked unverified in the registry. Codex, DeepSeek Harness and OpenCode
-are not installed on the machine where the guard was proven. OpenCode is installed and runs on the
-MacBook Air. The guard is proven on the Claude Code desktop app only.
+A row is marked verified only where a receipt exists: Claude Code's three tiers, Codex execution, and
+the OpenCode free and Go lanes observed live on 2026-11-24. Codex strong, Luna, DeepSeek Harness and
+every guard row remain unverified. Codex and DeepSeek Harness are not installed on the machine where
+the guard was proven. OpenCode is installed and runs on the MacBook Air. The guard is proven on the
+Claude Code desktop app only.
 
 ## 11. Cost and privacy
 

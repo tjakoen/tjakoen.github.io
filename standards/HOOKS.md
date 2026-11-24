@@ -13,11 +13,12 @@ when: >
 
 # The gates that fire before you do
 
-A standard is a sentence until something enforces it. On this machine three hooks turn three rules
+A standard is a sentence until something enforces it. On this machine four hooks turn four rules
 from [LOOP.md](LOOP.md) into machinery: the doctor that reads a repo before the first prompt, the
-guard that refuses a write to an irreversible path, and the check that refuses a spawn carrying no
-run envelope. They fire in every session, in every repo, whether or not the session has read
-anything. This file is the description of them that is not their own source code.
+guard that refuses a write to an irreversible path, the check that refuses a spawn carrying no run
+envelope, and the gate that keeps a gated plan from starting without its review. They fire in every
+session, in every repo, whether or not the session has read anything. This file is the description of
+them that is not their own source code.
 
 > Split of responsibility: **[LOOP.md](LOOP.md) owns the rules** (the mechanical tier in section 2,
 > the lanes and the envelope in section 4b) and **[SESSION-LOOP.md](SESSION-LOOP.md) owns the inside
@@ -382,7 +383,11 @@ at the first step, a listener after each execution, and session events.
 [The DeepSeek Harness adapter doc](https://github.com/tjakoen/tjakoen.github.io/blob/main/docs/HARNESS-DSH.md)
 owns that in detail; this file owns only the contract it is held to.
 
-OpenCode is the fourth harness, and it is unsupported: it is not installed on any machine, so no adapter exists and no signal is claimed for it. Its model preferences are kept in the registry that [MODELS.md](MODELS.md) points to.
+OpenCode is the fourth harness and is installed on the MacBook Air, where it runs the checklist,
+route and recovery plugins under `shared/opencode/plugins`. That plugin set is its adapter, not a
+settings file; which of the six signals it covers is measured in [MODELS-VERIFY.md](MODELS-VERIFY.md)
+rather than assumed. Its model preferences are kept in the registry that [MODELS.md](MODELS.md)
+points to.
 
 **The list earned its keep on the first run, and the defect was real.** Measure the lane list in both
 guards and on 2026-11-08 they did not agree. The shell guard carried seventeen path rules plus the
