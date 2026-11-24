@@ -43,6 +43,21 @@ test("a skill with no family still reaches the page, in the ungrouped card", () 
   expect(html).toContain("New and ungrouped");
 });
 
+test("the real corpus is fully placed: no skill falls into the ungrouped fallback", () => {
+  const html = renderPage(readSkills());
+  expect(html).not.toContain("New and ungrouped");
+  expect(html).toContain('href="/standards/claude.starter"');   // route keeps the dot
+  expect(html).toContain('data-skill="claude-starter"');        // mounted name uses the dash
+});
+
+test("third-party skills are listed separately, never as part of the library", () => {
+  const html = renderPage(readSkills());
+  expect(html).toContain("Installed from elsewhere");
+  expect(html).toContain("addyosmani/agent-skills");
+  expect(html).toContain("doubt-driven-development");
+  expect(html).toContain("stays private by design");
+});
+
 test("the page explains the mechanism, not just the list", () => {
   const html = renderPage(readSkills());
   expect(html).toContain("How a skill fires");

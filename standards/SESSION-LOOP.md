@@ -64,6 +64,15 @@ any repo alongside [`AI-DEVELOPMENT.md`](AI-DEVELOPMENT.md).
 
 ---
 
+**Skill first, standard second.** A repo that has run `pantry skills sync` carries the standards as
+mounted skills (`.claude/skills`), and the one-line description is the index to match the task
+against. Open the mounted skill; do not fetch the same file twice. The canon is still `standards/`,
+so when a skill and the published standard disagree, the standard wins and the mount is stale: run
+`pantry skills sync`, and say in the run report that you did. A repo with no mount, a cloud session,
+or a work repository falls back to the published URLs, which is why every standard keeps one.
+
+---
+
 ## 2. The loop (repeat until done)
 
 The problem→solution loop lives in **AI-DEVELOPMENT §6**; the standing gate is **§3/§8**. The
