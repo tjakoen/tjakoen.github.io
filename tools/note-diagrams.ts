@@ -318,7 +318,7 @@ export function stackSvg(id: string): string {
     }
   });
   const H = y + 14;
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${X(s.label)}" style="display:block;width:100%;max-width:600px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif">${parts.join("")}</svg>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="group" aria-label="${X(s.label)}" style="display:block;width:100%;max-width:600px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif">${parts.join("")}</svg>`;
 }
 
 
