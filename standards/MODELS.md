@@ -496,6 +496,11 @@ places.
   is metered on the opencode provider, so that lane could not run. It now names V4 Pro, which the Go
   plan does carry. A spawned session answered on it on 2026-11-24, so the entry is verified for
   serving. Its quality on real work is unmeasured, and that is the next thing the ledger can show.
+- **Reviews have a second seat.** The reviewer agent is pinned to gpt-6.2-sol, so a review stops when the
+  Codex plan does. The OpenCode config carries reviewer-go, pinned to Gemini 4 Argon on the Go plan at
+  medium effort. Family independence is the reason, not price: the main session writes on DeepSeek, so the
+  reviewer must not, and Gemini is the medium-effort entry in that band. The limit is honest: a review is
+  asked for by agent name, so nothing silently routes to it.
 
 ## Verification
 

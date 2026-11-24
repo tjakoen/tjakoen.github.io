@@ -2892,7 +2892,7 @@
       "title": "MODELS — which model plays which role, on every harness",
       "summary": "The portable model policy of the loop. Six roles on three tiers, a main session on the execution tier, escalation by delegation rather than by switching models, the effort ceiling, one registry as the only home of model identifiers, five conformance levels, and how a device repairs its own drift.",
       "when": "Read this BEFORE pinning a model in an agent file, a settings file or a Codex config, before adding an agent, before reaching for a model switch mid-session, and before claiming a harness runs the loop's model policy. It owns which role sits on which tier and how the strong tier is reached; the registry in agent-config owns the identifiers, and SESSION-LOOP section 6 owns the routing advice. Don't skip because the agent file already names a model - a pin nobody checked against the registry is how five files came to disagree.",
-      "lines": 505,
+      "lines": 510,
       "lead": {
         "lines": [
           14,
@@ -3159,7 +3159,7 @@
           "anchor": "19-what-is-on-hold-and-what-is-not-tested",
           "lines": [
             486,
-            498
+            503
           ],
           "summary": "DeepSeek Harness is on hold (owner, 2026-11-23).",
           "refs": []
@@ -3169,8 +3169,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            500,
-            505
+            505,
+            510
           ],
           "summary": "The verifier for the harness run (the command is in MODELS-VERIFY step 1), no line FAIL.",
           "refs": []
