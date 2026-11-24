@@ -170,10 +170,30 @@ the three is deleted, not shortened.
 | Run report | artifacts/runs/, PANTRY | Evidence is a table, and any unpushed commit is named | Ask first, bullets, links |
 | PANTRY plan or task | The plan file | One task per line, and the task names the next action, not the topic | The line is the same shape as a bullet |
 | Handoff | A fresh session | The prompt is the message. [SESSION-LOOP](SESSION-LOOP.md) section 5 owns what it carries | Numbered, complete, paste-ready |
-| Decision request | Inbox or card | [DECISIONS](DECISIONS.md) owns the surface and the answer channel | One question, the options, the default |
+| Decision request | The in-thread card | The card carries one question, at most four options, the recommended one first, and the default that runs if it is dismissed | One question, the options, the default |
 | Review or ticket reply | The PR or the ticket | [VOICE](VOICE.md) owns the wording, because it publishes | The ask sits at the top, not the bottom |
 
 The container changes where the reader meets the brief. It never changes the order inside it.
+
+### When a decision interrupts the run
+
+The chat's decision surface is the in-thread card, not a paragraph inside a status update. The card
+is the prompt the harness renders from the question, with its options and the answer coming back in
+the same thread.
+
+- **One card per decision, and one card for the batch.** If three answers are needed at the same
+  point, they go in one card rather than three interruptions.
+- **Raise a card only when the answer changes the goal, spends money, touches a published surface,
+  or cannot be undone.** Everything else is the agent's call; it records the choice in the plan and
+  moves on. A minor call raised as a question is the run handing back work it was trusted with.
+- **Put the recommended option first, with its one-line reason.** Name the default that runs if the
+  card is dismissed, so a closed card never stalls the work.
+- **The answer returns in the thread and is written down.** Record it in the plan file or the answer
+  log, because the session that reads it next may have none of this context.
+- **Never ask the same question twice,** once in the card and again in the prose.
+
+[DECISIONS](DECISIONS.md) owns which surface a question belongs on and how the answer returns; this
+section owns the shape it takes in chat.
 
 ## 9. A light model needs the shape more, not a shorter answer
 
@@ -234,6 +254,7 @@ Before anything reaches the reader:
 9. A run with more than one step shows a state table, and every blocker and open question sits under
    it.
 10. A reply that ends with actions moves PANTRY to the plan and links it, under the actions.
+11. A decision that needs him is one card, recommended option first, with the default named.
 
 ## Rationalizations
 
