@@ -548,7 +548,7 @@
       "title": "BRIEF.md — a run talks to the person, not about the work",
       "summary": "The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, and the words he already uses. One shape on every harness and every surface.",
       "when": "Read this BEFORE writing anything addressed to Tjakoen rather than to the code: a chat reply, a run report, an audit, a PANTRY plan or task note, a handoff prompt, a decision request, a review or ticket reply. It owns the shape of the message; DECISIONS owns which surface it goes on, SESSION-LOOP owns what a handoff carries, VOICE owns anything published in his name. Don't skip because the model is a light one or the reply feels short - the shape is what carries the clarity a small model cannot, and a brief he has to ask about has already cost more than it saved.",
-      "lines": 244,
+      "lines": 259,
       "lead": {
         "lines": [
           14,
@@ -589,7 +589,7 @@
           "anchor": "3-if-it-renders-it-is-running-and-it-is-linked",
           "lines": [
             85,
-            102
+            115
           ],
           "summary": "A sentence about a page is not a page.",
           "refs": [
@@ -603,8 +603,8 @@
           "heading": "4. Bullets carry the detail, one point each",
           "anchor": "4-bullets-carry-the-detail-one-point-each",
           "lines": [
-            104,
-            113
+            117,
+            126
           ],
           "summary": "Prose is for the argument. Anything listable is a bullet: what changed, what was read, what remains, what it costs.",
           "refs": [
@@ -618,8 +618,8 @@
           "heading": "5. A table when there is state, a figure when there is shape",
           "anchor": "5-a-table-when-there-is-state-a-figure-when-there-is-shape",
           "lines": [
-            115,
-            123
+            128,
+            136
           ],
           "summary": "Three or more things compared on the same two or three facts is a table.",
           "refs": [
@@ -633,8 +633,8 @@
           "heading": "6. Write in the words he already uses",
           "anchor": "6-write-in-the-words-he-already-uses",
           "lines": [
-            125,
-            135
+            138,
+            148
           ],
           "summary": "Plain words, short sentences, the term he uses rather than the one the framework invented.",
           "refs": [
@@ -648,8 +648,8 @@
           "heading": "7. Cut what he cannot act on",
           "anchor": "7-cut-what-he-cannot-act-on",
           "lines": [
-            137,
-            149
+            150,
+            162
           ],
           "summary": "Not in a brief: a restatement of the question",
           "refs": []
@@ -659,8 +659,8 @@
           "heading": "8. One shape, in the container each surface gives it",
           "anchor": "8-one-shape-in-the-container-each-surface-gives-it",
           "lines": [
-            151,
-            162
+            164,
+            175
           ],
           "summary": "The container changes where the reader meets the brief.",
           "refs": [
@@ -680,8 +680,8 @@
           "heading": "9. A light model needs the shape more, not a shorter answer",
           "anchor": "9-a-light-model-needs-the-shape-more-not-a-shorter-answer",
           "lines": [
-            164,
-            176
+            177,
+            189
           ],
           "summary": "The run that prompted this file was on DeepSeek V4.1 Flash, a light model by the registry's own label, because the Codex plan was out and the free model had already been rate-limited.",
           "refs": []
@@ -691,8 +691,8 @@
           "heading": "10. Say where the work stands",
           "anchor": "10-say-where-the-work-stands",
           "lines": [
-            178,
-            206
+            191,
+            219
           ],
           "summary": "A run that takes more than one step owes a state table every time it reports, on every surface.",
           "refs": []
@@ -702,8 +702,8 @@
           "heading": "The checklist",
           "anchor": "the-checklist",
           "lines": [
-            208,
-            221
+            221,
+            235
           ],
           "summary": "Before anything reaches the reader: The first line says what he has to do, or that nothing is needed.",
           "refs": []
@@ -713,8 +713,8 @@
           "heading": "Rationalizations",
           "anchor": "rationalizations",
           "lines": [
-            223,
-            233
+            237,
+            248
           ],
           "summary": "A table: The excuse, The answer.",
           "refs": []
@@ -724,8 +724,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            235,
-            244
+            250,
+            259
           ],
           "summary": "Every item under the ask can be done without a follow-up question.",
           "refs": []
@@ -3740,7 +3740,7 @@
       "title": "SESSION-LOOP.md — the working loop, memory, and handoff",
       "summary": "How a session with an AI runs start to finish - the loop it repeats, what it writes down, and how it hands off.",
       "when": "Read this BEFORE orienting in a repo you have not worked today, and again BEFORE writing an agent-memory entry, a handoff prompt, or a plan file. It owns the inside of one session: how to orient cold, the loop to repeat, the recurring chores, what belongs in memory versus a committed doc, and how to end so the next session starts oriented. LOOP.md is the sibling that owns the gates across sessions and repos. Don't skip because you already have the context - context is the exact thing the next session will not have.",
-      "lines": 426,
+      "lines": 466,
       "lead": {
         "lines": [
           14,
@@ -3838,7 +3838,7 @@
           "anchor": "7-delegation-fan-out-dont-grind",
           "lines": [
             379,
-            426
+            422
           ],
           "summary": "§6 asks which brain runs. This asks how many.",
           "refs": [
@@ -3846,6 +3846,17 @@
               "to": "audit-standard"
             }
           ]
+        },
+        {
+          "level": 2,
+          "heading": "8. A session wears the name of its work",
+          "anchor": "8-a-session-wears-the-name-of-its-work",
+          "lines": [
+            424,
+            466
+          ],
+          "summary": "A session is a thing a person picks from a list, and its PANTRY plan is the thing he reads on the board.",
+          "refs": []
         }
       ],
       "refsOut": [

@@ -421,6 +421,46 @@ and a fixed output format, since the format is what buys back the confidence the
 
 The audit is the worked example of all of this: [`AUDIT-STANDARD.md`](AUDIT-STANDARD.md) §4.
 
+## 8. A session wears the name of its work
+
+A session is a thing a person picks from a list, and its PANTRY plan is the thing he reads on the
+board. When the two carry different names, both lists stop being readable: the session reads as a
+paraphrase of its first prompt and the board reads as *chat-2026-11-24-abc12345*. Neither says what
+the work is, and nothing joins them.
+
+**The label.** One letter for the work item, then a number for each child under it.
+
+```
+A:    Portfolio Design Changes     the work item
+A1:   Style                        its first child
+A2:   Note content                 its second child
+A1.1: Token audit                  a grandchild
+```
+
+- One command writes the label in both places, the session title through the OpenCode API and the
+  first heading of the plan the session holds:
+
+  ```
+  ~/.claude/tools/session-name.sh "A1: Style"
+  ```
+
+  Nothing else writes either, so they cannot drift.
+- With no letter, as in *session-name.sh "Portfolio Design Changes"*, the script allocates the next
+  free root letter for that project. Letters are per project per day and a letter stays clear only
+  for twelve hours after the last session that used it, so yesterday's A does not block today's.
+- A child takes its parent's prefix and the next free number. A1's first child is A1.1 and never A2.
+- A title that is not shaped like a label is a session nobody named, and a plan whose heading is not
+  one is a plan nobody named. Both are worth seeing rather than smoothing over.
+
+**A spawned child is a real child.** Passing a parent to *spawn-session.sh* creates the session
+through the API with that parent, so deleting the parent takes the child with it and the child's
+report lands in the parent's inbox. It refuses a parent with no label instead of inventing one,
+because a guessed letter is worse than a refusal: it looks like a tree that is not there. The harness
+list shows top-level sessions only, which is why the label is what makes the tree visible at all.
+
+**Naming happens when the work is chosen, not at the end.** A rename after three commits has already
+cost whoever was reading the list.
+
 ---
 
 *Living document. When the loop changes, update it — the same rule it asks of everything else.*

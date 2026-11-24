@@ -101,6 +101,19 @@ renders correctly" is a claim about a screen he cannot see, and a run that says 
 sentence instead of a page. [TOUR-STANDARD](TOUR-STANDARD.md) says what a change owes when it needs
 judging rather than a glance.
 
+**PANTRY is already running, so point it at the work.** The session-start hook opens it on this
+project and nothing after that moves it, so by the second project of the day it is showing the wrong
+one. When a reply ends with actions he has to take:
+
+1. Move his window first, with *pantry_act* to the plan the reply is about. A link he has to find
+   and click is a step he did not ask for.
+2. Then put the link under the actions, on its own line:
+   <pantry://project/tjakoen.github.io>. In a browser the same page is
+   <http://localhost:4400/open/tjakoen.github.io>.
+3. Name the plan in that line, because the window may still have been on another one when he looked.
+
+A reply with nothing to act on carries no link. A link on every message is a link nobody reads.
+
 ## 4. Bullets carry the detail, one point each
 
 Prose is for the argument. Anything listable is a bullet: what changed, what was read, what remains,
@@ -219,6 +232,7 @@ Before anything reaches the reader:
 8. No line restates, apologizes, or invites questions.
 9. A run with more than one step shows a state table, and every blocker and open question sits under
    it.
+10. A reply that ends with actions moves PANTRY to the plan and links it, under the actions.
 
 ## Rationalizations
 
@@ -231,6 +245,7 @@ Before anything reaches the reader:
 | "Numbering one step is fussy." | Then it is a sentence, not a list. Two steps are numbered. |
 | "He knows what that acronym means." | Today he does. The next session reading this thread has no context. |
 | "I already showed him this in the last message." | He scrolled past it. A link costs one line to repeat. |
+| "He knows where PANTRY is." | It shows one project at a time and he runs fourteen. Point it at this one. |
 
 ## Verification
 
