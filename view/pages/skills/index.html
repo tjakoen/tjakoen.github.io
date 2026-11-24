@@ -5,60 +5,196 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Skills · the standards an AI loads on its own · Tjakoen Stolk</title>
-  <meta name="description" content="The skill library behind this portfolio: every standard, mounted as a skill an AI agent loads when the task matches. Read the rules, or install the whole set in one command.">
+  <meta name="description" content="The skill library behind this portfolio: every standard, mounted as a skill an AI agent loads when the task matches, how a skill fires, and where it sits in the loop.">
+  <style>
+body[data-screen="skills"] .skills-hero { margin-bottom: 6px; }
+body[data-screen="skills"] .skills-kicker { margin: 0 0 14px; font-size: 12px; letter-spacing: .3em; color: var(--color-muted); text-transform: uppercase; }
+body[data-screen="skills"] .skills-head { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; gap: 10px 40px; }
+body[data-screen="skills"] .skills-title { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-weight: 400; font-size: clamp(34px, 4.6vw, 56px); line-height: 1.03; letter-spacing: -.02em; color: var(--ink); max-width: 24ch; }
+body[data-screen="skills"] .skills-aside { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: clamp(20px, 2.4vw, 30px); color: var(--color-muted); }
+body[data-screen="skills"] .skills-lede { max-width: 68ch; margin: 18px 0 0; font-size: 17px; line-height: 1.55; color: var(--ink-muted); }
+
+body[data-screen="skills"] .skills-install { margin: 26px 0 8px; border: 1px solid var(--color-line); border-radius: 10px; padding: 16px 20px; background: var(--paper-2); }
+body[data-screen="skills"] .skills-install__label { display: block; font-size: 11px; letter-spacing: .26em; color: var(--color-muted); margin-bottom: 8px; }
+body[data-screen="skills"] .skills-install code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 15px; color: var(--ink); }
+body[data-screen="skills"] .skills-install p { margin: 10px 0 0; font-size: 13px; color: var(--color-muted); }
+
+body[data-screen="skills"] .skills-h2 { margin: 34px 0 14px; font-family: Georgia, 'Times New Roman', serif; font-weight: 400; font-size: 22px; color: var(--ink); }
+body[data-screen="skills"] .skills-steps { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+body[data-screen="skills"] .skills-step { border-top: 1px solid var(--ink); padding-top: 12px; }
+body[data-screen="skills"] .skills-step h3 { margin: 6px 0 6px; font-family: Georgia, 'Times New Roman', serif; font-weight: 400; font-size: 18px; color: var(--ink); }
+body[data-screen="skills"] .skills-step p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink-muted); }
+body[data-screen="skills"] .skills-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 13px; font-weight: 600; flex: none; }
+
+body[data-screen="skills"] .skills-loop { margin-top: 20px; border: 1px solid var(--color-line); border-radius: 10px; padding: 14px; display: flex; align-items: stretch; gap: 8px; overflow-x: auto; background: var(--paper-2); }
+body[data-screen="skills"] .skills-loop__node { flex: 1 1 0; min-width: 0; border: 1px solid var(--color-line); border-radius: 8px; padding: 9px 11px; font-size: 13px; font-weight: 600; color: var(--ink); background: var(--paper); }
+body[data-screen="skills"] .skills-loop__node span { display: block; margin-top: 3px; font-size: 11px; font-weight: 400; color: var(--color-muted); }
+body[data-screen="skills"] .skills-loop__node[data-hot] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+body[data-screen="skills"] .skills-loop__node[data-hot] span { color: var(--paper); opacity: .75; }
+body[data-screen="skills"] .skills-loop__arrow { align-self: center; color: var(--color-muted); font-size: 15px; flex: none; }
+body[data-screen="skills"] .skills-note { margin: 10px 0 0; font-size: 13px; color: var(--color-muted); }
+
+body[data-screen="skills"] .skills-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+body[data-screen="skills"] .skills-card { display: flex; flex-direction: column; border: 1px solid var(--color-line); border-radius: 10px; padding: 20px 20px 16px; background: var(--paper-2); min-height: 380px; }
+body[data-screen="skills"] .skills-card__head { display: flex; align-items: center; gap: 12px; }
+body[data-screen="skills"] .skills-card__title { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-weight: 400; font-size: 23px; line-height: 1.15; color: var(--ink); }
+body[data-screen="skills"] .skills-figure { height: 96px; display: flex; align-items: center; justify-content: center; margin: 14px 0 12px; }
+body[data-screen="skills"] .skills-caption { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink-muted); }
+body[data-screen="skills"] .skills-chips { margin: 14px 0 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+body[data-screen="skills"] .skills-chip { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; border: 1px solid var(--color-line); border-radius: 4px; padding: 3px 7px; color: var(--ink); text-decoration: none; }
+body[data-screen="skills"] .skills-chip:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+body[data-screen="skills"] .skills-pill { margin: auto 0 0; border: 1px solid var(--ink); border-radius: 999px; padding: 9px 12px; text-align: center; font-size: 13px; color: var(--ink); }
+
+body[data-screen="skills"] .skills-banner { margin: 26px 0 10px; border-radius: 10px; padding: 22px 26px; background: var(--ink); color: var(--paper); }
+body[data-screen="skills"] .skills-banner p { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(18px, 2.1vw, 24px); line-height: 1.25; }
+body[data-screen="skills"] .skills-banner p + p { margin-top: 8px; font-family: inherit; font-size: 14px; font-style: italic; opacity: .8; }
+
+@media (max-width: 1000px) {
+  body[data-screen="skills"] .skills-grid, body[data-screen="skills"] .skills-steps { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  body[data-screen="skills"] .skills-head { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  body[data-screen="skills"] .skills-grid, body[data-screen="skills"] .skills-steps { grid-template-columns: 1fr; }
+  body[data-screen="skills"] .skills-card { min-height: 0; }
+}
+</style>
 </head>
 <body data-screen="skills" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="bread" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main" id="main-content">
       <div class="board">
-    <h1 class="masthead">The rules I work by, as skills an agent loads on its own.</h1>
-    <p class="byline"><span class="name">Skills</span> · the library behind the work</p>
-    <hr class="rule">
-    <p class="lede">Every standard on this site is also a skill: a file with a line saying when to
-      read it, so an agent reaches for it before the work rather than after. This page is the index.
-      Read one here, or install the set and let your agent pick.</p>
 
-    <h2 class="section-head"><span>Install the set</span></h2>
-    <pre class="code" data-pad="sm"><code>npx skills@latest add tjakoen/skills</code></pre>
-    <p class="card__body">Generated from <a href="/standards">the standards</a> by PANTRY's own sync,
-      so the library and this page cannot disagree. 29 skills, one source.</p>
+    <header class="skills-hero">
+      <p class="skills-kicker">The skill library</p>
+      <div class="skills-head">
+        <h1 class="skills-title">Every rule I work by, in a file the agent opens on its own</h1>
+        <p class="skills-aside">and where it fires</p>
+      </div>
+    </header>
+    <p class="skills-lede">A skill is one standard plus a line saying when to read it. The line is the
+      trigger; the file is the rule. 29 of them, mounted from the same canon this site
+      publishes, so the library and the standards cannot disagree.</p>
 
-    <h2 class="section-head"><span>Start with the way in</span></h2>
-    <div class="card-grid">
-      <a class="card" data-pad="sm" href="/standards/glossary"><h3 class="card__title">GLOSSARY →</h3><p class="card__body">The working vocabulary of the portfolio and the loop around it: desk, door, surface, intent, grade, grain, lane, envelope, brief, run report, handoff, claim. One line each, the word as it is used here rather than as the framework invented it, so a cold session can read a plan or a note without inferring the meaning from context.</p></a>
-      <a class="card" data-pad="sm" href="/standards/main-flow"><h3 class="card__title">MAIN-FLOW →</h3><p class="card__body">The seven stages every substantial piece of work moves through in this estate, the standard that owns each one, the artifact it leaves behind, and the gate that proves the stage is done. It is the ordered view of the library: the other standards say how a stage is done, and this one says which stage you are in and what it owes before the next one starts.</p></a>
-      <a class="card" data-pad="sm" href="/standards/which-skill"><h3 class="card__title">WHICH-SKILL →</h3><p class="card__body">One table from &quot;what am I about to do&quot; to &quot;which standard to load first&quot;, covering every skill the estate mounts. It exists so a session does not read four standards looking for the one that fires, and so a standard nobody remembers is still reachable by the situation that needs it.</p></a>
+    <div class="skills-install">
+      <span class="skills-install__label">Install the set</span>
+      <code>npx skills@latest add tjakoen/skills</code>
+      <p>29 skills · generated from <a href="/standards">the standards</a> · one source, two projections</p>
     </div>
 
-    <h2 class="section-head"><span>Every skill</span></h2>
-    <div class="card-grid">
-      <a class="card" data-pad="sm" href="/standards/ai-development"><h3 class="card__title">AI-DEVELOPMENT →</h3><p class="card__body">A portable playbook for building with an AI partner - the standards, the pitfalls, and how problems become solutions.</p></a>
-      <a class="card" data-pad="sm" href="/standards/ai-repo-standard"><h3 class="card__title">AI-REPO-STANDARD →</h3><p class="card__body">Structure a repo so AI sessions compound. The repo-side companion to AI-DEVELOPMENT, with the map, contracts, and guardrails that carry learning between sessions.</p></a>
-      <a class="card" data-pad="sm" href="/standards/audit-standard"><h3 class="card__title">AUDIT-STANDARD →</h3><p class="card__body">The whole-repo audit - the nine dimensions it looks at, the severity words, the subagent fan-out that runs it, and the report it owes.</p></a>
-      <a class="card" data-pad="sm" href="/standards/brief"><h3 class="card__title">BRIEF →</h3><p class="card__body">The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, and the words he already uses. One shape on every harness and every surface.</p></a>
-      <a class="card" data-pad="sm" href="/standards/claude.starter"><h3 class="card__title">CLAUDE.starter →</h3><p class="card__body">The template every new repo copies to wire itself into these standards from day one - reference them, don't fork them.</p></a>
-      <a class="card" data-pad="sm" href="/standards/commit-standard"><h3 class="card__title">COMMIT-STANDARD →</h3><p class="card__body">How a commit message is built in every repo - a gitmoji, a one-line title, then bullets saying what the commit did.</p></a>
-      <a class="card" data-pad="sm" href="/standards/conformance"><h3 class="card__title">CONFORMANCE →</h3><p class="card__body">A paste-in prompt that runs in any existing repo and reports whether the standards are wired, the links resolve, the audit runbook is real, and the loop is automated rather than remembered.</p></a>
-      <a class="card" data-pad="sm" href="/standards/dashboard"><h3 class="card__title">DASHBOARD →</h3><p class="card__body">The dashboard standard - how Tjakoen wants a dashboard built, from the head that states its baseline to the queue that names one action per row. It composes GRAIN's dashboards layer rather than inventing a grid, keeps colour to the theme's one accent, and is checked on a screenshot at a phone and a desktop width before anyone calls it done.</p></a>
-      <a class="card" data-pad="sm" href="/standards/decisions"><h3 class="card__title">DECISIONS →</h3><p class="card__body">The four ways a run asks for something it cannot decide alone, what picks between them, what a decision request has to contain, and the one channel an answer returns on so a session that did not ask can still act on it.</p></a>
-      <a class="card" data-pad="sm" href="/standards/design-standard"><h3 class="card__title">DESIGN-STANDARD →</h3><p class="card__body">The design standard - which planning artifacts a project keeps in its design folder (ERD, data dictionary, DFD, C4, user flows, wireframes, ADRs, traceability), the established method each one follows, which are generated from code and which are written by hand, when a plan owes one, and how tests close the loop. PANTRY renders the files; the files are the truth.</p></a>
-      <a class="card" data-pad="sm" href="/standards/figures"><h3 class="card__title">FIGURES →</h3><p class="card__body">The standard for every diagram and chart - HTML when a figure has state, two tokenized inline-SVG scaffolds when it does not, one palette each, and a generated diagram carries the same accessible name a hand-drawn one does.</p></a>
-      <a class="card" data-pad="sm" href="/standards/graph"><h3 class="card__title">GRAPH →</h3><p class="card__body">The retrieval standard - ask the code graph a scoped question before you fan out grep, reads, and subagents. A small structured answer instead of a pile of files, and a free hook that keeps the graph honest.</p></a>
-      <a class="card" data-pad="sm" href="/standards/hooks"><h3 class="card__title">HOOKS →</h3><p class="card__body">The machine-level hooks that enforce parts of the loop on every session in every repo - what each one fires on, what it deliberately cannot do, how to turn it off, and the adapter contract that holds Claude Code, Codex and DeepSeek Harness to the same six signals with a ten-case conformance list.</p></a>
-      <a class="card" data-pad="sm" href="/standards/intake"><h3 class="card__title">INTAKE →</h3><p class="card__body">The four questions a pasted document has to answer before a session starts spending, why the answers are confirmed by a person rather than inferred from the blob, where the brief lands, and the test for when no brief is needed at all.</p></a>
-      <a class="card" data-pad="sm" href="/standards/kickstart"><h3 class="card__title">KICKSTART →</h3><p class="card__body">Paste one prompt into your AI and it interviews you, learns the stack, reads the public repos, and proposes which BREAD layers your project needs and how to wire them.</p></a>
-      <a class="card" data-pad="sm" href="/standards/local-ai-standard"><h3 class="card__title">LOCAL-AI-STANDARD →</h3><p class="card__body">Choose, measure, and tune browser-local AI around real user tasks, with explicit limits and repeatable evidence.</p></a>
-      <a class="card" data-pad="sm" href="/standards/loop"><h3 class="card__title">LOOP →</h3><p class="card__body">The system around the sessions - how every repo is worked the same way, the heartbeat that makes skipped chores visible, and the contract that keeps an unattended run honest.</p></a>
-      <a class="card" data-pad="sm" href="/standards/models"><h3 class="card__title">MODELS →</h3><p class="card__body">The portable model policy of the loop. Six roles on three tiers, a main session on the execution tier, escalation by delegation rather than by switching models, the effort ceiling, one registry as the only home of model identifiers, five conformance levels, and how a device repairs its own drift.</p></a>
-      <a class="card" data-pad="sm" href="/standards/models-verify"><h3 class="card__title">MODELS-VERIFY →</h3><p class="card__body">A prompt the owner pastes into a fresh session on Claude Code, Codex, DeepSeek Harness or OpenCode. The session runs the verifier for its harness, then the five probes a script cannot run (its own model, an unenveloped spawn, delegation to the planner, a 16-hex canary that proves a goldfish is fresh, and a human-lane write), and files a dated run report.</p></a>
-      <a class="card" data-pad="sm" href="/standards/note-standard"><h3 class="card__title">NOTE-STANDARD →</h3><p class="card__body">How a note is put together - frontmatter, structure, the sign-off footer, plus a reusable drafting prompt.</p></a>
-      <a class="card" data-pad="sm" href="/standards/prompt"><h3 class="card__title">PROMPT →</h3><p class="card__body">The checks an opening prompt is held to and the short polish pass that fixes it at session start, plus the rules for the prompts that live in files (instruction files, skills, agent prompts) so they stop carrying debt older models needed.</p></a>
-      <a class="card" data-pad="sm" href="/standards/readme-standard"><h3 class="card__title">README-STANDARD →</h3><p class="card__body">How a README presents itself across every repo - the title emoji, the badge row, and the footer, plus a reusable prompt.</p></a>
-      <a class="card" data-pad="sm" href="/standards/session-loop"><h3 class="card__title">SESSION-LOOP →</h3><p class="card__body">How a session with an AI runs start to finish - the loop it repeats, what it writes down, and how it hands off.</p></a>
-      <a class="card" data-pad="sm" href="/standards/tour-standard"><h3 class="card__title">TOUR-STANDARD →</h3><p class="card__body">How a CRUMB dev tour is built - picking surfaces, writing a verify line someone can run, stamping the status, and handing it over.</p></a>
-      <a class="card" data-pad="sm" href="/standards/tree"><h3 class="card__title">TREE →</h3><p class="card__body">The layout standard - the repo root is the first screen an agent or a newcomer reads, so only load-bearing files earn a place there and everything else folds one level down into a named home. A lean root is cheaper to orient in and harder to get lost in.</p></a>
-      <a class="card" data-pad="sm" href="/standards/voice"><h3 class="card__title">VOICE →</h3><p class="card__body">The standard for anything published in Tjakoen's name - cadence, the machine-tells to avoid, the honesty clause, and what a reader meets first.</p></a>
+    <h2 class="skills-h2">How a skill fires</h2>
+    <div class="skills-steps">
+      <div class="skills-step"><span class="skills-num">1</span><h3>The line is the trigger</h3><p>Every skill carries a one-line <em>when</em>: read this before drafting a note, before a commit, before an audit. The agent matches the task against that line, and only then opens the file.</p></div>
+      <div class="skills-step"><span class="skills-num">2</span><h3>The file is the rule</h3><p>The body holds the bar: the checks, the examples, the failure it prevents. One file, read in full, so the rule arrives with its reasons instead of a summary of them.</p></div>
+      <div class="skills-step"><span class="skills-num">3</span><h3>The loop is where it fires</h3><p>A session orients, decides, plans, builds, verifies and closes. The router says which standard owns the stage; the stage says when to open it.</p></div>
+    </div>
+
+    <div class="skills-loop" role="img" aria-label="The loop: start with the checklist and freshness, orient with the main flow, work the task through the router to a standard, verify with the audit or a tour, close with a brief and a handoff. A surprise in verify returns to decide.">
+      <div class="skills-loop__node">Start<span>checklist · freshness</span></div>
+      <span class="skills-loop__arrow" aria-hidden="true">→</span>
+      <div class="skills-loop__node">Orient<span>main-flow</span></div>
+      <span class="skills-loop__arrow" aria-hidden="true">→</span>
+      <div class="skills-loop__node" data-hot>Work<span>which-skill → the standard</span></div>
+      <span class="skills-loop__arrow" aria-hidden="true">→</span>
+      <div class="skills-loop__node">Verify<span>audit · tour</span></div>
+      <span class="skills-loop__arrow" aria-hidden="true">→</span>
+      <div class="skills-loop__node">Close<span>brief · handoff</span></div>
+    </div>
+    <p class="skills-note">A surprise in verify goes back to decide. The steps are not a waterfall; the stages are the order, and the loop is inside them.</p>
+
+    <h2 class="skills-h2">Six families</h2>
+    <div class="skills-grid">
+      <article class="skills-card">
+        <div class="skills-card__head"><span class="skills-num">1</span><h3 class="skills-card__title">The way in</h3></div>
+        <div class="skills-figure"><svg viewBox="0 0 220 96" width="220" height="96" aria-hidden="true">
+  <rect x="18" y="14" width="150" height="16" rx="5" fill="var(--ink)"/>
+  <rect x="18" y="40" width="118" height="16" rx="5" fill="var(--ink-faint)"/>
+  <rect x="18" y="66" width="86" height="16" rx="5" fill="var(--ink-faint)" opacity=".65"/>
+</svg></div>
+        <p class="skills-caption">Start here when the library is new, or when two standards both look close.</p>
+        <p class="skills-chips"><a class="skills-chip" data-skill="main-flow" href="/standards/main-flow">main-flow</a><a class="skills-chip" data-skill="which-skill" href="/standards/which-skill">which-skill</a><a class="skills-chip" data-skill="glossary" href="/standards/glossary">glossary</a></p>
+        <p class="skills-pill">Best for: a cold session</p>
+      </article>
+      <article class="skills-card">
+        <div class="skills-card__head"><span class="skills-num">2</span><h3 class="skills-card__title">Sessions and the loop</h3></div>
+        <div class="skills-figure"><svg viewBox="0 0 220 96" width="220" height="96" aria-hidden="true">
+  <circle cx="110" cy="48" r="30" fill="none" stroke="var(--color-line)" stroke-width="1.5"/>
+  <circle cx="110" cy="18" r="5" fill="var(--ink)"/>
+  <circle cx="140" cy="48" r="4" fill="var(--ink-faint)"/>
+  <circle cx="110" cy="78" r="4" fill="var(--ink-faint)"/>
+  <circle cx="80" cy="48" r="4" fill="var(--ink-faint)"/>
+  <circle cx="110" cy="48" r="4" fill="var(--ink)"/>
+  <path d="M132 27 L138 31" stroke="var(--ink)" stroke-width="1.5"/>
+</svg></div>
+        <p class="skills-caption">Orient, decide, work under a plan, close with evidence. The rules that run every time.</p>
+        <p class="skills-chips"><a class="skills-chip" data-skill="session-loop" href="/standards/session-loop">session-loop</a><a class="skills-chip" data-skill="loop-standard" href="/standards/loop">loop-standard</a><a class="skills-chip" data-skill="ai-development" href="/standards/ai-development">ai-development</a><a class="skills-chip" data-skill="ai-repo-standard" href="/standards/ai-repo-standard">ai-repo-standard</a><a class="skills-chip" data-skill="intake" href="/standards/intake">intake</a><a class="skills-chip" data-skill="brief" href="/standards/brief">brief</a><a class="skills-chip" data-skill="decisions" href="/standards/decisions">decisions</a></p>
+        <p class="skills-pill">Best for: every session</p>
+      </article>
+      <article class="skills-card">
+        <div class="skills-card__head"><span class="skills-num">3</span><h3 class="skills-card__title">Quality and proof</h3></div>
+        <div class="skills-figure"><svg viewBox="0 0 220 96" width="220" height="96" aria-hidden="true">
+  <rect x="20" y="8" width="180" height="80" rx="8" fill="none" stroke="var(--color-line)"/>
+  <text x="34" y="30" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="var(--ink-muted)">ok  hooks</text>
+  <text x="34" y="46" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="var(--ink-muted)">ok  models</text>
+  <text x="34" y="62" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="var(--ink-muted)">ok  freshness</text>
+  <text x="34" y="80" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" fill="var(--ink)">Loaded</text>
+</svg></div>
+        <p class="skills-caption">The checks that make unattended work safe: the audit, conformance, hooks, the model policy.</p>
+        <p class="skills-chips"><a class="skills-chip" data-skill="audit-standard" href="/standards/audit-standard">audit-standard</a><a class="skills-chip" data-skill="conformance" href="/standards/conformance">conformance</a><a class="skills-chip" data-skill="hooks" href="/standards/hooks">hooks</a><a class="skills-chip" data-skill="models" href="/standards/models">models</a><a class="skills-chip" data-skill="models-verify" href="/standards/models-verify">models-verify</a><a class="skills-chip" data-skill="graph" href="/standards/graph">graph</a></p>
+        <p class="skills-pill">Best for: trusting it unattended</p>
+      </article>
+      <article class="skills-card">
+        <div class="skills-card__head"><span class="skills-num">4</span><h3 class="skills-card__title">Writing</h3></div>
+        <div class="skills-figure"><svg viewBox="0 0 220 96" width="220" height="96" aria-hidden="true">
+  <text x="20" y="60" font-family="Georgia, 'Times New Roman', serif" font-size="54" fill="var(--ink)">Aa</text>
+  <rect x="102" y="22" width="100" height="8" rx="3" fill="var(--ink)"/>
+  <rect x="102" y="38" width="82" height="8" rx="3" fill="var(--ink-faint)"/>
+  <rect x="102" y="54" width="94" height="8" rx="3" fill="var(--ink-faint)"/>
+  <rect x="102" y="70" width="58" height="8" rx="3" fill="var(--ink-faint)"/>
+</svg></div>
+        <p class="skills-caption">How anything under my byline reads, from a note to a commit message.</p>
+        <p class="skills-chips"><a class="skills-chip" data-skill="voice" href="/standards/voice">voice</a><a class="skills-chip" data-skill="note-standard" href="/standards/note-standard">note-standard</a><a class="skills-chip" data-skill="figures" href="/standards/figures">figures</a><a class="skills-chip" data-skill="readme-standard" href="/standards/readme-standard">readme-standard</a><a class="skills-chip" data-skill="commit-standard" href="/standards/commit-standard">commit-standard</a><a class="skills-chip" data-skill="tour-standard" href="/standards/tour-standard">tour-standard</a></p>
+        <p class="skills-pill">Best for: anything published</p>
+      </article>
+      <article class="skills-card">
+        <div class="skills-card__head"><span class="skills-num">5</span><h3 class="skills-card__title">Design and build</h3></div>
+        <div class="skills-figure"><svg viewBox="0 0 220 96" width="220" height="96" aria-hidden="true">
+  <rect x="26" y="12" width="78" height="32" rx="6" fill="var(--ink)"/>
+  <rect x="116" y="12" width="78" height="32" rx="6" fill="none" stroke="var(--color-line)"/>
+  <rect x="26" y="52" width="78" height="32" rx="6" fill="none" stroke="var(--color-line)"/>
+  <rect x="116" y="52" width="78" height="32" rx="6" fill="var(--ink-faint)" opacity=".55"/>
+</svg></div>
+        <p class="skills-caption">Where files live, what a screen owes, and how a change is designed before it is typed.</p>
+        <p class="skills-chips"><a class="skills-chip" data-skill="design-standard" href="/standards/design-standard">design-standard</a><a class="skills-chip" data-skill="dashboard" href="/standards/dashboard">dashboard</a><a class="skills-chip" data-skill="tree" href="/standards/tree">tree</a><a class="skills-chip" data-skill="local-ai-standard" href="/standards/local-ai-standard">local-ai-standard</a></p>
+        <p class="skills-pill">Best for: a new screen or table</p>
+      </article>
+      <article class="skills-card">
+        <div class="skills-card__head"><span class="skills-num">6</span><h3 class="skills-card__title">Starting and prompting</h3></div>
+        <div class="skills-figure"><svg viewBox="0 0 220 96" width="220" height="96" aria-hidden="true">
+  <rect x="18" y="22" width="184" height="52" rx="8" fill="var(--ink)"/>
+  <text x="34" y="54" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="var(--paper)">&gt; brief</text>
+  <rect x="106" y="41" width="2" height="15" fill="var(--paper)"/>
+</svg></div>
+        <p class="skills-caption">The first hour of a repo, and the prompt that starts it.</p>
+        <p class="skills-chips"><a class="skills-chip" data-skill="kickstart" href="/standards/kickstart">kickstart</a><a class="skills-chip" data-skill="prompt" href="/standards/prompt">prompt</a></p>
+        <p class="skills-pill">Best for: a fresh repo</p>
+      </article>
+      <article class="skills-card">
+        <div class="skills-card__head"><span class="skills-num">7</span><h3 class="skills-card__title">New and ungrouped</h3></div>
+        <div class="skills-figure"><svg viewBox="0 0 220 96" width="220" height="96" aria-hidden="true">
+  <rect x="18" y="14" width="150" height="16" rx="5" fill="var(--ink)"/>
+  <rect x="18" y="40" width="118" height="16" rx="5" fill="var(--ink-faint)"/>
+  <rect x="18" y="66" width="86" height="16" rx="5" fill="var(--ink-faint)" opacity=".65"/>
+</svg></div>
+        <p class="skills-caption">A standard that has not been placed in a family yet. It is mounted like the rest.</p>
+        <p class="skills-chips"><a class="skills-chip" data-skill="claude.starter" href="/standards/claude.starter">claude.starter</a></p>
+        <p class="skills-pill">Best for: the newest rule</p>
+      </article>
+    </div>
+
+    <div class="skills-banner">
+      <p>The line under the name decides whether the file is opened.</p>
+      <p>Every <em>when</em> is written as a command, because that line is the only thing an agent reads before choosing. A vague one is a skill nobody opens, which is why the router exists for the tasks that fit two.</p>
     </div>
 
     <div class="page-foot">
