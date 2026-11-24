@@ -2513,7 +2513,7 @@
       "title": "LOOP.md — one AI workflow across every repo",
       "summary": "The system around the sessions - how every repo is worked the same way, the heartbeat that makes skipped chores visible, and the contract that keeps an unattended run honest.",
       "when": "Read this at session start before touching anything, and again BEFORE calling work done, committing, opening a PR, writing a handoff, or ending a session. Covers verify-by-second-pass, the run evidence a session owes, and uncommitted or unpushed work piling up across sessions. Don't skip because you wrote it and checked it yourself - that is one pass, not two - and don't rerun a failing gate hoping it is flaky.",
-      "lines": 692,
+      "lines": 698,
       "lead": {
         "lines": [
           14,
@@ -2587,7 +2587,7 @@
           "anchor": "3-the-thin-claudemd-kit-shape",
           "lines": [
             226,
-            253
+            259
           ],
           "summary": "Every repo carries the same shape, and the shape is deliberately thin.",
           "refs": [
@@ -2601,8 +2601,8 @@
           "heading": "4. The accountability contract (keep an unattended run honest)",
           "anchor": "4-the-accountability-contract-keep-an-unattended-run-honest",
           "lines": [
-            257,
-            475
+            263,
+            481
           ],
           "summary": "An AI run that touches code without a human watching each step needs a contract, or \"trust me\" is doing all the load-bearing work.",
           "refs": [],
@@ -2612,8 +2612,8 @@
               "heading": "(a) The run ledger — evidence or it didn't happen",
               "anchor": "a-the-run-ledger-evidence-or-it-didnt-happen",
               "lines": [
-                263,
-                305
+                269,
+                311
               ],
               "summary": "Claim before you touch. Claim a plan item before editing code, so two sessions don't collide on the same work and so the trail starts before the diff does.",
               "refs": [
@@ -2627,8 +2627,8 @@
               "heading": "(b) The rails — a declared envelope per run",
               "anchor": "b-the-rails-a-declared-envelope-per-run",
               "lines": [
-                307,
-                475
+                313,
+                481
               ],
               "summary": "Before an autonomous run starts, it declares its envelope, and the envelope is enforced (mechanically where the tooling allows — Claude Code hooks blocking the forbidden commands; P3): Scope cap —...",
               "refs": [
@@ -2644,8 +2644,8 @@
           "heading": "5. Why a loop at all (the precedent, and the receipt)",
           "anchor": "5-why-a-loop-at-all-the-precedent-and-the-receipt",
           "lines": [
-            479,
-            583
+            485,
+            589
           ],
           "summary": "This is not a new instinct, and it is not only mine.",
           "refs": [
@@ -2665,8 +2665,8 @@
           "heading": "6. Adoption checklist",
           "anchor": "6-adoption-checklist",
           "lines": [
-            587,
-            616
+            593,
+            622
           ],
           "summary": "Mirrors AI-REPO-STANDARD.md §12 — one floor up, for the loop rather than the repo.",
           "refs": [
@@ -2683,8 +2683,8 @@
           "heading": "7. Rationalizations (what talks a run out of the contract)",
           "anchor": "7-rationalizations-what-talks-a-run-out-of-the-contract",
           "lines": [
-            620,
-            638
+            626,
+            644
           ],
           "summary": "The contract in §4 is rarely rejected.",
           "refs": []
@@ -2694,8 +2694,8 @@
           "heading": "8. Red flags",
           "anchor": "8-red-flags",
           "lines": [
-            642,
-            659
+            648,
+            665
           ],
           "summary": "Uncommitted work spanning more than one session, in any repo.",
           "refs": []
@@ -2705,8 +2705,8 @@
           "heading": "9. Verification (before a session is called done)",
           "anchor": "9-verification-before-a-session-is-called-done",
           "lines": [
-            663,
-            692
+            669,
+            698
           ],
           "summary": "Short, mechanical, evidence-shaped, and meant to be machine-checkable: this list is the schema the run ledger is checked against, not a vibe pass.",
           "refs": []
@@ -3740,7 +3740,7 @@
       "title": "SESSION-LOOP.md — the working loop, memory, and handoff",
       "summary": "How a session with an AI runs start to finish - the loop it repeats, what it writes down, and how it hands off.",
       "when": "Read this BEFORE orienting in a repo you have not worked today, and again BEFORE writing an agent-memory entry, a handoff prompt, or a plan file. It owns the inside of one session: how to orient cold, the loop to repeat, the recurring chores, what belongs in memory versus a committed doc, and how to end so the next session starts oriented. LOOP.md is the sibling that owns the gates across sessions and repos. Don't skip because you already have the context - context is the exact thing the next session will not have.",
-      "lines": 417,
+      "lines": 426,
       "lead": {
         "lines": [
           14,
@@ -3755,7 +3755,7 @@
           "anchor": "1-session-start-orient-before-you-touch-anything",
           "lines": [
             32,
-            63
+            72
           ],
           "summary": "Read the room. Load this repo's CLAUDE.md/AGENTS.md, then only the standards the task actually needs (the standards/README.md index exists so you fetch the one doc, not all of them).",
           "refs": [
@@ -3775,8 +3775,8 @@
           "heading": "2. The loop (repeat until done)",
           "anchor": "2-the-loop-repeat-until-done",
           "lines": [
-            67,
-            93
+            76,
+            102
           ],
           "summary": "The problem→solution loop lives in AI-DEVELOPMENT §6; the standing gate is §3/§8.",
           "refs": []
@@ -3786,8 +3786,8 @@
           "heading": "3. Recurring chores (the things done every time)",
           "anchor": "3-recurring-chores-the-things-done-every-time",
           "lines": [
-            97,
-            111
+            106,
+            120
           ],
           "summary": "These fire on a trigger, not on being asked.",
           "refs": []
@@ -3797,8 +3797,8 @@
           "heading": "4. Self-learning: memory (so the next session doesn't relitigate)",
           "anchor": "4-self-learning-memory-so-the-next-session-doesnt-relitigate",
           "lines": [
-            115,
-            161
+            124,
+            170
           ],
           "summary": "The point of memory is that a lesson is learned once.",
           "refs": []
@@ -3808,8 +3808,8 @@
           "heading": "5. Handoff (end a session so the next one starts cold-but-oriented)",
           "anchor": "5-handoff-end-a-session-so-the-next-one-starts-cold-but-oriented",
           "lines": [
-            165,
-            314
+            174,
+            323
           ],
           "summary": "When a bounded task finishes — a feature landed, the gate green, the commit made — don't just stop.",
           "refs": []
@@ -3819,8 +3819,8 @@
           "heading": "6. Model economy (be smart about which brain runs)",
           "anchor": "6-model-economy-be-smart-about-which-brain-runs",
           "lines": [
-            318,
-            366
+            327,
+            375
           ],
           "summary": "Choose the cheapest capable configuration for the work, counting the whole collaboration rather than the price of one call.",
           "refs": [
@@ -3837,8 +3837,8 @@
           "heading": "7. Delegation (fan out, don't grind)",
           "anchor": "7-delegation-fan-out-dont-grind",
           "lines": [
-            370,
-            417
+            379,
+            426
           ],
           "summary": "§6 asks which brain runs. This asks how many.",
           "refs": [

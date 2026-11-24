@@ -32,6 +32,10 @@ export interface Skill {
 const oneLine = (s: string) => s.replace(/\s+/g, " ").trim();
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+/** PANTRY's rule: lowercase, and every run of non-alphanumerics becomes one dash. */
+const normalizeSlug = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+
 /** Every standard carrying a `when:` key, which is exactly what PANTRY mounts as a skill. */
 export function readSkills(): Skill[] {
   const out: Skill[] = [];
@@ -42,7 +46,7 @@ export function readSkills(): Skill[] {
     const when = typeof data.when === "string" ? oneLine(data.when) : "";
     if (!when) continue;                       // an index, not a skill
     const route = file.replace(/\.md$/, "").toLowerCase();
-    const slug = typeof data.skill === "string" ? data.skill : route;
+    const slug = normalizeSlug(typeof data.skill === "string" ? data.skill : route);
     out.push({
       slug,
       route,
@@ -152,6 +156,25 @@ const GROUPS: Group[] = [
 
 const chip = (s: Skill) => `<a class="skills-chip" data-skill="${esc(s.slug)}" href="/standards/${esc(s.route)}">${esc(s.slug)}</a>`;
 
+/** Skills installed from someone else's repo. They run beside the library and are credited upstream. */
+export interface ExternalSkill { source: string; names: string[] }
+
+export function readExternalSkills(): ExternalSkill[] {
+  try {
+    const lock = JSON.parse(readFileSync(join(ROOT, "skills-lock.json"), "utf8")) as {
+      skills?: Record<string, { source?: string }>;
+    };
+    const bySource = new Map<string, string[]>();
+    for (const [name, meta] of Object.entries(lock.skills ?? {})) {
+      const source = typeof meta.source === "string" && meta.source ? meta.source : "an unknown source";
+      bySource.set(source, [...(bySource.get(source) ?? []), name]);
+    }
+    return [...bySource].map(([source, names]) => ({ source, names: names.toSorted() }));
+  } catch {
+    return [];                                  // no lock file: the section simply does not render
+  }
+}
+
 const groupCard = (g: Group, bySlug: Map<string, Skill>, n: number): string => {
   const members = g.skills.map((slug) => bySlug.get(slug)).filter((s): s is Skill => !!s);
   return `<article class="skills-card">
@@ -202,8 +225,14 @@ body[data-screen="skills"] .skills-chip { font-family: ui-monospace, SFMono-Regu
 body[data-screen="skills"] .skills-chip:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 body[data-screen="skills"] .skills-pill { margin: auto 0 0; border: 1px solid var(--ink); border-radius: 999px; padding: 9px 12px; text-align: center; font-size: 13px; color: var(--ink); }
 
-body[data-screen="skills"] .skills-banner { margin: 26px 0 10px; border-radius: 10px; padding: 22px 26px; background: var(--ink); color: var(--paper); }
-body[data-screen="skills"] .skills-banner p { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(18px, 2.1vw, 24px); line-height: 1.25; }
+body[data-screen="skills"] .skills-also { border-top: 1px solid var(--ink); padding-top: 14px; margin-top: 6px; }
+body[data-screen="skills"] .skills-also > p { margin: 0 0 10px; font-size: 14px; line-height: 1.5; color: var(--ink-muted); max-width: 72ch; }
+body[data-screen="skills"] .skills-also__row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+body[data-screen="skills"] .skills-also__row a { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: var(--ink); }
+body[data-screen="skills"] .skills-also__row code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; border: 1px solid var(--color-line); border-radius: 4px; padding: 3px 7px; color: var(--ink); }
+body[data-screen="skills"] .skills-also__note { margin-top: 10px; font-style: italic; }
+
+body[data-screen="skills"] .skills-banner { margin: 26px 0 10px; border-radius: 10px; padding: 22px 26px; background: var(--ink); color: var(--paper); }body[data-screen="skills"] .skills-banner p { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(18px, 2.1vw, 24px); line-height: 1.25; }
 body[data-screen="skills"] .skills-banner p + p { margin-top: 8px; font-family: inherit; font-size: 14px; font-style: italic; opacity: .8; }
 
 @media (max-width: 1000px) {
@@ -225,6 +254,16 @@ export function renderPage(skills = readSkills()): string {
   if (extra.length) {
     cards.push(groupCard({ name: "New and ungrouped", caption: "A standard that has not been placed in a family yet. It is mounted like the rest.", best: "the newest rule", skills: extra.map((s) => s.slug), figure: figWayIn }, bySlug, cards.length + 1));
   }
+
+  const external = readExternalSkills();
+  const externalSection = external.length ? `
+    <h2 class="skills-h2">Installed from elsewhere</h2>
+    <div class="skills-also">
+      <p>These run beside the library and are not mine to publish. Each is installed from its own
+        source and credited there, so the page never presents someone else's work as this canon.</p>
+      ${external.map((e) => `<p class="skills-also__row"><a href="https://github.com/${esc(e.source)}" rel="noopener noreferrer">${esc(e.source)}</a><span>${e.names.map((n) => `<code>${esc(n)}</code>`).join(" ")}</span></p>`).join("")}
+      <p class="skills-also__note">A small set of personal skills for work repositories stays private by design: it is neither published in the library nor listed here.</p>
+    </div>` : "";
 
   return `<!DOCTYPE html>
 <!-- GENERATED by tools/skills-library.ts from standards/ — edit the standard, not this file. -->
@@ -283,6 +322,7 @@ export function renderPage(skills = readSkills()): string {
     <div class="skills-grid">
       ${cards.join("\n      ")}
     </div>
+${externalSection}
 
     <div class="skills-banner">
       <p>The line under the name decides whether the file is opened.</p>

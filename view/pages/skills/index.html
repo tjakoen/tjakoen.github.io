@@ -45,8 +45,14 @@ body[data-screen="skills"] .skills-chip { font-family: ui-monospace, SFMono-Regu
 body[data-screen="skills"] .skills-chip:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 body[data-screen="skills"] .skills-pill { margin: auto 0 0; border: 1px solid var(--ink); border-radius: 999px; padding: 9px 12px; text-align: center; font-size: 13px; color: var(--ink); }
 
-body[data-screen="skills"] .skills-banner { margin: 26px 0 10px; border-radius: 10px; padding: 22px 26px; background: var(--ink); color: var(--paper); }
-body[data-screen="skills"] .skills-banner p { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(18px, 2.1vw, 24px); line-height: 1.25; }
+body[data-screen="skills"] .skills-also { border-top: 1px solid var(--ink); padding-top: 14px; margin-top: 6px; }
+body[data-screen="skills"] .skills-also > p { margin: 0 0 10px; font-size: 14px; line-height: 1.5; color: var(--ink-muted); max-width: 72ch; }
+body[data-screen="skills"] .skills-also__row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+body[data-screen="skills"] .skills-also__row a { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: var(--ink); }
+body[data-screen="skills"] .skills-also__row code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; border: 1px solid var(--color-line); border-radius: 4px; padding: 3px 7px; color: var(--ink); }
+body[data-screen="skills"] .skills-also__note { margin-top: 10px; font-style: italic; }
+
+body[data-screen="skills"] .skills-banner { margin: 26px 0 10px; border-radius: 10px; padding: 22px 26px; background: var(--ink); color: var(--paper); }body[data-screen="skills"] .skills-banner p { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(18px, 2.1vw, 24px); line-height: 1.25; }
 body[data-screen="skills"] .skills-banner p + p { margin-top: 8px; font-family: inherit; font-size: 14px; font-style: italic; opacity: .8; }
 
 @media (max-width: 1000px) {
@@ -176,20 +182,17 @@ body[data-screen="skills"] .skills-banner p + p { margin-top: 8px; font-family: 
   <rect x="106" y="41" width="2" height="15" fill="var(--paper)"/>
 </svg></div>
         <p class="skills-caption">The first hour of a repo, and the prompt that starts it.</p>
-        <p class="skills-chips"><a class="skills-chip" data-skill="kickstart" href="/standards/kickstart">kickstart</a><a class="skills-chip" data-skill="prompt" href="/standards/prompt">prompt</a></p>
+        <p class="skills-chips"><a class="skills-chip" data-skill="kickstart" href="/standards/kickstart">kickstart</a><a class="skills-chip" data-skill="claude-starter" href="/standards/claude.starter">claude-starter</a><a class="skills-chip" data-skill="prompt" href="/standards/prompt">prompt</a></p>
         <p class="skills-pill">Best for: a fresh repo</p>
       </article>
-      <article class="skills-card">
-        <div class="skills-card__head"><span class="skills-num">7</span><h3 class="skills-card__title">New and ungrouped</h3></div>
-        <div class="skills-figure"><svg viewBox="0 0 220 96" width="220" height="96" aria-hidden="true">
-  <rect x="18" y="14" width="150" height="16" rx="5" fill="var(--ink)"/>
-  <rect x="18" y="40" width="118" height="16" rx="5" fill="var(--ink-faint)"/>
-  <rect x="18" y="66" width="86" height="16" rx="5" fill="var(--ink-faint)" opacity=".65"/>
-</svg></div>
-        <p class="skills-caption">A standard that has not been placed in a family yet. It is mounted like the rest.</p>
-        <p class="skills-chips"><a class="skills-chip" data-skill="claude.starter" href="/standards/claude.starter">claude.starter</a></p>
-        <p class="skills-pill">Best for: the newest rule</p>
-      </article>
+    </div>
+
+    <h2 class="skills-h2">Installed from elsewhere</h2>
+    <div class="skills-also">
+      <p>These run beside the library and are not mine to publish. Each is installed from its own
+        source and credited there, so the page never presents someone else's work as this canon.</p>
+      <p class="skills-also__row"><a href="https://github.com/addyosmani/agent-skills" rel="noopener noreferrer">addyosmani/agent-skills</a><span><code>doubt-driven-development</code> <code>incremental-implementation</code></span></p>
+      <p class="skills-also__note">A small set of personal skills for work repositories stays private by design: it is neither published in the library nor listed here.</p>
     </div>
 
     <div class="skills-banner">

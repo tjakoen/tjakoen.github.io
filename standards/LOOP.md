@@ -246,6 +246,12 @@ content that belongs in a mounted dir leaked into the front door.
 <https://portfolio.tjakoen.com/standards>; none carries its own copy. Two copies drift, and then both are
 suspect. (This is the reference-don't-fork rule from the standards index, made a kit requirement.)
 
+**The one sanctioned second copy is the mounted skill.** `.claude/skills` is generated from the
+same canon by `pantry skills sync`, never hand-edited, and the session checklist reports whether each
+mount still matches its standard. Use it as the first hop: open the mounted skill for the decision,
+and cite the standard for the record. When the two disagree the standard wins, and the fix is a
+sync, not an edit. A repo with no mount, or a cloud session, uses the URL.
+
 **Memory discipline** (the SESSION-LOOP §4 split, with one public-repo teeth): a durable, repo-worthy fact
 gets *promoted to a committed doc*. Scratch and private working context stays in the agent's own memory
 store. In a **public** repo this is not a preference — an in-repo memory file would publish your working
