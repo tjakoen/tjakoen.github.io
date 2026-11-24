@@ -548,7 +548,7 @@
       "title": "BRIEF.md — a run talks to the person, not about the work",
       "summary": "The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, and the words he already uses. One shape on every harness and every surface.",
       "when": "Read this BEFORE writing anything addressed to Tjakoen rather than to the code: a chat reply, a run report, an audit, a PANTRY plan or task note, a handoff prompt, a decision request, a review or ticket reply. It owns the shape of the message; DECISIONS owns which surface it goes on, SESSION-LOOP owns what a handoff carries, VOICE owns anything published in his name. Don't skip because the model is a light one or the reply feels short - the shape is what carries the clarity a small model cannot, and a brief he has to ask about has already cost more than it saved.",
-      "lines": 260,
+      "lines": 311,
       "lead": {
         "lines": [
           14,
@@ -660,7 +660,7 @@
           "anchor": "8-one-shape-in-the-container-each-surface-gives-it",
           "lines": [
             165,
-            176
+            223
           ],
           "summary": "The container changes where the reader meets the brief.",
           "refs": [
@@ -668,10 +668,35 @@
               "to": "session-loop"
             },
             {
-              "to": "decisions"
+              "to": "voice"
+            }
+          ],
+          "children": [
+            {
+              "level": 3,
+              "heading": "When a decision interrupts the run",
+              "anchor": "when-a-decision-interrupts-the-run",
+              "lines": [
+                178,
+                196
+              ],
+              "summary": "The chat's decision surface is the in-thread card, not a paragraph inside a status update.",
+              "refs": [
+                {
+                  "to": "decisions"
+                }
+              ]
             },
             {
-              "to": "voice"
+              "level": 3,
+              "heading": "When the decision is between visual implementations",
+              "anchor": "when-the-decision-is-between-visual-implementations",
+              "lines": [
+                198,
+                223
+              ],
+              "summary": "A visual choice is not one the reader can make from a description.",
+              "refs": []
             }
           ]
         },
@@ -680,8 +705,8 @@
           "heading": "9. A light model needs the shape more, not a shorter answer",
           "anchor": "9-a-light-model-needs-the-shape-more-not-a-shorter-answer",
           "lines": [
-            178,
-            190
+            225,
+            237
           ],
           "summary": "The run that prompted this file was on DeepSeek V4.1 Flash, a light model by the registry's own label, because the Codex plan was out and the free model had already been rate-limited.",
           "refs": []
@@ -691,8 +716,8 @@
           "heading": "10. Say where the work stands",
           "anchor": "10-say-where-the-work-stands",
           "lines": [
-            192,
-            220
+            239,
+            267
           ],
           "summary": "A run that takes more than one step owes a state table every time it reports, on every surface.",
           "refs": []
@@ -702,8 +727,8 @@
           "heading": "The checklist",
           "anchor": "the-checklist",
           "lines": [
-            222,
-            236
+            269,
+            286
           ],
           "summary": "Before anything reaches the reader: The first line says what he has to do, or that nothing is needed.",
           "refs": []
@@ -713,8 +738,8 @@
           "heading": "Rationalizations",
           "anchor": "rationalizations",
           "lines": [
-            238,
-            249
+            288,
+            300
           ],
           "summary": "A table: The excuse, The answer.",
           "refs": []
@@ -724,8 +749,8 @@
           "heading": "Verification",
           "anchor": "verification",
           "lines": [
-            251,
-            260
+            302,
+            311
           ],
           "summary": "Every item under the ask can be done without a follow-up question.",
           "refs": []
