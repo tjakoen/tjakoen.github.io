@@ -333,6 +333,8 @@ So add the shape to the same file, or a short one beside it. Mine, in order:
 - A table once there are three things to compare.
 - Plain words, acronyms expanded, every number with what it means.
 
+That list is written up as [BRIEF.md](/standards/brief), with the reasons and the before and after. Save your own version beside your VOICE.md, whatever your list is.
+
 The difference is easiest to see side by side.
 
 | What usually comes back | What I ask for instead |
