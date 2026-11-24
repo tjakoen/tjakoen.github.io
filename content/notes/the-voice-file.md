@@ -7,10 +7,11 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-11
-updated: 2026-11-21
+updated: 2026-11-24
 changelog:
+  - "2026-11-24 | Added the other half of a voice file: the shape you want the AI's answer to come back in, with the ask first, numbered steps, a linked running page, and a table once three things are compared."
   - "2026-11-21 | Added a worked wording example and expanded the VOICE.md template to cover words you would use and claims you can explain."
-readingTime: "~9 min"
+readingTime: "~10 min"
 tags: [standards, leadership, workflow, teaching]
 people: [kercwin, ege-vusal-chelebi]
 sources: [book-cure-for-ai-slop]
@@ -18,7 +19,8 @@ summary: >
   An AI draft goes out under your name. Use words you would say and claims you can explain,
   so your reader can understand what you mean without asking you to translate it. Save
   examples of those rewrites in a short VOICE.md, then teach the agent where the question
-  and the untested parts belong.
+  and the untested parts belong. The same file can point the other way: write down the shape
+  you want the answer to come back in.
 social: |
   AI says a lot. Your reader still has to find the point.
 
@@ -312,6 +314,38 @@ The examples are the part to replace first. Save the paragraph that did not soun
 Everything above is about how the AI should sound when it writes as you. [Kercwin](/people#kercwin), the tech lead on my team, went the other direction. Before he [built his epic checker](move-bugs-left.md), he showed the team how he makes Claude talk to him: tables, diagrams, specific wording, a format his brain reads fast. His file is about the reader at his own desk.
 
 Both files rest on the same idea. Someone has to read what the model writes, and the file tells the model who that is. If you lose the point of a long AI answer halfway down, write down the shape you read fastest and put it beside your VOICE.md. One file shapes what you send your team, and the other shapes what comes back to you.
+
+## Write down the shape you want back
+
+**The other half of a voice file is how the answer comes back.**
+
+Everything so far is about what you send. The answer that lands in your chat has a shape too, and most people never say what they want from it. The model picks: paragraphs, the point somewhere in the middle, a closing offer to help further. On a strong model that is a small annoyance. On a lighter one it is the whole experience, because a model with less room to think spends that room on length instead of structure.
+
+Kercwin's version of the idea is the one I keep coming back to: the format is part of the instruction. He wrote down how he wants Claude to talk to him, tables and diagrams and a fixed order, and the improvement came from the file rather than from a bigger model.
+
+So add the shape to the same file, or a short one beside it. Mine, in order:
+
+- The ask on the first line, before any account of what happened.
+- Every step I have to run, numbered and complete enough to paste.
+- The prompt itself. If it is long, a file I can open, linked, and checked once before it is sent.
+- A link to anything that renders, still running, so I look at the page instead of reading about it.
+- Bullets for the detail, one point each.
+- A table once there are three things to compare.
+- Plain words, acronyms expanded, every number with what it means.
+
+The difference is easiest to see side by side.
+
+| What usually comes back | What I ask for instead |
+|---|---|
+| Four paragraphs, the question in the last one | The ask on the first line, then the detail |
+| You can run the test suite | The command, numbered, ready to paste |
+| Ask the agent to check the index | The prompt itself, or a link to the file holding it |
+| The page renders correctly | The URL, while the page is still running |
+| A paragraph comparing three options | A table with one fact per column |
+
+I noticed the gap on a fallback model, not the main one. OpenCode had dropped to a lighter model than the plan intends, and the reports came back in walls of text with the question buried. The shape held when I asked for it, which is the point: the file carried what the model could not. The evidence is a handful of sessions, so call it a working shape rather than a proven one.
+
+A format the model ignores is worth nothing, and a model that ignores a file will ignore one paragraph of it. The reason to write the shape down is the same reason to write your voice down: the next session reads the file, and the file does not forget.
 
 ## A file nobody points at is a file nobody reads
 

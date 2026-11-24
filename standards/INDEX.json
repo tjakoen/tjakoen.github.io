@@ -535,6 +535,199 @@
       ]
     },
     {
+      "slug": "brief",
+      "file": "standards/BRIEF.md",
+      "url": "https://portfolio.tjakoen.com/standards/brief",
+      "skill": "brief",
+      "title": "BRIEF.md — a run talks to the person, not about the work",
+      "summary": "The shape of anything a run says to Tjakoen instead of to the code - the ask first, every step a runnable one carrying its prompt, a link to whatever is running, bullets for detail, a table or a figure when the data has a shape, and the words he already uses. One shape on every harness and every surface.",
+      "when": "Read this BEFORE writing anything addressed to Tjakoen rather than to the code: a chat reply, a run report, an audit, a PANTRY plan or task note, a handoff prompt, a decision request, a review or ticket reply. It owns the shape of the message; DECISIONS owns which surface it goes on, SESSION-LOOP owns what a handoff carries, VOICE owns anything published in his name. Don't skip because the model is a light one or the reply feels short - the shape is what carries the clarity a small model cannot, and a brief he has to ask about has already cost more than it saved.",
+      "lines": 209,
+      "lead": {
+        "lines": [
+          14,
+          27
+        ],
+        "summary": "Every message a run writes is read by one person: the owner, usually between two other things, with the tab open and the cursor waiting."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "1. The ask comes first",
+          "anchor": "1-the-ask-comes-first",
+          "lines": [
+            31,
+            55
+          ],
+          "summary": "Open with what the reader has to do, before any account of what the run did.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "2. A step he runs arrives numbered and complete",
+          "anchor": "2-a-step-he-runs-arrives-numbered-and-complete",
+          "lines": [
+            57,
+            82
+          ],
+          "summary": "Anything with an order is numbered, one action per number, and each number can be pasted or typed as written.",
+          "refs": [
+            {
+              "to": "prompt"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "3. If it renders, it is running and it is linked",
+          "anchor": "3-if-it-renders-it-is-running-and-it-is-linked",
+          "lines": [
+            84,
+            101
+          ],
+          "summary": "A sentence about a page is not a page.",
+          "refs": [
+            {
+              "to": "tour-standard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "4. Bullets carry the detail, one point each",
+          "anchor": "4-bullets-carry-the-detail-one-point-each",
+          "lines": [
+            103,
+            112
+          ],
+          "summary": "Prose is for the argument. Anything listable is a bullet: what changed, what was read, what remains, what it costs.",
+          "refs": [
+            {
+              "to": "loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "5. A table when there is state, a figure when there is shape",
+          "anchor": "5-a-table-when-there-is-state-a-figure-when-there-is-shape",
+          "lines": [
+            114,
+            122
+          ],
+          "summary": "Three or more things compared on the same two or three facts is a table.",
+          "refs": [
+            {
+              "to": "figures"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "6. Write in the words he already uses",
+          "anchor": "6-write-in-the-words-he-already-uses",
+          "lines": [
+            124,
+            134
+          ],
+          "summary": "Plain words, short sentences, the term he uses rather than the one the framework invented.",
+          "refs": [
+            {
+              "to": "voice"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "7. Cut what he cannot act on",
+          "anchor": "7-cut-what-he-cannot-act-on",
+          "lines": [
+            136,
+            148
+          ],
+          "summary": "Not in a brief: a restatement of the question",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "8. One shape, in the container each surface gives it",
+          "anchor": "8-one-shape-in-the-container-each-surface-gives-it",
+          "lines": [
+            150,
+            161
+          ],
+          "summary": "The container changes where the reader meets the brief.",
+          "refs": [
+            {
+              "to": "session-loop"
+            },
+            {
+              "to": "decisions"
+            },
+            {
+              "to": "voice"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "9. A light model needs the shape more, not a shorter answer",
+          "anchor": "9-a-light-model-needs-the-shape-more-not-a-shorter-answer",
+          "lines": [
+            163,
+            174
+          ],
+          "summary": "The run that prompted this file was on DeepSeek V4.1 Flash, the third link in the OpenCode main chain and a light model by the registry's own label.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The checklist",
+          "anchor": "the-checklist",
+          "lines": [
+            176,
+            187
+          ],
+          "summary": "Before anything reaches the reader: The first line says what he has to do, or that nothing is needed.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Rationalizations",
+          "anchor": "rationalizations",
+          "lines": [
+            189,
+            199
+          ],
+          "summary": "A table: The excuse, The answer.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Verification",
+          "anchor": "verification",
+          "lines": [
+            201,
+            209
+          ],
+          "summary": "Every item under the ask can be done without a follow-up question.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "decisions",
+        "figures",
+        "loop",
+        "prompt",
+        "session-loop",
+        "tour-standard",
+        "voice"
+      ],
+      "refsIn": [
+        "readme"
+      ]
+    },
+    {
       "slug": "claude",
       "file": "standards/CLAUDE.md",
       "url": "https://portfolio.tjakoen.com/standards/claude",
@@ -833,7 +1026,7 @@
       "title": "CONFORMANCE — the prompt that checks a repo is wired, not just willing",
       "summary": "A paste-in prompt that runs in any existing repo and reports whether the standards are wired, the links resolve, the audit runbook is real, and the loop is automated rather than remembered.",
       "when": "Read this BEFORE assuming an existing repo is wired into the standards, and before rolling a standard, a hook, a skill or the loop out across more than one repo. It owns the conformance pass: what the mechanical doctor already covers, the eight things only a model can judge, and the report the pass owes. KICKSTART is the sibling that runs before the repo exists. Don't skip because the repo has a CLAUDE.md and the links look fine - a file that exists and a loop that runs are different claims, and the second one is the one that decays.",
-      "lines": 195,
+      "lines": 197,
       "lead": {
         "lines": [
           14,
@@ -850,7 +1043,7 @@
             32,
             47
           ],
-          "summary": "It never re-implements the doctor. bunx pantry doctor is the mechanical tier of the loop (LOOP §2) and it already owns the mechanical checks: CLAUDE.md present, the AGENTS.md symlink, forked...",
+          "summary": "It never re-implements the doctor.",
           "refs": [
             {
               "to": "audit-standard"
@@ -863,7 +1056,7 @@
           "anchor": "the-prompt",
           "lines": [
             49,
-            146
+            148
           ],
           "summary": "Paste everything between the lines, in the repo you want checked.",
           "refs": []
@@ -873,8 +1066,8 @@
           "heading": "After it reports",
           "anchor": "after-it-reports",
           "lines": [
-            148,
-            162
+            150,
+            164
           ],
           "summary": "The report is the input to a normal session, not a to-do list to grind.",
           "refs": [
@@ -888,8 +1081,8 @@
           "heading": "Rationalizations",
           "anchor": "rationalizations",
           "lines": [
-            164,
-            173
+            166,
+            175
           ],
           "summary": "A table: Rationalization, Reality.",
           "refs": []
@@ -899,8 +1092,8 @@
           "heading": "Red flags",
           "anchor": "red-flags",
           "lines": [
-            175,
-            182
+            177,
+            184
           ],
           "summary": "A conformance report with no \"what was not covered\" section.",
           "refs": []
@@ -910,8 +1103,8 @@
           "heading": "Verification (before the pass is called done)",
           "anchor": "verification-before-the-pass-is-called-done",
           "lines": [
-            184,
-            195
+            186,
+            197
           ],
           "summary": "Doctor output pasted verbatim, or one line saying why it could not run.",
           "refs": []
@@ -1196,6 +1389,7 @@
       ],
       "refsIn": [
         "ai-development",
+        "brief",
         "intake",
         "loop",
         "models",
@@ -1551,6 +1745,7 @@
         "voice"
       ],
       "refsIn": [
+        "brief",
         "dashboard",
         "readme",
         "voice"
@@ -2392,6 +2587,7 @@
       "refsIn": [
         "ai-repo-standard",
         "audit-standard",
+        "brief",
         "claude",
         "conformance",
         "decisions",
@@ -3073,6 +3269,7 @@
         "session-loop"
       ],
       "refsIn": [
+        "brief",
         "intake",
         "readme"
       ]
@@ -3162,7 +3359,7 @@
       "title": "standards/ — how I build, write, and work with AI",
       "summary": "The index - one line per standard, so a reader loads one file, not nineteen.",
       "when": null,
-      "lines": 108,
+      "lines": 114,
       "lead": null,
       "sections": [
         {
@@ -3171,7 +3368,7 @@
           "anchor": "the-standards",
           "lines": [
             23,
-            50
+            51
           ],
           "summary": "A table: Read this when you're…, Standard, In one line.",
           "refs": [
@@ -3224,6 +3421,9 @@
               "to": "decisions"
             },
             {
+              "to": "brief"
+            },
+            {
               "to": "intake"
             },
             {
@@ -3254,8 +3454,8 @@
           "heading": "How they fit together",
           "anchor": "how-they-fit-together",
           "lines": [
-            52,
-            99
+            53,
+            105
           ],
           "summary": "AI-DEVELOPMENT + SESSION-LOOP are the engineering pair: the first is the standards, the second is the session mechanics that run against them.",
           "refs": []
@@ -3265,8 +3465,8 @@
           "heading": "The one rule this folder lives by",
           "anchor": "the-one-rule-this-folder-lives-by",
           "lines": [
-            101,
-            108
+            107,
+            114
           ],
           "summary": "Single source of truth, everywhere.",
           "refs": []
@@ -3276,6 +3476,7 @@
         "ai-development",
         "ai-repo-standard",
         "audit-standard",
+        "brief",
         "claude.starter",
         "commit-standard",
         "conformance",
@@ -3432,6 +3633,7 @@
       "refsIn": [
         "ai-development",
         "audit-standard",
+        "brief",
         "claude.starter",
         "graph",
         "hooks",
@@ -3542,6 +3744,7 @@
       ],
       "refsIn": [
         "audit-standard",
+        "brief",
         "dashboard",
         "readme"
       ]
@@ -3980,6 +4183,7 @@
         "readme-standard"
       ],
       "refsIn": [
+        "brief",
         "claude",
         "claude.starter",
         "dashboard",

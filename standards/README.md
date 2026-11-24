@@ -40,6 +40,7 @@ six.
 | **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built (frontmatter, structure, footer), plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
 | **Handing over a change someone has to look at** | [TOUR-STANDARD.md](TOUR-STANDARD.md) | How a CRUMB review tour is built: one step per changed surface, a verify line the reviewer can actually run, an honest status. Owns the *artifact*; LOOP owns the rule that a rendered change owes one. |
 | **Asking the human something a run can't decide** | [DECISIONS.md](DECISIONS.md) | The four surfaces a question can land on (chat, the inbox, a tour's decision card, the handoff), what picks between them, what a request has to carry, and the one channel an answer comes back on. LOOP owns how much scrutiny a change earns; this owns where the question goes. |
+| **Reading what a run says to me** | [BRIEF.md](BRIEF.md) | Where the ask goes, why a step is numbered and carries its prompt, why anything that renders arrives running and linked, and why a table beats a paragraph once there are three things to compare. DECISIONS owns which surface a message lands on; this owns the shape inside it. |
 | **Turning a pasted ask into scoped work** | [INTAKE.md](INTAKE.md) | The arrival half of the envelope: four questions a person answers before a session starts spending, the test for when no brief is needed at all, and where the brief lands. LOOP section 4b owns what an envelope is; this owns getting one written before the work rather than after. |
 | **Opening a session, or editing a prompt that lives in a file** | [PROMPT.md](PROMPT.md) | The five checks an opening prompt is held to and the polish pass that asks at most three questions before work starts, plus the debt rules for instruction files and skills. INTAKE owns the long paste; this owns everything shorter. |
 | **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard: two tokenized inline-SVG scaffolds (data-viz + flow), one palette each; mermaid publishes only as a generated, labelled fence. |
@@ -92,6 +93,11 @@ six.
   INTAKE is that step, and it is measured rather than assumed: of 54 work blobs that opened a
   session in the portfolio, 7 carried a named envelope. Read it when a paste runs longer than a
   screen and wants something changed.
+- **BRIEF** is the shape side of DECISIONS. DECISIONS picks the surface a message lands on; BRIEF
+  says what the message says once it is there: the ask on the first line, every step he runs numbered
+  and carrying its prompt, a link to anything that renders, bullets for detail, a table once there are
+  three things to compare. Read it before writing anything addressed to me rather than to the code,
+  on any harness, in chat or in a report.
 - **KICKSTART + CLAUDE.starter + CONFORMANCE** are the on-ramps and the upkeep, in order: KICKSTART
   runs *before the repo exists*, deciding which layers the project needs; CLAUDE.starter is how the
   repo you then create inherits the whole set from day one; CONFORMANCE is what you run months later
