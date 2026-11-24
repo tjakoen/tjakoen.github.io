@@ -23,6 +23,18 @@ summary: >
   writing the rails and the AI writing much of the code inside them. Includes the playbook, the
   context and loop engineering underneath it, what to check before anything counts as done, and
   where to start if you are early.
+social: |
+  "Vibe coder" gets used as an insult. Prompt and pray, ship a house of cards.
+
+  I call myself one anyway, with one word in front: professional.
+
+  AI is a multiplier, not an addend. Ten times zero is still zero, so I made sure I wasn't
+  zero first. Then I counted: 1,147 commits on this portfolio, every one written with an AI.
+  The rails are mine. The typing inside them mostly isn't.
+
+  How it actually works, receipts and all:
+socialImage: "/media/notes/ten-times-zero-social.png"
+socialImageAlt: "Ten rows of ten dark dots and a last row of ten hollow ones, under the words: AI multiplies what you already are. Ten times zero is still zero."
 ---
 
 > **One of my students?** If what you actually want to know is how I feel about *you* using AI, I

@@ -38,6 +38,7 @@
     "social:card:vectorless": "bun tools/social-card-vectorless.ts",
     "social:card:same-reviewer": "bun tools/social-card-same-reviewer.ts",
     "social:card:model-layer": "bun tools/social-card-model-layer.ts",
+    "social:card:ten-times-zero": "bun tools/social-card-ten-times-zero.ts",
     "social:gif:model-layer": "bun tools/social-gif-model-layer.ts",
     "social:gif:model-layer-architecture": "bun tools/social-gif-model-layer-architecture.ts",
     "social:card:voice": "bun tools/social-card-voice.ts",

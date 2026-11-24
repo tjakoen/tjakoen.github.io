@@ -168,9 +168,11 @@
         "audit-standard",
         "claude.starter",
         "loop",
+        "main-flow",
         "models",
         "readme",
-        "session-loop"
+        "session-loop",
+        "which-skill"
       ]
     },
     {
@@ -359,8 +361,10 @@
         "audit-standard",
         "graph",
         "loop",
+        "main-flow",
         "readme",
-        "tree"
+        "tree",
+        "which-skill"
       ]
     },
     {
@@ -529,9 +533,11 @@
         "ai-repo-standard",
         "conformance",
         "hooks",
+        "main-flow",
         "models",
         "readme",
-        "session-loop"
+        "session-loop",
+        "which-skill"
       ]
     },
     {
@@ -735,7 +741,10 @@
         "voice"
       ],
       "refsIn": [
-        "readme"
+        "glossary",
+        "main-flow",
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -948,7 +957,8 @@
         "conformance",
         "kickstart",
         "loop",
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -1026,7 +1036,9 @@
       ],
       "refsOut": [],
       "refsIn": [
-        "readme"
+        "main-flow",
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -1130,7 +1142,8 @@
       "refsIn": [
         "kickstart",
         "loop",
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -1293,7 +1306,8 @@
         "voice"
       ],
       "refsIn": [
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -1401,11 +1415,14 @@
       "refsIn": [
         "ai-development",
         "brief",
+        "glossary",
         "intake",
         "loop",
+        "main-flow",
         "models",
         "readme",
-        "session-loop"
+        "session-loop",
+        "which-skill"
       ]
     },
     {
@@ -1617,7 +1634,8 @@
       ],
       "refsOut": [],
       "refsIn": [
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -1759,7 +1777,110 @@
         "brief",
         "dashboard",
         "readme",
-        "voice"
+        "voice",
+        "which-skill"
+      ]
+    },
+    {
+      "slug": "glossary",
+      "file": "standards/GLOSSARY.md",
+      "url": "https://portfolio.tjakoen.com/standards/glossary",
+      "skill": "glossary",
+      "title": "GLOSSARY — the words this estate uses, so a session spends fewer tokens decoding them",
+      "summary": "The working vocabulary of the portfolio and the loop around it: desk, door, surface, intent, grade, grain, lane, envelope, brief, run report, handoff, claim. One line each, the word as it is used here rather than as the framework invented it, so a cold session can read a plan or a note without inferring the meaning from context.",
+      "when": "Read this BEFORE writing a plan, a note, a review or a handoff in this estate, and the moment a term in a ticket or a standard does not resolve in one read. It owns the shared vocabulary, not the process: LOOP, SESSION-LOOP and the standards they point at own what to do, and this file only says what the words mean. Don't skip because the term looks obvious - half of the estate's confusion is two people using one word for two things.",
+      "lines": 78,
+      "lead": {
+        "lines": [
+          17,
+          20
+        ],
+        "summary": "The words below are the estate's, not a framework's."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "The loop",
+          "anchor": "the-loop",
+          "lines": [
+            22,
+            34
+          ],
+          "summary": "A table: Word, What it means here.",
+          "refs": [
+            {
+              "to": "loop"
+            },
+            {
+              "to": "session-loop"
+            },
+            {
+              "to": "intake"
+            },
+            {
+              "to": "brief"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The portfolio's own vocabulary",
+          "anchor": "the-portfolios-own-vocabulary",
+          "lines": [
+            36,
+            48
+          ],
+          "summary": "A table: Word, What it means here.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Work and ownership",
+          "anchor": "work-and-ownership",
+          "lines": [
+            50,
+            59
+          ],
+          "summary": "A table: Word, What it means here.",
+          "refs": [
+            {
+              "to": "decisions"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "Models and routing",
+          "anchor": "models-and-routing",
+          "lines": [
+            61,
+            70
+          ],
+          "summary": "A table: Word, What it means here.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "Rules about words",
+          "anchor": "rules-about-words",
+          "lines": [
+            72,
+            78
+          ],
+          "summary": "A term with a row above is written in lower case in prose unless it is a product name (GRAIN, PANTRY, MILL, BATCH, PROOF, CRUMB).",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "brief",
+        "decisions",
+        "intake",
+        "loop",
+        "session-loop"
+      ],
+      "refsIn": [
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -1878,7 +1999,8 @@
         "session-loop"
       ],
       "refsIn": [
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -2067,7 +2189,8 @@
         "models",
         "models-verify",
         "readme",
-        "session-loop"
+        "session-loop",
+        "which-skill"
       ]
     },
     {
@@ -2214,9 +2337,12 @@
         "session-loop"
       ],
       "refsIn": [
+        "glossary",
         "loop",
+        "main-flow",
         "prompt",
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -2272,7 +2398,8 @@
       ],
       "refsIn": [
         "conformance",
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -2374,7 +2501,8 @@
       ],
       "refsOut": [],
       "refsIn": [
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -2602,15 +2730,86 @@
         "claude",
         "conformance",
         "decisions",
+        "glossary",
         "graph",
         "hooks",
         "intake",
+        "main-flow",
         "models",
         "models-verify",
         "prompt",
         "readme",
         "session-loop",
+        "tour-standard",
+        "which-skill"
+      ]
+    },
+    {
+      "slug": "main-flow",
+      "file": "standards/MAIN-FLOW.md",
+      "url": "https://portfolio.tjakoen.com/standards/main-flow",
+      "skill": "main-flow",
+      "title": "MAIN-FLOW — the spine of one piece of work, from an idea to a closed session",
+      "summary": "The seven stages every substantial piece of work moves through in this estate, the standard that owns each one, the artifact it leaves behind, and the gate that proves the stage is done. It is the ordered view of the library: the other standards say how a stage is done, and this one says which stage you are in and what it owes before the next one starts.",
+      "when": "Read this BEFORE starting a piece of work that will outlive one exchange (a feature, a note, a migration, a refactor), when a task feels stuck because two stages are being run at once, or when you are new and the library looks like a pile of rules. It orders the standards, it does not replace them: the stage's own standard owns the rule. Don't skip because the work looks small - small work skips stages silently, and that is how a one-line fix arrives with no test and no report.",
+      "lines": 65,
+      "lead": {
+        "lines": [
+          18,
+          31
+        ],
+        "summary": "One piece of work, seven stages."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "How the stages actually nest",
+          "anchor": "how-the-stages-actually-nest",
+          "lines": [
+            33,
+            43
+          ],
+          "summary": "The stages are not a waterfall.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "The three cheap stages that get skipped",
+          "anchor": "the-three-cheap-stages-that-get-skipped",
+          "lines": [
+            45,
+            53
+          ],
+          "summary": "Decide is skipped because the ask looked clear.",
+          "refs": []
+        },
+        {
+          "level": 2,
+          "heading": "What each stage owes the next",
+          "anchor": "what-each-stage-owes-the-next",
+          "lines": [
+            55,
+            65
+          ],
+          "summary": "A table: Stage leaves, The next stage needs.",
+          "refs": []
+        }
+      ],
+      "refsOut": [
+        "ai-development",
+        "ai-repo-standard",
+        "audit-standard",
+        "brief",
+        "commit-standard",
+        "decisions",
+        "intake",
+        "loop",
+        "session-loop",
         "tour-standard"
+      ],
+      "refsIn": [
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -2681,7 +2880,8 @@
       ],
       "refsIn": [
         "hooks",
-        "models"
+        "models",
+        "which-skill"
       ]
     },
     {
@@ -2990,7 +3190,8 @@
         "hooks",
         "models-verify",
         "readme",
-        "session-loop"
+        "session-loop",
+        "which-skill"
       ]
     },
     {
@@ -3001,7 +3202,7 @@
       "title": "NOTE-STANDARD.md — the note / blog-post standard",
       "summary": "How a note is put together - frontmatter, structure, the sign-off footer, plus a reusable drafting prompt.",
       "when": "Read this BEFORE creating or finishing any file under content/notes: a blog post, a note, the whitepaper. It owns the artifact (the frontmatter block, the stakes-first opener, the figure requirement, the exact sign-off footer, where the file lives); VOICE owns how the words read, so the two are read together, not instead of each other. Don't skip because the note is only a draft or because you already know the voice - a note missing its frontmatter, its figure, or its footer is unfinished no matter how well it reads.",
-      "lines": 278,
+      "lines": 284,
       "lead": {
         "lines": [
           14,
@@ -3055,7 +3256,7 @@
           "anchor": "structure",
           "lines": [
             99,
-            117
+            123
           ],
           "summary": "Every note ships with social post copy, a 1200×1200 image (or an animated GIF) and the image's alt text, made in the same pass as the note.",
           "refs": [],
@@ -3066,7 +3267,7 @@
               "anchor": "the-share-block",
               "lines": [
                 101,
-                117
+                123
               ],
               "summary": "Every note ships with social post copy, a 1200×1200 image (or an animated GIF) and the image's alt text, made in the same pass as the note.",
               "refs": [
@@ -3082,8 +3283,8 @@
           "heading": "Two kinds of note, and picking the wrong one is expensive",
           "anchor": "two-kinds-of-note-and-picking-the-wrong-one-is-expensive",
           "lines": [
-            119,
-            150
+            125,
+            156
           ],
           "summary": "Everything above this section describes the personal note, and for years that was the only kind this standard had.",
           "refs": []
@@ -3093,8 +3294,8 @@
           "heading": "What a guide owes on top of everything above",
           "anchor": "what-a-guide-owes-on-top-of-everything-above",
           "lines": [
-            152,
-            193
+            158,
+            199
           ],
           "summary": "Derived from a comparison pass against Addy Osmani's blog run on 2026-08-18, which is the closest public writing to what these guides are trying to be.",
           "refs": [
@@ -3108,8 +3309,8 @@
               "heading": "The pair pattern, when a guide runs long",
               "anchor": "the-pair-pattern-when-a-guide-runs-long",
               "lines": [
-                182,
-                193
+                188,
+                199
               ],
               "summary": "Practitioner blogs in this genre run 1,500 to 3,000 words, and a guide with a real plan in it will not.",
               "refs": []
@@ -3121,8 +3322,8 @@
           "heading": "The footer (bottom of every note)",
           "anchor": "the-footer-bottom-of-every-note",
           "lines": [
-            195,
-            215
+            201,
+            221
           ],
           "summary": "The sign-off speaks only to the content's authorship, the same way a repo footer speaks to the code's.",
           "refs": [
@@ -3136,8 +3337,8 @@
           "heading": "Guardrails (this repo is public)",
           "anchor": "guardrails-this-repo-is-public",
           "lines": [
-            217,
-            229
+            223,
+            235
           ],
           "summary": "Non-negotiable, and they precede voice, a specific being real doesn't make it publishable: No em-dashes, no backticks in prose.",
           "refs": [
@@ -3151,8 +3352,8 @@
           "heading": "The prompt (paste into Claude Code to draft or finish a note)",
           "anchor": "the-prompt-paste-into-claude-code-to-draft-or-finish-a-note",
           "lines": [
-            231,
-            278
+            237,
+            284
           ],
           "summary": "A projection of how these notes already get made.",
           "refs": []
@@ -3165,7 +3366,8 @@
       "refsIn": [
         "readme",
         "readme-standard",
-        "voice"
+        "voice",
+        "which-skill"
       ]
     },
     {
@@ -3282,7 +3484,8 @@
       "refsIn": [
         "brief",
         "intake",
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -3359,7 +3562,8 @@
         "claude.starter",
         "note-standard",
         "readme",
-        "voice"
+        "voice",
+        "which-skill"
       ]
     },
     {
@@ -3370,7 +3574,7 @@
       "title": "standards/ — how I build, write, and work with AI",
       "summary": "The index - one line per standard, so a reader loads one file, not nineteen.",
       "when": null,
-      "lines": 114,
+      "lines": 117,
       "lead": null,
       "sections": [
         {
@@ -3379,12 +3583,21 @@
           "anchor": "the-standards",
           "lines": [
             23,
-            51
+            54
           ],
           "summary": "A table: Read this when you're…, Standard, In one line.",
           "refs": [
             {
               "to": "ai-development"
+            },
+            {
+              "to": "main-flow"
+            },
+            {
+              "to": "which-skill"
+            },
+            {
+              "to": "glossary"
             },
             {
               "to": "local-ai-standard"
@@ -3465,8 +3678,8 @@
           "heading": "How they fit together",
           "anchor": "how-they-fit-together",
           "lines": [
-            53,
-            105
+            56,
+            108
           ],
           "summary": "AI-DEVELOPMENT + SESSION-LOOP are the engineering pair: the first is the standards, the second is the session mechanics that run against them.",
           "refs": []
@@ -3476,8 +3689,8 @@
           "heading": "The one rule this folder lives by",
           "anchor": "the-one-rule-this-folder-lives-by",
           "lines": [
-            107,
-            114
+            110,
+            117
           ],
           "summary": "Single source of truth, everywhere.",
           "refs": []
@@ -3495,12 +3708,14 @@
         "decisions",
         "design-standard",
         "figures",
+        "glossary",
         "graph",
         "hooks",
         "intake",
         "kickstart",
         "local-ai-standard",
         "loop",
+        "main-flow",
         "models",
         "note-standard",
         "prompt",
@@ -3508,7 +3723,8 @@
         "session-loop",
         "tour-standard",
         "tree",
-        "voice"
+        "voice",
+        "which-skill"
       ],
       "refsIn": [
         "ai-development",
@@ -3646,13 +3862,16 @@
         "audit-standard",
         "brief",
         "claude.starter",
+        "glossary",
         "graph",
         "hooks",
         "intake",
         "loop",
+        "main-flow",
         "models",
         "prompt",
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -3757,7 +3976,9 @@
         "audit-standard",
         "brief",
         "dashboard",
-        "readme"
+        "main-flow",
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -3867,7 +4088,8 @@
         "ai-repo-standard"
       ],
       "refsIn": [
-        "readme"
+        "readme",
+        "which-skill"
       ]
     },
     {
@@ -4202,7 +4424,219 @@
         "loop",
         "note-standard",
         "readme",
-        "readme-standard"
+        "readme-standard",
+        "which-skill"
+      ]
+    },
+    {
+      "slug": "which-skill",
+      "file": "standards/WHICH-SKILL.md",
+      "url": "https://portfolio.tjakoen.com/standards/which-skill",
+      "skill": "which-skill",
+      "title": "WHICH-SKILL — the router, so a cold session finds the one standard that governs the task",
+      "summary": "One table from \"what am I about to do\" to \"which standard to load first\", covering every skill the estate mounts. It exists so a session does not read four standards looking for the one that fires, and so a standard nobody remembers is still reachable by the situation that needs it.",
+      "when": "Read this BEFORE choosing which standard or skill to load, when a task seems to fit more than one, when a session is new to this estate, or when you are about to answer from memory instead of opening the standard that owns the rule. It routes only: the standard it names owns the rule, and the two together are the point. Don't skip because you already know the obvious one - the failure this file prevents is the standard nobody thought to open.",
+      "lines": 81,
+      "lead": {
+        "lines": [
+          16,
+          19
+        ],
+        "summary": "The standards are mounted as skills, so each one fires on its own description."
+      },
+      "sections": [
+        {
+          "level": 2,
+          "heading": "Before the work",
+          "anchor": "before-the-work",
+          "lines": [
+            21,
+            30
+          ],
+          "summary": "A table: If you are about to, Load, Because.",
+          "refs": [
+            {
+              "to": "session-loop"
+            },
+            {
+              "to": "loop"
+            },
+            {
+              "to": "intake"
+            },
+            {
+              "to": "decisions"
+            },
+            {
+              "to": "brief"
+            },
+            {
+              "to": "glossary"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "While building",
+          "anchor": "while-building",
+          "lines": [
+            32,
+            47
+          ],
+          "summary": "A table: If you are about to, Load, Because.",
+          "refs": [
+            {
+              "to": "design-standard"
+            },
+            {
+              "to": "kickstart"
+            },
+            {
+              "to": "claude.starter"
+            },
+            {
+              "to": "ai-repo-standard"
+            },
+            {
+              "to": "ai-development"
+            },
+            {
+              "to": "tree"
+            },
+            {
+              "to": "graph"
+            },
+            {
+              "to": "hooks"
+            },
+            {
+              "to": "models"
+            },
+            {
+              "to": "models-verify"
+            },
+            {
+              "to": "local-ai-standard"
+            },
+            {
+              "to": "dashboard"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "While writing",
+          "anchor": "while-writing",
+          "lines": [
+            49,
+            59
+          ],
+          "summary": "A table: If you are about to, Load, Because.",
+          "refs": [
+            {
+              "to": "voice"
+            },
+            {
+              "to": "note-standard"
+            },
+            {
+              "to": "figures"
+            },
+            {
+              "to": "readme-standard"
+            },
+            {
+              "to": "commit-standard"
+            },
+            {
+              "to": "tour-standard"
+            },
+            {
+              "to": "prompt"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "While closing",
+          "anchor": "while-closing",
+          "lines": [
+            61,
+            69
+          ],
+          "summary": "A table: If you are about to, Load, Because.",
+          "refs": [
+            {
+              "to": "audit-standard"
+            },
+            {
+              "to": "conformance"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "The two names that collide",
+          "anchor": "the-two-names-that-collide",
+          "lines": [
+            71,
+            75
+          ],
+          "summary": "loop is a harness built-in, so LOOP.md mounts as loop-standard. brief, models, glossary and which-skill are estate names; if a harness ships one of them later, add a skill: key to the standard rather...",
+          "refs": [
+            {
+              "to": "loop"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "When nothing here fits",
+          "anchor": "when-nothing-here-fits",
+          "lines": [
+            77,
+            81
+          ],
+          "summary": "Load MAIN-FLOW for the spine of a whole piece of work, then come back.",
+          "refs": [
+            {
+              "to": "main-flow"
+            }
+          ]
+        }
+      ],
+      "refsOut": [
+        "ai-development",
+        "ai-repo-standard",
+        "audit-standard",
+        "brief",
+        "claude.starter",
+        "commit-standard",
+        "conformance",
+        "dashboard",
+        "decisions",
+        "design-standard",
+        "figures",
+        "glossary",
+        "graph",
+        "hooks",
+        "intake",
+        "kickstart",
+        "local-ai-standard",
+        "loop",
+        "main-flow",
+        "models",
+        "models-verify",
+        "note-standard",
+        "prompt",
+        "readme-standard",
+        "session-loop",
+        "tour-standard",
+        "tree",
+        "voice"
+      ],
+      "refsIn": [
+        "readme"
       ]
     }
   ]

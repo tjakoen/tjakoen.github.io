@@ -43,6 +43,9 @@ export const portfolioLlmsDoc: LlmsDoc = {
     { heading: "Writing", links: [
       { title: "Notes", url: "/notes", note: "essays on the stack and on building with AI; the flagship is \"ten times zero\"" },
     ]},
+    { heading: "The skill library", links: [
+      { title: "Skills", url: "/skills", note: "every standard here, mounted as a skill an agent loads when the task fits; install the whole set with npx skills@latest add tjakoen/skills" },
+    ]},
     { heading: "Optional", links: [
       { title: "Sitemap", url: "/sitemap.xml", note: "the full list of crawlable routes" },
     ]},

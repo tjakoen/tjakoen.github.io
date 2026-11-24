@@ -104,6 +104,12 @@ Every note ships with social post copy, a 1200×1200 image (or an animated GIF) 
 collapsed block at the bottom of the note gives the reader the copy, the canonical link, and the
 image to download. The subtitle supplies the social preview. Write the post copy for the feed.
 
+**Notes from before 2026-09-01 are snapshots.** The practice did not exist when they were written, so
+they keep the card they shipped with, often none, and a share block is not retrofitted to them; the
+writing does not change to satisfy a template it predates. Every note dated 2026-09-01 or later
+carries a block. `ten-times-zero.md` is the exception on both sides: it is the flagship and it was
+refreshed on 2026-11-12, so it carries one regardless of its date.
+
 Follow VOICE.md's *Structure of a typical piece* and *Signature moves*, as a **repertoire, not a
 template**, hitting every beat every time is itself the machine tell VOICE.md warns about. The hard
 requirements that live here, not there:

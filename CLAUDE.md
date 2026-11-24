@@ -118,12 +118,11 @@ a growing suite. The lint gate compares against its committed baseline and is ad
 image comparisons because the committed visual baselines are macOS-specific; use the unmodified
 visual suite on macOS when changing presentation. See .github/workflows/ci.yml for runner details.
 
-A SessionStart hook should name a mounted skill whose standard changed since the last sync, or a graph
-older than the code it indexes, and stay quiet when nothing is behind. The check for it already exists
-as `bun tools/map-freshness.ts --hook`; it is not wired into session start yet, and the checklist's
-standards row counts mounts rather than comparing them, so run it yourself after a standard or the
-graph changes. [`AUDIT.md`](AUDIT.md) is the mechanical alignment runbook, and every audit report is
-dated and lives in `docs/`.
+A SessionStart hook names a mounted skill whose standard changed since the last sync, and the session
+checklist now asks the repo's own checker for it: `bun tools/map-freshness.ts` runs there and reports
+`Freshness: skills ok` or the drift by name. The same checker covers the code graph, which the graphify
+row reports on its own. [`AUDIT.md`](AUDIT.md) is the mechanical alignment runbook, and every audit
+report is dated and lives in `docs/`.
 
 The earlier container command depended on a sibling compose file absent from this checkout.
 Do not prescribe it unless that setup is restored and verified. Windows runs that exercise symlinks
