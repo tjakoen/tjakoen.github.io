@@ -354,10 +354,10 @@ owner's act.
 
 ---
 
-## 4c. The adapter contract (one set of rules, three harnesses)
+## 4c. The adapter contract (one set of rules, four harnesses)
 
-A harness is the program that runs a session, and three of them run here: Claude Code, Codex and
-DeepSeek Harness. The rules above do not change between them. What changes is the adapter: which
+A harness is the program that runs a session, and four of them run here: Claude Code, Codex,
+DeepSeek Harness and OpenCode. The rules above do not change between them. What changes is the adapter: which
 event a harness can fire, and what it hands over when it does. Every section above is written as
 though there were one harness, which until recently there was.
 
@@ -377,14 +377,14 @@ exists because a rule in LOOP or SESSION-LOOP is only teeth if a machine does it
 | End of turn | runs the typecheck, the lint count and the graph refresh, and asks for the two report lines | LOOP §9 |
 | Session identity | attributes an uncommitted path to the session that wrote it | LOOP §4b |
 
-Three adapters answer it three ways. Claude Code and Codex are shell hooks in a settings file.
+Four adapters answer it four ways. Claude Code and Codex are shell hooks in a settings file.
 DeepSeek Harness has no shell event, so the same rules arrive as a plugin: a tool guard, an injection
 at the first step, a listener after each execution, and session events.
 [The DeepSeek Harness adapter doc](https://github.com/tjakoen/tjakoen.github.io/blob/main/docs/HARNESS-DSH.md)
 owns that in detail; this file owns only the contract it is held to.
 
 OpenCode is the fourth harness and is installed on the MacBook Air, where it runs the checklist,
-route and recovery plugins under `shared/opencode/plugins`. That plugin set is its adapter, not a
+route and recovery plugins under shared/opencode/plugins. That plugin set is its adapter, not a
 settings file; which of the six signals it covers is measured in [MODELS-VERIFY.md](MODELS-VERIFY.md)
 rather than assumed. Its model preferences are kept in the registry that [MODELS.md](MODELS.md)
 points to.

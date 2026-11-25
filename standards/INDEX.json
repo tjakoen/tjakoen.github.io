@@ -2154,13 +2154,13 @@
         },
         {
           "level": 2,
-          "heading": "4c. The adapter contract (one set of rules, three harnesses)",
-          "anchor": "4c-the-adapter-contract-one-set-of-rules-three-harnesses",
+          "heading": "4c. The adapter contract (one set of rules, four harnesses)",
+          "anchor": "4c-the-adapter-contract-one-set-of-rules-four-harnesses",
           "lines": [
             357,
             443
           ],
-          "summary": "A harness is the program that runs a session, and three of them run here: Claude Code, Codex and DeepSeek Harness.",
+          "summary": "A harness is the program that runs a session, and four of them run here: Claude Code, Codex, DeepSeek Harness and OpenCode.",
           "refs": [
             {
               "to": "models-verify"
