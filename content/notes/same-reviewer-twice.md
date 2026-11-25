@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-19
-readingTime: "~10 min"
+readingTime: "~8 min"
 tags: [ai, code-review, workflow, claude]
 summary: >
   I built my own AI pull request reviewer over three months, then watched Anthropic describe theirs

@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-17
-readingTime: "~4 min"
+readingTime: "~3 min"
 tags: [grain, design, accessibility]
 summary: >
   The GRAIN catalog is generated from each component's markdown doc, and it was a good reference and

@@ -8,7 +8,7 @@ status: PUBLISHED
 type: note
 layout: timeline
 date: 2026-11-09
-readingTime: "~12 min"
+readingTime: "~21 min"
 tags: [ai, leadership]
 people: [kaither-holiway, kercwin, addy-osmani]
 sources: [book-loop-engineering]

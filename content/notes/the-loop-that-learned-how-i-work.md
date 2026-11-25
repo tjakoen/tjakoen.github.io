@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-12
-readingTime: "~7 min"
+readingTime: "~5 min"
 tags: [ai, workflow, measurement, standards]
 summary: >
   The loop I work in only got better when I told it to. The one part that improved on its own was my

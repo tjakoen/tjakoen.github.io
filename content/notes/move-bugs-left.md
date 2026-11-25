@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-10
-readingTime: "~5 min"
+readingTime: "~7 min"
 tags: [ai, leadership, tooling]
 people: [matt-monroe, kercwin]
 summary: >

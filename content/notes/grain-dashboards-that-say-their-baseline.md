@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-17
-readingTime: "~5 min"
+readingTime: "~3 min"
 tags: [ai, grain, design, dashboards]
 summary: >
   GRAIN had a stat tile, a trend chart and a data table, and nothing that put them on a page. Ram
