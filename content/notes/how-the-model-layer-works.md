@@ -5,6 +5,7 @@ level: deep
 subtitle: "The registry, the guards, the fallback order and the usage record, one piece at a time, each graded by what it proves."
 author: "Tjakoen Stolk"
 status: PUBLISHED
+companion: true
 type: note
 date: 2026-11-23
 readingTime: "~25 min"

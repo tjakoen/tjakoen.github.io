@@ -74,7 +74,7 @@ changelog:               # optional, newest first, one line per major change
 | `readingTime` | Honest estimate | `"~N min"`, measured at 220 words per minute over the prose only (frontmatter, code, markup and link URLs do not count). `bun tools/reading-time.ts --check` holds every note to it, and the number is not decoration: the feed's "Longest" sort reads it. |
 | `tags` | Topics | Lowercase, real, ~3–6. Reuse existing tags where they fit. |
 | `summary` | Abstract for listings + AI/SEO | A real answer in his voice. This is the AEO payload; treat it as first-class. |
-| `social` | Ready-to-post copy | Required, except on a technical companion whose main note's post already points to it. A short post, not the summary. The page renders it at the bottom with the canonical link. |
+| `social` | Ready-to-post copy | Required, except on a technical companion whose main note's post already points to it; mark that note `companion: true` so the check can tell the exception from an omission. A short post, not the summary. The page renders it at the bottom with the canonical link. |
 | `socialImage` | Social image path | Required wherever `social` is. Supply a 1200×1200 PNG the reader can download and attach to the post, or an animated GIF when the post needs motion. A list posts several; do not list the same picture twice, still and moving. |
 | `socialImageAlt` | Social image alt | Required for every social image. Describe what the card shows. |
 | `updated` | The day of the last major change | Optional. ISO date. Renders as an edited line under the masthead. `date` never moves. |
