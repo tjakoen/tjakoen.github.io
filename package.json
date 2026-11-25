@@ -59,7 +59,9 @@
     "verify:export": "bun tools/verify-export.ts",
     "check": "tsc --noEmit",
     "lint": "oxlint",
-    "standards:index": "bun tools/standards-index.ts"
+    "standards:index": "bun tools/standards-index.ts",
+    "social:card:loop-setup": "bun tools/social-card-loop-setup.ts",
+    "social:card:students-2026-s1": "bun tools/social-card-students-2026-s1.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
