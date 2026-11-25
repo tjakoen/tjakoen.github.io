@@ -363,7 +363,7 @@
    stylesheet reads, and there is no class shadowing it that could disagree. */
 [data-screen="builder-preview"] .preview-switch { display: inline-flex; gap: var(--space-3); }
 [data-screen="builder-preview"] .preview-switch .wb-chip[aria-pressed="true"] {
-  opacity: 1; color: var(--ink); font-weight: var(--weight-medium);
+  opacity: 1; color: var(--ink); font-weight: var(--font-weight-medium);
 }
 [data-screen="builder-preview"] .preview-empty[hidden],
 [data-screen="builder-preview"] .preview-empty[data-empty="false"] { display: none; }

@@ -50,7 +50,7 @@
   font-weight: var(--font-weight-regular); color: var(--ink-muted); }
 [data-screen="about"] .quotes-hero__list { list-style: none; margin: 0; padding: 0;
   display: flex; flex-direction: column; gap: var(--space-3); }
-[data-screen="about"] .quote { font-size: var(--text-lg); line-height: var(--leading-snug); color: var(--ink);
+[data-screen="about"] .quote { font-size: var(--text-lg); line-height: var(--leading-normal); color: var(--ink);
   max-width: 44rem; }
 [data-screen="about"] .quote a { color: inherit; text-decoration: none; }
 [data-screen="about"] .quote a:hover { text-decoration: underline; text-decoration-color: var(--color-accent); }
