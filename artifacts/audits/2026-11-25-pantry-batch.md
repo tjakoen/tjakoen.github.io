@@ -70,3 +70,33 @@ readability clean.
   files, and the Tauri app.
 - BATCH: `audit/audit.ts` and the test files themselves.
 - Nothing was booted, so no claim here rests on runtime behaviour.
+
+## A second reader's additions
+
+A second independent child read the same two repos and found a browser-origin hole the first did not,
+plus several error paths worth recording.
+
+| file:line | severity | dimension | problem | fix |
+|---|---|---|---|---|
+| `pantry/decisions-page.ts:227` (+ `app.ts:545`) | blocker | validation | The answers write path trusts the loopback socket and checks neither `Origin` nor `Content-Type`. Any page the owner visits can POST a forged answer to `http://127.0.0.1:4400/answers`, which a session then acts on. The comment at `answers.ts:194-199` argues the socket check replaces header trust, which is the wrong guard for a browser-origin attack; `hub.ts:278-282` already does it right for `/theme.json`. | Require JSON content type and a same-origin Origin, or a custom header that forces a preflight; test a cross-origin POST as 403. |
+| `pantry/decisions.ts:177` | blocker | error handling | A decision file whose frontmatter throws is dropped with no count, so `buildDecisionsPayload` returns fewer decisions and the plan that file blocks becomes claimable. A human gate disappears silently, where `answers.ts:95` counts `malformed` for exactly this reason. | Collect `unparsed` into the payload, render it, and treat it as blocking. |
+| `pantry/mcp.ts:288` | major | error handling | `id === null` treats JSON-RPC id `0` as a notification, so a valid request is answered 202 with no body and the client waits forever. | Test for the key's absence. |
+| `pantry/app.ts:1027` | major | validation | The project server also binds every interface, so `/plans`, `/decisions`, `/answers.json` and `/runs` are readable from the LAN, not just the hub. | `hostname: "127.0.0.1"` by default, with an explicit LAN flag. |
+| `pantry/config.ts:216-227` | major | validation | The host config is a cast, not a validation: an unguarded `JSON.parse` and no key checked, so `"plansDir": 5` kills boot with a raw error. | Validate each key and name `file:key` on rejection. |
+| `pantry/hub.ts:33` | major | validation | `readRegistry` parses unchecked and trusts the shape; a half-written `projects.json` breaks the hub and an entry without a port becomes `:undefined`. | Catch, and reject entries missing name, path or port. |
+| `pantry/orchestrator.ts:324` | major | error handling | The plan path is rebuilt from a lowercased id, so `001-Timeline.md` becomes `001-timeline.md` and a card written on a case-sensitive filesystem lands in a second file nobody reads. | Carry the real filename. |
+| `pantry/resume.ts:30` + `learn.ts:27` | major | DRY | The render/parse/replace/write quartet exists twice and has already drifted on the truncation cap (400 vs 500). | One parameterised module. |
+| `pantry/app.ts:540` | major | clean code | `pantryRoutes` is a 350-line function inside a 1046-line file. | Split per surface family. |
+| `pantry/app.ts:815` | major | error handling | `/timeline` globs the plans directory before checking it exists, so a host without `plans/` gets ENOENT and a 500, contradicting the comment above it. | Guard with `existsSync`. |
+| `pantry/mcp.ts:304` | major | error handling | `tools/call` has no try/catch, so a throw becomes an HTTP 500 instead of a JSON-RPC error object. The other reader found the same. | Wrap and return `-32603`. |
+| `pantry/mcp.ts:146` + `:168` | major | error handling | Both unread-answer lookups catch everything and return empty, so a heartbeat says "no answers" when the log is unreadable. | Return the read error. |
+| `pantry/app.ts:466-471` | major | error handling | `annotate` swallows failures, so a claims read that throws renders a board with no claim badges, identical to "nobody holds anything". | Warn and stamp a visible notice. |
+| `batch/package.json:29` + `audit/audit.ts:13` | major | error handling | `./audit/*` is a published export that imports `@playwright/test`, a devDependency, so a consumer gets MODULE_NOT_FOUND while the docs say Playwright never ships. | Optional peer, or drop the export. |
+| `batch/export/export.ts:62` | major | error handling | `fetch` has no timeout, so one hanging route stalls the export with no output. | `AbortSignal.timeout(30_000)`. |
+| `batch/export/export.ts:188-201` | major | error handling | The dead-link check never consults `modules`, so every site using `moduleEntries` is warned about its own frozen scripts. | Add the module routes to `resolves()`. |
+| `batch/audit/audit.ts:57` | major | tests | `waitForTimeout(200)` before sampling timings, and the audit's product is the number. | Wait on load, or drop the sleep. |
+| `batch/http/stream.ts`, `sitemap.ts`, `style-bundle.ts`, `audit.ts`, `platform/watch.ts` | major | tests | Five exported modules with no test, and PANTRY serves three of them in another repo. | Colocated tests. |
+| minors | minor | mixed | Unlocked read-modify-write on open counts; a leaked `waiters` closure; `/timeline` per-request scan; `Bun.Glob` ENOENT; `srcset`; `--port=abc`; `data: any`; a hand-rolled preview error page. | Each is a small fix. |
+
+The two readers agreed on the hub's interface binding, the registry parse, `tools/call` and the
+`srcset` rewrite. Neither ran a gate.
