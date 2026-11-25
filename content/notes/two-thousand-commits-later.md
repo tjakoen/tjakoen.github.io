@@ -8,7 +8,7 @@ status: DRAFT
 type: note
 layout: timeline
 date: 2026-11-13
-readingTime: "~8 min"
+readingTime: "~6 min"
 tags: [stack, ai, web-platform]
 summary: >
   The follow-up to my origin story, told from the git history of six repositories. In July I promised

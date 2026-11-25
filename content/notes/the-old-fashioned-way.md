@@ -8,7 +8,7 @@ status: DRAFT
 type: note
 layout: timeline
 date: 2026-11-20
-readingTime: "~8 min"
+readingTime: "~5 min"
 tags: [ai, teaching, tooling]
 summary: >
   I teach university software-engineering sections on a course platform built out of GitHub itself:

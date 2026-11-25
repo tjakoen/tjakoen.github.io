@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-17
-readingTime: "~6 min"
+readingTime: "~3 min"
 tags: [ai, grain, builder]
 summary: >
   The GRAIN builder works, and I find it weak. Asked for three stat cards, it draws three identical

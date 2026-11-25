@@ -10,7 +10,7 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-08-07
-readingTime: "~18 min"
+readingTime: "~25 min"
 deck: "Ten times zero | Talk | /talks/ten-times-zero | 35 slides · runs in the browser, no download"
 tags: [ai, workflow, web-platform, stack]
 people: [alfonso-graziano, addy-osmani]

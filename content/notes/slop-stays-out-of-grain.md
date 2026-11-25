@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-17
-readingTime: "~6 min"
+readingTime: "~4 min"
 tags: [ai, grain, design]
 summary: >
   GRAIN holds its tokens with tests, and the site runs an accessibility scan, but nothing looked at a

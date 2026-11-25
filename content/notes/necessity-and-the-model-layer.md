@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-23
-readingTime: "~7 min"
+readingTime: "~10 min"
 tags: [ai, workflow, tokenomics]
 summary: >
   I ran out of Claude and Codex usage in the middle of a task and would not pay for the next tier up. So

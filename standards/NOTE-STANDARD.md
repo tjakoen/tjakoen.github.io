@@ -71,7 +71,7 @@ changelog:               # optional, newest first, one line per major change
 | `status` | Publish state | `DRAFT` by default. Only he flips it to `PUBLISHED`. A draft is not secret: it is exported to `/drafts/<slug>` and its raw Markdown is served, unlinked and `noindex`, so DRAFT means not announced rather than unreachable. |
 | `type` | Kind | `note` for a blog post; `whitepaper` for the long-form formal piece. |
 | `date` | ISO date | The write/update day. |
-| `readingTime` | Honest estimate | `"~N min"`. Don't inflate it. |
+| `readingTime` | Honest estimate | `"~N min"`, measured at 220 words per minute over the prose only (frontmatter, code, markup and link URLs do not count). `bun tools/reading-time.ts --check` holds every note to it, and the number is not decoration: the feed's "Longest" sort reads it. |
 | `tags` | Topics | Lowercase, real, ~3–6. Reuse existing tags where they fit. |
 | `summary` | Abstract for listings + AI/SEO | A real answer in his voice. This is the AEO payload; treat it as first-class. |
 | `social` | Ready-to-post copy | Required, except on a technical companion whose main note's post already points to it. A short post, not the summary. The page renders it at the bottom with the canonical link. |
