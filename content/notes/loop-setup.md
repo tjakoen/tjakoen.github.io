@@ -21,6 +21,8 @@ social: |
 
   Start thin. Add the guards when they earn it. This is my setup, not a rule: Gemini or a local
   model fits the same loop.
+socialImage: "/media/notes/loop-setup-social.png"
+socialImageAlt: "A paper-coloured card reading Set up the loop with one prompt, above a numbered list of the five pieces: front door, plan, checklist, report and human gate, then the line Start thin. Add the guards when they earn it."
 ---
 
 > This is the setup companion to [The Loop Outlives the Model](one-loop-three-harnesses.md). That

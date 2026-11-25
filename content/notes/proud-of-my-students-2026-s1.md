@@ -44,6 +44,8 @@ social: |
 
   The whole semester, with every project and badge linked:
   https://portfolio.tjakoen.com/notes/proud-of-my-students-2026-s1
+socialImage: "/media/notes/proud-of-my-students-2026-s1-social.png"
+socialImageAlt: "A paper-coloured card reading Two hundred final projects, all of them public, above four boxes: 7 sections, 3 subjects, 594 badges and 200+ projects, then the line Build for yourself, not a made-up client."
 ---
 
 Seven sections. Three subjects. More than 200 final projects. 73 Flutter apps, around 127

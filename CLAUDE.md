@@ -7,8 +7,8 @@ Read this first: most content work happens here, so before writing anything in T
 the standards below.
 
 > Follows the `CLAUDE.starter.md` template from the published standards index
-> <https://portfolio.tjakoen.com/standards>. The voice and badge standards it points to are the source
-> of truth for how anything published should read and look.
+> <https://portfolio.tjakoen.com/standards>; VOICE and README-STANDARD are the source of truth for
+> how anything published should read and look.
 
 ## What this is
 
@@ -20,49 +20,35 @@ uses the stack; it does not build it. Pages are trailheads to the canonical docs
 
 ## What this is worked in
 
-The harness is whichever program runs the session: Claude Code, Codex or DeepSeek Harness. The loop is
-the same in all three; the adapter is what changes. The desk is **Nimbalyst**, and three of its
-properties matter here: uncommitted work is attributed **per session**, so a dirty tree is not
-automatically yours (LOOP §4b); a rendered change can be screenshotted and shown inline rather than
-described; and `.nimbalyst/` plus `nimbalyst-local/` are gitignored private working material, never
-site content. The standards state the capability and name the tool only as the example. See
-[`plans/done/nimbalyst-in-the-loop.md`](plans/done/nimbalyst-in-the-loop.md).
-
+The harness is whichever program runs the session, and the loop is the same in each; the adapter is
+what changes. The desk is **Nimbalyst**: uncommitted work is attributed **per session**, so a dirty
+tree is not automatically yours (LOOP §4b); a rendered change can be screenshotted and shown inline;
+and `.nimbalyst/` plus `nimbalyst-local/` are gitignored private working material, never site content.
 DSH work is on hold; [docs/HARNESS-DSH.md](docs/HARNESS-DSH.md) keeps how it was wired.
 
 ## Start here (reading order)
 
 The standards are installed here as **skills**. Invoke them, do not fetch them: `Skill(voice)`,
-`Skill(figures)`, `Skill(note-standard)`, and the rest of the twenty-one under `.claude/skills/`. A
-published URL is the human-readable copy of the same file, so fetching a standard this repo already
-ships is a wasted round trip. The source of every one lives in `standards/`; edit there and regenerate
-the gitignored skills with `bun cli.ts skills sync ../tjakoen.github.io` from the pantry repo (reach for
-it through bun, since no pantry binary is on PATH here).
+`Skill(figures)`, `Skill(note-standard)`, and the rest under `.claude/skills/`. Their source lives in
+`standards/`; edit there and regenerate the gitignored skills with `bun cli.ts skills sync
+../tjakoen.github.io` from the pantry repo.
 
 **Read the tree before the file.** Most questions live under one heading of one standard, so drill
-down instead of loading: bun tools/standards-index.ts toc, then toc voice, then read voice#anchor.
-Load a whole standard or its skill only when the task is governed by all of it, such as drafting a
-note. Editing a standard means running the standards:index script in the same commit; the tests fail
-on a stale index. The why is in [the plan](plans/standards-section-index.md).
+down: `bun tools/standards-index.ts toc`, then `toc voice`, then read `voice#anchor`. Editing a
+standard means regenerating the index in the same commit; the tests fail on a stale index.
 
 1. [`PHILOSOPHY.md`](docs/PHILOSOPHY.md): the *why*. Read first.
-2. *Skill(intake)*: read BEFORE work on a pasted document, forwarded brief or long handoff that wants
-   something changed. It turns the blob into lane, scope cap, hard stops, ask-triggers and a finish
-   line, and says plainly when no brief is needed.
+2. *Skill(intake)*: read before work on a pasted document, forwarded brief or long handoff.
 3. `Skill(voice)`: the writing standard. Match it for any prose in his name.
-4. `Skill(figures)`: the figure standard, the two tokenized SVG scaffolds, and the mermaid rule (a
-   generated diagram only, with a label).
+4. `Skill(figures)`: the figure standard and the mermaid rule (a generated diagram only, with a label).
 5. `Skill(note-standard)`: how a note is built, plus a prompt to draft one.
 6. `Skill(readme-standard)`: badges and README presentation.
-7. `Skill(graph)`: read before any "where is X" or "what calls Y" question. This repo carries a live
-   code graph, so `graphify query <symbol>` answers in one call where a grep sweep costs many. Seed the
-   query with a symbol the code contains; a partial name returns "No matching nodes found." and reads
-   like a broken tool.
+7. `Skill(graph)`: read before any "where is X" question. `graphify query <symbol>` answers in one
+   call; seed it with a symbol the code contains.
 8. [`CONTENT-BACKLOG.md`](docs/CONTENT-BACKLOG.md): written, in flight, left.
 9. [`PLAN.md`](docs/architecture/PLAN.md) + [`FEATURES.md`](docs/architecture/FEATURES.md): the site's
    *how* and *what*.
-10. [`HACKING.md`](docs/HACKING.md): the route to source map for a small edit, without cold-reading
-    `server.ts`.
+10. [`HACKING.md`](docs/HACKING.md): the route to source map for a small edit.
 
 Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
 
@@ -113,17 +99,15 @@ bunx playwright install chromium
 bunx playwright test --ignore-snapshots
 ```
 
-Record the actual test totals and failures. Historical fixed counts are not an acceptance bar for
-a growing suite. The lint gate compares against its committed baseline and is advisory. CI skips
-image comparisons because the committed visual baselines are macOS-specific; use the unmodified
-visual suite on macOS when changing presentation. See .github/workflows/ci.yml for runner details.
+Record the actual test totals and failures; historical counts are not an acceptance bar for a growing
+suite. The lint gate compares against its baseline and is advisory. CI skips image comparisons
+because the visual baselines are macOS-specific; use the unmodified visual suite on macOS when
+changing presentation.
 
-A SessionStart hook names a mounted skill whose standard changed since the last sync, and the session
-checklist now asks the repo's own checker for it: `bun tools/map-freshness.ts` runs there and reports
-`Freshness: skills ok` or the drift by name. The same checker covers the code graph, which the graphify
-row reports on its own. [`AUDIT.md`](AUDIT.md) is the mechanical alignment runbook, and every audit
-report is dated and lives in `docs/`.
+`bun tools/map-freshness.ts` reports stale mounted skills and a stale code graph, and the session
+checklist runs it. [`AUDIT.md`](AUDIT.md) is the mechanical alignment runbook; every audit report is
+dated and lives in `docs/`.
 
-The earlier container command depended on a sibling compose file absent from this checkout.
-Do not prescribe it unless that setup is restored and verified. Windows runs that exercise symlinks
-need Developer Mode or a verified environment that supports them; report that prerequisite explicitly.
+Do not prescribe the earlier container command unless its sibling compose file is restored and
+verified. Windows runs that exercise symlinks need Developer Mode or a verified environment; report
+that prerequisite explicitly.
