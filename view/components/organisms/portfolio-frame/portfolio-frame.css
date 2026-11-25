@@ -269,7 +269,7 @@ body.app-window-backdrop[data-viewport="mobile"] { padding-block: 0; }
 /* the desk's model-load progress bar (rendered into the chat bubble while the local model downloads).
    A real track + accent fill, honest about the one-time ~350MB cost. */
 .desk-load { display: inline-flex; flex-direction: column; gap: var(--space-1); width: 100%; }
-.desk-load__title { color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-snug); }
+.desk-load__title { color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-normal); }
 .desk-load__bar { display: block; height: 6px; width: 100%; max-width: 16rem; overflow: hidden;
   background: var(--color-line); border-radius: 999px; }
 .desk-load__fill { display: block; height: 100%; background: var(--color-accent);
@@ -752,7 +752,7 @@ body:not([data-crumb-frame]):has(> dialog.crumb-pop[open]:not(.clear-dialog)):no
   .app-shell.app-window .window-bar { gap: var(--space-2); padding-inline: var(--space-3); }
   .app-shell.app-window .window-bar__brand {
     display: block; min-block-size: 1.5rem; margin-inline-end: auto; color: var(--color-fg); text-decoration: none;
-    font-family: var(--font-display, inherit); font-size: var(--text-base); white-space: nowrap; }
+    font-family: var(--type-font); font-size: var(--text-base); white-space: nowrap; }
   .app-shell.app-window .window-bar__search { order: 2; margin-inline: 0; }
   .app-shell.app-window .window-bar__ctl { order: 3; gap: var(--space-2); }
   /* the flavor switch keeps its diamond but drops the flavor's name, so it fits the row as a square */

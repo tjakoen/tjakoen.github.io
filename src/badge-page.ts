@@ -296,31 +296,31 @@ const BADGE_STYLE = `<style>
 /* Per-course hue. Scoped to the medallion so it cannot leak into the rest of the page. */
 .badge-art { --badge-hue: var(--color-accent); }
 ${COURSE_HUE_RULES}
-.badge-cert, .badge-class { margin: var(--space-l, 1.5rem) 0; }
-.badge-criteria { margin: var(--space-l, 1.5rem) 0; }
-.badge-criteria__heading { font-size: var(--text-lg); margin: var(--space-m, 1rem) 0 0.35em; }
-.badge-cert__head, .badge-class__head { display: flex; gap: var(--space-l, 1.5rem); align-items: center; flex-wrap: wrap; }
+.badge-cert, .badge-class { margin: var(--space-6) 0; }
+.badge-criteria { margin: var(--space-6) 0; }
+.badge-criteria__heading { margin: var(--space-4) 0 0.35em; }
+.badge-cert__head, .badge-class__head { display: flex; gap: var(--space-6); align-items: center; flex-wrap: wrap; }
 .badge-art svg { display: block; }
 .badge-cert__awarded { color: var(--ink-muted); margin: 0; }
 .badge-cert__name, .badge-class__name { margin: 0.15em 0; font-size: var(--text-xl); }
 .badge-issuer { display: flex; flex-direction: column; margin: 0.5em 0; }
 .badge-issuer__name { font-weight: 700; }
 .badge-issuer__role { color: var(--ink-muted); font-size: var(--text-sm); }
-.badge-verify { display: grid; grid-template-columns: max-content 1fr; gap: 0.35em 1em; margin: var(--space-l, 1.5rem) 0; }
+.badge-verify { display: grid; grid-template-columns: max-content 1fr; gap: 0.35em 1em; margin: var(--space-6) 0; }
 .badge-verify dt { color: var(--ink-muted); }
 .badge-verify dd { margin: 0; }
-.badge-roster { width: 100%; border-collapse: collapse; margin: var(--space-m, 1rem) 0; }
+.badge-roster { width: 100%; border-collapse: collapse; margin: var(--space-4) 0; }
 .badge-roster th, .badge-roster td { text-align: left; padding: 0.5em 0.75em; border-bottom: 1px solid var(--border); }
 .badge-roster th { color: var(--ink-muted); font-size: var(--text-sm); }
 .badge-subtitle { font-size: var(--text-lg); margin: 0.15em 0; }
-.badge-actions { display: flex; gap: 0.6em; flex-wrap: wrap; margin: var(--space-m, 1rem) 0; }
+.badge-actions { display: flex; gap: 0.6em; flex-wrap: wrap; margin: var(--space-4) 0; }
 .badge-btn { display: inline-block; padding: 0.5em 1em; border: 1px solid var(--border); border-radius: 6px; background: var(--color-surface); color: var(--ink); font: inherit; cursor: pointer; text-decoration: none; }
 .badge-btn:hover { border-color: var(--badge-hue, var(--color-accent)); }
-.badge-copy-fallback { display: grid; gap: 0.35em; max-width: 100%; margin: var(--space-s, 0.5rem) 0; color: var(--ink-muted); font-size: var(--text-sm); }
+.badge-copy-fallback { display: grid; gap: 0.35em; max-width: 100%; margin: var(--space-2) 0; color: var(--ink-muted); font-size: var(--text-sm); }
 .badge-copy-fallback[hidden] { display: none; }
 .badge-copy-fallback input { box-sizing: border-box; width: min(100%, 32rem); min-width: 0; }
 /* The criteria block: what the badge attests, as scannable bullets rather than a wall of prose. */
-.badge-criteria { margin: var(--space-l, 1.5rem) 0; padding-top: var(--space-m, 1rem); border-top: 1px solid var(--border); }
+.badge-criteria { margin: var(--space-6) 0; padding-top: var(--space-4); border-top: 1px solid var(--border); }
 .badge-criteria__heading { font-size: var(--text-sm); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin: 1.4em 0 0.5em; }
 .badge-criteria__heading:first-child { margin-top: 0; }
 .badge-criteria__lede { font-size: var(--text-lg); margin: 0; }

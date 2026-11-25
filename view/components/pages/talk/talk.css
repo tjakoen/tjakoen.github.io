@@ -120,7 +120,7 @@ body[data-deck-only] > .presentation { height: 100dvh; }
 [data-screen="talk"] .ctx__file::before { content: "○"; font-size: calc(var(--u) * 1.5); }
 [data-screen="talk"] .ctx__file[aria-pressed="true"] { border-color: var(--color-accent); color: var(--color-accent); }
 [data-screen="talk"] .ctx__file[aria-pressed="true"]::before { content: "●"; }
-[data-screen="talk"] .ctx__file i { font-style: normal; font-family: var(--font-sans, inherit);
+[data-screen="talk"] .ctx__file i { font-style: normal; font-family: var(--type-font);
   font-size: calc(var(--u) * 1.4); color: var(--ink-muted); }
 [data-screen="talk"] .ctx__run { border: 1px solid var(--color-line); border-radius: var(--radius-md);
   padding: calc(var(--u) * 2.2); }
