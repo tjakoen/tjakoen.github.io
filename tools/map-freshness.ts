@@ -101,14 +101,24 @@ export function slugCandidates(file: string, head: string): string[] {
  * earlier hash does not depend on what the sync does to the text. It lives in the gitignored mount,
  * so it is per machine, like the skills it describes.
  */
-export type Stamp = { skills: Record<string, { source: string; skill: string }> };
+export type Stamp = { skills: Record<string, { source: string; skill: string }>; unreadable?: boolean };
 export const STAMP_FILE = '.freshness.json';
 
 export function readStamp(skillsDir: string): Stamp {
   try {
     const parsed = JSON.parse(readFileSync(join(skillsDir, STAMP_FILE), 'utf8'));
     return { skills: parsed?.skills ?? {} };
-  } catch {
+  } catch (error) {
+    // A missing stamp is a first run and re-baselining it is correct. A corrupt or unreadable one is
+    // not: silently returning empty makes every skill print "baselined (first time seen)", and the
+    // next writeStamp then records the moved hashes, so a stale skill reads fresh from then on.
+    // Say so, and let the caller decide not to write.
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      console.error(
+        `[freshness] ${join(skillsDir, STAMP_FILE)} is unreadable, so the skills check cannot compare: ${(error as Error).message}`,
+      );
+      return { skills: {}, unreadable: true };
+    }
     return { skills: {} };
   }
 }
@@ -173,7 +183,9 @@ export const skills: Artifact = {
             : `standards/${file} baselined (first time seen on this machine)`,
       });
     }
-    writeStamp(skillsDir, { skills: next });
+    // An unreadable stamp is reported by readStamp; writing would re-baseline the very drift the
+    // check could not see, so this run only says so.
+    if (!stamp.unreadable) writeStamp(skillsDir, { skills: next });
     return findings;
   },
 };
