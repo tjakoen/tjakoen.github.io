@@ -26,6 +26,9 @@ function walk(dir: string, out: string[] = []): string[] {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     if (SKIP.has(e.name)) continue;
     const full = join(dir, e.name);
+    // docs/mockups holds design references that inline the site's stylesheets as pasted copies. They are
+    // never served, so a token the copy leaves out is not a broken page.
+    if (full === join(ROOT, "docs", "mockups")) continue;
     if (e.isDirectory()) walk(full, out);
     else out.push(full);
   }
