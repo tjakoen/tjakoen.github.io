@@ -1,5 +1,5 @@
 // portfolio/server.ts — the composition root: the ONLY place BATCH + GRAIN + MILL + portfolio meet.
-import { join, normalize, resolve, sep } from "node:path";
+import { extname, join, normalize, resolve, sep } from "node:path";
 import { config } from "./config.ts";
 import { monthDayLabel } from "./day.ts";
 // --- BATCH (substrate) ---
@@ -367,6 +367,21 @@ const renderBuilderPage = async (html: string, data: Record<string, unknown>) =>
   return stampDevDoor(out);
 };
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
+// The hidden learning map (/learn). Its page lives in view/unlisted, outside the pages tree, so the
+// sitemap, search, the explorer tree and the export never enumerate it; the only door is the desk
+// terminal's `learn` command. The map itself is static files in view/learn-map, served below.
+const serveUnlisted = makePageServer(bunRuntime, join(config.pagesDir, "..", "unlisted"), renderAppPage, PAGE_ASSETS, PAGE_HEAD);
+const LEARN_MAP_DIR = join(config.pagesDir, "..", "learn-map");
+const LEARN_MIME: Record<string, string> = { ".html": "text/html; charset=utf-8", ".json": "application/json; charset=utf-8", ".png": "image/png" };
+async function serveLearnMap(pathname: string): Promise<Response> {
+  const rel = decodeURIComponent(pathname.slice("/learn-map/".length));
+  const file = resolve(LEARN_MAP_DIR, rel);
+  const mime = LEARN_MIME[extname(file)];
+  if (!mime || !file.startsWith(LEARN_MAP_DIR + sep)) return new Response("Not found", { status: 404 });
+  const f = Bun.file(file);
+  if (!(await f.exists())) return new Response("Not found", { status: 404 });
+  return new Response(f, { headers: { "Content-Type": mime, "X-Robots-Tag": "noindex, nofollow", "Cache-Control": "no-cache" } });
+}
 // Give every page's main content region a catalog hover-root so grain's usage→specimen bridge
 // (grain/scripts/catalog-peek.js) works SITE-WIDE, not only on /grain: with the Catalog pane open,
 // hovering any catalogued GRAIN component (a button, field, list, badge, tab…) reveals its entry in
@@ -1056,6 +1071,11 @@ Bun.serve({
           { headers: { "Content-Type": "text/html; charset=utf-8" } });
       }
     }
+    if (p === "/learn" || p === "/learn/") {
+      const learn = await serveUnlisted("/learn");
+      if (learn.status === 200) return finalizePage(req, learn);
+    }
+    if (p.startsWith("/learn-map/")) return serveLearnMap(p);
     // --- the unlisted drafts: /drafts and /drafts/<slug>, for notes whose status is DRAFT ---
     const fromDrafts = await serveDrafts(p);
     if (fromDrafts) return finalizePage(req, fromDrafts);

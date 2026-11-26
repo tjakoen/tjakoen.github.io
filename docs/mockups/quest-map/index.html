@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest map mockups · pixel art, GRAIN tokens, RPG lesson book, lesson card</title>
+<style>
+/* GRAIN tokens, mirrored from grain/styles (variables.css + themes). The real page imports grain; this copy only lets the mockup run standalone.
+   Two orthogonal axes: data-color-scheme = light|dark (follows the OS), data-theme = flavor (sourdough default, baguette, brioche). */
+:root { --paper:#E2E0D8; --paper-2:#E8E6DF; --panel:#E8E6DF; --ink:#1C1B17; --ink-muted:#5F5D55; --line-soft:rgba(28,27,23,.14); --color-accent:var(--ink); --color-accent-contrast:var(--paper); --color-accent-soft:var(--paper-2); }
+@media (prefers-color-scheme: dark) { :root:not([data-color-scheme="light"]) { --paper:#1B1A16; --paper-2:#232219; --panel:#232219; --ink:#E4E1D8; --ink-muted:#9A968B; --line-soft:rgba(228,225,216,.16); } }
+:root[data-color-scheme="dark"] { --paper:#1B1A16; --paper-2:#232219; --panel:#232219; --ink:#E4E1D8; --ink-muted:#9A968B; --line-soft:rgba(228,225,216,.16); }
+:root[data-theme="baguette"] { --paper:#FAFAF8; --paper-2:#F2F2F0; --panel:#FFFFFF; --ink:#232326; --ink-muted:#6B6B70; --line-soft:rgba(35,35,38,.11); --color-accent:#2C68D6; --color-accent-contrast:#FFFFFF; --color-accent-soft:#E7EEFB; }
+@media (prefers-color-scheme: dark) { :root[data-theme="baguette"]:not([data-color-scheme="light"]) { --paper:#17181A; --paper-2:#202126; --panel:#202126; --ink:#ECECEE; --ink-muted:#96969C; --line-soft:rgba(236,236,238,.15); --color-accent:#6FA0FF; --color-accent-contrast:#16181A; --color-accent-soft:rgba(111,160,255,.16); } }
+:root[data-theme="baguette"][data-color-scheme="dark"] { --paper:#17181A; --paper-2:#202126; --panel:#202126; --ink:#ECECEE; --ink-muted:#96969C; --line-soft:rgba(236,236,238,.15); --color-accent:#6FA0FF; --color-accent-contrast:#16181A; --color-accent-soft:rgba(111,160,255,.16); }
+:root[data-theme="brioche"] { --paper:#F5EEDD; --paper-2:#FBF5E7; --panel:#FFFDF6; --ink:#2C2416; --ink-muted:#6E6249; --line-soft:rgba(44,36,22,.14); --color-accent:#8A5E12; --color-accent-contrast:#FFFFFF; --color-accent-soft:#F3E7CC; }
+@media (prefers-color-scheme: dark) { :root[data-theme="brioche"]:not([data-color-scheme="light"]) { --paper:#1D180F; --paper-2:#262016; --panel:#262016; --ink:#EFE6D2; --ink-muted:#9C907A; --line-soft:rgba(239,230,210,.16); --color-accent:#E3B457; --color-accent-contrast:#1D180F; --color-accent-soft:rgba(227,180,87,.16); } }
+:root[data-theme="brioche"][data-color-scheme="dark"] { --paper:#1D180F; --paper-2:#262016; --panel:#262016; --ink:#EFE6D2; --ink-muted:#9C907A; --line-soft:rgba(239,230,210,.16); --color-accent:#E3B457; --color-accent-contrast:#1D180F; --color-accent-soft:rgba(227,180,87,.16); }
+
+/* UI chrome reads GRAIN tokens only, so it follows every flavor in both schemes. */
+:root { --q-panel:var(--panel); --q-paper:var(--paper); --q-ink:var(--ink); --q-muted:var(--ink-muted); --q-line:color-mix(in srgb,var(--ink) 28%,transparent);
+  --q-ground:var(--paper-2); --q-ground2:color-mix(in srgb,var(--ink) 9%,var(--paper-2)); --q-halo:var(--paper); --q-label:var(--ink);
+  --q-accent:var(--color-accent); --q-accent-ink:var(--color-accent-contrast); }
+/* Art palette: quest-specific, decorative only, keyed on the colour scheme (never on the flavor). */
+:root { --q-water:#8cc4e0; --q-water2:#a6d6ea; --q-wave:#cfeaf5; --q-foam:#f3fbff; --q-sand:#f0dba5; --q-sand2:#e6cb8a;
+  --q-grass:#9ccc5f; --q-grass2:#8bbb4f; --q-forest:#4e9a52; --q-forest2:#3f8646; --q-rock:#a39a8c; --q-rock2:#948a7c; --q-rockd:#7e7566;
+  --q-field:#e8c65a; --q-field2:#d6b04a; --q-meadow:#b08fd0; --q-meadow2:#a07fc4; --q-snow:#f4f8ff; --q-snow2:#dde6f4;
+  --q-road:#fff6dc; --q-road-edge:#b99f6a; --q-main:#f5b83d; --q-main-edge:#a66a14; --q-fog:#d8cdb4; --q-fog2:#c9bd9f;
+  --q-outline:#3b2d1c; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#3b82f6; --q-trunk:#7a4a26;
+  --q-wall:#e9d9b8; --q-wall2:#cdb88f; --q-castle:#a483cf; --q-castle2:#8566b3; --q-roof:#d65a3e; --q-roof2:#b0432b; --q-flag:#e0463a;
+  --q-stone:#8a8f9c; --q-amber:#f5b83d; --q-glow:#f6c453; }
+@media (prefers-color-scheme: dark) { :root:not([data-color-scheme="light"]) { --q-water:#173347; --q-water2:#1f4560; --q-wave:#2d5f82; --q-foam:#4a86a8; --q-sand:#8c7a4c; --q-sand2:#7c6b40;
+  --q-grass:#4f7a2e; --q-grass2:#456d28; --q-forest:#2b5f38; --q-forest2:#234f2f; --q-rock:#5b5f6c; --q-rock2:#505460; --q-rockd:#444855;
+  --q-field:#a98a2e; --q-field2:#947628; --q-meadow:#6c4f9a; --q-meadow2:#5f448a; --q-snow:#cfd8ea; --q-snow2:#aeb9d0;
+  --q-road:#c9b98c; --q-road-edge:#4a3e26; --q-main:#f0b43c; --q-main-edge:#6e4410; --q-fog:#3a3426; --q-fog2:#2f2a1f;
+  --q-outline:#0f0c07; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#5b9bff; --q-trunk:#6a3f20;
+  --q-wall:#9a8a6a; --q-wall2:#7a6c52; --q-castle:#8f74c4; --q-castle2:#6f55a3; --q-roof:#c95a40; --q-roof2:#a0442e; --q-flag:#e0463a;
+  --q-stone:#6a7080; --q-amber:#f0b43c; --q-glow:#f0b43c; } }
+:root[data-color-scheme="dark"] { --q-water:#173347; --q-water2:#1f4560; --q-wave:#2d5f82; --q-foam:#4a86a8; --q-sand:#8c7a4c; --q-sand2:#7c6b40;
+  --q-grass:#4f7a2e; --q-grass2:#456d28; --q-forest:#2b5f38; --q-forest2:#234f2f; --q-rock:#5b5f6c; --q-rock2:#505460; --q-rockd:#444855;
+  --q-field:#a98a2e; --q-field2:#947628; --q-meadow:#6c4f9a; --q-meadow2:#5f448a; --q-snow:#cfd8ea; --q-snow2:#aeb9d0;
+  --q-road:#c9b98c; --q-road-edge:#4a3e26; --q-main:#f0b43c; --q-main-edge:#6e4410; --q-fog:#3a3426; --q-fog2:#2f2a1f;
+  --q-outline:#0f0c07; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#5b9bff; --q-trunk:#6a3f20;
+  --q-wall:#9a8a6a; --q-wall2:#7a6c52; --q-castle:#8f74c4; --q-castle2:#6f55a3; --q-roof:#c95a40; --q-roof2:#a0442e; --q-flag:#e0463a;
+  --q-stone:#6a7080; --q-amber:#f0b43c; --q-glow:#f0b43c; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--q-paper); color:var(--q-ink); font:15px/1.5 ui-monospace,"SF Mono",Menlo,Consolas,monospace; }
+header.top { display:flex; gap:1rem; align-items:center; justify-content:space-between; padding:.8rem 1.2rem; border-bottom:2px solid var(--q-line); position:sticky; top:0; background:var(--q-paper); z-index:20; }
+h1 { font-size:1rem; margin:0; letter-spacing:.04em; }
+button { font:inherit; color:var(--q-ink); background:var(--q-panel); border:2px solid var(--q-ink); padding:.25rem .7rem; cursor:pointer; box-shadow:3px 3px 0 var(--q-ink); }
+button:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--q-ink); }
+main { max-width:1140px; margin:0 auto; padding:1.2rem; display:grid; grid-template-columns:minmax(0,1fr); gap:2.4rem; }
+main > section { min-width:0; }
+header.top { flex-wrap:wrap; }
+h2 { font-size:.85rem; text-transform:uppercase; letter-spacing:.12em; color:var(--q-muted); margin:0 0 .5rem; }
+.cap { color:var(--q-muted); font-size:.82rem; margin:.5rem 0 0; }
+.frame { border:3px solid var(--q-ink); box-shadow:5px 5px 0 var(--q-ink); background:var(--q-panel); }
+canvas { display:block; image-rendering:pixelated; }
+.chip { background:var(--q-panel); border:2px solid var(--q-ink); padding:.05rem .5rem; font-size:.74rem; display:inline-block; }
+
+/* 1. Google-Maps layout: panel left, map right, controls floating on the map */
+.gm { display:grid; grid-template-columns:340px 1fr; overflow:hidden; }
+.gm .place { border-right:3px solid var(--q-ink); overflow:auto; background:var(--q-panel); }
+.gm { align-items:stretch; }
+.gm .place { position:relative; overflow:hidden; }
+.place .scroll { position:absolute; inset:0; overflow:auto; }
+.gm .place .hero canvas { width:100%; height:auto; border-bottom:3px solid var(--q-ink); }
+.gm .place { max-height:none; }
+.place .body { padding:.7rem .9rem .9rem; gap:.55rem; }
+.place h3 { font-size:1.15rem; }
+.place .body { padding:.9rem 1rem 1.2rem; display:grid; gap:.75rem; }
+.place h3 { margin:0; font-size:1.3rem; line-height:1.15; }
+.place .sub { color:var(--q-muted); font-size:.8rem; }
+.stars { color:var(--q-accent); letter-spacing:.1em; }
+.actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+.actions button { padding:.2rem .6rem; font-size:.8rem; }
+.actions .primary, .primary { background:var(--q-accent); color:var(--q-accent-ink); }
+.tabs { display:flex; border-bottom:2px solid var(--q-line); }
+.tabs span { padding:.3rem .8rem; font-size:.8rem; color:var(--q-muted); }
+.tabs span[data-on] { color:var(--q-ink); border-bottom:4px solid var(--q-accent); margin-bottom:-2px; font-weight:700; }
+.steps { list-style:none; margin:0; padding:0; display:grid; gap:0; }
+.steps li { display:grid; grid-template-columns:30px 1fr; gap:.55rem; padding:.45rem 0; position:relative; }
+.steps li::before { content:""; position:absolute; left:13px; top:2rem; bottom:-.5rem; border-left:3px dotted var(--q-main-edge); }
+.steps li:last-child::before { display:none; }
+.steps .n { width:26px; height:26px; background:var(--q-pin); color:#fff; display:grid; place-items:center; font-weight:700; border:2px solid var(--q-outline); clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px)); }
+.steps li[data-done] .n { background:#4e9a52; } .steps li[data-sel] strong { color:var(--q-roof); }
+.steps small { display:block; color:var(--q-muted); font-size:.74rem; }
+.src { font-size:.82rem; display:grid; gap:.25rem; }
+.src div::before { content:"◇ "; color:var(--q-you); }
+
+.mapside { position:relative; }
+.mapside canvas { width:100%; height:auto; }
+.search { position:absolute; left:12px; top:12px; width:min(330px,70%); background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); display:flex; align-items:center; gap:.6rem; padding:.35rem .7rem; font-size:.85rem; color:var(--q-muted); }
+.chips { position:absolute; left:12px; top:64px; display:flex; gap:.4rem; flex-wrap:wrap; max-width:75%; }
+.chips .chip { box-shadow:2px 2px 0 var(--q-ink); color:var(--q-ink); }
+.chips .chip[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.ctl { position:absolute; right:12px; bottom:14px; display:grid; gap:8px; justify-items:end; }
+.ctl .stack { display:grid; border:3px solid var(--q-ink); background:var(--q-panel); box-shadow:3px 3px 0 var(--q-ink); }
+.ctl .stack button { border:0; box-shadow:none; width:36px; height:34px; padding:0; font-weight:700; font-size:1.1rem; }
+.ctl .stack button + button { border-top:2px solid var(--q-line); }
+.ctl .single { width:42px; height:40px; padding:0; }
+.layers { position:absolute; left:12px; bottom:14px; display:flex; gap:.6rem; align-items:flex-end; }
+.layers .tile { width:64px; height:64px; border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); background:var(--q-panel); position:relative; }
+.layers .tile canvas { width:100%; height:100%; }
+.layers .tile span { position:absolute; left:0; right:0; bottom:0; font-size:.6rem; text-align:center; background:var(--q-panel); border-top:2px solid var(--q-ink); }
+.scale { font-size:.68rem; color:var(--q-label); text-shadow:-1px -1px 0 var(--q-halo),1px -1px 0 var(--q-halo),-1px 1px 0 var(--q-halo),1px 1px 0 var(--q-halo); }
+.scale i { display:block; width:56px; height:6px; border:2px solid var(--q-outline); border-top:0; }
+.attrib { position:absolute; right:6px; top:2px; font-size:.6rem; color:var(--q-label); background:color-mix(in srgb,var(--q-halo) 80%,transparent); padding:0 .3rem; }
+
+.lbl { position:absolute; transform:translate(-50%,0); font-weight:700; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--q-label); white-space:nowrap; text-align:center; pointer-events:none;
+  text-shadow:-2px 0 var(--q-halo),2px 0 var(--q-halo),0 -2px var(--q-halo),0 2px var(--q-halo),-1px -1px var(--q-halo),1px 1px var(--q-halo),-1px 1px var(--q-halo),1px -1px var(--q-halo); }
+.lbl small { display:block; font-size:.6rem; letter-spacing:.04em; text-transform:none; font-weight:400; }
+.lbl.box { background:var(--q-panel); border:2px dashed var(--q-muted); padding:0 .4rem; text-shadow:none; }
+
+/* 2. zoomed, with the RPG quest modal */
+.zoomframe { position:relative; overflow:hidden; }
+.zoomframe canvas { width:100%; height:auto; }
+.dim { position:absolute; inset:0; background:color-mix(in srgb,var(--q-outline) 45%,transparent); }
+.modalwrap { position:absolute; right:3%; top:5%; width:min(470px,48%); filter:drop-shadow(5px 5px 0 var(--q-outline)); }
+.modal { height:auto; overflow:hidden; background:var(--q-panel); border:4px solid var(--q-ink); padding:.9rem 1.1rem; display:grid; gap:.55rem; align-content:start;
+  clip-path:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px)); }
+.ribbon { display:inline-block; background:var(--q-roof); color:#fff; padding:.05rem .6rem; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; justify-self:start; }
+.modal h3 { margin:0; font-size:1.1rem; }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:.45rem; }
+.stat { border:2px solid var(--q-ink); padding:.3rem .5rem; background:var(--q-paper); }
+.stat small { display:block; color:var(--q-muted); font-size:.62rem; text-transform:uppercase; letter-spacing:.08em; }
+.stat strong { font-size:.98rem; }
+.xp { height:14px; border:2px solid var(--q-ink); background:var(--q-paper); }
+.xp i { display:block; height:100%; width:42%; background:repeating-linear-gradient(90deg,var(--q-accent) 0 6px,color-mix(in srgb,var(--q-accent) 65%,var(--q-panel)) 6px 8px); }
+.modal ul { margin:0; padding:0; list-style:none; display:grid; gap:.2rem; font-size:.82rem; }
+.modal li::before { content:"◆ "; color:var(--q-accent); }
+.modal li[data-ext]::before { content:"◇ "; color:var(--q-you); }
+.row { display:flex; gap:.6rem; flex-wrap:wrap; }
+
+/* 3. guild card */
+.cards { display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; }
+.card { padding:1rem 1.1rem; display:grid; gap:.7rem; background:linear-gradient(180deg,var(--q-panel),var(--q-ground)); }
+.card .head { display:grid; grid-template-columns:96px 1fr; gap:.9rem; }
+.card .head canvas { width:96px; height:96px; border:3px solid var(--q-ink); background:var(--q-ground2); }
+.card h3 { margin:0; font-size:1.1rem; }
+.badges { display:grid; grid-template-columns:repeat(6,1fr); gap:.4rem; }
+.badges canvas { width:100%; aspect-ratio:1; height:auto; border:2px solid var(--q-ink); background:var(--q-paper); }
+.badges .off { opacity:.35; filter:grayscale(1); }
+.field { border:2px dashed var(--q-line); padding:.35rem .55rem; font-size:.8rem; background:var(--q-paper); }
+code { background:var(--q-paper); border:1px solid var(--q-line); padding:0 .3rem; }
+
+/* 4. lesson mode: the book is an in-world object, its pages read GRAIN tokens */
+.lesson { display:grid; grid-template-columns:1.25fr 1fr; min-height:640px; }
+.note { padding:1.2rem 1.6rem 1.2rem 3.2rem; border-right:3px solid var(--q-ink); font:15px/1.7 Georgia,serif; position:relative; }
+.note .crumb { font:.75rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; margin-left:-1.6rem; }
+.note h3 { font-size:1.5rem; line-height:1.2; margin:.4rem 0 1rem; }
+.note p { position:relative; }
+.hl { background:linear-gradient(transparent 55%, color-mix(in srgb,var(--q-accent) 32%,transparent) 55%); outline:2px solid var(--q-accent); outline-offset:2px; }
+.margin-rune { position:absolute; left:-2.1rem; top:.1rem; width:28px; height:28px; border:2px solid var(--q-ink); background:var(--q-panel); box-shadow:0 0 0 3px color-mix(in srgb,var(--q-accent) 45%,transparent); }
+.toast { position:absolute; right:1rem; bottom:1rem; background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); padding:.25rem .7rem; font:700 .74rem ui-monospace,monospace; }
+.side { padding:.9rem; background:var(--q-ground); display:grid; gap:.7rem; align-content:start; }
+.hud { display:grid; gap:.25rem; }
+.hud .top { display:flex; justify-content:space-between; font-size:.78rem; }
+.side .tb { display:flex; gap:.3rem; flex-wrap:wrap; }
+.side .tb span { border:2px solid var(--q-ink); padding:.05rem .55rem; font-size:.72rem; background:var(--q-panel); }
+.side .tb span[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.tome { display:grid; grid-template-columns:1fr 1fr; position:relative; border:3px solid var(--q-outline); background:#6b3f26; padding:8px; box-shadow:4px 4px 0 var(--q-ink); }
+.tome::before { content:""; position:absolute; inset:0 auto 0 50%; width:6px; margin-left:-3px; background:repeating-linear-gradient(180deg,#3d2214 0 4px,#6b3f26 4px 8px); z-index:2; }
+.tome::after { content:""; position:absolute; inset:3px; border:2px dashed #a8794e; pointer-events:none; }
+.leaf { background:var(--q-paper); padding:.65rem .7rem; font:.76rem/1.5 Georgia,serif; min-height:360px; display:grid; gap:.5rem; align-content:start; }
+.leaf h4 { margin:0; font:700 .62rem ui-monospace,monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--q-roof); }
+.dlg { display:grid; grid-template-columns:56px 1fr; gap:.5rem; border:3px solid var(--q-ink); background:var(--q-panel); padding:.4rem; position:relative; }
+.dlg canvas { width:56px; height:56px; border:2px solid var(--q-ink); background:var(--q-ground2); }
+.dlg .plate { font:700 .62rem ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--q-muted); }
+.dlg .say { font:.8rem/1.45 Georgia,serif; color:var(--q-ink); }
+.dlg .caret { animation:blink 1s steps(2) infinite; } @keyframes blink { 50% { opacity:0 } }
+.dlg .adv { position:absolute; right:.35rem; bottom:.1rem; font-size:.7rem; color:var(--q-roof); }
+.hist p { margin:0 0 .3rem; color:var(--q-muted); }
+.hist p.fade { opacity:.6; }
+.rune-card { display:grid; grid-template-columns:44px 1fr; gap:.5rem; border:2px solid var(--q-ink); padding:.35rem; background:color-mix(in srgb,var(--q-accent) 14%,var(--q-paper)); }
+.rune-card canvas { width:44px; height:44px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.rune-card strong { font:700 .72rem ui-monospace,monospace; } .rune-card small { color:var(--q-muted); font-size:.7rem; display:block; }
+.trial { border:2px dashed var(--q-muted); padding:.4rem .5rem; display:grid; gap:.25rem; }
+.trial label { font:.72rem ui-monospace,monospace; display:flex; gap:.4rem; align-items:center; }
+.leaf ul { margin:0; padding-left:1rem; }
+.controls { display:grid; gap:.45rem; }
+.ribbonbar { height:12px; border:2px solid var(--q-ink); background:var(--q-paper); position:relative; }
+.ribbonbar i { position:absolute; inset:0 auto 0 0; width:38%; background:var(--q-roof); }
+.ribbonbar u { position:absolute; left:38%; top:-5px; width:10px; height:20px; background:var(--q-roof); border:2px solid var(--q-ink); clip-path:polygon(0 0,100% 0,100% 100%,50% 70%,0 100%); }
+.controls .row { justify-content:space-between; align-items:center; }
+.controls .row button { padding:.1rem .5rem; }
+.stops { display:flex; gap:.35rem; align-items:center; font-size:.72rem; color:var(--q-muted); }
+.stops i { width:14px; height:14px; border:2px solid var(--q-ink); background:var(--q-paper); }
+.stops i[data-d] { background:#4e9a52; } .stops i[data-now] { background:var(--q-accent); }
+.tabs3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.mini { padding:.8rem .9rem; display:grid; gap:.5rem; align-content:start; font-size:.8rem; }
+.mini h3 { margin:0; font-size:.78rem; text-transform:uppercase; letter-spacing:.1em; }
+.obj { display:grid; grid-template-columns:20px 1fr; gap:.45rem; align-items:start; }
+.obj i { width:16px; height:16px; border:2px solid var(--q-ink); background:var(--q-paper); margin-top:2px; }
+.obj i[data-d] { background:#4e9a52; box-shadow:inset 0 0 0 3px var(--q-paper); }
+.obj small, .mini small { color:var(--q-muted); display:block; font-size:.7rem; }
+.runes { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+.runes .rn { display:grid; grid-template-columns:40px 1fr; gap:.4rem; align-items:center; font-size:.72rem; }
+.runes canvas { width:40px; height:40px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.runes .off { opacity:.4; }
+.pack { display:grid; grid-template-columns:36px 1fr; gap:.5rem; align-items:center; }
+.pack canvas { width:36px; height:36px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.levelup { margin-top:1.2rem; display:flex; gap:1rem; align-items:center; justify-content:center; padding:.8rem; background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:4px 4px 0 var(--q-ink); font-weight:700; letter-spacing:.08em; }
+.levelup canvas { width:40px; height:40px; background:transparent; }
+/* 6. lesson model */
+.model { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.model .mini li { margin:.15rem 0; } .model ul { margin:0; padding-left:1.1rem; } .tag { color:var(--q-muted); font-size:.72rem; }
+.ctlbar { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+select { font:inherit; color:var(--q-ink); background:var(--q-panel); border:2px solid var(--q-ink); padding:.2rem .4rem; }
+button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
+pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height:1.55; background:var(--q-paper); }
+@media (max-width:860px) { .mapside .chips, .mapside .scale, .mapside .lbl small { display:none; } .mapside .search { width:calc(100% - 24px); } .place .scroll { position:static; } .gm .place { position:static; } .gm,.lesson,.cards,.tabs3,.model { grid-template-columns:1fr; } .gm .place { max-height:none; border-right:0; } .modalwrap { position:relative; inset:auto; width:auto; margin:1rem; } .dim{display:none} }
+
+/* 7. lesson card on a note */
+.notepage { padding:1.1rem 1.4rem 1.4rem; display:grid; gap:.8rem; }
+.notepage .crumb { font:.72rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
+.notepage h3 { font:700 1.6rem/1.2 Georgia,serif; margin:0; }
+.notepage .by { font:.82rem ui-monospace,monospace; color:var(--q-muted); margin:0; }
+.lessoncard { display:grid; grid-template-columns:200px 1fr; background:var(--q-panel); }
+.lessoncard > canvas { width:200px; height:100%; min-height:190px; object-fit:cover; border-right:3px solid var(--q-ink); }
+.lc { padding:.8rem 1rem; display:grid; gap:.5rem; align-content:start; }
+.lc strong { font-size:1.05rem; } .lc p { margin:0; font:.88rem/1.55 Georgia,serif; }
+.lc .meta, .lc .chips2 { display:flex; gap:.4rem; flex-wrap:wrap; align-items:center; font-size:.75rem; }
+.rune-chip { display:inline-flex; gap:.3rem; align-items:center; border:2px solid var(--q-ink); padding:0 .4rem 0 0; background:var(--q-paper); font-size:.72rem; }
+.rune-chip canvas { width:22px; height:22px; border-right:2px solid var(--q-ink); }
+.lc small { color:var(--q-muted); font-size:.74rem; }
+.prog { height:10px; border:2px solid var(--q-ink); background:var(--q-paper); } .prog i { display:block; height:100%; width:50%; background:var(--q-accent); }
+.h2line { display:flex; gap:.6rem; align-items:baseline; font:700 1.15rem Georgia,serif; margin:.4rem 0 0; }
+.pip { font:700 .64rem ui-monospace,monospace; letter-spacing:.06em; background:var(--q-accent); color:var(--q-accent-ink); border:2px solid var(--q-ink); padding:0 .4rem; text-transform:uppercase; white-space:nowrap; }
+.pip[data-done] { background:#4e9a52; color:#fff; } .pip[data-off] { background:var(--q-paper); color:var(--q-muted); }
+.variants { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-top:1.2rem; }
+.variants .mini { gap:.4rem; } .variants .mini p { margin:0; font-size:.8rem; }
+/* 8. runes and badges */
+.ladder { display:grid; gap:.5rem; padding:1rem; }
+.rung { display:grid; grid-template-columns:44px 1fr; gap:.7rem; align-items:center; border:2px solid var(--q-ink); padding:.4rem .6rem; background:var(--q-paper); }
+.rung canvas { width:44px; height:44px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.rung small { display:block; color:var(--q-muted); font-size:.72rem; }
+.arrow { text-align:center; color:var(--q-muted); line-height:1; }
+.badgepage { padding:1rem 1.2rem; display:grid; grid-template-columns:120px 1fr; gap:1rem; align-items:start; }
+.badgepage > canvas { width:120px; height:120px; border:3px solid var(--q-ink); background:var(--q-paper); }
+.badgepage h3 { margin:0 0 .2rem; font-size:1.1rem; } .badgepage p { margin:.2rem 0; font-size:.82rem; }
+.skills { display:flex; gap:.35rem; flex-wrap:wrap; margin:.3rem 0; }
+.two { display:grid; grid-template-columns:1fr 1.15fr; gap:1.4rem; }
+@media (max-width:860px) { .lessoncard,.badgepage,.two,.variants { grid-template-columns:1fr; } .lessoncard > canvas { width:100%; height:160px; border-right:0; border-bottom:3px solid var(--q-ink); } }
+
+/* 9. mobile: phone frames */
+.phones { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:2rem 1.5rem; justify-items:center; }
+.phones figure { margin:0; display:grid; gap:.6rem; justify-items:center; }
+.phones figcaption { font-size:.78rem; color:var(--q-muted); max-width:330px; text-align:center; }
+.phone { width:330px; height:660px; border:4px solid var(--q-ink); box-shadow:5px 5px 0 var(--q-ink); background:var(--q-panel); position:relative; display:flex; flex-direction:column; overflow:hidden; }
+.pstatus { height:22px; flex:none; display:flex; justify-content:space-between; padding:2px 10px; font-size:.64rem; background:var(--q-paper); border-bottom:2px solid var(--q-line); }
+.pbody { position:relative; flex:1; overflow:hidden; background:var(--q-paper); }
+.pmap { position:relative; } .pmap canvas { width:100%; height:auto; }
+.psearch { position:absolute; left:8px; right:8px; top:8px; background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:2px 2px 0 var(--q-ink); padding:.25rem .55rem; font-size:.74rem; color:var(--q-muted); display:flex; gap:.5rem; }
+.pchips { position:absolute; left:8px; right:8px; top:50px; display:flex; gap:.3rem; overflow:hidden; }
+.pchips .chip { box-shadow:2px 2px 0 var(--q-ink); font-size:.66rem; white-space:nowrap; }
+.pchips .chip[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.fab { position:absolute; right:8px; width:38px; height:38px; padding:0; }
+.sheet { position:absolute; left:0; right:0; bottom:0; background:var(--q-panel); border-top:3px solid var(--q-ink); padding:.35rem .8rem .8rem; display:grid; gap:.45rem; align-content:start; font-size:.78rem; }
+.sheet .grab { width:44px; height:6px; background:var(--q-ink); justify-self:center; }
+.sheet h3 { margin:0; font-size:1.05rem; }
+.sheet .actions button { padding:.25rem .55rem; font-size:.74rem; }
+.sheet .steps li { padding:.3rem 0; }
+.sheet .stats { gap:.3rem; } .sheet .stat { padding:.2rem .35rem; } .sheet .stat strong { font-size:.8rem; } .sheet .stat small { font-size:.56rem; }
+.sheet ul { margin:0; padding:0; list-style:none; display:grid; gap:.15rem; } .sheet li::before { content:"◆ "; color:var(--q-accent); }
+.pnote { padding:.7rem .9rem; display:grid; gap:.55rem; font:.86rem/1.6 Georgia,serif; }
+.pnote .bar { font:.7rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
+.pnote h3 { font:700 1.3rem/1.2 Georgia,serif; margin:0; }
+.plc { background:var(--q-panel); }
+.plc > canvas { width:100%; height:auto; border-bottom:3px solid var(--q-ink); }
+.plc .lc { padding:.6rem .7rem; } .plc .lc p { font-size:.78rem; line-height:1.45; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+.plc .lc button { width:100%; }
+.dock { position:absolute; left:0; right:0; bottom:0; background:var(--q-panel); border-top:3px solid var(--q-ink); padding:.5rem .7rem .7rem; display:grid; gap:.4rem; }
+.dock .line { display:grid; grid-template-columns:44px 1fr 38px; gap:.5rem; align-items:center; font-size:.75rem; }
+.dock canvas { width:44px; height:44px; border:2px solid var(--q-ink); background:var(--q-ground2); }
+.dock .open { justify-self:center; font-size:.68rem; color:var(--q-muted); }
+.pdim { position:absolute; inset:0; background:color-mix(in srgb,var(--q-outline) 40%,transparent); }
+.dots { display:flex; gap:.4rem; justify-content:center; align-items:center; font-size:.7rem; color:var(--q-muted); }
+.dots i { width:10px; height:10px; border:2px solid var(--q-ink); background:var(--q-paper); } .dots i[data-on] { background:var(--q-accent); }
+.phone .tb { display:flex; gap:.25rem; flex-wrap:wrap; } .phone .tb span { border:2px solid var(--q-ink); padding:0 .4rem; font-size:.66rem; background:var(--q-panel); } .phone .tb span[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.phone .dlg { grid-template-columns:48px 1fr; } .phone .dlg canvas { width:48px; height:48px; }
+</style>
+</head>
+<body>
+<header class="top"><h1>QUEST MAP · MOCKUPS · pixel art, Google Maps layout</h1>
+<div class="ctlbar"><label>Flavor <select id="flavor"><option>sourdough</option><option>baguette</option><option>brioche</option></select></label>
+<span id="scheme"><button data-s="auto" aria-pressed="true">Auto</button> <button data-s="light" aria-pressed="false">Light</button> <button data-s="dark" aria-pressed="false">Dark</button></span></div></header>
+<main>
+
+<section>
+<h2>1 · The world map (no site sidebar on this page)</h2>
+<div class="frame gm">
+  <aside class="place" aria-label="Selected region">
+    <div class="scroll">
+    <div class="hero"><canvas class="scene" data-kind="mines" width="110" height="44"></canvas></div>
+    <div class="body">
+      <div><h3>Model Mines</h3>
+        <div class="sub"><span class="stars">★★★★☆</span> 3 quests · about 45 min of reading · region 3 of 6</div>
+        <div class="sub">Models, limits and cost</div></div>
+      <div class="actions"><button class="primary">▶ Start route</button><button>Save</button><button>Share</button></div>
+      <div class="tabs"><span data-on>Route</span><span>About</span><span>Sources</span></div>
+      <ol class="steps">
+        <li data-sel><span class="n">1</span><div><strong>I Ran Out With Hours Left</strong><small>Lv 1 intro · 10 min · +650 XP</small></div></li>
+        <li><span class="n">2</span><div><strong>Plan on the Big Model, Type on the Small One</strong><small>Lv 1 intro · 10 min · +650 XP</small></div></li>
+        <li><span class="n">3</span><div><strong>How the Model Intelligence Layer Works</strong><small>Lv 3 deep · 25 min · +1,050 XP</small></div></li>
+      </ol>
+      <div class="src"><strong>Outside sources on this route</strong>
+        <div>Claude Academy: how models and context work</div>
+        <div>Continues from: The Loop Outlives the Model</div></div>
+    </div>
+    </div>
+  </aside>
+  <div class="mapside" id="mapside">
+    <canvas id="c-map" width="200" height="160" aria-label="Pixel art map of six AI learning regions"></canvas>
+    <div class="search">☰ <span>Search quests, notes, topics</span> <span style="margin-left:auto">🔍</span></div>
+    <div class="chips"><span class="chip" data-on>All</span><span class="chip">Loop</span><span class="chip">Models</span><span class="chip">Leading</span><span class="chip">Design</span><span class="chip">Not started</span></div>
+    <div class="attrib">Map data ©2026 the notes</div>
+    <div class="layers"><div class="tile"><canvas id="c-layer" width="32" height="32"></canvas><span>Layers</span></div><div class="scale"><i></i>10 min read</div></div>
+    <div class="ctl"><button class="single" title="Find my adventurer" aria-label="Find my adventurer">◎</button><div class="stack"><button aria-label="Zoom in">+</button><button aria-label="Zoom out">−</button></div></div>
+  </div>
+</div>
+<p class="cap"><strong>The working model of the map is <a href="fullscreen.html">fullscreen.html</a>:</strong> full screen, with the panel floating on it and real zoom and pan. This section is the static layout study. Same bones as Google Maps: search and filter chips float top left, a place panel with a numbered route on the left, layers bottom left, zoom and find-me bottom right, and a blue dot for your adventurer. Pins and sprites are drawn pixel by pixel, so every shape is real pixel art. Real pins are named buttons, and the panel's route list is the keyboard and screen reader path through the same quests.</p>
+</section>
+
+<section>
+<h2>2 · Zoom in on a landmark, open the quest</h2>
+<div class="frame zoomframe" id="zoomframe">
+  <canvas id="c-zoom" width="200" height="120"></canvas>
+  <div class="dim"></div>
+  <div class="modalwrap"><div class="modal">
+    <span class="ribbon">Model Mines · Quest 1 of 3</span>
+    <h3>I Ran Out With Hours Left</h3>
+    <div class="row"><span class="chip">Class: Learner, Builder</span><span class="chip">Level: intro</span></div>
+    <div class="stats">
+      <div class="stat"><small>Quest level</small><strong>Lv 1 · Intro</strong></div>
+      <div class="stat"><small>Experience</small><strong>+650 XP</strong></div>
+      <div class="stat"><small>Reading time</small><strong>~10 min</strong></div>
+    </div>
+    <div class="xp" title="Region progress"><i></i></div>
+    <div><strong>You will learn</strong>
+      <ul><li>Why a worse coding model is a hobby, not a saving</li><li>Why a free endpoint is for public code only</li><li>How one rule is enforced by the setup, not by memory</li></ul></div>
+    <div><strong>Sources on the trail</strong>
+      <ul><li data-ext>Claude Academy: how models and context work</li><li>Continues from: The Loop Outlives the Model</li><li>Next quest: Plan on the Big Model, Type on the Small One</li></ul></div>
+    <div class="row"><button class="primary">Begin quest</button><button>Read the note only</button></div>
+  </div></div>
+</div>
+<p class="cap">Zooming reveals more detail, the way a map does: tents, torches, a mine cart and numbered stop pins appear that the world view leaves out. Class, level and reading time come from the note's own audience, level and readingTime fields. XP in this mockup is a sample formula: 25 per reading minute plus 100 per trial.</p>
+</section>
+
+<section>
+<h2>3 · The adventurer's guild card, and what the badge link rebuilds</h2>
+<div class="cards">
+  <div class="frame card">
+    <div class="head"><canvas id="c-hero" width="24" height="24"></canvas>
+      <div><h3>Wren of the Loop</h3><div>Apprentice · Lv 3</div><div style="color:var(--q-muted);font-size:.8rem">Member since Nov 2026 · seed 7K2F-Q9</div></div></div>
+    <div class="stat"><small>Experience</small><div class="xp"><i style="width:26%"></i></div><strong>1,240 / 4,800 XP</strong></div>
+    <div class="badges" id="badges"></div>
+    <div class="row"><button>Name my adventurer</button><button class="primary">Save progress</button><button>Load save</button></div>
+  </div>
+  <div class="frame card">
+    <strong>How it works with no server</strong>
+    <div class="field">Character: drawn from your seed or your chosen username. Same name, same adventurer, on any device.</div>
+    <div class="field">Save: a small file <code>grain-quest-wren.json</code> or a short save code. Load it to restore everything.</div>
+    <div class="field">Badge link: <code>/quest/badge#s=eyJ1Ijoid3JlbiIs…</code> The state sits after the # so it never reaches a server. The page redraws this card from it.</div>
+    <div class="field" style="border-style:solid">Honest limit: self-reported. This card shows what the holder says they finished. It is not a signed credential.</div>
+  </div>
+</div>
+</section>
+
+<section>
+<h2>4 · Lesson mode: the note keeps its words, the sidebar becomes the quest book</h2>
+<div class="frame lesson">
+  <div class="note">
+    <div class="toast">+25 XP · Rune learned: A worse model is a hobby</div>
+    <div class="crumb">Model Mines · Quest 1 · Stop 1 of 4 · The night I went looking for a way out</div>
+    <h3>I Ran Out With Hours Left</h3>
+    <p>The first thing I tried was running a model on my own machine. I have an RTX 3050 with 8 GB of memory. It runs small models fine and runs the ones I would want for coding badly, and <canvas class="margin-rune" id="c-mrune" width="7" height="7"></canvas><span class="hl">a coding model that is worse than the one I am paying for is not a saving, it is a hobby.</span> I put that idea back on the shelf for a year or two.</p>
+    <p>The second thing was free models online. They exist, they are better than I expected, and the catch is printed on the label: a free endpoint may keep whatever you send it.</p>
+  </div>
+  <div class="side">
+    <div class="hud"><div class="top"><strong>Wren · Apprentice Lv 3</strong><span>1,240 / 4,800 XP</span></div><div class="xp"><i style="width:26%"></i></div></div>
+    <div class="tb"><span data-on>Book</span><span>Log 0/4</span><span>Codex 1/4</span><span>Pack 2</span></div>
+    <div class="tome" aria-label="Voice lesson, shown as an open quest book">
+      <div class="leaf"><h4>Chapter 2 · The Guide speaks</h4>
+        <div class="dlg"><canvas id="c-guide" width="24" height="24"></canvas><div><div class="plate">The Guide</div><div class="say">Running a model at home sounds like the free way out. If it is worse than the one you pay for, it is a hobby, not a saving.<span class="caret">▌</span></div></div><span class="adv">▼</span></div>
+        <div class="hist"><p class="fade">I spent my Codex usage with four hours still to go, and I did not want to stop.</p><p class="fade">So I did what I do when something annoys me enough. I built infrastructure.</p></div></div>
+      <div class="leaf"><h4>In plain words</h4>
+        <ul><li>A small local model runs coding work badly.</li><li>A free endpoint may keep whatever you send it.</li><li>So free models are for public code only.</li></ul>
+        <div class="rune-card"><canvas id="c-rune" width="7" height="7"></canvas><div><strong>Rune learned</strong><br>A worse model is a hobby<small>+25 XP · added to the Codex</small></div></div>
+        <div class="trial"><h4>Trial</h4><span>List your projects and mark which are public enough to ever send to a free model.</span><label><input type="checkbox"> Mark trial done · +100 XP</label></div></div>
+    </div>
+    <div class="controls">
+      <div class="ribbonbar"><i></i><u></u></div>
+      <div class="row"><div><button aria-label="Previous stop">⏮</button> <button aria-label="Play">▶</button> <button aria-label="Next stop">⏭</button></div><div><button>1x</button> <button>Captions</button> <button>Rest at campfire</button></div></div>
+      <div class="stops"><span>Stops</span><i data-now></i><i></i><i></i><i></i><span>· 1:48 / 4:30</span></div>
+    </div>
+  </div>
+</div>
+<p class="cap">The book is the voice player, dressed as a quest book. The transcript plays as dialogue from a pixel Guide, typed in time with the audio (a reduced-motion reader gets each line at once). When a concept lights up in the note, a rune glows in the margin and joins the Codex. Each stop ends with a Trial. "Rest at campfire" is Save progress. Underneath is a plain audio element with captions, so every word is readable without the art, and XP and runes are cosmetic and self-reported. The note text and the section are real. The Guide's lines are placeholders written from the note, until the real recording exists.</p>
+<div class="tabs3" style="margin-top:1.2rem">
+  <div class="frame mini"><h3>Log · objectives</h3>
+    <div class="obj"><i></i><div>Stop 1 · The night I went looking for a way out<small>in progress · trial open</small></div></div>
+    <div class="obj"><i></i><div>Stop 2 · The old setup and the new one<small>locked until stop 1</small></div></div>
+    <div class="obj"><i></i><div>Stop 3 · What a Model Intelligence Layer does<small>reference stop, skim it</small></div></div>
+    <div class="obj"><i></i><div>Stop 4 · What is built, and the rule I will not bend<small>locked</small></div></div></div>
+  <div class="frame mini"><h3>Codex · runes</h3><div class="runes" id="runes"></div><small>1 of 4 learned in this quest. A rune is a concept id from the lesson file, tied to a section and a quote.</small></div>
+  <div class="frame mini"><h3>Pack · sources</h3>
+    <div class="pack"><canvas id="c-i1" width="9" height="9"></canvas><div>Claude Academy: models and context<small>external · opens in a new tab</small></div></div>
+    <div class="pack"><canvas id="c-i2" width="9" height="9"></canvas><div>The Loop Outlives the Model<small>note · this one continues it</small></div></div>
+    <div class="pack"><canvas id="c-i3" width="9" height="9"></canvas><div>Plan on the Big Model<small>note · next quest</small></div></div></div>
+</div>
+<div class="levelup"><canvas id="c-star" width="9" height="9"></canvas>LEVEL UP · Apprentice → Journeyman<canvas id="c-star2" width="9" height="9"></canvas></div>
+<p class="cap">Level-up banner: announced to screen readers through a polite live region, never by color alone, and skipped when the visitor prefers reduced motion.</p>
+</section>
+
+<section>
+<h2>5 · When a new note lands: the compatibility check</h2>
+<div class="frame"><pre>$ bun tools/quests.ts check content/notes/new-note.md
+
+note        the-new-note            level: intro   audience: [learn, build]   ~11 min
+tags        ai, workflow, tooling   sources: 3 in body, 1 id in frontmatter
+fits        Loop Forest (3 of 4 tags match, depends on: loop-setup)  -> added as quest 5
+
+region watch (notes with no region yet, grouped by shared tags)
+  ai + retrieval + standards    4 notes   vectorless-rag-by-accident, ...   [need 5]
+  ai + code-review              3 notes   same-reviewer-twice, ...          [need 5]
+
+no new region proposed. 2 more fitting notes and "Retrieval Marsh" is ready to propose.</pre></div>
+<p class="cap">The check proposes. A human approves the region name, landmark and position in the same change that publishes the note.</p>
+</section>
+<section>
+<h2>6 · Notes and lessons: many to many</h2>
+<div class="model">
+  <div class="frame mini"><h3>One note, several lessons</h3><div class="tag">build-the-floor, about 9,800 words</div>
+    <ul><li>Lesson A: Why the floor matters (headings 1 to 3)</li><li>Lesson B: Building it (headings 4 to 7)</li><li>Lesson C: Keeping it honest (headings 8 to 10)</li></ul><small>A note too long for one sitting is cut at its headings. Each lesson gets its own recording and stops.</small></div>
+  <div class="frame mini"><h3>One lesson, several notes</h3><div class="tag">Loop Forest · Lesson 2: the loop on three harnesses</div>
+    <ul><li>Segment 1: one-loop-three-harnesses, headings 2 and 3</li><li>Segment 2: loop-setup, headings 1 and 2</li><li>Segment 3: back to the first note, heading 5</li></ul><small>A lesson is an ordered list of segments. Each segment is a note plus a heading range, so paired notes teach as one.</small></div>
+  <div class="frame mini"><h3>Quest, lesson, segment, note</h3>
+    <pre style="padding:.5rem;font-size:.72rem">quest      a stop on the map
+ lesson    one recording, ordered
+  segment  note + heading range
+   stop    runes, trial, XP</pre><small>The sidecar file belongs to the lesson, not the note, so a note can appear in many lessons and stay untouched.</small></div>
+</div>
+</section>
+
+<section>
+<h2>7 · The lesson card on a note</h2>
+<div class="frame notepage">
+  <div class="crumb">Notes · Model Mines · Quest 1</div>
+  <h3>I Ran Out With Hours Left</h3>
+  <p class="by">Tjakoen Stolk · 2026-11-23 · about 10 min read</p>
+  <div class="frame lessoncard">
+    <canvas class="scene" data-kind="mines" id="c-lc" width="64" height="56" aria-hidden="true"></canvas>
+    <div class="lc">
+      <span class="ribbon">Lesson · Model Mines · Quest 1 of 3</span>
+      <strong>Learn this note as a quest</strong>
+      <p>In four short stops I talk you through the night I ran out of Codex with hours to go: why a home model or a free one was not the way out, and the one rule I built the whole setup to enforce, which is that my own public code goes to free models and work code never does. You read the note while I explain it, then try one small task at the end of each stop.</p>
+      <div class="meta"><span class="chip">4 stops</span><span class="chip">about 16 min of audio</span><span class="chip">Lv 1 intro</span><span class="chip">+650 XP</span></div>
+      <div class="chips2"><span>You will collect</span><span class="rune-chip"><canvas data-rune="2" width="7" height="7"></canvas>A worse model is a hobby</span><span class="rune-chip"><canvas data-rune="3" width="7" height="7"></canvas>Free may keep it</span><span class="rune-chip"><canvas data-rune="4" width="7" height="7"></canvas>Work code stays home</span></div>
+      <div class="prog" title="2 of 4 stops done"><i></i></div>
+      <div class="row"><button class="primary">Continue at stop 3</button><button>See it on the map</button></div>
+      <small>2 of 4 stops done. Progress is saved in this browser, and the guild card can export it.</small>
+    </div>
+  </div>
+  <p style="font:15px/1.7 Georgia,serif;margin:.4rem 0 0">I spent my Codex usage and still had four hours to go before its five-hour usage window refreshed. I was in the zone. I did not want to stop.</p>
+  <div class="h2line"><span>The night I went looking for a way out</span><span class="pip" data-done>&#9654; Stop 1 · done</span></div>
+  <div class="h2line"><span>The old setup and the new one</span><span class="pip">&#9654; Stop 2 · next</span></div>
+</div>
+<p class="cap">The card sits under the byline, above the contents block, and only appears when the note has a lesson and is published. Its summary is the lesson's own, written in my words, so it explains what the lesson adds instead of repeating the note. Each section that belongs to a stop gets a small pip that opens the lesson at that stop. Everything on the card is plain text and links, so it works with the art off.</p>
+<div class="variants">
+  <div class="frame mini"><h3>Not started</h3><p>Button reads Start lesson. No progress bar. The runes are listed so the reader knows what they will collect.</p></div>
+  <div class="frame mini"><h3>A lesson that spans notes</h3><p>"This note is stops 3 and 4 of Set up your own loop. Stops 1 and 2 are in one-loop-three-harnesses." The card links to both notes and to the first unfinished stop.</p></div>
+  <div class="frame mini"><h3>A note in several lessons</h3><p>Rows, one per lesson: "How the layer picks a model: lesson 1, stop 3" and "How the layer runs: lesson 2, stop 4". Each row has its own button and progress.</p></div>
+</div>
+</section>
+
+<section>
+<h2>8 · Runes and badges are different things</h2>
+<div class="two">
+  <div class="frame ladder">
+    <div class="rung"><canvas data-rune="2" width="7" height="7"></canvas><div><strong>Rune</strong><small>One concept, taught in one stop. Collected in the Codex. Cosmetic, self-reported.</small></div></div>
+    <div class="arrow">&#9660; a trial proves the stop</div>
+    <div class="rung"><canvas data-rune="5" width="7" height="7"></canvas><div><strong>Stop and trial</strong><small>Do the small task, tick it, earn the XP.</small></div></div>
+    <div class="arrow">&#9660; finish every stop in a region</div>
+    <div class="rung"><canvas id="c-rb" width="16" height="16"></canvas><div><strong>Region badge</strong><small>Has criteria, shows the runes as its skills, and has a page you can share.</small></div></div>
+  </div>
+  <div class="frame badgepage">
+    <canvas id="c-bp" width="16" height="16" aria-hidden="true"></canvas>
+    <div>
+      <h3>Walks the Loop Forest</h3>
+      <p><strong>Criteria.</strong> Finished every stop and its trial in the 4 Loop Forest quests: 13 stops across 4 lessons.</p>
+      <p><strong>Skills shown.</strong> The runes collected on the way.</p>
+      <div class="skills"><span class="rune-chip"><canvas data-rune="0" width="7" height="7"></canvas>The plan lives in a file</span><span class="rune-chip"><canvas data-rune="1" width="7" height="7"></canvas>One heartbeat</span><span class="rune-chip"><canvas data-rune="6" width="7" height="7"></canvas>An honest unattended run</span><span class="rune-chip"><canvas data-rune="7" width="7" height="7"></canvas>The check that never ran</span></div>
+      <p style="color:var(--q-muted)">Self-reported. This page rebuilds from the holder's save link and is not a signed credential.</p>
+    </div>
+  </div>
+</div>
+<p class="cap">A rune is not a badge. A rune is a concept, one per idea a stop teaches, and it lives in the Codex. A badge is earned by finishing a region, so it needs the trials, not just the runes. The badge page borrows the runes as its skill list, the way a certification lists skills, and that is the only place the two meet. Badges reuse the existing badge-class machinery and medallion. Optional cosmetic achievements, such as collecting every Mines rune, can exist but are never badges.</p>
+</section>
+
+<section>
+<h2>9 · On a phone</h2>
+<div class="phones">
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody">
+  <div class="pmap"><canvas id="c-m1" width="130" height="190" aria-label="Pixel art map"></canvas>
+    <div class="psearch">☰ <span>Search quests, notes, topics</span></div>
+    <div class="pchips"><span class="chip" data-on>All</span><span class="chip">Loop</span><span class="chip">Models</span><span class="chip">Leading</span><span class="chip">Not started</span></div>
+    <button class="fab" style="top:96px" aria-label="Find my adventurer">◎</button><button class="fab" style="top:140px" aria-label="Layers">▤</button></div>
+  <div class="sheet" style="height:156px"><div class="grab"></div><h3>Model Mines</h3><div class="sub" style="color:var(--q-muted)">★★★★☆ 3 quests · about 45 min of reading</div>
+    <div class="actions" style="display:flex;gap:.4rem"><button class="primary">▶ Start route</button><button>Save</button><button>Share</button></div></div>
+</div></div><figcaption>1 · The map is full screen. Search and chips float on top, and the place sheet peeks from the bottom. Pinch zooms, and the buttons are the keyboard path.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody">
+  <div class="pmap"><canvas id="c-m2" width="130" height="60" aria-label="Pixel art map"></canvas></div>
+  <div class="sheet" style="top:150px;bottom:0;border-top:3px solid var(--q-ink)"><div class="grab"></div><h3>Model Mines</h3><div class="sub" style="color:var(--q-muted)">3 quests · region 3 of 6 · Models, limits and cost</div>
+    <div class="actions" style="display:flex;gap:.4rem"><button class="primary">▶ Start route</button><button>Save</button><button>Share</button></div>
+    <div class="tabs"><span data-on>Route</span><span>About</span><span>Sources</span></div>
+    <ol class="steps">
+      <li data-sel><span class="n">1</span><div><strong>I Ran Out With Hours Left</strong><small>Lv 1 intro · 10 min · +650 XP</small></div></li>
+      <li><span class="n">2</span><div><strong>Plan on the Big Model, Type on the Small One</strong><small>Lv 1 intro · 10 min · +650 XP</small></div></li>
+      <li><span class="n">3</span><div><strong>How the Model Intelligence Layer Works</strong><small>Lv 3 deep · 25 min · +1,050 XP</small></div></li>
+    </ol>
+    <div class="src"><strong>Outside sources on this route</strong><div>Claude Academy: models and context</div></div></div>
+</div></div><figcaption>2 · Drag the sheet up and it becomes the route list, the same numbered steps as the desktop panel. This is also the screen-reader order.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody">
+  <div class="pmap"><canvas id="c-m3" width="130" height="90" aria-label="Pixel art zoomed map"></canvas></div>
+  <div class="sheet" style="top:210px;bottom:0"><div class="grab"></div><span class="ribbon">Model Mines · Quest 1 of 3</span><h3>I Ran Out With Hours Left</h3>
+    <div class="row"><span class="chip">Learner, Builder</span><span class="chip">Lv 1 intro</span></div>
+    <div class="stats"><div class="stat"><small>Quest level</small><strong>Lv 1</strong></div><div class="stat"><small>Experience</small><strong>+650 XP</strong></div><div class="stat"><small>Reading</small><strong>~10 min</strong></div></div>
+    <div><strong>You will learn</strong><ul><li>Why a worse coding model is a hobby</li><li>Why a free endpoint is for public code only</li><li>How one rule is enforced by the setup</li></ul></div>
+    <div class="row"><button class="primary" style="flex:1">Begin quest</button><button style="flex:1">Read the note</button></div></div>
+</div></div><figcaption>3 · Zoom to a landmark and the quest opens as a sheet over the map, in place of the desktop modal.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody"><div class="pnote">
+  <div class="bar">← Notes · Model Mines · Quest 1</div>
+  <h3>I Ran Out With Hours Left</h3>
+  <div class="bar" style="text-transform:none">Tjakoen Stolk · 2026-11-23 · about 10 min read</div>
+  <div class="frame plc" style="box-shadow:3px 3px 0 var(--q-ink)"><canvas class="scene" data-kind="mines" width="72" height="22" aria-hidden="true"></canvas>
+    <div class="lc"><span class="ribbon">Lesson · Model Mines</span><strong style="font-size:.95rem">Learn this note as a quest</strong>
+      <p>In four short stops I talk you through the night I ran out of Codex with hours to go, and the one rule I built the whole setup to enforce.</p>
+      <div class="meta"><span class="chip">4 stops</span><span class="chip">16 min</span><span class="chip">+650 XP</span></div>
+      <div class="chips2"><span class="rune-chip"><canvas data-rune="2" width="7" height="7"></canvas>A worse model is a hobby</span></div>
+      <button class="primary">Start lesson</button></div></div>
+  <p style="margin:0">I spent my Codex usage and still had four hours to go before its five-hour usage window refreshed. I was in the zone.</p>
+  <div class="h2line" style="font-size:1rem"><span>The night I went looking for a way out</span></div><span class="pip" style="justify-self:start">&#9654; Stop 1</span>
+</div></div></div><figcaption>4 · The lesson card on a note, in one column. The picture becomes a strip, the summary clamps to four lines, and the button is full width.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody"><div class="pnote">
+  <div class="bar">Stop 1 of 4 · The night I went looking for a way out</div>
+  <p style="margin:0">The first thing I tried was running a model on my own machine. I have an RTX 3050 with 8 GB of memory. It runs small models fine and runs the ones I would want for coding badly, and <span class="hl" style="outline-offset:1px">a coding model that is worse than the one I am paying for is not a saving, it is a hobby.</span> I put that idea back on the shelf for a year or two.</p>
+  <div class="toast" style="position:static;justify-self:start;font-size:.66rem">+25 XP · Rune: A worse model is a hobby</div>
+  <p style="margin:0">The second thing was free models online. They exist, they are better than I expected, and the catch is printed on the label.</p></div>
+  <div class="dock"><div class="line"><canvas class="guide" width="24" height="24"></canvas><span>Running a model at home sounds like the free way out. If it is worse than the one you pay for, it is a hobby.</span><button style="padding:0;height:38px">▶</button></div>
+    <div class="ribbonbar"><i style="width:40%"></i><u style="left:40%"></u></div><div class="open">▲ Open the book · stop 1 of 4 · 1:48 / 4:30</div></div>
+</div></div><figcaption>5 · Lesson mode on a phone: the note stays full screen, and the book collapses to a player dock with the Guide's current line. The highlight and the rune toast sit in the text.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody"><div class="pnote" style="opacity:.5"><div class="bar">Stop 1 of 4</div><p style="margin:0">The first thing I tried was running a model on my own machine...</p></div><div class="pdim"></div>
+  <div class="sheet" style="top:70px;bottom:0;background:var(--q-ground)"><div class="grab"></div>
+    <div class="hud"><div class="top"><strong>Wren · Apprentice Lv 3</strong><span>1,240 XP</span></div><div class="xp" style="height:10px"><i style="width:26%"></i></div></div>
+    <div class="tb"><span data-on>Book</span><span>Log</span><span>Codex</span><span>Pack</span></div>
+    <div class="leaf" style="min-height:0;border:3px solid var(--q-outline);gap:.4rem;padding:.5rem">
+      <h4>Chapter 1 · The Guide speaks</h4>
+      <div class="dlg"><canvas class="guide" width="24" height="24"></canvas><div><div class="plate">The Guide</div><div class="say">Running a model at home sounds like the free way out. If it is worse than the one you pay for, it is a hobby, not a saving.<span class="caret">▌</span></div></div><span class="adv">▼</span></div>
+      <div class="rune-card"><canvas id="c-rune2" width="7" height="7"></canvas><div><strong>Rune learned</strong><br>A worse model is a hobby<small>+25 XP</small></div></div>
+      <div class="trial"><h4>Trial</h4><span style="font-size:.74rem">List your projects and mark which are public enough to ever send to a free model.</span><label><input type="checkbox"> Mark done · +100 XP</label></div></div>
+    <div class="dots"><span>◀</span><i data-on></i><i></i><span>▶</span><span>page 1 of 2</span></div>
+    <div class="ribbonbar"><i style="width:40%"></i><u style="left:40%"></u></div>
+    <div class="row" style="justify-content:space-between"><button style="padding:0 .5rem">⏮</button><button style="padding:0 .5rem">▶</button><button style="padding:0 .5rem">⏭</button><button style="padding:0 .5rem">1x</button><button style="padding:0 .5rem">Rest</button></div></div>
+</div></div><figcaption>6 · The book opened as a full sheet. The two-page spread becomes one page you swipe between, with the same tabs, rune card, trial and campfire save.</figcaption></figure>
+</div>
+<p class="cap">Touch targets are at least 38 pixels, the sheet and the dock are the only floating layers, and nothing depends on hover. The sheet and dock heights are sample proportions. Real ones should respect the safe area and the on-screen keyboard.</p>
+</section>
+</main>
+
+<script>
+/* ---------- pixel engine: every shape is whole pixels, no smoothing ---------- */
+const WW=200, WH=160;
+const NAMES=['water','water2','wave','foam','sand','sand2','grass','grass2','forest','forest2','rock','rock2','rockd','field','field2','meadow','meadow2','snow','snow2','road','road-edge','main','main-edge','fog','fog2','outline','pin','pin-hi','you','trunk','wall','wall2','castle','castle2','roof','roof2','flag','amber','glow','ground','ground2','paper','ink','stone'];
+let P={};
+function loadPalette(){ const cs=getComputedStyle(document.documentElement); NAMES.forEach(n=>P[n.replace(/-(.)/g,(_,c)=>c.toUpperCase())]=cs.getPropertyValue('--q-'+n).trim()); }
+function hash2(x,y){ let h=(Math.imul(x|0,374761393)+Math.imul(y|0,668265263))>>>0; h=(h^(h>>>13))>>>0; h=Math.imul(h,1274126177)>>>0; return (h^(h>>>16))>>>0; }
+function vn(x,y,s){ const xi=Math.floor(x/s), yi=Math.floor(y/s), xf=x/s-xi, yf=y/s-yi, f=(a,b)=>hash2(a,b)/4294967296, sm=t=>t*t*(3-2*t);
+  const a=f(xi,yi), b=f(xi+1,yi), c=f(xi,yi+1), d=f(xi+1,yi+1); return a+(b-a)*sm(xf)+(c-a)*sm(yf)+(a-b-c+d)*sm(xf)*sm(yf); }
+function hash(str){ let h=2166136261; for(const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619);} return h>>>0; }
+function rng(seed){ let s=seed>>>0; return ()=> (s=(s*1664525+1013904223)>>>0)/4294967296; }
+
+/* sprite builder: set pixels in local coords, add a 1px outline, blit anywhere */
+const D4=[[1,0],[-1,0],[0,1],[0,-1]];
+function spr(){ const m=new Map(); const o={ m,
+  set(x,y,c){ m.set(x+','+y,c); return o; },
+  rect(x,y,w,h,c){ for(let j=0;j<h;j++) for(let i=0;i<w;i++) m.set((x+i)+','+(y+j),c); return o; },
+  outline(c){ const add=[]; for(const k of m.keys()){ const [x,y]=k.split(',').map(Number); for(const [dx,dy] of D4){ const kk=(x+dx)+','+(y+dy); if(!m.has(kk)) add.push(kk);} } add.forEach(k=>m.set(k,c)); return o; },
+  blit(put,ox,oy){ for(const [k,c] of m){ const [x,y]=k.split(',').map(Number); put(ox+x,oy+y,c);} } }; return o; }
+
+/* 3x5 pixel digits for pins */
+const FONT={0:'111101101101111',1:'010110010010111',2:'111001111100111',3:'111001111001111',4:'101101111001001',5:'111100111001111',6:'111100111101111','?':'111001010000010'};
+function glyph(s,ch,x,y,c){ const g=FONT[ch]; for(let i=0;i<15;i++) if(g[i]==='1') s.set(x+i%3,y+Math.floor(i/3),c); }
+function pinSpr(n,state){ const s=spr(); const body=state==='done'?'#4e9a52':state==='locked'?P.fog2:P.pin;
+  const rows=[3,5,7,7,7,5,3]; rows.forEach((w,j)=>{ for(let i=0;i<w;i++) s.set(i-(w>>1),-9+j,body); });
+  s.set(-1,-2,body); s.set(0,-2,body); s.set(1,-2,body); s.set(0,-1,body);
+  s.set(-2,-8,state==='locked'?P.fog:P.pinHi); s.set(-3,-7,state==='locked'?P.fog:P.pinHi);
+  if(state==='done'){ [[-2,-6],[-1,-5],[0,-4],[1,-5],[2,-6],[3,-7]].forEach(([x,y])=>s.set(x-0,y+0,'#fff')); s.set(-2,-6,'#fff'); s.set(-1,-5,'#fff'); s.set(0,-4,'#fff'); s.set(1,-5,'#fff'); s.set(2,-6,'#fff'); }
+  else glyph(s,state==='locked'?'?':n,-1,-7,'#fff');
+  return s.outline(P.outline); }
+function youSpr(){ const s=spr(); [[-2,0],[2,0],[0,-2],[0,2],[-2,-1],[2,1],[-1,-2],[1,2],[-2,1],[2,-1],[1,-2],[-1,2]].forEach(([x,y])=>s.set(x,y,'#cfe2ff')); s.rect(-1,-1,3,3,P.you); s.set(0,0,'#ffffff'); return s; }
+
+/* landmarks */
+function mountainSpr(h,k){ const s=spr(), snow=Math.round(h*.36);
+  for(let j=0;j<h;j++){ const half=Math.round(j*k), y=-h+1+j; for(let i=-half;i<=half;i++){ let c=i<=0?P.rock:P.rock2; if(i>0&&(i+j)%5===0) c=P.rockd; if(i<0&&(i-j)%7===0) c=P.rock2;
+    if(j<snow+((Math.abs(i)%3)-1)) c=i<=0?P.snow:P.snow2; s.set(i,y,c);} } return s.outline(P.outline); }
+function pineSpr(){ const s=spr(); s.rect(0,-1,1,2,P.trunk); [[0,-2,3],[0,-4,2],[0,-6,1]].forEach(([_,y,hw])=>{ for(let i=-hw;i<=hw;i++) { s.set(i,y,i<=0?P.forest:P.forest2); s.set(i,y-1,i<=0?P.forest:P.forest2);} }); s.set(0,-8,P.forest); return s.outline(P.outline); }
+function bushSpr(){ const s=spr(); s.rect(-1,-1,3,2,P.forest); s.set(0,-2,P.forest); s.set(1,0,P.forest2); return s.outline(P.outline); }
+function hillSpr(w,h){ const s=spr(); for(let j=0;j<h;j++){ const half=Math.round(w/2*Math.sqrt(1-((h-1-j)/h)**2*0+ (1-(j/h))**2*0 ))- Math.round((h-1-j)*0.0); const hw=Math.round((w/2)*Math.sqrt(1-((h-1-j)/h)**2)); for(let i=-hw;i<=hw;i++) s.set(i,-h+1+j,i<=0?P.grass:P.grass2); } return s.outline(P.outline); }
+function castleSpr(){ const s=spr();
+  s.rect(-8,-10,17,10,P.wall); s.rect(1,-10,8,10,P.wall2);
+  for(let i=-8;i<=8;i+=4){ s.rect(i,-12,2,2,P.wall); }
+  [[-11,-17],[9,-17]].forEach(([x,y])=>{ s.rect(x,y,5,17,P.wall); s.rect(x+3,y,2,17,P.wall2); for(let i=0;i<5;i+=2) s.rect(x+i,y-2,1,2,P.wall); s.set(x+2,y+5,P.outline); s.set(x+2,y+6,P.outline);
+    for(let j=0;j<5;j++) for(let i=-j;i<=j+4;i++){ /* cone roof */ } });
+  [[-11,-19],[9,-19]].forEach(([x,y])=>{ for(let j=0;j<5;j++){ for(let i=j;i<5-j;i++) s.set(x+i,y-j,i<2?P.castle:P.castle2); } });
+  s.rect(0,-17,1,7,P.outline); s.rect(1,-17,4,3,P.flag); s.rect(-2,-6,5,6,P.outline); s.rect(-1,-7,3,1,P.outline);
+  s.set(-5,-6,P.glow); s.set(5,-6,P.glow); s.rect(-1,-12,3,2,P.castle2);
+  return s.outline(P.outline); }
+function hallSpr(){ const s=spr(); s.rect(-6,-6,13,6,P.wall); s.rect(1,-6,6,6,P.wall2);
+  for(let j=0;j<6;j++) for(let i=-8+j;i<=8-j;i++) s.set(i,-7-j,i<=0?P.roof:P.roof2);
+  s.rect(-1,-4,3,4,P.outline); s.set(-4,-4,P.glow); s.set(4,-4,P.glow); return s.outline(P.outline); }
+function houseSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.wall); for(let j=0;j<3;j++) for(let i=-4+j;i<=5-j;i++) s.set(i,-4-j,i<=0?P.roof:P.roof2); s.set(0,-1,P.outline); return s.outline(P.outline); }
+function peakSpr(){ const s=mountainSpr(26,.72); s.rect(0,-30,1,6,P.outline); s.rect(1,-30,4,3,P.flag); s.rect(1,-29,1,1,P.pinHi); return s.outline(P.outline); }
+function caveSpr(){ const s=spr(); s.rect(-2,-3,5,3,P.outline); s.rect(-1,-4,3,1,P.outline); s.set(-3,-1,P.rockd); s.set(3,-1,P.rockd); return s; }
+function signSpr(){ const s=spr(); s.rect(0,-4,1,5,P.trunk); s.rect(-4,-7,9,4,P.wall); s.rect(-3,-6,7,1,P.roof2); return s.outline(P.outline); }
+function tentSpr(){ const s=spr(); for(let j=0;j<5;j++) for(let i=-j;i<=j;i++) s.set(i,-4+j,i<=0?P.roof:P.roof2); s.set(0,0,P.outline); return s.outline(P.outline); }
+function torchSpr(){ const s=spr(); s.rect(0,-3,1,3,P.trunk); s.set(0,-4,P.glow); s.set(0,-5,P.amber); return s.outline(P.outline); }
+function cartSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.rockd); s.rect(-3,-3,7,1,P.rock); s.set(-2,0,P.outline); s.set(2,0,P.outline); s.set(0,-4,P.glow); return s.outline(P.outline); }
+
+/* ---------- the world: terrain, biomes, roads ---------- */
+const REGIONS=[ {n:1,cx:34,cy:122}, {n:2,cx:62,cy:92}, {n:3,cx:104,cy:124}, {n:4,cx:146,cy:92}, {n:5,cx:92,cy:52}, {n:6,cx:150,cy:34}, {n:7,cx:160,cy:128} ];
+const land=new Uint8Array(WW*WH), reg=new Uint8Array(WW*WH);
+const MAIN=[[34,122],[48,110],[62,92],[82,108],[104,124],[126,108],[146,92],[120,70],[92,52],[122,40],[150,34]];
+const MINOR=[[[62,92],[74,66],[92,52]],[[104,124],[132,134],[160,128]],[[146,92],[172,84],[176,64]]];
+let cols=[], sprites=[], roadMain=new Set(), roadMinor=new Set();
+(function buildMasks(){ for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x;
+  const e=1-(((x-100)/94)**2+((y-82)/72)**2)+(vn(x,y,20)-.5)*.55+(vn(x,y,7)-.5)*.16; const lake=(((x-46)/9)**2+((y-54)/5)**2)<1;
+  land[i]=(e>.1&&!lake)?1:0; let best=1e9,id=1; for(const r of REGIONS){ const d=Math.hypot(x-r.cx,(y-r.cy)*1.25)/(r.n===7?1.15:1); if(d<best){best=d;id=r.n;} } reg[i]=id; } })();
+function distTo(x,y,type,r=3){ let best=9; for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){ const xx=x+dx,yy=y+dy; const t=(xx<0||yy<0||xx>=WW||yy>=WH)?0:land[yy*WW+xx]; if(t===type) best=Math.min(best,Math.max(Math.abs(dx),Math.abs(dy))); } return best; }
+function line(pts,fn){ for(let k=0;k<pts.length-1;k++){ let [x0,y0]=pts[k],[x1,y1]=pts[k+1]; const n=Math.max(Math.abs(x1-x0),Math.abs(y1-y0)); for(let t=0;t<=n;t++){ const x=Math.round(x0+(x1-x0)*t/n), y=Math.round(y0+(y1-y0)*t/n+Math.sin(t/n*6.28*1)*2*(k%2?1:-1)); fn(x,y,t); } } }
+function buildWorld(){
+  cols=new Array(WW*WH); roadMain=new Set(); roadMinor=new Set(); sprites=[];
+  for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; let c;
+    if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water; if(d>3&&hash2(x,y)%31===0) c=P.wave; }
+    else { const d=distTo(x,y,0,2); const r=reg[i];
+      if(d<=2) c=(x+y)%2?P.sand:P.sand2;
+      else if(r===1){ c=vn(x,y,4)>.52?P.grass:P.grass2; if(hash2(x,y)%67===0) c='#ffffff'; if(hash2(x,y)%97===0) c=P.amber; }
+      else if(r===2){ c=vn(x,y,3)>.5?P.forest:P.forest2; }
+      else if(r===3){ c=vn(x,y,3)>.5?P.rock:P.rock2; if(hash2(x,y)%61===0) c=P.rockd; }
+      else if(r===4){ c=(vn(x,y,18)>.44)?(((y>>1)%2)?P.field:P.field2):(vn(x,y,4)>.5?P.grass:P.grass2); }
+      else if(r===5){ c=vn(x,y,4)>.5?P.meadow:P.meadow2; if(hash2(x,y)%41===0) c=P.snow; }
+      else if(r===6){ c=vn(x,y,4)>.5?P.snow:P.snow2; }
+      else { c=vn(x,y,4)>.5?P.grass2:P.rock2; } }
+    cols[i]=c; }
+  // roads
+  const paint=(set)=>(x,y)=>{ for(const [a,b] of [[0,0],[1,0],[0,1],[1,1]]){ const xx=x+a,yy=y+b; if(xx>=0&&yy>=0&&xx<WW&&yy<WH&&land[yy*WW+xx]) set.add(yy*WW+xx);} };
+  MINOR.forEach(p=>line(p,paint(roadMinor))); line(MAIN,paint(roadMain));
+  const all=new Set([...roadMain,...roadMinor]);
+  const edge=i=>D4.some(([dx,dy])=>{ const x=i%WW+dx,y=Math.floor(i/WW)+dy; return !all.has(y*WW+x); });
+  roadMinor.forEach(i=>{ cols[i]=edge(i)?P.roadEdge:P.road; });
+  roadMain.forEach(i=>{ cols[i]=edge(i)?P.mainEdge:P.main; });
+  let k=0; line(MAIN,(x,y)=>{ k++; if(k%7<3){ const i=y*WW+x; if(roadMain.has(i)&&!edge(i)) cols[i]=P.road; } });
+  // fog over the unmapped region
+  for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; if(reg[i]===7&&land[i]){ const d=Math.hypot(x-166,(y-130)*1.2); if(d<24+(vn(x,y,5)-.5)*14) cols[i]=((x+y)%2)?P.fog:P.fog2; } }
+  // sprites
+  const add=(s,x,y)=>sprites.push({y,f:put=>s.blit(put,x,y)});
+  const nearRoad=(x,y,r)=>{ for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++) if(all.has((y+dy)*WW+x+dx)) return true; return false; };
+  const pine=pineSpr(), bush=bushSpr();
+  for(let gy=4;gy<WH-4;gy+=5) for(let gx=4;gx<WW-4;gx+=5){ const h=hash2(gx,gy), x=gx+(h%4), y=gy+((h>>3)%4), i=y*WW+x; if(!land[i]||nearRoad(x,y,2)) continue;
+    const d=distTo(x,y,0,3); if(d<=3) continue; const r=reg[i];
+    if(r===2&&(h>>6)%10<9) add(pine,x,y+2);
+    else if((r===1||r===4||r===5)&&(h>>6)%10<1) add(bush,x,y);
+    else if(r===3&&(h>>6)%10<1) add(bush,x,y); }
+  [[24,126,16,7],[40,129,12,5],[16,132,10,4]].forEach(([x,y,w,h])=>add(hillSpr(w,h),x,y));
+  add(signSpr(),46,112);
+  add(mountainSpr(20,.9),104,128); add(mountainSpr(15,.9),122,130); add(mountainSpr(13,.9),86,132);
+  add(hallSpr(),146,96); add(houseSpr(),134,100); add(houseSpr(),158,102); add(houseSpr(),156,84);
+  add(castleSpr(),92,56); add(peakSpr(),150,40);
+  sprites.sort((a,b)=>a.y-b.y);
+  sprites.cave=caveSpr();
+}
+
+/* ---------- renderer: world window at integer zoom z, pins on top ---------- */
+function render(cv,V){
+  const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; const W=cv.width,H=cv.height,z=V.z;
+  ctx.fillStyle=P.water; ctx.fillRect(0,0,W,H);
+  const put=(wx,wy,c)=>{ const sx=Math.round((wx-V.x)*z), sy=Math.round((wy-V.y)*z); if(sx<-z||sy<-z||sx>=W||sy>=H) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
+  for(let y=Math.floor(V.y);y<Math.ceil(V.y+H/z);y++) for(let x=Math.floor(V.x);x<Math.ceil(V.x+W/z);x++){ if(x<0||y<0||x>=WW||y>=WH) continue; ctx.fillStyle=cols[y*WW+x]; ctx.fillRect(Math.round((x-V.x)*z),Math.round((y-V.y)*z),z,z); }
+  sprites.cave.blit(put,104,127);
+  sprites.forEach(s=>s.f(put));
+  if(V.detail){ tentSpr().blit(put,92,134); tentSpr().blit(put,96,136); torchSpr().blit(put,100,128); torchSpr().blit(put,108,128); cartSpr().blit(put,112,134);
+    for(let x=100;x<122;x+=2){ put(x,135,P.trunk); } for(let x=100;x<124;x++) put(x,136,P.rockd); torchSpr().blit(put,72,138); }
+  const zp=z>=3?2:z;
+  (V.pins||[]).forEach(p=>{ const bx=Math.round((p.x-V.x)*z), by=Math.round((p.y-V.y)*z);
+    const pp=(dy)=>(lx,ly,c)=>{ const sx=bx+lx*zp, sy=by+ly*zp-dy; if(sx<-zp||sy<-zp||sx>=W||sy>=H) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,zp,zp); };
+    if(p.you){ youSpr().blit(pp(0),0,0); return; }
+    if(p.sel){ for(let i=-4;i<=4;i++) pp(0)(i,0,'rgba(0,0,0,.28)'); }
+    pinSpr(p.n,p.state).blit(pp(p.sel?3*zp:0),0,0); });
+}
+function placeLabels(host,V,W,H,labels){ host.querySelectorAll('.lbl').forEach(e=>e.remove());
+  labels.forEach(l=>{ const e=document.createElement('div'); e.className='lbl'+(l.box?' box':''); e.style.left=((l.x-V.x)*V.z/W*100)+'%'; e.style.top=((l.y-V.y)*V.z/H*100)+'%'; e.innerHTML=l.t+(l.s?`<small>${l.s}</small>`:''); host.appendChild(e); }); }
+
+/* ---------- the guild card character, solid pixels ---------- */
+function px(cv,cols_,rows_){ const ctx=cv.getContext('2d'); const cw=cv.width/cols_, ch=cv.height/rows_;
+  return { clear(c){ ctx.fillStyle=c; ctx.fillRect(0,0,cv.width,cv.height); }, dot(x,y,c){ ctx.fillStyle=c; ctx.fillRect(Math.floor(x*cw),Math.floor(y*ch),Math.ceil(cw),Math.ceil(ch)); },
+    rect(x,y,w,h,c){ ctx.fillStyle=c; ctx.fillRect(Math.floor(x*cw),Math.floor(y*ch),Math.ceil(w*cw),Math.ceil(h*ch)); },
+    tri(cx,by,h,c,w){ for(let j=0;j<h;j++){ const half=Math.round(j*w*.5); this.rect(cx-half,by-h+1+j,half*2+1,1,c);} } }; }
+function hero(cv,seedStr){ const s=spr(); const R=rng(hash(seedStr));
+  const skins=['#f1c8a0','#d9a273','#a87048','#6f4a2f'], hairs=['#2b1d12','#7a4a1e','#d79a2b','#b8442f','#3a5aa5'], cloaks=[P.castle,P.roof,P.forest,'#2f6fa5'];
+  const skin=skins[Math.floor(R()*4)], hair=hairs[Math.floor(R()*5)], cloak=cloaks[Math.floor(R()*4)], hat=R()<.5;
+  s.rect(-4,2,8,9,cloak); s.rect(-3,-3,6,5,skin); s.rect(-3,-4,6,2,hair);
+  if(hat){ s.rect(-5,-5,10,1,cloak); s.rect(-3,-8,6,3,cloak); s.set(0,-9,P.amber); } else { s.rect(-4,-3,1,4,hair); s.rect(3,-3,1,4,hair); }
+  s.set(-2,-1,'#2b1d12'); s.set(1,-1,'#2b1d12'); s.rect(-1,1,2,1,'#a34a3a'); s.rect(-6,3,2,6,cloak); s.rect(4,3,2,6,cloak); s.rect(-3,11,2,2,P.outline); s.rect(1,11,2,2,P.outline);
+  s.rect(7,0,1,11,P.amber); s.set(7,-1,P.glow); s.outline(P.outline);
+  const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.fillStyle=P.ground2; ctx.fillRect(0,0,cv.width,cv.height);
+  const sc=cv.width/24; s.blit((x,y,c)=>{ ctx.fillStyle=c; ctx.fillRect(Math.round((x+12)*sc),Math.round((y+9)*sc),Math.ceil(sc),Math.ceil(sc)); },0,0); }
+function badge(cv,hue){ const g=px(cv,16,16); g.clear(P.paper); g.tri(8,13,10,hue,1.4); g.rect(5,13,7,2,P.outline); g.dot(8,6,P.glow); }
+function layerTile(cv){ const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; for(let y=0;y<32;y++) for(let x=0;x<32;x++){ ctx.fillStyle=cols[(y*4+60)*WW+(x*4+70)]||P.water; ctx.fillRect(x,y,1,1);} }
+
+let drawAll=function(){
+  loadPalette(); buildWorld();
+  const mapV={x:0,y:0,z:1}, mc=document.getElementById('c-map');
+  render(mc,{...mapV,pins:[
+    {n:1,state:'done',x:34,y:108},{n:2,state:'done',x:62,y:78},{n:3,sel:1,state:'open',x:104,y:108},{n:4,state:'open',x:146,y:78},{n:5,state:'open',x:92,y:36},{n:6,state:'open',x:150,y:18},
+    {you:1,x:66,y:96}, {n:0,state:'locked',x:166,y:112} ]});
+  placeLabels(document.getElementById('mapside'),mapV,WW,WH,[
+    {x:34,y:126,t:'Foothills',s:'Claude Academy'},{x:62,y:98,t:'Loop Forest'},{x:104,y:132,t:'Model Mines'},{x:146,y:106,t:'Guild Hall'},{x:92,y:62,t:'GRAIN Keep'},{x:150,y:44,t:'Summit'},{x:166,y:118,t:'Unmapped',s:'2 more notes to chart',box:1},{x:46,y:62,t:'Lake of Tokens'} ]);
+    layerTile(document.getElementById('c-layer'));
+  const zc=document.getElementById('c-zoom'), zv={x:84,y:100,z:3,detail:1};
+  render(zc,{...zv,pins:[{n:1,sel:1,state:'open',x:100,y:114},{n:2,state:'open',x:112,y:122},{n:3,state:'open',x:92,y:127}]});
+  placeLabels(document.getElementById('zoomframe'),zv,zc.width,zc.height,[{x:100,y:116,t:'Limits',s:'quest 1'},{x:112,y:124,t:'Plan big',s:'quest 2'},{x:92,y:129,t:'Model layer',s:'quest 3'}]);
+  hero(document.getElementById('c-hero'),'wren');
+  const b=document.getElementById('badges'); b.innerHTML='';
+  [P.grass,P.forest,P.rock,P.roof,P.castle,P.snow].forEach((h,i)=>{ const c=document.createElement('canvas'); c.width=64;c.height=64; if(i>1) c.className='off'; b.appendChild(c); badge(c,h); });
+}
+const RUNES=['0110110|1001001|1000001|0100010|0010100|0001000|0001000','0001000|0011100|0101010|1001001|0001000|0001000|0001000','1111111|1000001|1011101|1010101|1011101|1000001|1111111','0100010|0100010|0111110|0000100|0001000|0010000|0100000','1001001|0101010|0011100|1111111|0011100|0101010|1001001','0011100|0100010|1000001|1000001|1000001|0100010|0011100','1110000|0010000|0011100|0000100|0000111|0000001|0000001','0001000|0001000|1111111|0001000|0001000|1111111|0001000'];
+function runeDraw(cv,i,col){ const g=px(cv,7,7); g.clear(P.paper); RUNES[i%8].split('|').forEach((row,y)=>[...row].forEach((c,x)=>{ if(c==='1') g.dot(x,y,col); })); }
+function guideDraw(cv){ const s=spr(); s.rect(-4,3,8,8,P.castle); s.rect(-4,3,2,8,P.castle2); s.rect(-3,-3,6,6,'#e8bf94'); s.rect(-3,2,6,3,'#d9d3c4'); s.rect(-3,-4,6,2,P.castle); s.rect(-2,-8,4,4,P.castle); s.set(0,-9,P.amber); s.set(-1,-6,P.glow);
+  s.set(-2,-1,'#2b1d12'); s.set(1,-1,'#2b1d12'); s.rect(-4,-2,1,4,P.outline); s.rect(3,-2,1,4,P.outline); s.rect(-4,-3,8,1,P.outline); s.rect(-3,11,2,1,P.outline); s.rect(1,11,2,1,P.outline); s.rect(6,-2,1,13,P.trunk); s.set(6,-3,P.glow); s.outline(P.outline);
+  const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.fillStyle=P.ground2; ctx.fillRect(0,0,cv.width,cv.height); const sc=cv.width/24; s.blit((x,y,c)=>{ ctx.fillStyle=c; ctx.fillRect(Math.round((x+11)*sc),Math.round((y+10)*sc),Math.ceil(sc),Math.ceil(sc)); },0,0); }
+function itemDraw(cv,kind){ const s=spr(); if(kind===0){ s.rect(-3,-3,7,6,P.wall); s.rect(-3,-3,7,1,P.roof); s.rect(-2,-1,5,1,P.rockd); s.rect(-2,1,3,1,P.rockd); } else if(kind===1){ s.rect(-3,-4,7,8,P.castle); s.rect(-3,-4,1,8,P.castle2); s.rect(-1,-2,4,1,P.wall); s.rect(-1,0,3,1,P.wall); } else { s.rect(-3,-3,7,6,P.wall); s.set(0,-4,P.pin); s.rect(-1,-2,3,1,P.rockd); }
+  s.outline(P.outline); const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.fillStyle=P.paper; ctx.fillRect(0,0,cv.width,cv.height); const sc=cv.width/9; s.blit((x,y,c)=>{ ctx.fillStyle=c; ctx.fillRect(Math.round((x+4)*sc),Math.round((y+4)*sc),Math.ceil(sc),Math.ceil(sc)); },0,0); }
+function starDraw(cv){ const g=px(cv,9,9); g.clear('rgba(0,0,0,0)'); const c=P.amber, o=P.outline; [[4,0],[4,1],[3,2],[4,2],[5,2],[0,3],[1,3],[2,3],[3,3],[4,3],[5,3],[6,3],[7,3],[8,3],[1,4],[2,4],[3,4],[4,4],[5,4],[6,4],[7,4],[2,5],[3,5],[4,5],[5,5],[6,5],[2,6],[3,6],[5,6],[6,6],[1,7],[2,7],[6,7],[7,7]].forEach(([x,y])=>g.dot(x,y,c)); g.dot(4,1,'#fff'); }
+
+
+function scene(cv,kind){ const W=cv.width,H=cv.height, ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false;
+  const put=(x,y,c)=>{ if(x<0||y<0||x>=W||y>=H) return; ctx.fillStyle=c; ctx.fillRect(x,y,1,1); };
+  const gy=Math.round(H*.72); for(let y=0;y<H;y++) for(let x=0;x<W;x++){ put(x,y,y<H*.38?P.water2:y<H*.62?P.wave:P.foam); }
+  for(let dy=-3;dy<=3;dy++) for(let dx=-3;dx<=3;dx++) if(dx*dx+dy*dy<=9) put(W-10+dx,7+dy,P.amber);
+  [[8,6],[22,10],[34,5]].forEach(([x,y],i)=>{ for(let k=0;k<5+i;k++){ put(x+k,y,'#fff'); if(k>0&&k<4+i) put(x+k,y-1,'#fff'); } });
+  const ground={mines:[P.rock,P.rock2],forest:[P.forest,P.forest2],keep:[P.meadow,P.meadow2],hall:[P.field,P.field2],summit:[P.snow,P.snow2],hills:[P.grass,P.grass2]}[kind];
+  for(let y=gy;y<H;y++) for(let x=0;x<W;x++){ put(x,y,((x>>1)+y)%2?ground[0]:ground[1]); }
+  for(let x=0;x<W;x++) put(x,gy,P.outline);
+  const B=(sp,x,y)=>sp.blit(put,x,y);
+  if(kind==='mines'){ B(mountainSpr(Math.round(H*.55),.9),Math.round(W*.36),gy+2); B(mountainSpr(Math.round(H*.4),.9),Math.round(W*.72),gy+2); B(mountainSpr(Math.round(H*.28),.9),Math.round(W*.12),gy+2); B(caveSpr(),Math.round(W*.36),gy+1); B(torchSpr(),Math.round(W*.36)-5,gy+4); B(torchSpr(),Math.round(W*.36)+5,gy+4); B(cartSpr(),Math.round(W*.58),gy+6); B(pineSpr(),W-6,gy+7); }
+  if(kind==='forest'){ for(let i=0;i<7;i++) B(pineSpr(),6+i*Math.round(W/7),gy+5+(i%2)*3); }
+  if(kind==='keep'){ B(castleSpr(),Math.round(W/2),gy+3); }
+  if(kind==='hall'){ B(hallSpr(),Math.round(W*.45),gy+4); B(houseSpr(),Math.round(W*.2),gy+6); B(houseSpr(),Math.round(W*.8),gy+7); }
+  if(kind==='summit'){ B(peakSpr(),Math.round(W/2),gy+3); }
+  if(kind==='hills'){ B(hillSpr(24,9),Math.round(W*.3),gy+5); B(hillSpr(18,7),Math.round(W*.7),gy+6); B(signSpr(),Math.round(W*.5),gy+7); }
+  const adv=spr(); adv.rect(0,-5,2,2,'#e8bf94'); adv.rect(0,-3,2,3,P.castle); adv.set(2,-5,P.trunk); adv.set(2,-4,P.trunk); adv.set(2,-6,P.glow); adv.outline(P.outline); adv.blit(put,Math.round(W*.52),gy+6); }
+function mobileMaps(){
+  const mk=(id,V,pins,labels)=>{ const cv=document.getElementById(id); render(cv,{...V,pins}); placeLabels(cv.parentElement,V,cv.width,cv.height,labels); };
+  const pinsAll=[{n:1,state:'done',x:34,y:108},{n:2,state:'done',x:62,y:78},{n:3,sel:1,state:'open',x:104,y:108},{n:4,state:'open',x:146,y:78},{n:5,state:'open',x:92,y:36},{n:6,state:'open',x:150,y:18},{you:1,x:66,y:96}];
+  mk('c-m1',{x:28,y:8,z:1},pinsAll,[{x:62,y:98,t:'Loop Forest'},{x:104,y:132,t:'Model Mines'},{x:92,y:62,t:'GRAIN Keep'},{x:146,y:106,t:'Guild Hall'}]);
+  mk('c-m2',{x:72,y:108,z:2},[],[]);
+  mk('c-m3',{x:88,y:104,z:3,detail:1},[{n:1,sel:1,state:'open',x:100,y:114},{n:2,state:'open',x:112,y:122},{n:3,state:'open',x:92,y:127}],[]);
+}
+function drawCards(){
+  document.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind)); mobileMaps();
+  document.querySelectorAll('canvas.guide').forEach(c=>guideDraw(c));
+  document.querySelectorAll('canvas[data-rune]').forEach(c=>runeDraw(c,+c.dataset.rune,[P.roof,P.castle,P.forest,P.pin,P.you,P.roof2,P.castle2,P.rockd][+c.dataset.rune%8]));
+  badge(document.getElementById('c-bp'),P.forest); badge(document.getElementById('c-rb'),P.forest);
+}
+function drawRpg(){ guideDraw(document.getElementById('c-guide')); runeDraw(document.getElementById('c-rune'),2,P.roof); runeDraw(document.getElementById('c-rune2'),2,P.roof); runeDraw(document.getElementById('c-mrune'),2,P.roof);
+  const r=document.getElementById('runes'); r.innerHTML=''; ['A worse model is a hobby','Free may keep it','Work code stays home','One decision-maker'].forEach((n,i)=>{ const w=document.createElement('div'); w.className='rn'+(i>0?' off':''); const c=document.createElement('canvas'); c.width=56;c.height=56; const l=document.createElement('small'); l.textContent=n; w.appendChild(c); w.appendChild(l); r.appendChild(w); runeDraw(c,[2,3,4,5][i],i>0?P.rockd:P.roof); });
+  itemDraw(document.getElementById('c-i1'),0); itemDraw(document.getElementById('c-i2'),1); itemDraw(document.getElementById('c-i3'),2); starDraw(document.getElementById('c-star')); starDraw(document.getElementById('c-star2')); drawCards(); }
+const _drawAll=drawAll; drawAll=function(){ _drawAll(); drawRpg(); };
+const root=document.documentElement;
+document.getElementById('flavor').onchange=e=>{ root.dataset.theme=e.target.value; drawAll(); };
+document.querySelectorAll('#scheme button').forEach(b=>b.onclick=()=>{ const v=b.dataset.s; if(v==='auto') root.removeAttribute('data-color-scheme'); else root.dataset.colorScheme=v; document.querySelectorAll('#scheme button').forEach(x=>x.setAttribute('aria-pressed',x===b)); drawAll(); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>drawAll());
+drawAll();
+</script>
+</body>
+</html>

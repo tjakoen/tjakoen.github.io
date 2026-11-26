@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learn AI with me · Tjakoen Stolk</title>
+  <meta name="description" content="A pixel map of the notes, grouped into regions you can walk in order.">
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    /* The map is the page: it fills the main column under the tabs. */
+    body[data-screen="learn"] .app-shell__main { padding: 0; display: flex; flex-direction: column; min-height: 0; }
+    /* The hidden terminal still holds its grid row, so give that row back to the map. */
+    body[data-screen="learn"] .app-shell { grid-template-rows: auto auto minmax(0, 1fr) 0 auto; }
+    .learn__frame { flex: 1 1 auto; min-height: 0; width: 100%; border: 0; display: block; }
+  </style>
+</head>
+<body data-screen="learn" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="learn" data-rail-collapsed="true" data-rail-arrival data-aside-hidden="true" data-console-hidden="true" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main" id="main-content">
+      <iframe class="learn__frame" id="learn-frame" title="Learn AI with me: a map of the notes" src="/learn-map/map.html"></iframe>
+    </main>
+  </div>
+  <script>
+    /* Hand the address hash (#quest=… or #stop=…) to the map, once on arrival and again if it changes. */
+    (function () {
+      /* The tab strip names a tab from the explorer tree, which does not list this page, so name it here and keep it named when the strip redraws. */
+      var strip = document.querySelector("[data-open-tabs]");
+      function name() { var l = strip && strip.querySelector('a.tab[href="/learn"] > span'); if (l && l.textContent !== "Learn AI with me") l.textContent = "Learn AI with me"; }
+      if (strip) { name(); new MutationObserver(name).observe(strip, { childList: true, subtree: true }); }
+      var f = document.getElementById("learn-frame");
+      function pass() { var h = location.hash; if (f.contentWindow && f.contentWindow.location.hash !== h) f.contentWindow.location.hash = h; }
+      if (location.hash) f.src = "/learn-map/map.html" + location.hash;
+      window.addEventListener("hashchange", pass);
+    })();
+  </script>
+</body>
+</html>

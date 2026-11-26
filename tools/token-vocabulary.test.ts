@@ -26,6 +26,9 @@ function walk(dir: string, out: string[] = []): string[] {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     if (SKIP.has(e.name)) continue;
     const full = join(dir, e.name);
+    // docs/mockups holds design references that inline the site's stylesheets as pasted copies. They are
+    // never served, so a token the copy leaves out is not a broken page.
+    if (full === join(ROOT, "docs", "mockups")) continue;
     if (e.isDirectory()) walk(full, out);
     else out.push(full);
   }
@@ -48,6 +51,7 @@ const read = (f: string) => readFileSync(f, "utf8");
 // checkable. Adding a name here without one turns this guard back into decoration.
 const EXTERNALLY_SET = new Map<string, string>([
   ["--read", "runtime: scripts/note-progress.js:32 setProperty, documented in view/components/molecules/note-contents/note-contents.md:22"],
+  ["--ps", "runtime: view/learn-map/map.html:1124 setProperty sets the pin size as the map zooms"],
 ]);
 
 test("every custom property the portfolio reads is defined by GRAIN or the portfolio", () => {

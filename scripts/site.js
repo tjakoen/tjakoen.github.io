@@ -676,6 +676,8 @@
           let chosen = null;
           try { chosen = localStorage.getItem("grain.shell.rail-collapsed"); } catch { /* private mode */ }
           if (chosen !== null) return;
+          // A page that arrives with the rail collapsed on purpose (the /learn map) opts out of following the width.
+          if (shell.hasAttribute("data-rail-arrival")) return;
           const tablet = viewportLabel.textContent === "tablet";
           if ((shell.getAttribute("data-rail-collapsed") === "true") !== tablet)
             shell.setAttribute("data-rail-collapsed", tablet ? "true" : "false");
