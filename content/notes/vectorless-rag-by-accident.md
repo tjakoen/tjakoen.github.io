@@ -34,7 +34,7 @@ social: |
   It is easy to trace and it costs me nothing extra. It also costs more reads, and my notes are still
   a flat pile with no tree.
 socialImage: "/media/notes/vectorless-rag-by-accident-social.png"
-socialImageAlt: "My AI workflow is vectorless RAG and I didn't call it that: on the left a scatter of dots with a ring around the nearest few, labelled find what looks similar; on the right a small tree with one path drawn in ink down to a filled leaf, labelled read the contents, open one file."
+socialImageAlt: "My AI workflow is vectorless RAG and I didn't call it that: on the left a scatter of dots with a ring around the nearest few, labelled find what looks similar; on the right a small tree with one path drawn in ink down to a filled leaf, labelled read the contents, open the one section it needs. Below, three lines: one contents page linked as AGENTS.md for Claude, Codex and OpenCode; a question about my voice rules read 36 lines of a 677-line file; so I steer and review and do not brief."
 ---
 
 My AI has never read my standards. Every session starts blank, whether it is Claude, Codex or
@@ -298,10 +298,15 @@ Each layer gets its own section in the [companion](how-my-sessions-walk-the-tree
 
 ## What one question costs
 
-Here is one real question: can I put a backtick in a note? CLAUDE.md points at the voice standard. The
-skill description says to read it before any prose in my name. The standards index lists its sections.
-The session opens one of them, lines 159 to 194, and the answer is no, not in prose. The
-[companion](how-my-sessions-walk-the-tree.md#one-question-walked-down-the-tree) draws the walk. I traced it by hand from the index, not from a log, so read it as the route the setup allows.
+Here is one real question: can I put a backtick in a note? The session takes four steps:
+
+1. CLAUDE.md points at the voice standard for prose in my name.
+2. The skill description says to read it before any prose with my byline.
+3. The standards index lists its sections, one of them punctuation.
+4. The session opens that section, lines 159 to 194, and the answer is no, not in prose.
+
+I traced it by hand from the index, not from a log, so read it as the route the setup allows. The
+[companion](how-my-sessions-walk-the-tree.md#one-question-walked-down-the-tree) draws it.
 
 <svg viewBox="0 0 620 290" width="100%" role="img"
      aria-label="What one question costs in VOICE.md, which is 677 lines and 49,380 characters. The file is drawn as a strip with one narrow band lit in ink, lines 159 to 194, the punctuation section. Below it, two bars on the same scale. Opening the whole file reads 49,380 characters, a full-width bar. Opening only the section reads 2,848 characters, 5.8 percent, a short ink bar. The point: 94 percent of the file never enters the session."
@@ -347,12 +352,13 @@ The reason is what I no longer do:
   read and the answer is a path. That is [watching its hands](watch-its-hands.md), and a branch it
   chose is a hand I can watch.
 
-So I steer and I review, and I rarely re-explain. That is what I mean by low effort, and it is the
-same loop [one repo after another](one-loop-every-repo.md) runs on. The tree does not make the model
-smarter. It makes the starting line the same every time.
+So I steer and I review, and I rarely re-explain. That is what I mean by low effort. The tree does not
+make the model smarter. It makes the starting line the same every time, on every repo the
+[loop](one-loop-every-repo.md) runs in.
 
-Here is the limit on that claim. It is my experience and not a measurement. I have not timed sessions
-with the tree against sessions without it, and every number in this note measures reading, not effort.
+The limit on that claim: it is my experience and not a measurement. I have not timed sessions with the
+tree against sessions without it, and every number in this note measures reading, not effort.
+
 PANTRY's run ledger records token use by model and plan, so a real comparison could live there. That
 is an idea and not a build.
 

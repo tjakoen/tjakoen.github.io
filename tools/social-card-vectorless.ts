@@ -75,9 +75,11 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
 
     ${tree()}
     <text x="884" y="930" text-anchor="middle" style="fill:${INK};font-size:30px">Read the contents</text>
-    <text x="884" y="966" text-anchor="middle" style="fill:${MUTED};font-size:23px">open the one file it needs</text>
+    <text x="884" y="966" text-anchor="middle" style="fill:${MUTED};font-size:23px">open the one section it needs</text>
 
-    <text x="96" y="1052" style="fill:${INK};font-size:30px">I would have called it keeping good docs.</text>
+    <text x="96" y="1016" style="fill:${INK};font-size:27px">One contents page, linked as AGENTS.md for Claude, Codex and OpenCode.</text>
+    <text x="96" y="1054" style="fill:${INK};font-size:27px">A question about my voice rules read 36 lines of a 677-line file.</text>
+    <text x="96" y="1092" style="fill:${MUTED};font-size:27px;font-style:italic">So I steer and review. I do not brief.</text>
 
     <line x1="96" y1="1122" x2="${W - 96}" y2="1122" style="stroke:${LINE};stroke-width:1"/>
     <text x="96" y="1158" style="fill:${INK};font-size:22px">My AI Workflow Is Vectorless RAG and I Didn't Call It That</text>
