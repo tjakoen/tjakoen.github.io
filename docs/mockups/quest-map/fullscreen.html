@@ -464,6 +464,7 @@ function castleSpr(){ const s=spr();
 function hallSpr(){ const s=spr(); s.rect(-6,-6,13,6,P.wall); s.rect(1,-6,6,6,P.wall2);
   for(let j=0;j<6;j++) for(let i=-8+j;i<=8-j;i++) s.set(i,-7-j,i<=0?P.roof:P.roof2);
   s.rect(-1,-4,3,4,P.outline); s.set(-4,-4,P.glow); s.set(4,-4,P.glow); return s.outline(shade(P.wall2,.45)); }
+function iglooSpr(){ const s=spr(), e=shade(P.snow2,.6); const rows=[[-4,4],[-4,4],[-3,3],[-2,2],[-1,1]]; rows.forEach(([a,b],j)=>{ for(let i=a;i<=b;i++) s.set(i,-j,i>0?P.snow2:P.snow); }); [[-2,-1],[1,-2],[-1,-3]].forEach(([x,y])=>s.set(x,y,P.snow2)); s.rect(-1,1-1,3,1,'#3b4a63'); s.set(0,-1,'#3b4a63'); return s.outline(e); }
 function houseSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.wall); for(let j=0;j<3;j++) for(let i=-4+j;i<=5-j;i++) s.set(i,-4-j,i<=0?P.roof:P.roof2); s.set(0,-1,P.outline); return s.outline(shade(P.wall2,.45)); }
 function peakSpr(){ const s=mountainSpr(26,.72); s.rect(0,-30,1,6,P.outline); s.rect(1,-30,4,3,P.flag); s.rect(1,-29,1,1,P.pinHi); return s.outline(P.outline); }
 function caveSpr(){ const s=spr(); s.rect(-2,-3,5,3,P.outline); s.rect(-1,-4,3,1,P.outline); s.set(-3,-1,P.rockd); s.set(3,-1,P.rockd); return s; }
@@ -527,7 +528,7 @@ function buildWorld(){
   add(hallSpr(),146,96); add(houseSpr(),134,100); add(houseSpr(),158,102); add(houseSpr(),156,84);
   add(castleSpr(),92,56); add(peakSpr(),150,40);
   { const sp=()=>{ const q=spr(); q.rect(0,-1,1,2,P.trunk); [[-3,3],[-2,2],[-1,1]].forEach(([_,hw],j)=>{ for(let i=-hw;i<=hw;i++){ q.set(i,-2-2*j,P.forest); q.set(i,-3-2*j,i<=0?P.snow:P.snow2); } }); return q.outline(shade(P.forest2,.5)); };
-    [[132,50],[138,60],[166,50],[170,58],[174,66],[128,62],[144,48],[160,66]].forEach(([x,y])=>{ if(land[y*WW+x]&&reg[y*WW+x]===6) add(sp(),x,y); }); add(houseSpr(),140,57); add(houseSpr(),164,60); }
+    [[132,50],[138,60],[166,50],[170,58],[174,66],[128,62],[144,48],[160,66]].forEach(([x,y])=>{ if(land[y*WW+x]&&reg[y*WW+x]===6) add(sp(),x,y); }); add(iglooSpr(),141,57); add(iglooSpr(),164,58); }
   sprites.sort((a,b)=>a.y-b.y);
   sprites.cave=caveSpr();
 }
@@ -587,18 +588,29 @@ function filterOk(q){ if(filter==='All') return true; if(filter==='Loop') return
 const warp=(t,k,a=1)=>1+a*(.13*Math.sin(3*t+k)+.09*Math.sin(5*t+2*k)+.06*Math.sin(2*t+3*k));
 const ringPt=t=>{ const w=1+.16*Math.sin(3*t+1)+.1*Math.sin(5*t+2)+.06*Math.sin(2*t); return [Math.round(48+34*w*Math.cos(t)),Math.round(38+24*w*Math.sin(t))]; };
 const RING=n=>Array.from({length:n},(_,i)=>ringPt(i/n*6.2832-1.5708));
+const arc=(t0,t1,n=10)=>Array.from({length:n+1},(_,i)=>ringPt(t0+(t1-t0)*i/n));
+/* Each quest has a route through its place, along things you can really walk: tunnels, streets, walkways, the trail. Stops sit at even steps along it. */
+const ROUTES={
+  2:[arc(-1.5708,0),arc(0,1.5708),arc(1.5708,3.1416),arc(3.1416,4.7124)],
+  3:[[[65,66],[65,56],[65,46],[65,36]],[[65,44],[46,44],[26,44],[26,24]],[[65,66],[65,50],[65,36],[85,36],[105,36],[105,22],[90,18],[74,18],[60,18]]],
+  4:[[[98,38],[72,38],[54,38],[36,38],[24,42]],[[54,70],[54,52],[62,42]],[[16,24],[16,38],[32,38],[48,38],[54,32],[70,38],[90,38],[90,26]]],
+  5:[[[50,66],[50,48],[30,48],[24,34]],[[50,66],[50,46],[50,40],[50,28],[50,16]]],
+  6:[[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]],[[42,14],[50,22],[32,30],[56,38],[28,46],[58,54],[26,62]]]
+};
 const SPEC={
   1:{cx:26,cy:126,W:88,H:56,q:[],slots:[],lights:[[16,17],[84,25],[37,41]],flags:[[51,6]]},
   2:{cx:62,cy:92,W:96,H:76,q:[ringPt(-1.5708),ringPt(0),ringPt(1.5708),ringPt(3.1416)],slots:RING(12),lights:[[48,38],...RING(8)],flags:[]},
   3:{cx:104,cy:126,W:130,H:70,q:[[65,62],[26,24],[65,20]],slots:[[65,58],[65,46],[45,44],[26,40],[26,24],[85,38],[105,32],[105,20],[65,20]],lights:[[65,54],[26,36],[104,28],[66,18]],flags:[]},
   4:{cx:146,cy:92,W:108,H:76,q:[[24,42],[62,42],[54,30]],slots:[[54,30],[24,42],[62,42],[54,56],[16,26],[90,26],[16,60],[90,60],[36,62]],lights:[[44,31],[64,31],[54,50],[24,36]],flags:[[54,2]]},
   5:{cx:92,cy:54,W:100,H:80,q:[[26,38],[50,42]],slots:[[50,66],[50,14],[50,40],[26,34],[74,34],[30,50],[13,13],[87,13],[87,63]],lights:[[38,58],[62,58],[13,10],[87,10]],flags:[[53,2]]},
-  6:{cx:150,cy:36,W:84,H:70,q:[[26,58],[42,10]],slots:[[26,60],[44,56],[56,52],[44,46],[30,42],[42,36],[52,30],[46,22],[42,14]],lights:[[26,57]],flags:[[46,3]]}
+  6:{cx:150,cy:36,W:84,H:70,q:[[26,58],[42,10]],slots:[[26,58],[52,56],[28,48],[54,40],[32,32],[48,24],[42,14],[60,30],[22,40]],lights:[[20,52],[64,44],[24,26]],flags:[[46,3]]}
 };
 const sceneM=(n,x,y)=>{ const s=SPEC[n]; return [Math.round(s.cx-s.W/4)+x/2, Math.round(s.cy-s.H/4)+y/2]; };
 function layoutQuests(){ for(const n in SPEC){ byReg(+n).forEach((qq,i)=>{ const p=SPEC[n].q[i]; if(p) qq.pos=sceneM(+n,p[0],p[1]); }); }
   const nx=QUESTS.find(q=>!q.done)||QUESTS[0]; YOU[0]=nx.pos[0]; YOU[1]=nx.pos[1]; } // you stand beside the next quest on your route
-const stopPos=(qq,i)=>{ const s=SPEC[qq.region], k=byReg(qq.region).indexOf(qq), sl=s.slots, p=sl[(k*3+i)%sl.length]; return sceneM(qq.region,p[0],p[1]); };
+const routeOf=qq=>{ const r=ROUTES[qq.region]; return r&&r[byReg(qq.region).indexOf(qq)]; };
+function alongRoute(rt,f){ let L=0; const seg=[]; for(let i=0;i<rt.length-1;i++){ const d=Math.hypot(rt[i+1][0]-rt[i][0],rt[i+1][1]-rt[i][1]); seg.push(d); L+=d; } let s=L*f; for(let i=0;i<seg.length;i++){ if(s<=seg[i]||i===seg.length-1){ const k=seg[i]?Math.min(1,s/seg[i]):0; return [rt[i][0]+(rt[i+1][0]-rt[i][0])*k,rt[i][1]+(rt[i+1][1]-rt[i][1])*k]; } s-=seg[i]; } return rt[0]; }
+const stopPos=(qq,i)=>{ const rt=routeOf(qq); const n=Math.min(qq.stops.length,9); if(!rt) return qq.pos; const [x,y]=alongRoute(rt,n===1?.5:.04+.92*i/(n-1)); return sceneM(qq.region,x,y); };
 /* ===== Life: ferries, a kraken, gulls, forest birds and chimney smoke. Drawn in pixel steps, slowly. ===== */
 /* The cloud ring is the border of the map: a rounded outline far outside the island with open sea in between. The kraken keeps the spot in the top-left sea that it was given. */
 const RING_RX=185, RING_RY=145, RING_N=2.6, ringXY=(t,k=1)=>{ const c=Math.cos(t), s=Math.sin(t); return [Math.round(100+k*RING_RX*Math.sign(c)*Math.abs(c)**(2/RING_N)), Math.round(80+k*RING_RY*Math.sign(s)*Math.abs(s)**(2/RING_N))]; }, KRAKEN=[-41,26];
@@ -637,7 +649,7 @@ const WALK={
   4:[{k:'v1',p:[[10,38],[98,38]],v:3,ph:0},{k:'v2',p:[[98,40],[12,40]],v:2.4,ph:30},{k:'v3',p:[[54,8],[54,68]],v:2.6,ph:10},{k:'v1',p:[[60,38]],m:'stay',i:1},{k:'v2',p:[[46,41]],m:'stay',i:2}],
   5:[{k:'guard',p:[[14,12],[86,12],[86,62],[14,62],[14,12]],v:4,m:'loop',ph:0},{k:'guard',p:[[14,12],[86,12],[86,62],[14,62],[14,12]],v:4,m:'loop',ph:132},
      ...[[43,63],[57,63],[45,46],[55,46],[30,13],[70,13],[24,62],[76,62]].map((pt,i)=>({k:'guard',p:[pt],m:'stay',i}))],
-  6:[{k:'climber',p:[[26,62],[56,52],[30,42],[52,30],[42,14]],v:2.2,ph:0}] };
+  6:[{k:'climber',p:[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]],v:2.2,ph:0},{k:'climber',p:[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]],v:2,ph:90}] };
 function walkPos(w,T){ const A=w.p; if(A.length===1||w.m==='stay') return [A[0][0],A[0][1]];
   if(!w._L){ w._seg=[]; w._L=0; for(let i=0;i<A.length-1;i++){ const d=Math.hypot(A[i+1][0]-A[i][0],A[i+1][1]-A[i][1]); w._seg.push(d); w._L+=d; } }
   let s=T/1000*w.v+(w.ph||0); const L=w._L; if(w.m==='loop') s=((s%L)+L)%L; else { s=((s%(2*L))+2*L)%(2*L); if(s>L) s=2*L-s; }
@@ -721,7 +733,7 @@ function bakeScenes(){
       SPEC[2].lights.forEach(([x,y])=>glow(x,y)); }
     if(n==3){ blob(P.rock2,P.rock); hill(W/2-8,H/2-6,P.rock,P.outline); const DK='#2a2430';
       const tun=(x0,y0,x1,y1,t)=>L(x0,y0,x1,y1,DK,t);
-      tun(65,68,65,24,6); tun(65,44,26,44,5); tun(26,44,26,24,5); tun(65,36,105,36,5); tun(105,36,105,22,5);
+      tun(65,68,65,24,6); tun(65,44,26,44,5); tun(26,44,26,24,5); tun(65,36,105,36,5); tun(105,36,105,22,5); tun(105,20,74,18,4);
       R(50,10,32,16,DK); R(18,16,16,12,DK); R(98,12,16,12,DK);
       R(56,15,3,3,P.amber); R(70,12,3,3,P.glow); R(66,21,2,3,'#a483cf');
       for(let y=60;y>26;y-=16){ R(61,y,1,6,P.trunk); R(69,y,1,6,P.trunk); R(61,y-1,9,1,P.trunk); }
@@ -755,18 +767,23 @@ function bakeScenes(){
       D(30,50,4,P.wall2); D(30,50,2,P.water); R(66,46,14,10,P.trunk); R(64,44,18,3,P.roof);
       pine(2,40); pine(96,42); pine(4,72); pine(94,72);
       SPEC[5].lights.forEach(([x,y])=>glow(x,y)); }
-    if(n==6){ /* The summit, kept quiet: one peak, one trail, a camp, two cabins and a lake. */
+    if(n==6){ /* The summit: one peak with a switchback trail and a few tents along it, igloos below and a frozen lake. */
       blob(P.snow,P.snow2);
+      const SE=shade(P.snow2,.6);
+      const igloo=(x,y,r)=>{ for(let j=-1;j<=r;j++){ const w=Math.round(Math.sqrt(r*r-Math.max(j,0)*Math.max(j,0)))+1; R(x-w,y-j-1,w*2+1,1,SE); } for(let j=0;j<=r;j++){ const w=Math.round(Math.sqrt(r*r-j*j)); R(x-w,y-j,w*2+1,1,P.snow); R(x+1,y-j,w,1,P.snow2); if(j%3===1){ R(x-w,y-j,w*2+1,1,P.snow2); } }
+        for(let j=2;j<r;j+=3) for(let i=-r+3;i<r;i+=4) R(x+i+(j%2?2:0),y-j-1,1,2,SE); R(x-3,y-4,7,5,SE); R(x-2,y-3,5,4,'#3b4a63'); R(x-2,y-4,5,1,P.snow2); };
       for(let y=5;y<47;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw-1,y,hw*2+2,1,P.outline); }
       for(let y=6;y<46;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw,y,hw*2,1,P.rock); R(42,y,hw,1,P.rock2); }
       for(let y=6;y<18;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw+2,y,hw*2-4,1,P.snow); R(42,y,hw-2,1,P.snow2); }
-      const pts=[[26,62],[56,52],[30,42],[52,30],[42,14]]; for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.road,2);
-      tent(18,54,P.roof,P.roof2);
+      speckle(14,26,56,18,P.rockd,26);
+      const pts=[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]]; for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.roadEdge,4);
+      for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.road,2);
+      tent(12,48,P.roof,P.roof2); tent(66,40,P.field,P.field2); tent(18,22,P.roof2,P.roof);
       R(42,0,1,10,P.outline); R(43,0,8,5,P.flag); R(43,1,3,2,P.pinHi);
       for(let y=58;y<70;y++) for(let x=24;x<68;x++){ const dx=(x-46)/21, dy=(y-70)/10; if(dx*dx+dy*dy<1){ g.fillStyle=dx*dx+dy*dy>.8?P.foam:(((x*3+y*7)%11===0)?P.foam:P.water2); g.fillRect(x,y,1,1); } }
-      house(8,60,14,9,P.roof2,P.roof); house(68,56,14,9,P.roof,P.roof2); R(12,64,2,3,P.glow); R(72,60,2,3,P.glow);
+      igloo(76,58,8); igloo(8,64,6);
       const spine=(x,y)=>{ const ly=[[x-4,y-3,9,3],[x-3,y-6,7,3],[x-2,y-9,5,3]]; R(x-2,y-1,4,4,VE); ly.forEach(([a,b,w,h])=>R(a-1,b-1,w+2,h+2,VE)); R(x-1,y,2,2,P.trunk); ly.forEach(([a,b,w,h])=>{ R(a,b,w,h,P.forest); R(a,b,w,1,P.snow); }); };
-      spine(6,50); spine(76,48); spine(70,68);
+      spine(4,40); spine(78,40); spine(62,67); spine(20,66);
       SPEC[6].lights.forEach(([x,y])=>glow(x,y)); }
     DET.push({n:+n,ox:Math.round(sp.cx-W/4),oy:Math.round(sp.cy-H/4),W,H,cv}); } }
 
@@ -805,9 +822,10 @@ function draw(tick){
       if(na<=0) return; const dx=Math.round((sc.ox-vx)*z), dy=Math.round((sc.oy-vy)*z), dw=sc.W*z/2, dh=sc.H*z/2; if(dx>=CW||dy>=CH||dx+dw<=0||dy+dh<=0) return;
       ctx.globalAlpha=na*na*(3-2*na); ctx.drawImage(sc.cv,0,0,sc.W,sc.H,dx,dy,dw,dh); ctx.globalAlpha=1; });
     if(moving) drawSoon(); else fadeT=0; }
-  if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id); line([qq.pos.slice(),...qq.stops.slice(0,9).map((_,i)=>stopPos(qq,i))],(x,y,t)=>{ if(t%2) return; put(x,y,P.main); put(x,y+1,P.mainEdge); }); }
   const dpf=n=>{ const sc=DET.find(d=>d.n===n); return (dx,dy,c)=>{ const sz=z/2, sx=Math.round((sc.ox+dx/2-vx)*z), sy=Math.round((sc.oy+dy/2-vy)*z); if(sx<-sz||sy<-sz||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,sz,sz); }; };
   movers(put,z,motion?performance.now():0,dpf);
+  // the selected quest's route: a dashed trail along the place's own paths, tunnels or streets, through its stops
+  if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id), rt=qq&&routeOf(qq); if(rt&&(FADE[qq.region]||0)>.3){ const dp=dpf(qq.region); let acc=0; for(let i=0;i<rt.length-1;i++){ const [x0,y0]=rt[i],[x1,y1]=rt[i+1], d=Math.hypot(x1-x0,y1-y0); for(let t=0;t<d;t+=1){ const k=t/d, x=Math.round(x0+(x1-x0)*k), y=Math.round(y0+(y1-y0)*k); if(Math.floor((acc+t)/3)%2===0){ dp(x,y,P.amber); dp(x+1,y,P.amber); dp(x,y+1,P.mainEdge); dp(x+1,y+1,P.mainEdge); } } acc+=d; } } }
   // pins
   const zp=z>=4?3:2; const items=[];
   // Pins are real markers, not pixel art: round, numbered, high contrast, and sized for a finger. The terrain stays pixel art.
