@@ -582,8 +582,8 @@ let cols=[], sprites=[], roadMain=new Set(), roadMinor=new Set();
   else if(id===1) reg[i]=2; } })();
 function distTo(x,y,type,r=3){ let best=9; for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){ const xx=x+dx,yy=y+dy; const t=(xx<0||yy<0||xx>=WW||yy>=WH)?0:land[yy*WW+xx]; if(t===type) best=Math.min(best,Math.max(Math.abs(dx),Math.abs(dy))); } return best; }
 function line(pts,fn){ for(let k=0;k<pts.length-1;k++){ let [x0,y0]=pts[k],[x1,y1]=pts[k+1]; const n=Math.max(Math.abs(x1-x0),Math.abs(y1-y0)); for(let t=0;t<=n;t++){ const x=Math.round(x0+(x1-x0)*t/n), y=Math.round(y0+(y1-y0)*t/n+Math.sin(t/n*6.28*1)*2*(k%2?1:-1)); fn(x,y,t); } } }
-function buildWorld(){
-  layoutQuests();
+function buildWorld(skipPixels){
+  layoutQuests(); if(skipPixels) return;
   cols=new Array(WW*WH); roadMain=new Set(); roadMinor=new Set(); sprites=[];
   for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; let c;
     if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water; }
@@ -908,7 +908,7 @@ function mixHex(a,b,t){ const ok=/^#[0-9a-f]{6}$/i; if(!ok.test(a)||!ok.test(b))
 let lastDraw=0, dq=0, focusN=0, fadeT=0; const FADE={}; // FADE[n] is how visible region n's detail map is, 0 to 1
 const drawSoon=()=>{ if(dq) return; dq=requestAnimationFrame(()=>{ dq=0; draw(); }); };
 /* paint() only draws to the canvases and works out what the overlay should hold; writeDom() is the one place that touches the page. */
-function draw(tick){ writeDom(paint(tick)); }
+function draw(tick){ if(base) writeDom(paint(tick)); }
 function paint(tick){
   const {vx,vy,z}=origin(); ctx.imageSmoothingEnabled=false; if(!tick) lastDraw=performance.now(); fctx.clearRect(0,0,fx.width,fx.height);
   if(view==='path'){ ctx.fillStyle=P.water; ctx.fillRect(0,0,CW,CH); ctx.drawImage(baseP,0,0,WW,WH,Math.round(-vx*z),Math.round(-vy*z),WW*z,WH*z); }
@@ -1090,8 +1090,22 @@ document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.topright')) 
 syncSettings();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>reskin());
 function thumbs(){ const a=document.getElementById('th-ex'), b=document.getElementById('th-pa'); if(!a||!b||!base||!baseP) return; [[a,base,M],[b,baseP,0]].forEach(([cv,src,o])=>{ const g=cv.getContext('2d'); g.imageSmoothingEnabled=false; g.drawImage(src,o,o,WW,WH,0,0,cv.width,cv.height); }); const g=b.getContext('2d'); QUESTS.forEach(qq=>{ const rt=routeOf(qq); if(!rt) return; g.strokeStyle=PATHCOL[qq.region]; g.lineWidth=2; g.beginPath(); rt.forEach((pt,i)=>{ const m=sceneM(qq.region,pt[0],pt[1]); const x=m[0]*b.width/WW, y=m[1]*b.height/WH; if(i) g.lineTo(x,y); else g.moveTo(x,y); }); g.stroke(); }); }
-function reskin(){ loadPalette(); buildWorld(); bake(); layer(); thumbs(); renderPanel(); draw(); }
-function layer(){ const c=document.getElementById('c-layer'),x=c.getContext('2d'); x.imageSmoothingEnabled=false; for(let y=0;y<32;y++) for(let i=0;i<32;i++){ x.fillStyle=cols[(y*4+16)*WW+(i*4+16)]||P.water; x.fillRect(i,y,1,1);} }
+/* Baked art. bake-art.ts draws the base map, the waves, the path-only map, the layer icon and the six landmark scenes once per flavor
+   and scheme pair into art/<flavor>-<scheme>/, so this page can fetch images instead of drawing thousands of pixels on load. Add ?procedural to the
+   address, or serve the page without the art folder, and it falls back to drawing everything itself, which is also how the art is made. */
+const FORCE_PROC=/[?&]procedural\b/.test(location.search), ART_DIR='art/';
+const artKey=()=>(root.dataset.theme||'sourdough')+'-'+(isNightNow()?'dark':'light');
+const loadImg=u=>new Promise((ok,no)=>{ const im=new Image(); im.onload=()=>{ const c=document.createElement('canvas'); c.width=im.naturalWidth; c.height=im.naturalHeight; c.getContext('2d').drawImage(im,0,0); ok(c); }; im.onerror=()=>no(new Error(u)); im.src=u; });
+async function loadArt(key){ if(FORCE_PROC) return null; try{ const dir=ART_DIR+key+'/', r=await fetch(dir+'manifest.json'); if(!r.ok) return null; const m=await r.json();
+    const [base,waves,path,layerCv,...det]=await Promise.all([loadImg(dir+'base.png'),loadImg(dir+'waves.png'),loadImg(dir+'path.png'),loadImg(dir+'layer.png'),...m.det.map(d=>loadImg(dir+'scene-'+d.n+'.png'))]);
+    return {base,waves,path,layerCv,glints:m.glints,det:m.det.map((d,i)=>({...d,cv:det[i]}))}; }catch(e){ return null; } }
+let layerCv=null;
+function applyArt(a){ NIGHT=isNightNow(); CL1=NIGHT?shade(P.snow,.55):P.snow; CL2=NIGHT?shade(P.snow2,.55):P.snow2; base=a.base; wavesCv=a.waves; baseP=a.path; layerCv=a.layerCv; glints=a.glints; DET=a.det; makeMoverSprites(); makePeople(); }
+let skin=0;
+async function reskin(){ const mine=++skin; loadPalette(); const art=await loadArt(artKey()); if(mine!==skin) return;
+  if(art){ buildWorld(true); applyArt(art); } else { layerCv=null; buildWorld(); bake(); }
+  layer(); thumbs(); renderPanel(); draw(); }
+function layer(){ const c=document.getElementById('c-layer'),x=c.getContext('2d'); x.imageSmoothingEnabled=false; if(layerCv){ x.drawImage(layerCv,0,0); return; } for(let y=0;y<32;y++) for(let i=0;i<32;i++){ x.fillStyle=cols[(y*4+16)*WW+(i*4+16)]||P.water; x.fillRect(i,y,1,1);} }
 
 /* ---- Motion. A second canvas over the map, redrawn about seven times a second so it moves in pixel steps.
    Water glints, torch flames, the summit flag and a pulse on the adventurer. It is decoration only: the pins, labels and route lists are unchanged.
@@ -1116,7 +1130,7 @@ mbtn.onclick=()=>setMotion(!motion);
 reduce.addEventListener('change',e=>setMotion(!e.matches));
 document.addEventListener('visibilitychange',()=>{ if(motion&&!raf) raf=requestAnimationFrame(fxLoop); });
 addEventListener('resize',resize);
-loadPalette(); buildWorld(); bake(); layer(); thumbs(); renderPanel(); resize(); setMotion(motion);
+window.qmReady=reskin().then(()=>{ resize(); setMotion(motion); });
 
 </script>
 </body>
