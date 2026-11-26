@@ -14,4 +14,4 @@ build-in-site.py needs these next to it: note.html (a rendered note page fetched
 
 ## Before shipping the real feature
 
-The mover sprites (people, boats, birds, the kraken) are still built on load, because they are small and move every frame. Render the region and quest lists as plain HTML so the route works without JavaScript, and add tests and the accessibility gate. The audit in the quest-map plan lists the rest.
+The mover sprites (people, boats, the kraken) are baked into each manifest by bake-art.ts as pixel lists, and the site copy of the map in view/learn-map builds them from that data. This mockup still draws them on load. Render the region and quest lists as plain HTML so the route works without JavaScript, and add tests and the accessibility gate. The audit in the quest-map plan lists the rest.

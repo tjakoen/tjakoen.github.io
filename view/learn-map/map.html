@@ -877,6 +877,11 @@ function makeMoverSprites(){
   const k=spr(); for(let dy=-12;dy<=0;dy++) for(let dx=-9;dx<=9;dx++) if(dx*dx+(dy*.8)*(dy*.8)<=81) k.set(dx,dy,dx>2?P.castle2:P.castle);
   k.rect(-6,-8,3,3,NIGHT?'#ffe27a':'#fff').rect(3,-8,3,3,NIGHT?'#ffe27a':'#fff').set(-5,-7,P.outline).set(4,-7,P.outline).rect(-6,-9,3,1,P.outline).rect(3,-9,3,1,P.outline).set(0,-11,P.pinHi).set(-3,-3,P.pinHi).set(3,-2,P.pinHi).set(-1,-12+0,P.pinHi);
   SPR.kraken=k.outline(P.outline); }
+/* The movers are baked with the art: bake-art.ts writes each sprite as pixel lists grouped by colour into the manifest, so a baked pair builds
+   them from data instead of drawing them. Without the baked art, makeMoverSprites and makePeople draw them as before. */
+let ART_SPRITES=null;
+function fromData(d){ const o=spr(); for(const c in d) for(let i=0;i<d[c].length;i+=2) o.set(d[c][i],d[c][i+1],c); return o; }
+function loadMoverSprites(d){ SPR.boatR=d.boatR.map(fromData); SPR.boatL=d.boatL.map(fromData); SPR.kraken=fromData(d.kraken); for(const k in d.people) PEOPLE[k]=d.people[k].map(fromData); }
 function tentacle(put,bx,by,dir,ph,t,len){ for(let pass=0;pass<2;pass++) for(let k=0;k<=len;k++){ const cu=k>len*.65?(k-len*.65):0, x=Math.round(bx+dir*(k*.3+Math.sin(k*.5+ph+t/1500)*2.2)-dir*cu*1.1), y=Math.round(by-k*.95+cu*1.6+Math.cos(t/1900+ph)*1.2), w=k<len*.4?1:0, rr=w+(1-pass);
     for(let j=-rr;j<=rr;j++) for(let i=-rr;i<=rr;i++) put(x+i,y+j,pass?P.castle:P.outline); if(pass&&k%4===2) put(x,y,P.pinHi); } }
 const PEOPLE={};
@@ -1057,7 +1062,7 @@ function bake(){ NIGHT=isNightNow(); CL1=NIGHT?shade(P.snow,.55):P.snow; CL2=NIG
   /* a bank of cloud around the edge of the map, so the world ends in weather rather than a line */
   const puff=(x,y,r)=>{ if(isLand(x,y)) return; disc(x,y,r,CL2); disc(x-1,y-1,r-1,CL1); };
   for(let q=0;q<240;q++){ const t=q/240*6.2832, h=hash2(q,31), [px,py]=ringXY(t); puff(px+(h%3)-1,py+((h>>3)%3)-1,4+(h>>6)%4); if(q%3===0){ const [ix,iy]=ringXY(t,.94); puff(ix,iy,3+(h>>9)%3); } }
-  makeMoverSprites(); makePeople();
+  if(ART_SPRITES) loadMoverSprites(ART_SPRITES); else { makeMoverSprites(); makePeople(); }
   bakeScenes(); }
 let NIGHT=false, CL1='#f4f8ff', CL2='#dde6f4';
 const isNightNow=()=>document.documentElement.dataset.colorScheme==='dark'||(!document.documentElement.dataset.colorScheme&&matchMedia('(prefers-color-scheme: dark)').matches);
@@ -1255,11 +1260,12 @@ const artKey=()=>(root.dataset.theme||'sourdough')+'-'+(isNightNow()?'dark':'lig
 const loadImg=u=>new Promise((ok,no)=>{ const im=new Image(); im.onload=()=>{ const c=document.createElement('canvas'); c.width=im.naturalWidth; c.height=im.naturalHeight; c.getContext('2d').drawImage(im,0,0); ok(c); }; im.onerror=()=>no(new Error(u)); im.src=u; });
 async function loadArt(key){ if(FORCE_PROC) return null; try{ const dir=ART_DIR+key+'/', r=await fetch(dir+'manifest.json'); if(!r.ok) return null; const m=await r.json();
     const [base,waves,path,layerCv,...det]=await Promise.all([loadImg(dir+'base.png'),loadImg(dir+'waves.png'),loadImg(dir+'path.png'),loadImg(dir+'layer.png'),...m.det.map(d=>loadImg(dir+'scene-'+d.n+'.png'))]);
-    return {base,waves,path,layerCv,glints:m.glints,det:m.det.map((d,i)=>({...d,cv:det[i]}))}; }catch(e){ return null; } }
+    return {base,waves,path,layerCv,glints:m.glints,sprites:m.sprites||null,det:m.det.map((d,i)=>({...d,cv:det[i]}))}; }catch(e){ return null; } }
 let layerCv=null;
 function applyArt(a){ NIGHT=isNightNow(); CL1=NIGHT?shade(P.snow,.55):P.snow; CL2=NIGHT?shade(P.snow2,.55):P.snow2; base=a.base; wavesCv=a.waves; baseP=a.path; layerCv=a.layerCv; glints=a.glints; DET=a.det; makeMoverSprites(); makePeople(); }
 let skin=0;
 async function reskin(){ const mine=++skin; loadPalette(); const art=await loadArt(artKey()); if(mine!==skin) return;
+  ART_SPRITES=art&&art.sprites||null;
   if(art){ buildWorld(true); applyArt(art); } else { layerCv=null; buildWorld(); bake(); }
   layer(); thumbs(); renderPanel(); draw(); }
 function layer(){ const c=document.getElementById('c-layer'),x=c.getContext('2d'); x.imageSmoothingEnabled=false; if(layerCv){ x.drawImage(layerCv,0,0); return; } for(let y=0;y<32;y++) for(let i=0;i<32;i++){ x.fillStyle=cols[(y*4+16)*WW+(i*4+16)]||P.water; x.fillRect(i,y,1,1);} }
