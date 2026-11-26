@@ -3,14 +3,17 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { currentBlock, readData, renderRoute } from "./route-list";
+import { currentBlock, readData, renderRoute } from "./route-list.ts";
 
 const dir = import.meta.dir;
 const html = readFileSync(join(dir, "fullscreen.html"), "utf8");
-const data = readData(html) as ReturnType<typeof readData> & {
-  quests: { id: string; region: number; title: string; short: string; level: string; aud: string[]; min: number; pos: number[]; stops: string[]; learn: string[] }[];
+type Q = { id: string; region: number; title: string; short: string; level: string; aud: string[]; min: number; pos: number[]; stops: string[]; learn: string[] };
+type Scene = { W: number; H: number; q: number[][]; slots: number[][] };
+const data = readData(html) as unknown as {
+  regions: { n: number; name: string; sub: string; blurb: string }[];
+  quests: Q[];
   routes: Record<string, number[][][]>;
-  spec: Record<string, { W: number; H: number; q: number[][]; slots: number[][] }>;
+  spec: Record<string, Scene>;
   walk: Record<string, { p: number[][] }[]>;
   done: string[];
   partial: Record<string, number[]>;
