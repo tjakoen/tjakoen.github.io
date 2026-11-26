@@ -289,15 +289,21 @@ body { margin:0; background:var(--q-water); }
 #stage.drag { cursor:grabbing; }
 #map, #fx { position:absolute; left:0; top:0; image-rendering:pixelated; } #fx { pointer-events:none; }
 #over { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-.hit { position:absolute; width:30px; height:30px; margin:0; padding:0; box-sizing:border-box; border:3px solid #fff; border-radius:50%; background:#c8382a; color:#fff; font:700 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif; display:grid; place-items:center; box-shadow:0 2px 5px rgba(0,0,0,.45); cursor:pointer; pointer-events:auto; transform:translate(-50%,calc(-100% - 7px)); transition:transform .12s ease, box-shadow .12s ease; }
-.hit::before { content:""; position:absolute; inset:-7px; } /* a 44px target around a 30px marker */
+.hit { position:absolute; width:var(--ps,30px); height:var(--ps,30px); margin:0; padding:0; box-sizing:border-box; border:3px solid #fff; border-radius:50%; background:#c8382a; color:#fff; font:700 calc(var(--ps,30px) * .43)/1 system-ui,-apple-system,"Segoe UI",sans-serif; display:grid; place-items:center; box-shadow:0 2px 5px rgba(0,0,0,.45); cursor:pointer; pointer-events:auto; transform:translate(-50%,calc(-100% - 7px)); transition:transform .12s ease, box-shadow .12s ease; }
+.hit::before { content:""; position:absolute; inset:calc((44px - var(--ps,30px)) / -2); } /* a 44px target around a 30px marker */
 .hit::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:6px solid transparent; border-top-color:#fff; border-bottom:0; }
 .hit:hover { transform:translate(-50%,calc(-100% - 7px)) scale(1.12); }
 .hit[data-state="done"] { background:#2f7d33; }
 .hit[data-state="locked"] { background:#6b6b6b; }
-.hit[data-state="stop"] { background:#f5b83d; color:#3b2d1c; width:26px; height:26px; }
+.hit[data-state="stop"] { background:#f5b83d; color:#3b2d1c; width:calc(var(--ps,30px) * .87); height:calc(var(--ps,30px) * .87); }
 .hit[data-selected] { transform:translate(-50%,calc(-100% - 7px)) scale(1.25); z-index:2; box-shadow:0 0 0 4px rgba(245,184,61,.6), 0 3px 8px rgba(0,0,0,.5); }
 .hit.mark { pointer-events:none; }
+.hit .pn { pointer-events:none; }
+.hit .tagc { display:none; position:absolute; left:calc(100% + 8px); top:50%; transform:translateY(-50%); width:max-content; max-width:190px; padding:3px 8px; background:var(--q-panel); color:var(--q-ink); border:2px solid var(--q-ink); box-shadow:2px 2px 0 rgba(0,0,0,.22); font:600 12px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif; text-align:left; pointer-events:none; z-index:5; }
+.hit .tagc small { display:block; font-size:11px; font-weight:400; color:var(--q-muted); }
+.hit:hover .tagc, .hit:focus-visible .tagc, .hit[data-selected] .tagc { display:block; }
+.hit[data-flip] .tagc { left:auto; right:calc(100% + 8px); }
+.hit:hover, .hit:focus-visible { z-index:6; }
 .hit:focus-visible { outline:3px solid var(--q-accent); outline-offset:3px; }
 #over .lbl { transform:translate(-50%,0); }
 #over .lbl.region { font-size:.82rem; letter-spacing:.2em; }
@@ -569,21 +575,25 @@ function draw(){
   { const ix=Math.floor(vx), iy=Math.floor(vy), sw=Math.ceil(CW/z)+2, sh=Math.ceil(CH/z)+2; ctx.drawImage(base,ix+M,iy+M,sw,sh,-Math.round((vx-ix)*z),-Math.round((vy-iy)*z),sw*z,sh*z); }
   const put=(wx,wy,c)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
   if(z>=4){ tentSpr().blit(put,92,134); tentSpr().blit(put,96,136); torchSpr().blit(put,100,128); torchSpr().blit(put,108,128); cartSpr().blit(put,112,134); for(let x=100;x<122;x+=2) put(x,135,P.trunk); for(let x=100;x<124;x++) put(x,136,P.rockd); torchSpr().blit(put,72,138); }
+  // Region detail: a closer map has its own footpaths between a region's quests, and small props around each quest.
+  if(z>=3){ REG.forEach(r=>{ const qs=byReg(r.n); if(qs.length<2) return; line(qs.map(x=>[x.pos[0],x.pos[1]+2]),(x,y,t)=>{ if(t%3===2||x<0||y<0||x>=WW||y>=WH||!land[y*WW+x]) return; put(x,y,P.roadEdge); }); }); }
+  if(z>=4){ QUESTS.forEach(qq=>{ for(let k=0;k<12;k++){ const h=hash2(qq.pos[0]*31+k,qq.pos[1]*17+k*5), x=qq.pos[0]+(h%19)-9, y=qq.pos[1]+((h>>6)%13)-5; if(x<0||y<0||x>=WW||y>=WH||!land[y*WW+x]) continue; const c=h%5; put(x,y,c===0?'#f2c94c':c===1?'#f4f4f4':c===2?'#e86aa6':P.rockd); if(c>=3) put(x+1,y,P.rock2); } }); }
+  if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id); line([qq.pos.slice(),...qq.stops.slice(0,9).map((_,i)=>stopPos(qq,i))],(x,y,t)=>{ if(t%2) return; put(x,y,P.main); put(x,y+1,P.mainEdge); }); }
   // pins
   const zp=z>=4?3:2; const items=[];
   // Pins are real markers, not pixel art: round, numbered, high contrast, and sized for a finger. The terrain stays pixel art.
   const pinBuf=[];
   const pinAt=(wx,wy,n,state,selected)=>{ if(n===0){ items.push({key:'pfog',wx,wy,kind:'mark',n:'?',state,selected:false}); return; } pinBuf.push({n,state,selected}); };
-  const add=(key,wx,wy,kind,o)=>items.push({key,wx,wy,kind,...(kind==='hit'?pinBuf.pop():{}),...o});
+  const add=(key,wx,wy,kind,o)=>{ if(kind==='lbl'&&o.cls&&o.cls.includes('tag')){ const last=items[items.length-1]; if(last&&last.kind==='hit') last.tag=o; return; } items.push({key,wx,wy,kind,...(kind==='hit'?pinBuf.pop():{}),...o}); };
   if(z===2){
     REG.forEach(r=>{ const st=byReg(r.n).length&&byReg(r.n).every(x=>x.done)?'done':(r.n===1?'done':'open'); const selR=sel.t==='region'&&sel.id===r.n; pinAt(r.pin[0],r.pin[1],r.n,st,selR); add('hr'+r.n,r.pin[0],r.pin[1],'hit',{label:r.name+', region '+r.n,act:()=>selectRegion(r.n)}); add('lr'+r.n,r.lbl[0],r.lbl[1],'lbl',{text:r.name,cls:'region'}); });
     pinAt(166,112,0,'locked',false); add('lfog',166,119,'lbl',{text:'Unmapped',sub:'2 more notes to chart',cls:'region box'});
   } else {
     if(z===3) REG.forEach(r=>add('lr'+r.n,r.lbl[0],r.lbl[1]+6,'lbl',{text:r.name,cls:'region faint'}));
     QUESTS.forEach((qq,i)=>{ const n=byReg(qq.region).indexOf(qq)+1, ok=filterOk(qq), selQ=sel.t==='quest'&&sel.id===qq.id||(sel.t==='stop'&&sel.id===qq.id); pinAt(qq.pos[0],qq.pos[1],n,!ok?'locked':qq.done?'done':'open',selQ);
-      add('hq'+qq.id,qq.pos[0],qq.pos[1],'hit',{label:qq.title+', quest '+n,act:()=>selectQuest(qq.id)}); add('lq'+qq.id,qq.pos[0],qq.pos[1],'lbl',{text:qq.short,cls:'quest tag',done:qq.done,prio:selQ?2:0}); });
+      add('hq'+qq.id,qq.pos[0],qq.pos[1],'hit',{label:qq.title+', quest '+n,act:()=>selectQuest(qq.id)}); add('lq'+qq.id,qq.pos[0],qq.pos[1],'lbl',{text:qq.short,sub:'Lv '+qq.lv+' '+qq.level+' \u00b7 '+qq.min+' min \u00b7 '+qq.stops.length+' stops',cls:'quest tag'}); });
     if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id); qq.stops.slice(0,9).forEach((s,i)=>{ const p=stopPos(qq,i); pinAt(p[0],p[1],i+1,'stop',sel.t==='stop'&&sel.i===i);
-      add('hs'+i,p[0],p[1],'hit',{label:'Stop '+(i+1)+': '+s,act:()=>selectStop(qq.id,i)}); if(z>=6) add('ls'+i,p[0],p[1],'lbl',{text:'Stop '+(i+1),sub:s.length>40?s.slice(0,38)+'...':s,cls:'quest tag',prio:(sel.t==='stop'&&sel.i===i)?2:1}); }); }
+      add('hs'+i,p[0],p[1],'hit',{label:'Stop '+(i+1)+': '+s,act:()=>selectStop(qq.id,i)}); add('ls'+i,p[0],p[1],'lbl',{text:'Stop '+(i+1),sub:s.length>40?s.slice(0,38)+'...':s,cls:'quest tag',prio:(sel.t==='stop'&&sel.i===i)?2:1}); }); }
   }
   // you are here dot
   { const bx=Math.round((YOU[0]-vx)*z), by=Math.round((YOU[1]-vy)*z); const pp=(lx,ly,c)=>{ const sx=bx+lx*zp, sy=by+ly*zp; if(sx<0||sy<0||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,zp,zp); }; youSpr().blit(pp,0,0); }
@@ -592,24 +602,18 @@ function draw(){
   document.querySelectorAll('.zlevels i').forEach((e,i)=>e.toggleAttribute('data-on',i<=LV.indexOf(z)));
 }
 const els=new Map();
-function syncOverlay(items,vx,vy,z,zp){ const keep=new Set(), tags=[], rects=[];
-  items.forEach(it=>{ keep.add(it.key); let e=els.get(it.key); if(!e){ if(it.kind==='mark'){ e=document.createElement('div'); e.className='hit mark'; e.setAttribute('aria-hidden','true'); }
-      else if(it.kind==='hit'){ e=document.createElement('button'); e.className='hit'; e.setAttribute('aria-label',it.label); e.addEventListener('pointerdown',ev=>ev.stopPropagation()); e.addEventListener('click',ev=>{ ev.stopPropagation(); e._act(); }); }
+function syncOverlay(items,vx,vy,z,zp){ const keep=new Set();
+  over.style.setProperty('--ps', z>=4?'30px':'22px'); // pins are smaller while zoomed out, full size once you are close
+  items.forEach(it=>{ keep.add(it.key); let e=els.get(it.key);
+    if(!e){ if(it.kind==='mark'||it.kind==='hit'){ e=document.createElement(it.kind==='hit'?'button':'div'); e.className=it.kind==='hit'?'hit':'hit mark'; e.innerHTML='<span class="pn"></span><span class="tagc" aria-hidden="true"></span>';
+        if(it.kind==='mark') e.setAttribute('aria-hidden','true'); else { e.setAttribute('aria-label',it.label); e.addEventListener('pointerdown',ev=>ev.stopPropagation()); e.addEventListener('click',ev=>{ ev.stopPropagation(); e._act(); }); } }
       else { e=document.createElement('div'); e.className='lbl '+(it.cls||''); e.innerHTML=it.text+(it.sub?'<small>'+it.sub+'</small>':''); if(it.done) e.dataset.done=1; }
       over.appendChild(e); els.set(it.key,e); }
-    e._act=it.act; const sx=Math.round((it.wx-vx)*z)*S, sy=Math.round((it.wy-vy)*z)*S;
-    if(it.kind==='hit'||it.kind==='mark'){ e.style.left=sx+'px'; e.style.top=sy+'px'; const t=it.state==='done'?'\u2713':String(it.n); if(e.textContent!==t) e.textContent=t; e.dataset.state=it.state; if(it.selected) e.dataset.selected=1; else delete e.dataset.selected; } else if(it.cls&&it.cls.includes('tag')){ tags.push({e,it,sx,sy}); } else { e.style.left=sx+'px'; e.style.top=sy+'px'; }
-    if(it.kind==='hit'||it.kind==='mark') rects.push([sx-17,sy-40,34,42]); });
-  /* Name tags sit right beside their pin. A tag that would land on a pin or on a tag already placed is hidden, so nothing stacks.
-     The selected quest and stop are placed first. */
-  tags.sort((a,b)=>(b.it.prio||0)-(a.it.prio||0));
-  const placed=[];
-  tags.forEach(({e,it,sx,sy})=>{ if(e._w==null){ e._w=e.offsetWidth; e._h=e.offsetHeight; } const w=e._w, h=e._h, y=sy-37;
-    const own=r=>r[0]===sx-17&&r[1]===sy-40;
-    const free=x=>{ const hit=r=>x<r[0]+r[2]&&x+w>r[0]&&y<r[1]+r[3]&&y+h>r[1]; return !rects.some(r=>!own(r)&&hit(r))&&!placed.some(hit); };
-    const inside=x=>x>=8&&x+w<=innerWidth-8;
-    let x=sx+19; if(!(inside(x)&&free(x))){ const xl=sx-19-w; if(inside(xl)&&free(xl)) x=xl; else if(!(it.prio>=2)){ e.style.visibility='hidden'; return; } else x=Math.max(8,Math.min(x,innerWidth-w-8)); }
-    e.style.left=x+'px'; e.style.top=y+'px'; e.style.visibility='visible'; placed.push([x,y,w,h]); });
+    e._act=it.act; const sx=Math.round((it.wx-vx)*z)*S, sy=Math.round((it.wy-vy)*z)*S; e.style.left=sx+'px'; e.style.top=sy+'px';
+    if(it.kind==='hit'||it.kind==='mark'){ const t=it.state==='done'?'\u2713':String(it.n), pn=e.firstChild; if(pn.textContent!==t) pn.textContent=t; e.dataset.state=it.state; if(it.selected) e.dataset.selected=1; else delete e.dataset.selected;
+      /* The name card shows only on hover or focus, or while the pin is selected. A click opens it in the panel. */
+      if(it.tag){ const h=it.tag.text+(it.tag.sub?'<small>'+it.tag.sub+'</small>':''); if(e._tg!==h){ e._tg=h; e.lastChild.innerHTML=h; } }
+      if(sx>innerWidth-240) e.dataset.flip=1; else delete e.dataset.flip; } });
   for(const [k,e] of els) if(!keep.has(k)){ e.remove(); els.delete(k); } }
 
 /* ===== motion: pan by drag, integer zoom steps, fly-to ===== */
