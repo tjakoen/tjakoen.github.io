@@ -155,7 +155,10 @@ async function pageRoutes(): Promise<string[]> {
   // A published note's old draft address stays alive as a stub with the note's own card, so a draft
   // link shared before publishing unfurls as the published note and lands on it (server.ts).
   const publishedDrafts = await listPublishedDraftRedirectRoutes();
-  const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, ...drafts, ...publishedDrafts, ...badgeShortlinkRoutes(), "/catalog", "/reference", "/cv", "/kickstart"]);
+  // "/learn" is the hidden learning map. Its page lives in view/unlisted, outside the pages tree, so the
+  // sitemap and search never see it; it is frozen here so the deployed site answers the terminal's learn
+  // command. Its noindex travels in the page, and the map files go out through assetMounts below.
+  const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, ...drafts, ...publishedDrafts, ...badgeShortlinkRoutes(), "/catalog", "/reference", "/cv", "/kickstart", "/learn"]);
   return [...all].filter((r) => !OPERABLE.has(r) && !REVIEW_ONLY.has(r)).toSorted();
 }
 
@@ -164,6 +167,7 @@ function assetMounts(): AssetMount[] {
   return [
     ...Object.entries(config.assetDirs).map(([prefix, dir]) => ({ prefix, dir })),
     { prefix: "/fonts", dir: config.fontsDir },
+    { prefix: "/learn-map", dir: join(import.meta.dir, "..", "view", "learn-map") },
   ];
 }
 
