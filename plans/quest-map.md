@@ -271,7 +271,7 @@ This is the part that keeps the map alive without hand editing.
 ## What gets built, in order
 
 - [ ] Quest tokens, light and dark, in the theme. The canvas reads them so the map re-skins with the page.
-- [ ] content/quests collection and generated index, plus tools/quests.ts check with tests.
+- [~] content/quests collection and generated index, plus tools/quests.ts check with tests. First slice done on 2026-11-27: content/quests/regions.json holds the hand approved regions, bun tools/quests.ts places a note, writes and verifies content/quests/index.json, and ten tests cover placement, drafts and a stale index. Still open: the new-region proposal at five notes with a shared tag set, running the check from the note skill, and the map reading the index instead of its own sample data. The questions are under Quest layer, first slice below.
 - [ ] NOTE-STANDARD section and a regenerated mounted skill, so the note skill runs the check.
 - [ ] Full-screen map page in map mode (rail collapsed, assistant sidebar and terminal hidden): pixel canvas, four integer zoom levels, semantic zoom, fly-to, pins as real buttons and the panel's route lists as the keyboard and screen reader path.
 - [ ] Place panel states (welcome, region, quest, stop): class, level, XP, what it covers, stops, sources and begin quest.
@@ -314,6 +314,17 @@ done, not a someday.
 ## Linking notes to the map (proposed)
 
 Each note that is a quest gets a Where this sits card above the lesson card: a crop of the baked map with the quest pins joined by the dotted route, the note's own pin ringed, the quests of the region as a numbered list and a Find it on the map link that opens the map already flown to the pin. Related notes get a row of cards, each tagged with its region color, its quest number and how it relates (next stop, same region, other region). The card is plain HTML with a background image, so it works without JavaScript. The mockup is [docs/mockups/quest-map/in-site-note-map-card.html](../docs/mockups/quest-map/in-site-note-map-card.html), built by build-note-map-card.py.
+
+## Quest layer, first slice (proposal, 2026-11-27)
+
+What exists: the fourteen published notes in the region table above are placed from content/quests/regions.json, and the index is generated from each note's own level, audience, tags, sources and reading time. A region that lists a draft, or a note that does not exist, fails the check, which is the draft pin this plan asks for.
+
+What needs a decision from the owner before the next slice:
+
+1. **The Claude Academy address.** The Harbor stop has an empty url in regions.json. The plan says to confirm the exact address before it ships, and nothing here has guessed one.
+2. **The order inside each region.** It is still the guess from the table. The check reports a note's place on the route, so correcting the order is one edit to regions.json.
+3. **Where the map reads its quests from.** The map still reads the sample data inside view/learn-map/map.html. Switching it to content/quests/index.json is a change to the quest ids and stop counts the map shows, so it should wait for the cuts in quest-lessons, which decide the stops.
+4. **Notes that fit nothing.** Today every published note outside the table reports fits no region yet. The five-note region proposal waits for the owner to say which tag sets count as a region.
 
 ## Honest limits
 

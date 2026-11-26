@@ -51,9 +51,9 @@ for (const flavor of FLAVORS) {
           glints,
           // The movers, as pixel lists grouped by colour. The page builds them from this instead of drawing them on load.
           sprites: (() => {
-            const ser = (s: { m: Map<string, string> }) => {
+            const ser = (sp: { m: Map<string, string> }) => {
               const g: Record<string, number[]> = {};
-              for (const [k, c] of s.m) { const [x, y] = k.split(",").map(Number); (g[c] ||= []).push(x!, y!); }
+              for (const [k, c] of sp.m) { const [x, y] = k.split(",").map(Number); (g[c] ||= []).push(x!, y!); }
               return g;
             };
             return { boatR: SPR.boatR.map(ser), boatL: SPR.boatL.map(ser), kraken: ser(SPR.kraken), people: Object.fromEntries(Object.entries(PEOPLE).map(([k, v]) => [k, v.map(ser)])) };
