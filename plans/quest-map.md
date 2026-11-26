@@ -119,9 +119,22 @@ fills the viewport and everything else floats on it, as in Google Maps.
 - **The panel has a pinned back button.** A bar at the top of the panel stays in view while the panel
   scrolls. It holds a real button at the top left that names where it goes (All regions from a region, the
   region from a quest, the quest from a stop, and Back from a search) and a short breadcrumb beside it.
-  Escape does the same one step. Previous and next buttons at the right of the bar step through regions in a
-  region, through the whole route of quests in a quest, and through stops in a stop. They are disabled at
-  the ends, name their target in a tooltip, and the left and right square bracket keys do the same.
+  Escape does the same one step. The panel is the main way to navigate. Four controls at its lower right, first, previous, next and last,
+  move through regions in a region, through the quest route in a quest and through stops in a stop, with a
+  count beside them such as 3 of 9 stops. They are disabled at the ends, and the left and right square bracket
+  keys do the same. The stops sit in a bordered box of numbered rows that highlight the current one.
+- **The filter chips work.** Loop, Models, Leading and Design fly to that region, All returns to the world
+  view, and Not started dims every region and quest that is already done. Pins and labels that do not match
+  fade instead of disappearing.
+- **Foothills has things to click.** Zoomed in, the port island has a Claude Academy pin and a Ferry pin. Both
+  have hover cards. The Ferry pin flies to the Guild Hall, and the Foothills panel has the same two buttons.
+- **A chosen pin fades out.** When a quest or region pin is clicked its red marker fades away and the stops, or
+  the region, take over. The selected route is a bold amber dashed trail with a dark edge that slowly marches
+  along the path, so it stands out from the terrain.
+- **Zoom is smooth and cheap.** A zoom from the panel, the wheel or the buttons is a CSS scale of the whole
+  stage, eased, with only the camera pan done in script. Zooming in scales the old level up and swaps to the
+  crisp new one at the end, and zooming out swaps first and scales down. The canvas is drawn once per frame, the
+  overlay writes a style only when it changed, and the frames measured 16.7 milliseconds, steady at 60 a second.
 - **The panel replaces the modal.** Welcome, region, quest and stop are four states of one place panel,
   the way a place card works. The RPG details (class, level, XP, what it covers, stops) live in the quest
   state. Begin quest opens the note in lesson mode. The separate modal over the zoomed map is dropped.
