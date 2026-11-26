@@ -348,7 +348,7 @@ body { margin:0; background:var(--q-water); }
   <div class="panelcard" id="panel" aria-live="polite"></div>
 </div>
 <div class="chipsbar"><span class="chip" data-on>All</span><span class="chip">Loop</span><span class="chip">Models</span><span class="chip">Leading</span><span class="chip">Design</span><span class="chip">Not started</span></div>
-<div class="topright"><button id="motion" aria-pressed="true" title="Animate the map: water, flags, torches, smoke, gulls">Motion</button><span>Flavor <select id="flavor"><option>sourdough</option><option>baguette</option><option>brioche</option></select></span>
+<div class="topright"><button id="motion" aria-pressed="true" title="Animate the map: water glints, torches, the summit flag">Motion</button><span>Flavor <select id="flavor"><option>sourdough</option><option>baguette</option><option>brioche</option></select></span>
  <span id="scheme"><button data-s="auto" aria-pressed="true">Auto</button><button data-s="light" aria-pressed="false">Light</button><button data-s="dark" aria-pressed="false">Dark</button></span></div>
 <div class="ctl"><button class="single" id="me" title="Find my adventurer" aria-label="Find my adventurer">◎</button><div class="stack"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button></div></div>
 <div class="zbar"><div class="tile"><canvas id="c-layer" width="32" height="32"></canvas><span>Layers</span></div><div class="scale"><strong id="zname">World</strong><div class="zlevels"><i data-on></i><i></i><i></i><i></i></div></div></div>
@@ -513,14 +513,21 @@ function resize(){ CW=Math.ceil(innerWidth/S); CH=Math.ceil(innerHeight/S); cv.w
 
 function filterOk(q){ if(filter==='All') return true; if(filter==='Loop') return q.region===2; if(filter==='Models') return q.region===3; if(filter==='Leading') return q.region===4; if(filter==='Design') return q.region===5; if(filter==='Not started') return !q.done; return true; }
 
+/* The terrain and every static sprite are drawn once into an offscreen canvas, one pixel per map pixel, with a margin of open
+   water. Each frame is then a single scaled drawImage plus the few things that depend on the view (camp, pins, you). */
+const M=120; let base=null, glints=[];
+function bake(){ base=document.createElement('canvas'); base.width=WW+2*M; base.height=WH+2*M; const b=base.getContext('2d'); glints=[];
+  const isWater=c=>c===P.water||c===P.water2||c===P.wave||c===P.foam;
+  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); const c=inW?cols[y*WW+x]:(hash2(x,y)%31===0?P.wave:P.water); b.fillStyle=c; b.fillRect(x+M,y+M,1,1); if(isWater(c)&&hash2(x,y)%53===0) glints.push([x,y,hash2(x,y)>>9]); }
+  const put=(wx,wy,c)=>{ b.fillStyle=c; b.fillRect(wx+M,wy+M,1,1); };
+  sprites.cave.blit(put,104,127); sprites.forEach(s=>s.f(put)); }
+let lastDraw=0, dq=0;
+const drawSoon=()=>{ if(dq) return; dq=requestAnimationFrame(()=>{ dq=0; draw(); }); };
 function draw(){
-  const {vx,vy,z}=origin(); ctx.imageSmoothingEnabled=false;
+  const {vx,vy,z}=origin(); ctx.imageSmoothingEnabled=false; lastDraw=performance.now(); fctx.clearRect(0,0,fx.width,fx.height);
   ctx.fillStyle=P.water; ctx.fillRect(0,0,CW,CH);
-  const x0=Math.floor(vx),y0=Math.floor(vy),x1=Math.ceil(vx+CW/z),y1=Math.ceil(vy+CH/z);
-  for(let y=y0;y<y1;y++) for(let x=x0;x<x1;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); const c=inW?cols[y*WW+x]:(hash2(x,y)%31===0?P.wave:P.water); ctx.fillStyle=c; ctx.fillRect(Math.round((x-vx)*z),Math.round((y-vy)*z),z,z); }
+  { const ix=Math.floor(vx), iy=Math.floor(vy), sw=Math.ceil(CW/z)+2, sh=Math.ceil(CH/z)+2; ctx.drawImage(base,ix+M,iy+M,sw,sh,-Math.round((vx-ix)*z),-Math.round((vy-iy)*z),sw*z,sh*z); }
   const put=(wx,wy,c)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
-  sprites.cave.blit(put,104,127);
-  sprites.forEach(s=>{ s.f(put); });
   if(z>=4){ tentSpr().blit(put,92,134); tentSpr().blit(put,96,136); torchSpr().blit(put,100,128); torchSpr().blit(put,108,128); cartSpr().blit(put,112,134); for(let x=100;x<122;x+=2) put(x,135,P.trunk); for(let x=100;x<124;x++) put(x,136,P.rockd); torchSpr().blit(put,72,138); }
   // pins
   const zp=z>=4?3:2; const items=[];
@@ -565,7 +572,7 @@ function flyTo(cx,cy,z){ cancelAnimationFrame(anim); const f={...V}, t0=performa
   (function step(now){ const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3); V.cx=f.cx+(cx-f.cx)*e; V.cy=f.cy+(cy-f.cy)*e; const k=Math.min(n,Math.floor(t*(n+1))); V.z=LV[i0+Math.sign(i1-i0)*k]; draw(); if(t<1) anim=requestAnimationFrame(step); })(t0); }
 const stage=document.getElementById('stage'); let drag=null;
 stage.addEventListener('pointerdown',e=>{ if(e.target.closest('.col,.ctl,.topright,.chipsbar,.zbar')) return; cancelAnimationFrame(anim); drag={x:e.clientX,y:e.clientY,moved:false}; stage.setPointerCapture(e.pointerId); stage.classList.add('drag'); });
-stage.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; if(Math.abs(dx)+Math.abs(dy)>2) drag.moved=true; drag.x=e.clientX; drag.y=e.clientY; V.cx-=dx/(V.z*S); V.cy-=dy/(V.z*S); clampV(); requestAnimationFrame(draw); });
+stage.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; if(Math.abs(dx)+Math.abs(dy)>2) drag.moved=true; drag.x=e.clientX; drag.y=e.clientY; V.cx-=dx/(V.z*S); V.cy-=dy/(V.z*S); clampV(); drawSoon(); });
 stage.addEventListener('pointerup',e=>{ drag=null; stage.classList.remove('drag'); });
 let wheelT=0; stage.addEventListener('wheel',e=>{ e.preventDefault(); const now=performance.now(); if(now-wheelT<160) return; wheelT=now; stepZoom(e.deltaY<0?1:-1,e.clientX,e.clientY); },{passive:false});
 stage.addEventListener('dblclick',e=>{ if(e.target.closest('.hit')) return; stepZoom(1,e.clientX,e.clientY); });
@@ -619,45 +626,33 @@ const root=document.documentElement;
 document.getElementById('flavor').onchange=e=>{ root.dataset.theme=e.target.value; reskin(); };
 document.querySelectorAll('#scheme button').forEach(b=>b.onclick=()=>{ const v=b.dataset.s; if(v==='auto') root.removeAttribute('data-color-scheme'); else root.dataset.colorScheme=v; document.querySelectorAll('#scheme button').forEach(x=>x.setAttribute('aria-pressed',x===b)); reskin(); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>reskin());
-function reskin(){ loadPalette(); buildWorld(); layer(); renderPanel(); draw(); }
+function reskin(){ loadPalette(); buildWorld(); bake(); layer(); renderPanel(); draw(); }
 function layer(){ const c=document.getElementById('c-layer'),x=c.getContext('2d'); x.imageSmoothingEnabled=false; for(let y=0;y<32;y++) for(let i=0;i<32;i++){ x.fillStyle=cols[(y*4+16)*WW+(i*4+16)]||P.water; x.fillRect(i,y,1,1);} }
 
 /* ---- Motion. A second canvas over the map, redrawn about seven times a second so it moves in pixel steps.
-   Water glints, cloud shadows, torch flames, chimney smoke, the summit flag, gulls, a pulse on the adventurer and,
-   in the dark scheme, fireflies in the forest. It is decoration only: the pins, labels and route lists are unchanged.
+   Water glints, torch flames, the summit flag and a pulse on the adventurer. It is decoration only: the pins, labels and route lists are unchanged.
    It starts off when the system asks for reduced motion, and the Motion button turns it on or off either way. */
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let motion=!reduce.matches, raf=0, lastT=0;
 const mbtn=document.getElementById('motion');
-function isDark(){ return root.dataset.colorScheme==='dark'||(!root.dataset.colorScheme&&matchMedia('(prefers-color-scheme: dark)').matches); }
-const isWater=c=>c===P.water||c===P.water2||c===P.wave||c===P.foam;
 function fxFrame(t){
+  if(t-lastDraw<260) return; // the view is moving: draw nothing extra, so pan, zoom and fly stay smooth
   const {vx,vy,z}=origin(); fctx.clearRect(0,0,fx.width,fx.height);
-  const f=Math.floor(t/140), dark=isDark();
-  const x0=Math.floor(vx),y0=Math.floor(vy),x1=Math.ceil(vx+CW/z),y1=Math.ceil(vy+CH/z);
+  const f=Math.floor(t/160);
   const px=(wx,wy,c,a=1)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; fctx.globalAlpha=a; fctx.fillStyle=c; fctx.fillRect(sx,sy,z,z); };
-  for(let y=y0;y<y1;y++) for(let x=x0;x<x1;x++){
-    const inW=!(x<0||y<0||x>=WW||y>=WH), c=inW?cols[y*WW+x]:P.water, h=hash2(x,y);
-    if(isWater(c)){ if(h%47===0){ const ph=(f+(h>>9))%7; if(ph<2) px(x,y,P.foam,ph?.95:.55); } else if(h%61===0&&(f+(h>>7))%10<3) px(x,y,P.wave,.8); }
-    const n=vn(x+f*.45,y+f*.16,16); if(n>.66) px(x,y,'#000',dark?.16:.09);
-  }
-  const flame=(x,y)=>{ if(z<4) return; px(x,y-4,f%2?P.glow:P.amber); px(x,y-5,(f%3)?P.amber:P.pinHi); px(x-1,y-4,P.amber,.35+.2*(f%2)); px(x+1,y-4,P.amber,.35+.2*((f+1)%2)); px(x,y-6,P.glow,.3); };
-  flame(100,128); flame(108,128); flame(72,138);
-  for(let i=0;i<5;i++){ const k=(f+i*3)%15; px(150+Math.round(Math.sin((f+i)/2)*1.2),89-k*.7,P.foam,.55*(1-k/15)); }
-  for(let i=0;i<5;i++){ const w=((f+i)%4<2)?0:1; px(151+i,10+w+(i>2?1:0),P.flag); if(i<4) px(151+i,11+w+(i>2?1:0),P.pinHi,.8); }
-  for(let g=0;g<3;g++){ const gx=((t/120+g*83)%260)-30, gy=22+g*9+Math.sin(t/700+g*2)*2; const up=(f+g)%2; px(gx-2,gy+(up?0:1),P.outline); px(gx-1,gy+(up?-1:0),P.outline); px(gx,gy,P.outline); px(gx+1,gy+(up?-1:0),P.outline); px(gx+2,gy+(up?0:1),P.outline); }
+  for(let i=0;i<glints.length;i++){ const g=glints[i], ph=(f+g[2])%8; if(ph<2) px(g[0],g[1],P.foam,ph?.9:.5); }
+  if(z>=4){ [[100,128],[108,128],[72,138]].forEach(([x,y])=>{ px(x,y-4,f%2?P.glow:P.amber); px(x,y-5,(f%3)?P.amber:P.pinHi); }); }
+  for(let i=0;i<5;i++){ const w=((f+i)%4<2)?0:1, o=w+(i>2?1:0); px(151+i,10+o,P.flag); if(i<4) px(151+i,11+o,P.pinHi,.8); }
   { const r=f%7; for(let a=0;a<12;a++){ const th=a/12*Math.PI*2; px(YOU[0]+Math.round(Math.cos(th)*(r+2)),YOU[1]+Math.round(Math.sin(th)*(r+2)),P.you,1-r/7); } }
-  if(sel.t==='quest'||sel.t==='stop'){ const qq=QUESTS.find(x=>x.id===sel.id); if(qq){ const r=f%6; for(let a=0;a<10;a++){ const th=a/10*Math.PI*2; px(qq.pos[0]+Math.round(Math.cos(th)*(r+3)),qq.pos[1]+Math.round(Math.sin(th)*(r+3)*.6),P.amber,1-r/6); } } }
-  if(dark) for(let i=0;i<16;i++){ const h=hash2(i,77), bx=44+(h%36), by=76+((h>>8)%30), a=.25+.75*Math.abs(Math.sin(t/900+i*1.7)); px(bx+Math.round(Math.sin(t/1300+i)*3),by+Math.round(Math.cos(t/1100+i*2)*2),P.glow,a); }
   fctx.globalAlpha=1;
 }
-function fxLoop(now){ raf=0; if(!motion||document.hidden) return; if(now-lastT>=140){ lastT=now; fxFrame(now); } raf=requestAnimationFrame(fxLoop); }
+function fxLoop(now){ raf=0; if(!motion||document.hidden) return; if(now-lastT>=160){ lastT=now; fxFrame(now); } raf=requestAnimationFrame(fxLoop); }
 function setMotion(on){ motion=on; mbtn.setAttribute('aria-pressed',String(on)); if(on){ if(!raf) raf=requestAnimationFrame(fxLoop); } else { cancelAnimationFrame(raf); raf=0; fctx.clearRect(0,0,fx.width,fx.height); } }
 mbtn.onclick=()=>setMotion(!motion);
 reduce.addEventListener('change',e=>setMotion(!e.matches));
 document.addEventListener('visibilitychange',()=>{ if(motion&&!raf) raf=requestAnimationFrame(fxLoop); });
 addEventListener('resize',resize);
-loadPalette(); buildWorld(); layer(); renderPanel(); resize(); setMotion(motion);
+loadPalette(); buildWorld(); bake(); layer(); renderPanel(); resize(); setMotion(motion);
 
 </script>
 </body>
