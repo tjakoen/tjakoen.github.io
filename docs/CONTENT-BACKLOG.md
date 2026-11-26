@@ -9,23 +9,19 @@
 > the repo is **public**. The events-platform exit is told **neutrally, no names, lessons-forward**.
 > Company name is **Career Team**. People name-drops = public professional info + LinkedIn only.
 
-## The vectorless RAG note (drafted 2026-11-17)
+## The vectorless RAG note (published 2026-11-27)
 
-**My AI Loop Runs on Vectorless RAG and I Didn't Call It That**
-(content/notes/vectorless-rag-by-accident.md, **DRAFT**). A personal note that takes Shivani Virdi's
-LinkedIn post on retrieval by similarity against retrieval by reasoning, credits the idea to her
-plainly, and maps it onto the loop. CLAUDE.md is the table of contents, the standards are skills whose
-*when* field is the node summary, PANTRY resolves them into every repo, graphify is an exact index,
-and each package's CLAUDE.md and PLAN.md is a subtree. One flow figure (the tree, with notes and run
-reports drawn outside it as a flat pile) and a social card from tools/social-card-vectorless.ts.
+[vectorless-rag-by-accident](../content/notes/vectorless-rag-by-accident.md), with its companion
+[how-my-sessions-walk-the-tree](../content/notes/how-my-sessions-walk-the-tree.md), explains retrieval for
+the AI loop. The lead says in plain words what RAG and vectorless RAG are (build your agent a map so it
+finds things on its own), draws the loop and the tree, shows the 36 of 677 lines one question read, and
+says what the setup does for the effort. The companion carries the tool-by-tool detail: graphify,
+tokensave, PANTRY, the standards index and the decision chain. Shivani Virdi's post is credited and linked,
+and she is on /people and /reading. Three connected social cards carry the post.
 
-**What it still owes before it can leave DRAFT.** A link to Shivani Virdi's post, which the draft
-names but does not link because the URL was not to hand. Three sibling sessions are written up as in
-flight and must not be described as done until they land: a standards index, a retrieval trace in the
-run report, and a staleness check. Once the trace exists, the traceability section can cite a real run
-instead of arguing it. The hybrid half (similarity search over notes and run reports) is labelled a
-guess in the text and must stay that way unless it gets built. The twenty-one skills and twenty-six
-notes are snapshots from the drafting day.
+**What stays honest.** The effort claims are experience, not a measurement. The hybrid half (similarity
+search over notes and run reports) is a guess and must stay labelled one unless it gets built. The counts
+are snapshots from 2026-11-26.
 
 ## The metrics note (drafted 2026-11-12)
 
