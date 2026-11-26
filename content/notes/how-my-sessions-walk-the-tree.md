@@ -5,7 +5,7 @@ level: deep
 companion: true
 subtitle: "How a session steps through skills, two code graphs and a project index to reach one section instead of a whole file."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-11-26
 readingTime: "~9 min"

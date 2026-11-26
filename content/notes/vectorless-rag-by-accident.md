@@ -4,7 +4,7 @@ audience: [build]
 level: intro
 subtitle: "I build with an AI loop, and the loop only works if a session that remembers nothing can find the right file by itself. That finding step is retrieval. Mine reads a table of contents instead of a vector index, and it is why the loop runs on so little effort from me."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-11-26
 readingTime: "~10 min"
