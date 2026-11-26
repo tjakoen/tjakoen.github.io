@@ -34,7 +34,7 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   pushes an ore cart along the shaft, guards stand at the castle gate, the keep door and the walls and patrol the ramparts,
   villagers walk the Guild Hall streets, sailors work the pier, elves cross the walkways in the canopy and
   climbers work the switchback to the summit. The snowfield under the peak has a frozen lake, snowy pines and
-  cabins. After dark, fireflies drift over the forest. The water glints at about a third of the earlier pace.
+  cabins. After dark, fireflies drift over the forest. The sea itself is flat, with no waves or sparkle.
   Open sea runs a long way around the island, then ends at a rounded wall of cloud at the border of the map,
   and past it there is only more cloud, never open water. You reach the cloud by panning out, and the view stops at the wall, so you never scroll into empty cloud. A kraken lives in
   the sea at the top-left. Everything moves in pixel steps, holds still under reduced motion, and follows the
@@ -53,7 +53,7 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 - **Zoom adds detail.** Zooming in shows what the world view leaves out: tents, torches, a mine cart and
   numbered stop pins. The quest opens in the place panel.
 - **The map moves, a little.** A second canvas over the map redraws about six times a second, in pixel steps:
-  glints on the water, torch flames, the summit flag and a pulse on the adventurer. Nothing else moves. It
+  torch flames, the summit flag and a pulse on the adventurer. Nothing else moves. It
   draws nothing while the view is panning, zooming or flying, so interaction stays smooth. It is decoration
   only. It starts off when the system asks for reduced motion, and a Motion button turns it on or off either way.
 - **Warm paper, amber accent.** It shares the ant colony's palette, so the site keeps one voice. Labels
@@ -132,7 +132,7 @@ fills the viewport and everything else floats on it, as in Google Maps.
   paper tinted by region, with the roads that join the regions and every quest's route drawn in its region's
   colour with a dot at each stop, green for finished ones. It leaves out the art, the people and the weather, and
   it follows the light and dark schemes. The details are route dots, people at work, ships and sea life, and
-  birds and smoke, each a checkbox. Switching is one redraw of the canvas, with no extra work while idle.
+  birds and smoke, each a checkbox, and they appear only for Explorer, not for Path only. Switching is one redraw of the canvas, with no extra work while idle.
 - **The filter chips work.** Loop, Models, Leading and Design fly to that region, All returns to the world
   view, and Not started dims every region and quest that is already done. Pins and labels that do not match
   fade instead of disappearing.

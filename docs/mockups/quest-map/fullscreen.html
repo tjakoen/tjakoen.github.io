@@ -401,6 +401,8 @@ body { margin:0; background:var(--q-water); }
 .lp-types button[aria-pressed="true"] { outline:3px solid var(--q-accent); outline-offset:1px; }
 .lp-types canvas { width:100%; height:auto; display:block; image-rendering:pixelated; }
 .lp-types span { padding:.15rem .3rem .25rem; font-weight:700; }
+.layerpop[data-view="path"] .lp-details { display:none; }
+.lp-details { display:grid; gap:.45rem; }
 .layerpop label { display:flex; gap:.45rem; align-items:center; cursor:pointer; }
 .layerpop input { accent-color:var(--q-accent); }
 .zbar .tile { width:64px; height:64px; border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); background:var(--q-panel); position:relative; overflow:hidden; }
@@ -451,11 +453,13 @@ body { margin:0; background:var(--q-water); }
     <button data-view="explorer" aria-pressed="true"><canvas id="th-ex" width="44" height="36" aria-hidden="true"></canvas><span>Explorer</span></button>
     <button data-view="path" aria-pressed="false"><canvas id="th-pa" width="44" height="36" aria-hidden="true"></canvas><span>Path only</span></button>
   </div>
-  <strong class="lp-h">Details</strong>
-  <label><input type="checkbox" data-layer="routes" checked> Route dots</label>
-  <label><input type="checkbox" data-layer="people" checked> People at work</label>
-  <label><input type="checkbox" data-layer="sea" checked> Ships and sea life</label>
-  <label><input type="checkbox" data-layer="air" checked> Birds and smoke</label>
+  <div class="lp-details">
+    <strong class="lp-h">Details</strong>
+    <label><input type="checkbox" data-layer="routes" checked> Route dots</label>
+    <label><input type="checkbox" data-layer="people" checked> People at work</label>
+    <label><input type="checkbox" data-layer="sea" checked> Ships and sea life</label>
+    <label><input type="checkbox" data-layer="air" checked> Birds and smoke</label>
+  </div>
 </div><div class="scale"><strong id="zname">World</strong><div class="zlevels"><i data-on></i><i></i><i></i><i></i></div></div></div>
 <div class="attrib2">Map data ©2026 the notes</div>
 <div class="toast2" id="toast" hidden></div>
@@ -539,7 +543,7 @@ function buildWorld(){
   layoutQuests();
   cols=new Array(WW*WH); roadMain=new Set(); roadMinor=new Set(); sprites=[];
   for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; let c;
-    if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water; if(d>3&&hash2(x,y)%31===0) c=P.wave; }
+    if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water;  }
     else { const d=distTo(x,y,0,2); const r=reg[i];
       if(d<=2) c=(x+y)%2?P.sand:P.sand2;
       else if(r===1){ c=vn(x,y,4)>.52?P.grass:P.grass2; if(hash2(x,y)%67===0) c='#ffffff'; if(hash2(x,y)%97===0) c=P.amber; }
@@ -858,7 +862,7 @@ function bakeScenes(){
 const M=200; let base=null, glints=[];
 function bake(){ base=document.createElement('canvas'); base.width=WW+2*M; base.height=WH+2*M; const b=base.getContext('2d'); glints=[];
   const isWater=c=>c===P.water||c===P.water2||c===P.wave||c===P.foam;
-  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); let c; if(inW) c=cols[y*WW+x]; else { const u=(Math.abs(x-100)/RING_RX)**RING_N+(Math.abs(y-80)/RING_RY)**RING_N+(vn(x+3,y+5,5)-.5)*.4; c=u<1?(hash2(x,y)%31===0?P.wave:P.water):((vn(x,y,6)+vn(x+50,y+20,16))/2>.5?P.snow:P.snow2); } b.fillStyle=c; b.fillRect(x+M,y+M,1,1); if(isWater(c)&&hash2(x,y)%53===0) glints.push([x,y,hash2(x,y)>>9]); }
+  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); let c; if(inW) c=cols[y*WW+x]; else { const u=(Math.abs(x-100)/RING_RX)**RING_N+(Math.abs(y-80)/RING_RY)**RING_N+(vn(x+3,y+5,5)-.5)*.4; c=u<1?P.water:((vn(x,y,6)+vn(x+50,y+20,16))/2>.5?P.snow:P.snow2); } b.fillStyle=c; b.fillRect(x+M,y+M,1,1);  }
   const put=(wx,wy,c)=>{ b.fillStyle=c; b.fillRect(wx+M,wy+M,1,1); };
   sprites.cave.blit(put,104,127); sprites.forEach(s=>s.f(put));
   const isLand=(x,y)=>x>=0&&y>=0&&x<WW&&y<WH&&land[y*WW+x];
@@ -1045,7 +1049,7 @@ document.querySelectorAll('.chipsbar .chip').forEach(c=>c.addEventListener('clic
 const lbtn=document.getElementById('layers'), lpop=document.getElementById('layerpop');
 lbtn.onclick=()=>{ const o=lpop.hidden; lpop.hidden=!o; lbtn.setAttribute('aria-expanded',String(o)); };
 document.addEventListener('pointerdown',e=>{ if(!lpop.hidden&&!e.target.closest('.zbar')){ lpop.hidden=true; lbtn.setAttribute('aria-expanded','false'); } });
-lpop.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; lpop.querySelectorAll('[data-view]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); document.body.dataset.view=view; if(view==='path') fctx.clearRect(0,0,fx.width,fx.height); draw(); drawSoon(); });
+lpop.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; lpop.querySelectorAll('[data-view]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); document.body.dataset.view=view; lpop.dataset.view=view; if(view==='path') fctx.clearRect(0,0,fx.width,fx.height); draw(); drawSoon(); });
 lpop.querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{ LAYERS[c.dataset.layer]=c.checked; draw(); });
 document.getElementById('zin').onclick=()=>stepZoom(1); document.getElementById('zout').onclick=()=>stepZoom(-1);
 document.getElementById('me').onclick=()=>where();
