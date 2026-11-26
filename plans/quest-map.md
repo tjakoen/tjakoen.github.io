@@ -28,7 +28,7 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   here badge on that quest and stop, and a Where I am button, shared with the find-me button and Continue, jumps
   there from anywhere. In the real build progress comes from the saved guild card, and the mockup uses a sample
   with two quests and one stop done.
-- **The map has life, slowly.** Ferries sail between the Foothills pier and the Guild Hall harbour along the
+- **The map has life, slowly.** Ferries sail between the Harbor pier and the Guild Hall harbour along the
   south coast. Gulls circle the port, birds circle the forest and nest in its trees, fish jump, and the Guild
   Hall chimney smokes. Up close the places are lived in: a few dwarves swing picks in the mines and one
   pushes an ore cart along the shaft, guards stand at the castle gate, the keep door and the walls and patrol the ramparts,
@@ -42,7 +42,7 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 - **Night makes sense for the assets.** The dark scheme is night. Windows are dim blue-grey by day and lit
   yellow at night, lanterns and torches are dull dots by day and glow at night while campfires, hearths and
   lamps in hands stay lit all day, ferries hang a lantern at the mast, the kraken's eyes glow, a beam sweeps
-  from the Foothills lighthouse, fireflies drift over the forest, and the cloud wall and the cloud beyond it
+  from the Harbor lighthouse, fireflies drift over the forest, and the cloud wall and the cloud beyond it
   dim to a dusk colour instead of staying bright against a dark sea. Switching scheme rebuilds the map once.
 - **One style, two rules.** Art, meaning the terrain, landmarks, detail scenes and the moving layer, is solid
   pixels with the dark outline color around every building and mountain, two-tone shading, no translucency, no
@@ -85,8 +85,8 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 
 ## Decisions already made
 
-- No Foothills notes. The first stop points out to Claude Academy for the basics. The exact URL is
-  still to confirm before it ships. Foothills is one island of its own off the south-west coast, a port with a pier, because it points
+- No Harbor notes. The first stop points out to Claude Academy for the basics. The exact URL is
+  still to confirm before it ships. Harbor is one island of its own off the south-west coast, a port with a pier, because it points
   outside the site. Ferries sail from that pier along the south coast to a harbour at the Guild Hall, on a
   faint dotted route. The first region on the
   mainland is Loop Forest.
@@ -141,8 +141,8 @@ fills the viewport and everything else floats on it, as in Google Maps.
 - **The filter chips work.** Loop, Models, Leading and Design fly to that region, All returns to the world
   view, and Not started dims every region and quest that is already done. Pins and labels that do not match
   fade instead of disappearing.
-- **Foothills has things to click.** Zoomed in, the port island has a Claude Academy pin and a Ferry pin. Both
-  have hover cards. The Ferry pin flies to the Guild Hall, and the Foothills panel has the same two buttons.
+- **Harbor has things to click.** Zoomed in, the port island has a Claude Academy pin and a Ferry pin. Both
+  have hover cards. The Ferry pin flies to the Guild Hall, and the Harbor panel has the same two buttons.
 - **A chosen pin fades out.** When a quest or region pin is clicked its red marker fades away and the stops, or
   the region, take over. The selected route is a line of round amber dots with a dark edge that flow slowly
   from the first stop to the last along the path, so it stands out from the terrain without looking like a snake. It is drawn beneath the people, boats and birds, so a miner, guard or
@@ -169,7 +169,7 @@ fills the viewport and everything else floats on it, as in Google Maps.
   and rope bridges looping between them, a hearth on a round platform in the central tree, and lanterns. The
   four stations are a scroll house, a workshop, a lantern tower and a gate house. No place is a plain oval: ground
   patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes a peak with a switchback trail, tents and climbers, igloos and a frozen lake. The
-  Foothills become a port island with a cone-shaped red and white lighthouse that is also drawn on the world map, so it shows at every zoom, a boathouse, a pier for the ferries and the start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
+  Harbor become a port island with a cone-shaped red and white lighthouse that is also drawn on the world map, so it shows at every zoom, a boathouse, a pier for the ferries and the start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
   what the lesson is about. Only the landmark nearest the middle of the view shows its detail, and it eases in over about a
   third of a second. Drag to another region and the old detail fades out while the next fades in, and the
   pins of the other regions dim, so the map feels like one place rather than a switch. Each scene is baked
@@ -239,7 +239,7 @@ First six regions, from the published AI notes (order inside each is a guess to 
 
 | Region | Landmark | Notes |
 |---|---|---|
-| Foothills | an island with hills, off the coast | one external stop: Claude Academy |
+| Harbor | an island with a lighthouse and a pier, off the coast | one external stop: Claude Academy |
 | Loop Forest | pines | one-loop-every-repo, one-loop-three-harnesses, loop-setup, the-check-that-never-ran |
 | Model Mines | mountain and cave | necessity-and-the-model-layer, plan-big-type-small, how-the-model-layer-works |
 | Guild Hall | hall | show-them-the-board, move-bugs-left, the-reviewer-that-learned-to-be-wrong |
