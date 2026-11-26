@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learn AI with me · Tjakoen Stolk</title>
+  <meta name="description" content="A pixel map of the notes, grouped into regions you can walk in order.">
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    /* The map is the page: it fills the main column under the tabs, with one slim strip above it. */
+    body[data-screen="learn"] .app-shell__main { padding: 0; display: flex; flex-direction: column; min-height: 0; }
+    .learn__bar { display: flex; align-items: center; gap: var(--space-3, 0.75rem); padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--color-border, currentColor); font-size: 0.875rem; }
+    .learn__bar a { color: var(--color-text, inherit); font-weight: 600; }
+    .learn__frame { flex: 1 1 auto; min-height: 0; width: 100%; border: 0; display: block; }
+  </style>
+</head>
+<body data-screen="learn" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="learn" data-rail-collapsed="true" data-aside-hidden="true" data-console-hidden="true" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main" id="main-content">
+      <div class="learn__bar"><a href="/" data-learn="back">← Back to the site</a><span>Learn AI with me</span></div>
+      <iframe class="learn__frame" id="learn-frame" title="Learn AI with me: a map of the notes" src="/learn-map/map.html"></iframe>
+    </main>
+  </div>
+  <script>
+    /* Hand the address hash (#quest=… or #stop=…) to the map, once on arrival and again if it changes. */
+    (function () {
+      var f = document.getElementById("learn-frame");
+      function pass() { var h = location.hash; if (f.contentWindow && f.contentWindow.location.hash !== h) f.contentWindow.location.hash = h; }
+      if (location.hash) f.src = "/learn-map/map.html" + location.hash;
+      window.addEventListener("hashchange", pass);
+    })();
+  </script>
+</body>
+</html>
