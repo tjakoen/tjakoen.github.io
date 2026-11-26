@@ -2,6 +2,27 @@
   "generated": "bun tools/quests.ts write",
   "quests": [
     {
+      "id": "ten-times-zero",
+      "region": 2,
+      "title": "Ten Times Zero Is Still Zero",
+      "level": "intro",
+      "audience": [
+        "learn",
+        "build"
+      ],
+      "minutes": 25,
+      "tags": [
+        "ai",
+        "workflow",
+        "web-platform",
+        "stack"
+      ],
+      "sources": [
+        "book-ai-native-engineering",
+        "book-loop-engineering"
+      ]
+    },
+    {
       "id": "loop-setup",
       "region": 2,
       "title": "Set Up the Loop With One Prompt",
@@ -23,59 +44,18 @@
       ]
     },
     {
-      "id": "one-loop-every-repo",
+      "id": "plan-big-type-small",
       "region": 2,
-      "title": "I Was Shipping Faster Than I Could Understand It",
-      "level": "deep",
+      "title": "Plan on the Big Model, Type on the Small One",
+      "level": "intro",
       "audience": [
+        "learn",
         "build"
       ],
       "minutes": 10,
       "tags": [
         "ai",
-        "workflow",
-        "tooling",
-        "standards"
-      ],
-      "sources": [
-        "book-loop-engineering"
-      ]
-    },
-    {
-      "id": "one-loop-three-harnesses",
-      "region": 2,
-      "title": "The Loop Outlives the Model.",
-      "level": "deep",
-      "audience": [
-        "build"
-      ],
-      "minutes": 11,
-      "tags": [
-        "ai",
-        "workflow",
-        "standards",
-        "tooling"
-      ],
-      "sources": [
-        "book-beyond-vibe-coding",
-        "book-loop-engineering",
-        "book-ai-native-engineering"
-      ]
-    },
-    {
-      "id": "the-check-that-never-ran",
-      "region": 2,
-      "title": "The Check Ran Once in 165 Sessions, and I Got the Reason Wrong",
-      "level": "deep",
-      "audience": [
-        "build"
-      ],
-      "minutes": 7,
-      "tags": [
-        "ai",
-        "workflow",
-        "measurement",
-        "standards"
+        "workflow"
       ],
       "sources": []
     },
@@ -97,39 +77,25 @@
       "sources": []
     },
     {
-      "id": "plan-big-type-small",
+      "id": "build-the-floor",
       "region": 3,
-      "title": "Plan on the Big Model, Type on the Small One",
+      "title": "Everybody Wants the Agent. Somebody Has to Build the Floor.",
       "level": "intro",
       "audience": [
-        "learn",
+        "lead",
         "build"
       ],
-      "minutes": 10,
-      "tags": [
-        "ai",
-        "workflow"
-      ],
-      "sources": []
-    },
-    {
-      "id": "how-the-model-layer-works",
-      "region": 3,
-      "title": "How the Model Intelligence Layer Works",
-      "level": "deep",
-      "audience": [
-        "build",
-        "learn"
-      ],
-      "minutes": 25,
+      "minutes": 39,
       "tags": [
         "ai",
         "workflow",
-        "tokenomics",
         "standards",
-        "tooling"
+        "tooling",
+        "web-platform"
       ],
-      "sources": []
+      "sources": [
+        "book-loop-engineering"
+      ]
     },
     {
       "id": "show-them-the-board",
@@ -164,18 +130,19 @@
       "sources": []
     },
     {
-      "id": "the-reviewer-that-learned-to-be-wrong",
-      "region": 4,
-      "title": "Seven Hundred Commits to Teach a Reviewer It Was Wrong",
+      "id": "one-loop-every-repo",
+      "region": 5,
+      "title": "I Was Shipping Faster Than I Could Understand It",
       "level": "deep",
       "audience": [
-        "lead",
         "build"
       ],
-      "minutes": 21,
+      "minutes": 10,
       "tags": [
         "ai",
-        "leadership"
+        "workflow",
+        "tooling",
+        "standards"
       ],
       "sources": [
         "book-loop-engineering"
@@ -214,42 +181,75 @@
       "sources": []
     },
     {
-      "id": "ten-times-zero",
+      "id": "one-loop-three-harnesses",
       "region": 6,
-      "title": "Ten Times Zero Is Still Zero",
-      "level": "intro",
+      "title": "The Loop Outlives the Model.",
+      "level": "deep",
       "audience": [
-        "learn",
         "build"
+      ],
+      "minutes": 11,
+      "tags": [
+        "ai",
+        "workflow",
+        "standards",
+        "tooling"
+      ],
+      "sources": [
+        "book-beyond-vibe-coding",
+        "book-loop-engineering",
+        "book-ai-native-engineering"
+      ]
+    },
+    {
+      "id": "the-check-that-never-ran",
+      "region": 6,
+      "title": "The Check Ran Once in 165 Sessions, and I Got the Reason Wrong",
+      "level": "deep",
+      "audience": [
+        "build"
+      ],
+      "minutes": 7,
+      "tags": [
+        "ai",
+        "workflow",
+        "measurement",
+        "standards"
+      ],
+      "sources": []
+    },
+    {
+      "id": "how-the-model-layer-works",
+      "region": 6,
+      "title": "How the Model Intelligence Layer Works",
+      "level": "deep",
+      "audience": [
+        "build",
+        "learn"
       ],
       "minutes": 25,
       "tags": [
         "ai",
         "workflow",
-        "web-platform",
-        "stack"
+        "tokenomics",
+        "standards",
+        "tooling"
       ],
-      "sources": [
-        "book-ai-native-engineering",
-        "book-loop-engineering"
-      ]
+      "sources": []
     },
     {
-      "id": "build-the-floor",
+      "id": "the-reviewer-that-learned-to-be-wrong",
       "region": 6,
-      "title": "Everybody Wants the Agent. Somebody Has to Build the Floor.",
-      "level": "intro",
+      "title": "Seven Hundred Commits to Teach a Reviewer It Was Wrong",
+      "level": "deep",
       "audience": [
         "lead",
         "build"
       ],
-      "minutes": 39,
+      "minutes": 21,
       "tags": [
         "ai",
-        "workflow",
-        "standards",
-        "tooling",
-        "web-platform"
+        "leadership"
       ],
       "sources": [
         "book-loop-engineering"
