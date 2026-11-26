@@ -51,3 +51,18 @@ aiTest("the AI prompt names the note, its address and its Markdown twin", () => 
   aiExpect(p).toContain("https://portfolio.tjakoen.com/notes/a-note.md");
   aiExpect(p).toContain("A note");
 });
+
+import { renderArticleMeta } from "./content.ts";
+import { enrichHead } from "./seo.ts";
+
+aiTest("a note's JSON-LD carries its dates, keywords and an ISO reading time", () => {
+  const meta = renderArticleMeta({ date: "2026-08-07", updated: "2026-09-01", tags: ["ai", "stack"], readingTime: "~25 min" });
+  const page = `<!DOCTYPE html><html><head><title>T</title><meta name="description" content="D">${meta}</head><body></body></html>`;
+  const out = enrichHead(page, "/notes/t", "https://portfolio.tjakoen.com");
+  const ld = JSON.parse(out.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)![1]);
+  aiExpect(ld["@type"]).toBe("BlogPosting");
+  aiExpect(ld.datePublished).toBe("2026-08-07");
+  aiExpect(ld.dateModified).toBe("2026-09-01");
+  aiExpect(ld.keywords).toBe("ai, stack");
+  aiExpect(ld.timeRequired).toBe("PT25M");
+});
