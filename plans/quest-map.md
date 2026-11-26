@@ -26,6 +26,11 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   dot marks the adventurer, and a main road in amber links the quests in order.
 - **Zoom adds detail.** Zooming in shows what the world view leaves out: tents, torches, a mine cart and
   numbered stop pins. The RPG quest modal opens over the zoomed map.
+- **The map moves.** A second canvas over the map redraws about seven times a second, so everything moves in
+  pixel steps: glints on the water, drifting cloud shadows, torch flames, smoke from the guild hall chimney,
+  the summit flag, gulls, a pulse on the adventurer and on the selected quest, and fireflies in the forest in
+  the dark scheme. It is decoration only. It starts off when the system asks for reduced motion, and a Motion
+  button turns it on or off either way.
 - **Warm paper, amber accent.** It shares the ant colony's palette, so the site keeps one voice. Labels
   carry a halo the way map labels do.
 - **Theming follows the site.** The chrome (panel, modal, search, chips, guild card, book pages) reads
@@ -52,7 +57,13 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 
 - No Foothills notes. The first stop points out to Claude Academy for the basics. The exact URL is
   still to confirm before it ships.
-- The map page has no sidebar. The sidebar comes back as the lesson book inside a quest note.
+- Map mode is a screen of its own, the way the builder is. The explorer rail is collapsed, the assistant
+  sidebar is hidden and the terminal is hidden, so the map takes the whole window. The sidebar comes back as
+  the lesson book inside a quest note.
+- The journey page is new. view/pages/journey does not exist yet, and this plan creates it.
+- Path badges are not the course badges I issue at HAU. They are a different kind of badge: their own
+  collection under their own prefix, their own medallion and their own criteria page. Nothing is added to
+  /badges, and no code keyed on the /badges prefix is reused.
 - Quest tokens ship in light and dark, and the sidebar in lesson mode uses the same tokens.
 - The voice player is an open book. Underneath it is a plain audio element with captions.
 - Character comes from a seed or a chosen username, never from hardware. A browser cannot read a MAC
@@ -98,13 +109,15 @@ fills the viewport and everything else floats on it, as in Google Maps.
 ## Mockups (part of this plan)
 
 The mockups are the design reference for this plan and for quest-lessons. A build task is done when what
-it ships matches the mockup it cites, or the plan records why it differs. Both files live in
+it ships matches the mockup it cites, or the plan records why it differs. The files live in
 docs/mockups/quest-map, open in any browser, and have a flavor picker (sourdough, baguette, brioche) and
 an Auto, Light and Dark switch.
 
 | File | What it is | Backs |
 |---|---|---|
 | fullscreen.html | The working full-screen map: drag, zoom, fly-to, search, filter chips, the place panel in four states, a bottom sheet on a phone. Real quests, levels, reading times and proposer stops. | The map is the page, the zoom rules, the place panel |
+| in-site-map.html | The map inside the real portfolio shell, in map mode: the explorer rail collapsed, the assistant sidebar and the terminal hidden. Built from the live site's own markup and CSS, with the theme buttons wired to all six flavor and scheme pairs. | Map mode, how the page sits in the site |
+| in-site-note.html | A real note page with the lesson card under the byline, above the contents block, and the stop pips beside the section headings. Same method. | Lesson card, section pips |
 | index.html section 1 | Static layout study of the Google Maps arrangement. Superseded by fullscreen.html. | History only |
 | index.html section 2 | The zoomed landmark with a modal. Superseded: the place panel replaces the modal. | History only |
 | index.html section 3 | The guild card, save, and how the badge link rebuilds it. | Guild card, badge link |
@@ -171,15 +184,16 @@ This is the part that keeps the map alive without hand editing.
 - [ ] Quest tokens, light and dark, in the theme. The canvas reads them so the map re-skins with the page.
 - [ ] content/quests collection and generated index, plus tools/quests.ts check with tests.
 - [ ] NOTE-STANDARD section and a regenerated mounted skill, so the note skill runs the check.
-- [ ] Full-screen map page with no sidebar: pixel canvas, four integer zoom levels, semantic zoom, fly-to, pins as real buttons and the panel's route lists as the keyboard and screen reader path.
+- [ ] Full-screen map page in map mode (rail collapsed, assistant sidebar and terminal hidden): pixel canvas, four integer zoom levels, semantic zoom, fly-to, pins as real buttons and the panel's route lists as the keyboard and screen reader path.
 - [ ] Place panel states (welcome, region, quest, stop): class, level, XP, what it covers, stops, sources and begin quest.
 - [ ] Guild card: seeded character, optional username, save file and save code, load.
 - [ ] Badge link that rebuilds the card from the hash, with the self-reported notice on the page.
-- [ ] Path badges as a new badge class reusing the medallion, in the quest palette, in their own namespace. Earned by finishing a region's trials, with the runes collected shown as its skills.
+- [ ] Path badges as their own kind of badge, separate from the HAU course badges: a new collection under its own prefix, its own medallion in the quest palette and its own criteria page. Earned by finishing a region's trials, with the runes collected shown as its skills.
 - [ ] Lesson card on each note that has a lesson, linking the note to its lesson and back (see quest-lessons).
 - [ ] Lesson mode: the sidebar becomes the quest book. A sidecar file per lesson holds segments, cues, rune ids, the plain-words digest and the trial. The notes themselves are untouched.
 - [ ] Wire the quest UI to GRAIN tokens and verify every flavor and scheme pair for contrast.
 - [ ] Concept highlight in the note, driven through the GRAIN surface and verb registry, not a back channel.
+- [ ] Motion layer: water, torches, smoke, flag, gulls, pulses and fireflies, off under reduced motion, with a Motion button.
 - [ ] Reduced motion, captions, keyboard path and contrast checked in both themes.
 - [ ] First recording for one quest, to prove the book end to end before recording the rest.
 

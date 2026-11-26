@@ -102,7 +102,8 @@ They are different things, and the plan keeps them apart.
 - A **rune** is one concept taught in one stop. It lives in the Codex, is tied to a section id and a quote,
   and is cosmetic and self-reported.
 - A **badge** is earned by finishing a region: every stop and its trial. It has criteria, a page, and a
-  medallion, and it reuses the existing badge-class machinery.
+  medallion. It is its own kind of badge, not one of the HAU course badges: its own collection, its own
+  medallion and its own page.
 - The two meet in one place: a badge page lists the runes collected on the way as its skills, the way a
   certification lists skills. Collecting every rune in a region without doing the trials earns nothing
   but the Codex entries.
