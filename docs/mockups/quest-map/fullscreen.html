@@ -581,7 +581,7 @@ const ringPt=t=>{ const w=1+.16*Math.sin(3*t+1)+.1*Math.sin(5*t+2)+.06*Math.sin(
 const RING=n=>Array.from({length:n},(_,i)=>ringPt(i/n*6.2832-1.5708));
 const SPEC={
   1:{cx:26,cy:126,W:64,H:44,q:[],slots:[],lights:[[32,30]],flags:[[46,2]]},
-  2:{cx:62,cy:92,W:96,H:76,q:[ringPt(-1.5708),ringPt(0),ringPt(1.5708),ringPt(3.1416)],slots:RING(12),lights:[[48,38],[48,19],[82,38]],flags:[]},
+  2:{cx:62,cy:92,W:96,H:76,q:[ringPt(-1.5708),ringPt(0),ringPt(1.5708),ringPt(3.1416)],slots:RING(12),lights:[[48,38],...RING(8)],flags:[]},
   3:{cx:104,cy:126,W:130,H:70,q:[[65,62],[26,24],[65,20]],slots:[[65,58],[65,46],[45,44],[26,40],[26,24],[85,38],[105,32],[105,20],[65,20]],lights:[[65,56],[65,44],[40,44],[26,34],[85,36],[105,28],[60,18],[70,18]],flags:[]},
   4:{cx:146,cy:92,W:108,H:76,q:[[24,42],[62,42],[54,30]],slots:[[54,30],[24,42],[62,42],[54,56],[16,26],[90,26],[16,60],[90,60],[36,62]],lights:[[44,31],[64,31],[54,50],[24,36]],flags:[[54,2]]},
   5:{cx:92,cy:54,W:100,H:80,q:[[26,38],[50,42]],slots:[[50,66],[50,14],[50,40],[26,34],[74,34],[30,50],[13,13],[87,13],[87,63]],lights:[[38,58],[62,58],[13,10],[87,10]],flags:[[53,2]]},
@@ -607,7 +607,7 @@ function bakeScenes(){
       g.fillStyle=edge; for(let y=0;y<H;y++) for(let x=0;x<W;x++) if(m[y*W+x]&&!(on(x-1,y)&&on(x+1,y)&&on(x,y-1)&&on(x,y+1))) g.fillRect(x,y,1,1); };
     const speckle=(x,y,w,h,c,k)=>{ for(let i=0;i<k;i++){ const q=hash2(i*7+x,y*3+i); R(x+q%w,y+((q>>8)%h),1,1,c); } };
     const pine=(x,y)=>{ R(x,y,2,3,P.trunk); R(x-3,y-3,8,3,P.forest); R(x-2,y-6,6,3,P.forest); R(x-1,y-9,4,3,P.forest2); };
-    const glow=(x,y)=>{ for(let j=-2;j<4;j++) for(let i=-2;i<4;i++) if((i+j)%2===0&&(i<0||i>1||j<0||j>1)) R(x+i,y+j,1,1,P.amber); R(x,y,2,2,P.glow); };
+    const glow=(x,y)=>{ R(x-1,y,1,2,P.amber); R(x+2,y,1,2,P.amber); R(x,y-1,2,1,P.amber); R(x,y+2,2,1,P.amber); R(x,y,2,2,P.glow); };
     const house=(x,y,w,h,ro,ro2)=>{ R(x-3,y-7,w+6,h+8,P.outline); R(x,y,w,h,P.wall); R(x+w/2,y,w/2,h,P.wall2); R(x-2,y-6,w+4,7,ro); R(x+w/2,y-6,w/2+2,7,ro2); R(x+w/2-2,y+h-5,4,5,P.outline); R(x+2,y+3,3,3,P.glow); };
     const tent=(x,y,c1,c2)=>{ for(let j=-1;j<9;j++) R(x-j-1,y+j,2*j+4,1,P.outline); for(let j=0;j<8;j++){ R(x-j,y+j,j+1,1,c1); R(x+1,y+j,j+1,1,c2); } R(x,y+8,2,1,P.outline); };
     if(n==1){ blob(P.grass,P.grass2);
@@ -615,32 +615,27 @@ function bakeScenes(){
       L(32,43,32,32,P.road,4); R(46,8,2,14,P.trunk); R(40,4,14,9,P.outline); R(41,5,12,7,P.wall); R(41,5,12,3,P.roof); R(46,0,1,6,P.outline); R(47,0,8,4,P.flag);
       tent(14,28,P.roof,P.roof2); tent(24,32,P.field,P.field2); D(32,31,2,P.trunk); R(31,27,2,3,P.amber); R(31,25,2,2,P.glow); speckle(6,6,52,30,P.meadow,18);
       SPEC[1].lights.forEach(([x,y])=>glow(x,y)); }
-    if(n==2){ blob(P.forest2,P.forest); speckle(0,0,W,H,P.forest,320); speckle(0,0,W,H,'#4a3320',90);
-      const path=[]; for(let q=0;q<140;q++) path.push(ringPt(q/140*6.2832));
-      const st=[ringPt(-1.5708),ringPt(0),ringPt(1.5708),ringPt(3.1416)];
-      const clear=[[48,38,9],...st.map(([x,y])=>[x,y,12])];
-      const near=(x,y,r)=>path.some(([px,py])=>Math.hypot(px-x,py-y)<r)||clear.some(([cx,cy,cr])=>Math.hypot(cx-x,cy-y)<cr);
-      clear.forEach(([x,y,r])=>{ D(x,y,r,P.grass2); D(x,y,r-3,P.grass); });
-      for(let q=0;q<260;q++){ const [x,y]=ringPt(q/260*6.2832); R(x-2,y-2,5,5,P.roadEdge); }
-      for(let q=0;q<260;q++){ const [x,y]=ringPt(q/260*6.2832); R(x-1,y-1,3,3,P.road); }
-      st.forEach(([x,y])=>L(48,38,x,y,P.roadEdge,2));
-      const bigPine=(x,y,h)=>{ const lay=[[5,-4,5],[4,-8,5],[3,-12,5],[1,-15,4]];
-        R(x-2,y-1,5,5,P.outline); lay.forEach(([w,dy,hh])=>R(x-w-1,y+dy-1,w*2+3,hh+2,P.outline));
-        R(x-1,y,3,3,P.trunk); lay.forEach(([w,dy,hh])=>{ R(x-w,y+dy,w+1,hh,P.forest); R(x+1,y+dy,w,hh,P.forest2); }); R(x-2,y-14,2,2,P.grass2); };
-      const oak=(x,y,h)=>{ R(x-2,y-2,5,7,P.outline); R(x-1,y-1,3,5,P.trunk); D(x,y-7,7,P.outline); D(x,y-7,6,P.forest); D(x+2,y-6,4,P.forest2); D(x-2,y-10,2,P.grass2); if(h%3===0){ R(x+3,y-8,2,2,P.pin); } };
-      const trees=[]; for(let gy=0;gy<H;gy+=7) for(let gx=0;gx<W;gx+=7){ const h=hash2(gx+31,gy+99), x=gx+(h%5)-2, y=gy+((h>>4)%5)-2+6, dx=(x-W/2)/(W/2), dy=(y-12-H/2)/(H/2); if(dx*dx+dy*dy>1.02||y>H+2) continue; if(near(x,y-4,7)) continue; trees.push([x,y,h]); }
-      trees.sort((u,v)=>u[1]-v[1]).forEach(([x,y,h])=>{ if((h>>9)%3) bigPine(x,y,h); else oak(x,y,h); });
-      // undergrowth: mushrooms, ferns, logs and stumps
-      for(let q=0;q<22;q++){ const h=hash2(q*13,77), x=6+h%(W-12), y=6+((h>>8)%(H-12)); if(near(x,y,6)) continue; const dx=(x-W/2)/(W/2), dy=(y-H/2)/(H/2); if(dx*dx+dy*dy>.8) continue;
-        if(q%3===0){ R(x-1,y-1,6,5,P.outline); R(x,y,4,2,P.pin); R(x+1,y,1,1,'#fff'); R(x+1,y+2,2,2,P.wall); }
-        else if(q%3===1){ L(x,y,x-3,y-4,P.grass2,1); L(x,y,x,y-5,P.grass,1); L(x,y,x+3,y-4,P.grass2,1); }
-        else { R(x-1,y-1,12,6,P.outline); R(x,y,10,4,P.trunk); R(x,y,2,4,P.wall2); } }
-      [[40,34],[56,34],[40,44],[56,44]].forEach(([x,y])=>{ D(x,y,3,P.outline); D(x,y,2,P.trunk); R(x-1,y-1,2,2,P.wall2); });
-      D(48,38,4,P.rockd); D(48,38,3,P.trunk); R(47,34,2,3,P.amber); R(47,32,2,2,P.glow);
-      { const [x,y]=st[0]; R(x-9,y-7,18,12,P.outline); R(x-8,y-6,16,10,P.wall); R(x-10,y-10,20,6,P.roof); R(x,y-10,10,6,P.roof2); R(x-5,y-3,3,4,P.glow); R(x+2,y-3,3,4,P.glow); }
-      { const [x,y]=st[1]; R(x-9,y-8,18,15,P.outline); R(x-8,y-7,16,13,P.stone); R(x-8,y-7,16,4,P.rock2); D(x,y+1,4,P.outline); D(x,y+1,2,P.rock); R(x-1,y-3,2,8,P.rockd); }
-      { const [x,y]=st[2]; R(x-1,y-2,2,12,P.trunk); R(x-4,y-5,8,5,P.outline); R(x-3,y-4,6,3,P.glow); }
-      { const [x,y]=st[3]; R(x-6,y-9,12,1,P.outline); R(x-5,y-8,10,8,P.wall); R(x-7,y-12,14,4,P.roof); R(x-1,y-16,1,8,P.trunk); R(x,y-16,6,3,P.amber); } }
+    if(n==2){ /* An elf town in the canopy: great trees with houses built into their crowns, joined by plank walkways and rope bridges, lit by lanterns. */
+      blob(P.forest2,P.forest); speckle(0,0,W,H,P.forest,260); speckle(0,0,W,H,'#4a3320',60);
+      const st=[ringPt(-1.5708),ringPt(0),ringPt(1.5708),ringPt(3.1416)], loop=[]; for(let q=0;q<=96;q++) loop.push(ringPt(q/96*6.2832));
+      const crown=(x,y,r)=>{ D(x,y,r+1,P.outline); D(x,y,r,P.forest); D(x+Math.round(r/4),y+Math.round(r/4),Math.round(r*.7),P.forest2); D(x-Math.round(r/3),y-Math.round(r/3),Math.max(2,Math.round(r/3)),P.grass2); speckle(x-r,y-r,r*2,r*2,P.forest,Math.round(r*1.4)); };
+      const away=(x,y,r)=>loop.every(([px,py])=>Math.hypot(px-x,py-y)>r)&&[[48,38],...st].every(([cx,cy])=>Math.hypot(cx-x,cy-y)>r+10);
+      const small=[]; for(let gy=4;gy<H-2;gy+=11) for(let gx=4;gx<W-2;gx+=11){ const h=hash2(gx+5,gy+71), x=gx+(h%7)-3, y=gy+((h>>4)%7)-3, dx=(x-W/2)/(W/2), dy=(y-H/2)/(H/2); if(dx*dx+dy*dy>.95||!away(x,y,9)) continue; small.push([x,y,5+(h>>9)%3,h]); }
+      small.sort((u,v)=>u[1]-v[1]).forEach(([x,y,r])=>crown(x,y,r));
+      crown(48,38,18); st.forEach(([x,y])=>crown(x,y,13));
+      const plank=(x0,y0,x1,y1)=>{ const m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0))||1; for(let k=0;k<=m;k++){ const x=Math.round(x0+(x1-x0)*k/m), y=Math.round(y0+(y1-y0)*k/m); R(x-2,y-2,5,5,P.outline); } for(let k=0;k<=m;k++){ const x=Math.round(x0+(x1-x0)*k/m), y=Math.round(y0+(y1-y0)*k/m); R(x-1,y-1,3,3,P.trunk); if(k%3===0) R(x-1,y,3,1,P.wall2); } };
+      for(let q=0;q<loop.length-1;q++) plank(loop[q][0],loop[q][1],loop[q+1][0],loop[q+1][1]);
+      st.forEach(([x,y])=>plank(48,38,x,y));
+      // the great tree: a round platform with a hearth and a banner pole
+      D(48,38,10,P.outline); D(48,38,9,P.trunk); D(48,38,7,P.wall2); for(let a=0;a<12;a++) L(48,38,Math.round(48+9*Math.cos(a/12*6.283)),Math.round(38+9*Math.sin(a/12*6.283)),P.trunk,1);
+      D(48,38,4,P.outline); D(48,38,3,P.rockd); D(48,38,1,P.trunk); R(47,34,2,3,P.amber); R(47,32,2,2,P.glow); R(48,24,1,9,P.outline); R(49,24,7,4,P.amber);
+      const elf=(x,y,wv,r1,r2)=>{ D(x,y+1,wv+4,P.outline); D(x,y+1,wv+3,P.wall2); R(x-wv-1,y-8,2*wv+2,16,P.outline); R(x-wv,y-3,2*wv,8,P.wall); R(x-wv,y-3,wv,8,P.wall2); R(x-wv-2,y-9,wv+2,7,r1); R(x,y-9,wv+2,7,r2); R(x-1,y-12,2,4,r2); R(x-2,y+1,4,4,P.outline); R(x-1,y+2,2,3,P.glow); R(x+wv-3,y-1,2,2,P.glow); };
+      { const [x,y]=st[0]; elf(x,y,8,P.grass,P.forest); R(x-4,y-7,2,3,'#f5f0dc'); R(x+2,y-7,2,3,'#f5f0dc'); }
+      { const [x,y]=st[1]; elf(x,y,8,P.grass,P.forest); D(x+9,y-9,3,P.outline); D(x+9,y-9,2,P.rock2); R(x+8,y-14,2,3,P.fog); R(x+8,y-17,2,2,P.fog2); }
+      { const [x,y]=st[2]; R(x-3,y-14,7,22,P.outline); R(x-2,y-13,5,20,P.wall); R(x-2,y-13,2,20,P.wall2); R(x-4,y-19,9,6,P.outline); R(x-3,y-18,7,5,P.grass); R(x,y-18,4,5,P.forest); R(x,y-24,1,6,P.outline); R(x-1,y-8,3,4,P.glow); R(x-1,y,3,4,P.glow); }
+      { const [x,y]=st[3]; elf(x,y,7,P.forest,P.grass); R(x-7,y-16,14,1,P.outline); R(x-6,y-15,12,4,P.wall); D(x,y-14,3,P.outline); D(x,y-14,2,P.glow); }
+      small.filter((_,i)=>i%3===0).forEach(([x,y,r])=>{ R(x-5,y-6,11,10,P.outline); R(x-4,y-5,9,7,P.wall); R(x-6,y-8,13,5,P.grass2); R(x,y-8,7,5,P.forest); R(x-1,y,3,3,P.glow); });
+      SPEC[2].lights.forEach(([x,y])=>glow(x,y)); }
     if(n==3){ blob(P.rock2,P.rock); hill(W/2-8,H/2-6,P.rock,P.outline); const DK='#2a2430';
       for(let y=4;y<22;y+=2) speckle(10,y,110,2,P.rock2,6);
       [[22,14],[36,12],[96,12],[110,18],[76,8]].forEach(([x,y])=>{ for(let j=0;j<6;j++) R(x-j-1,y+j,2*j+3,1,P.outline); for(let j=0;j<5;j++) R(x-j,y+j,2*j+1,1,j<3?P.snow:P.snow2); });
