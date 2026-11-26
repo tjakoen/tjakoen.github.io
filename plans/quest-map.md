@@ -282,7 +282,7 @@ This is the part that keeps the map alive without hand editing.
 - [ ] Lesson mode: the sidebar becomes the quest book. A sidecar file per lesson holds segments, cues, rune ids, the plain-words digest and the trial. The notes themselves are untouched.
 - [ ] Wire the quest UI to GRAIN tokens and verify every flavor and scheme pair for contrast.
 - [ ] Concept highlight in the note, driven through the GRAIN surface and verb registry, not a back channel.
-- [ ] Motion layer: water glints, torches, the flag and one pulse, paused during pan and zoom, off under reduced motion, with a Motion button.
+- [ ] Motion layer: waves, torches, flags, people and boats, paused during pan and zoom, off under reduced motion, with a Motion button and a Layers option for each kind.
 - [ ] Reduced motion, captions, keyboard path and contrast checked in both themes.
 - [ ] First recording for one quest, to prove the book end to end before recording the rest.
 - [ ] Extract the map, place panel, guild card and book into GRAIN once the pilot has run, leaving this site to supply the data and the theme.
@@ -301,6 +301,15 @@ done, not a someday.
 - The WCAG gate over the map page and a note with a lesson card, in all six flavor and scheme pairs.
 - The playwright suite, including the visual baselines on macOS, plus the lint gate.
 - A run report under artifacts/runs and a memory note for the decisions made.
+
+## Audit follow-ups (2026-11-27)
+
+- [ ] Bake the base map, scenes and sprites to a cached image at build time, so nothing is drawn procedurally on load.
+- [ ] Draw waves on their own layer so toggling them is cheap, and cap the canvas size on very large screens.
+- [ ] Render the region, quest and stop lists as plain HTML so the route works without JavaScript.
+- [ ] Move quests, routes, scene specs and people paths into data, and separate drawing from DOM writes.
+- [ ] Check contrast in all six flavor and scheme pairs, and run the WCAG gate.
+- [ ] Tests for the quest check, routes, progress and the panel controls.
 
 ## Honest limits
 
