@@ -19,22 +19,22 @@ summary: >
   the right file without me pointing, which is most of what keeps the loop low effort. It is traceable
   and cheap to keep, it costs extra reads, and my 37 notes still have no tree.
 social: |
-  I have been running vectorless RAG for months and had no word for it.
+  I have been running vectorless RAG for months. I called it keeping good docs.
 
-  RAG means the AI looks things up before it answers. Most setups do it with vectors: chop the
-  documents into chunks, turn each chunk into numbers, fetch whatever sits nearest the question. Mine
-  does it with a table of contents. One file, CLAUDE.md, symlinked as AGENTS.md so Claude, Codex and
-  OpenCode all read the same one. A question about my voice rules read 36 lines of a 677-line file.
+  RAG means the AI looks things up before it answers. Most setups chop the documents into chunks, turn
+  them into numbers and fetch whatever sits nearest the question. Mine reads a table of contents
+  instead: one file, CLAUDE.md, linked as AGENTS.md so Claude, Codex and OpenCode all read the same one.
 
-  The part I care about is the effort. I do not brief a session. It reads the contents page, finds the
-  file that applies, and I steer and review.
+  A question about my voice rules read 36 lines of a 677-line file. And I no longer brief a session. I
+  steer and review.
+
+  It is easy to trace. It also costs more reads, and my notes are still a flat pile with no tree.
 
   The name came from Shivani Virdi's post on vectorless RAG. Thank you, @Shivani Virdi.
 
-  It is easy to trace and it costs me nothing extra. It also costs more reads, and my notes are still
-  a flat pile with no tree.
+  #RAG #AIAgents #ClaudeCode #AgenticAI
 socialImage: "/media/notes/vectorless-rag-by-accident-social.png"
-socialImageAlt: "My AI workflow is vectorless RAG and I didn't call it that: on the left a scatter of dots with a ring around the nearest few, labelled find what looks similar; on the right a small tree with one path drawn in ink down to a filled leaf, labelled read the contents, open the one section it needs. Below, three lines: one contents page linked as AGENTS.md for Claude, Codex and OpenCode; a question about my voice rules read 36 lines of a 677-line file; so I steer and review and do not brief."
+socialImageAlt: "My AI workflow is vectorless RAG and I didn't call it that. A large 36, then of 677 lines, is all one question about my voice rules read. Under it a long bar for the whole file with one narrow band lit in ink, lines 159 to 194, the section it needed. Below: a contents page the model reads, not a vector database; one file, linked as AGENTS.md, for Claude, Codex and OpenCode; so I steer and review, I do not brief."
 ---
 
 My AI has never read my standards. Every session starts blank, whether it is Claude, Codex or

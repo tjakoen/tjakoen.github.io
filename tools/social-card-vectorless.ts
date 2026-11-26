@@ -1,8 +1,8 @@
 // portfolio/tools/social-card-vectorless.ts — render the social image for the vectorless RAG note.
 //
 // Same card family as tools/social-card-pantry.ts (1200×1200, paper and ink, Georgia, the host in
-// the footer). The picture is the note's contrast: a scatter where the nearest few dots get circled,
-// beside a small tree where one path is drawn in ink down to the one leaf that gets opened.
+// the footer). The picture is the note's proof: VOICE.md as a strip of 677 lines with the 36 one question needed
+// lit in ink, under the number it makes.
 //
 //   bun run social:card:vectorless   # → content/media/notes/vectorless-rag-by-accident-social.png
 import { chromium } from "@playwright/test";
@@ -21,40 +21,14 @@ const INK = "#1C1B17";
 const MUTED = "#6E6C64";
 const LINE = "rgba(28,27,23,.18)";
 
-// Left panel: a fixed scatter, with a ring around the few nearest the question mark.
-const DOTS: [number, number][] = [
-  [140, 560], [190, 610], [250, 540], [290, 700], [170, 700], [360, 570], [420, 690], [230, 760],
-  [300, 590], [390, 780], [150, 820], [460, 600], [330, 730], [270, 820], [440, 820], [210, 660],
-];
-const Q: [number, number] = [320, 660];
-const scatter = () => {
-  let out = `<rect x="96" y="500" width="440" height="380" rx="12" style="fill:none;stroke:${LINE};stroke-width:2"/>`;
-  for (const [x, y] of DOTS) {
-    const near = Math.hypot(x - Q[0], y - Q[1]) < 80;
-    out += `<circle cx="${x}" cy="${y}" r="9" style="fill:${near ? INK : LINE}"/>`;
-  }
-  out += `<circle cx="${Q[0]}" cy="${Q[1]}" r="86" style="fill:none;stroke:${MUTED};stroke-width:2;stroke-dasharray:8 7"/>`;
-  out += `<text x="${Q[0]}" y="${Q[1] + 9}" text-anchor="middle" style="fill:${INK};font-size:30px">?</text>`;
-  return out;
-};
-
-// Right panel: a three-level tree; the chosen path is ink, everything else faint.
-const node = (x: number, y: number, on: boolean, leaf = false) =>
-  `<rect x="${x - 45}" y="${y - 20}" width="90" height="40" rx="6" style="fill:${leaf ? INK : PAPER};stroke:${on ? INK : LINE};stroke-width:${on ? 3 : 2}"/>`;
-const edge = (x1: number, y1: number, x2: number, y2: number, on: boolean) =>
-  `<line x1="${x1}" y1="${y1 + 20}" x2="${x2}" y2="${y2 - 20}" style="stroke:${on ? INK : LINE};stroke-width:${on ? 3 : 2}"/>`;
-const tree = () => {
-  const root: [number, number] = [884, 560];
-  const mid: [number, number][] = [[774, 690], [884, 690], [994, 690]];
-  const leaves: [number, number][] = [[724, 820], [834, 820]];
-  let out = `<rect x="664" y="500" width="440" height="380" rx="12" style="fill:none;stroke:${LINE};stroke-width:2"/>`;
-  mid.forEach(([x, y], i) => (out += edge(root[0], root[1], x, y, i === 0)));
-  leaves.forEach(([x, y], i) => (out += edge(mid[0][0], mid[0][1], x, y, i === 1)));
-  out += node(...root, true);
-  mid.forEach(([x, y], i) => (out += node(x, y, i === 0)));
-  leaves.forEach(([x, y], i) => (out += node(x, y, i === 1, i === 1)));
-  return out;
-};
+// The strip: VOICE.md as one bar of 677 lines, with the 36 lines one question needed lit in ink.
+const BAR_X = 96;
+const BAR_W = W - 192;
+const LINES = 677;
+const FROM = 159;
+const COUNT = 36;
+const bandX = BAR_X + (BAR_W * (FROM - 1)) / LINES;
+const bandW = (BAR_W * COUNT) / LINES;
 
 const card = `<!doctype html><html><head><meta charset="utf-8"><style>
   html, body { margin: 0; }
@@ -69,17 +43,18 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
     <text x="96" y="310" style="fill:${INK};font-size:76px;letter-spacing:-1.5px">vectorless RAG and I</text>
     <text x="96" y="396" style="fill:${INK};font-size:76px;letter-spacing:-1.5px;font-style:italic">didn't call it that.</text>
 
-    ${scatter()}
-    <text x="316" y="930" text-anchor="middle" style="fill:${INK};font-size:30px">Find what looks similar</text>
-    <text x="316" y="966" text-anchor="middle" style="fill:${MUTED};font-size:23px">chunks, vectors, nearest few</text>
+    <text x="90" y="660" style="fill:${INK};font-size:230px;letter-spacing:-6px">36</text>
+    <text x="400" y="600" style="fill:${INK};font-size:70px">of 677 lines</text>
+    <text x="400" y="652" style="fill:${MUTED};font-size:30px">is all one question about my voice rules read.</text>
 
-    ${tree()}
-    <text x="884" y="930" text-anchor="middle" style="fill:${INK};font-size:30px">Read the contents</text>
-    <text x="884" y="966" text-anchor="middle" style="fill:${MUTED};font-size:23px">open the one section it needs</text>
+    <rect x="${BAR_X}" y="740" width="${BAR_W}" height="56" rx="6" style="fill:${LINE}"/>
+    <rect x="${bandX.toFixed(1)}" y="728" width="${bandW.toFixed(1)}" height="80" rx="4" style="fill:${INK}"/>
+    <text x="${bandX.toFixed(1)}" y="846" style="fill:${MUTED};font-size:24px">lines 159 to 194, the section it needed</text>
+    <text x="${W - 96}" y="846" text-anchor="end" style="fill:${MUTED};font-size:24px">the whole file</text>
 
-    <text x="96" y="1016" style="fill:${INK};font-size:27px">One contents page, linked as AGENTS.md for Claude, Codex and OpenCode.</text>
-    <text x="96" y="1054" style="fill:${INK};font-size:27px">A question about my voice rules read 36 lines of a 677-line file.</text>
-    <text x="96" y="1092" style="fill:${MUTED};font-size:27px;font-style:italic">So I steer and review. I do not brief.</text>
+    <text x="96" y="940" style="fill:${INK};font-size:31px">A contents page the model reads, not a vector database.</text>
+    <text x="96" y="984" style="fill:${INK};font-size:31px">One file, linked as AGENTS.md, for Claude, Codex and OpenCode.</text>
+    <text x="96" y="1050" style="fill:${MUTED};font-size:31px;font-style:italic">So I steer and review. I do not brief.</text>
 
     <line x1="96" y1="1122" x2="${W - 96}" y2="1122" style="stroke:${LINE};stroke-width:1"/>
     <text x="96" y="1158" style="fill:${INK};font-size:22px">My AI Workflow Is Vectorless RAG and I Didn't Call It That</text>
