@@ -86,8 +86,10 @@ Where a note is cut into stops, how big a stop is and which lessons exist are de
 The first mockups boxed the map beside a panel. That was a layout of convenience, not a design. The map
 fills the viewport and everything else floats on it, as in Google Maps.
 
-- **Layout.** Search and the place panel sit top left, filter chips beside them, theme settings top right,
-  layers and the zoom level bottom left, zoom and find-me bottom right. On a phone the panel is a bottom
+- **Layout.** Search and the place panel sit top left, filter chips beside them, display settings top right,
+  layers and the zoom level bottom left, zoom and find-me bottom right. The display settings are one icon,
+  closed by default, that opens icon buttons for motion, the three flavors as swatches and auto, light and
+  dark. On a phone the icon moves to the bottom left and the panel is a bottom
   sheet. The site sidebar stays closed on this page.
 - **The panel replaces the modal.** Welcome, region, quest and stop are four states of one place panel,
   the way a place card works. The RPG details (class, level, XP, what it covers, stops) live in the quest
@@ -103,7 +105,9 @@ fills the viewport and everything else floats on it, as in Google Maps.
   are pixel art. A pin is a clean round marker with a number, a white edge and a pointer, so it reads against
   busy terrain: red for open, green with a check for done, grey for filtered out, amber for a stop. It stays
   the same size at every zoom level, has a target of at least 44 pixels with its padding, and grows and gains
-  a ring when selected. Pins are buttons with names and labels are text, so keyboard and screen reader users
+  a ring when selected. Each pin has a name tag beside it, on the right or flipped to the left. A tag that would
+  land on a pin or another tag, or off the screen, is hidden, and the selected quest or stop always wins. Stop
+  pins are numbered one to nine. Pins are buttons with names and labels are text, so keyboard and screen reader users
   get the same route lists and the canvas is decoration. Arrow keys
   pan, plus and minus zoom, and Escape returns to the welcome card.
 - **Working prototype:** docs/mockups/quest-map/fullscreen.html, with the real quests, levels, reading
