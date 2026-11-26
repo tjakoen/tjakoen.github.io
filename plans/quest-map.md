@@ -3,7 +3,7 @@ id: quest-map
 status: todo
 track: learning
 depends: []
-touches: [content/quests, standards/NOTE-STANDARD.md, tools/quests.ts, view/pages/journey, src/content.ts]
+touches: [content/quests, standards/NOTE-STANDARD.md, tools/quests.ts, view/pages/journey, src/content.ts, docs/mockups/quest-map]
 owner: human
 ---
 
@@ -94,6 +94,30 @@ fills the viewport and everything else floats on it, as in Google Maps.
   pan, plus and minus zoom, and Escape returns to the welcome card.
 - **Working prototype:** docs/mockups/quest-map/fullscreen.html, with the real quests, levels, reading
   times and proposer stops. Drag, scroll, click and search all work.
+
+## Mockups (part of this plan)
+
+The mockups are the design reference for this plan and for quest-lessons. A build task is done when what
+it ships matches the mockup it cites, or the plan records why it differs. Both files live in
+docs/mockups/quest-map, open in any browser, and have a flavor picker (sourdough, baguette, brioche) and
+an Auto, Light and Dark switch.
+
+| File | What it is | Backs |
+|---|---|---|
+| fullscreen.html | The working full-screen map: drag, zoom, fly-to, search, filter chips, the place panel in four states, a bottom sheet on a phone. Real quests, levels, reading times and proposer stops. | The map is the page, the zoom rules, the place panel |
+| index.html section 1 | Static layout study of the Google Maps arrangement. Superseded by fullscreen.html. | History only |
+| index.html section 2 | The zoomed landmark with a modal. Superseded: the place panel replaces the modal. | History only |
+| index.html section 3 | The guild card, save, and how the badge link rebuilds it. | Guild card, badge link |
+| index.html section 4 | Lesson mode as a quest book: Guide dialogue, margin runes, Log, Codex, Pack, Trial, campfire save, level-up. | The lesson book |
+| index.html section 5 | The compatibility check run on a new note. | Adding a note adds a quest |
+| index.html section 6 | Notes and lessons as a many to many model. | Notes and lessons |
+| index.html section 7 | The lesson card on a note, with section pips and variants. | Lesson card |
+| index.html section 8 | Runes versus badges, and a badge page. | Runes and badges |
+| index.html section 9 | Six phone screens. | Mobile |
+
+Where the mockups and the prose disagree, the prose wins and the mockup is a bug. Known gaps in the
+mockups: the pixel font is a monospace stand-in, the Guide's lines are placeholders, stop pin positions
+are formula placed, and the sheet heights on phone are sample proportions.
 
 ## The map from what exists
 
