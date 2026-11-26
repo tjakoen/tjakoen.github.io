@@ -104,9 +104,15 @@ fills the viewport and everything else floats on it, as in Google Maps.
   because it blurs pixel art.
 - **Semantic zoom.** World shows the six region pins and names. Regions shows every quest pin with its
   short name. Landmark adds the detail sprites and, for the selected quest, amber stop pins. Stops names
-  each stop. Region labels fade as quest labels arrive. Zooming into a region also reveals its own detail:
-  dotted footpaths between its quests from the Regions level, small props such as flowers and rocks around
-  each quest from the Landmark level, and a trail from the selected quest through its numbered stops.
+  each stop. Region labels fade as quest labels arrive.
+- **Landmark detail maps.** From the Landmark level each landmark turns into its own small map, drawn at twice
+  the world's resolution. The castle in GRAIN Keep becomes walls, corner towers, a gate, a keep, a library and an
+  armory. The Guild Hall becomes a village with streets, a plaza, a market and a notice board. The Model Mines
+  mountain becomes a mine with shafts, timber, rails, an ore vault and lanterns. Loop Forest becomes a clearing
+  with a ring road and four stations. The Summit becomes a switchback trail with camps and the flag. The
+  Foothills become a start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
+  what the lesson is about. Each scene is baked once into an offscreen canvas, and a selected quest draws a
+  trail through its stops.
 - **Pins and labels are real elements over the canvas, and they are not pixel art.** The terrain and landmarks
   are pixel art. A pin is a clean round marker with a number, a white edge and a pointer, so it reads against
   busy terrain: red for open, green with a check for done, grey for filtered out, amber for a stop. It stays
