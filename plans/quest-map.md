@@ -36,6 +36,16 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 - **The lesson book is a quest book.** The transcript plays as dialogue from a pixel Guide, a rune lights in
   the note's margin when a concept is taught, runes collect in a Codex, each stop ends with a Trial, sources
   sit in a Pack, and Save progress is resting at a campfire. Plain text and captions stay underneath.
+- **Mobile.** The map is full screen with floating search and chips. The place panel becomes a bottom
+  sheet that peeks, then drags up into the route list. Zooming to a landmark opens the quest as a sheet.
+  In lesson mode the note stays full screen and the book collapses to a player dock with the Guide's
+  current line, which opens into a full sheet with the same tabs, rune card, trial and campfire save. The
+  two-page spread becomes one page you swipe between. Touch targets are at least 38 pixels.
+- **Per-region scenes.** Each region has a small pixel scene (hills, forest, mines, hall, keep, summit)
+  used on the place panel, the lesson card and the mobile card, so nothing is a stretched map crop.
+- **Numbers.** Quest level follows the note's level field: intro is Lv 1, intermediate Lv 2, deep Lv 3.
+  XP is 25 per reading minute plus 100 per trial, a sample formula to tune after the pilot. Class comes
+  from the note's audience, and reading time from its readingTime.
 - Final build uses a self-hosted pixel font. The mockup falls back to monospace.
 
 ## Decisions already made
