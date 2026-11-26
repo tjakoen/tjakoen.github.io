@@ -117,7 +117,8 @@ This is the part that keeps the map alive without hand editing.
 - [ ] Landmark zoom and quest modal: class, level, XP, what it covers, sources, begin quest.
 - [ ] Guild card: seeded character, optional username, save file and save code, load.
 - [ ] Badge link that rebuilds the card from the hash, with the self-reported notice on the page.
-- [ ] Path badges as a new badge class reusing the medallion, in the quest palette, in their own namespace.
+- [ ] Path badges as a new badge class reusing the medallion, in the quest palette, in their own namespace. Earned by finishing a region's trials, with the runes collected shown as its skills.
+- [ ] Lesson card on each note that has a lesson, linking the note to its lesson and back (see quest-lessons).
 - [ ] Lesson mode: the sidebar becomes the quest book. A sidecar file per lesson holds segments, cues, rune ids, the plain-words digest and the trial. The notes themselves are untouched.
 - [ ] Wire the quest UI to GRAIN tokens and verify every flavor and scheme pair for contrast.
 - [ ] Concept highlight in the note, driven through the GRAIN surface and verb registry, not a back channel.

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quest map mockups · pixel art, GRAIN tokens, RPG lesson book</title>
+<title>Quest map mockups · pixel art, GRAIN tokens, RPG lesson book, lesson card</title>
 <style>
 /* GRAIN tokens, mirrored from grain/styles (variables.css + themes). The real page imports grain; this copy only lets the mockup run standalone.
    Two orthogonal axes: data-color-scheme = light|dark (follows the OS), data-theme = flavor (sourdough default, baguette, brioche). */
@@ -201,6 +201,38 @@ select { font:inherit; color:var(--q-ink); background:var(--q-panel); border:2px
 button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
 pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height:1.55; background:var(--q-paper); }
 @media (max-width:860px) { .gm,.lesson,.cards,.tabs3,.model { grid-template-columns:1fr; } .gm .place { max-height:none; border-right:0; } .modalwrap { position:relative; inset:auto; width:auto; margin:1rem; } .dim{display:none} }
+
+/* 7. lesson card on a note */
+.notepage { padding:1.1rem 1.4rem 1.4rem; display:grid; gap:.8rem; }
+.notepage .crumb { font:.72rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
+.notepage h3 { font:700 1.6rem/1.2 Georgia,serif; margin:0; }
+.notepage .by { font:.82rem ui-monospace,monospace; color:var(--q-muted); margin:0; }
+.lessoncard { display:grid; grid-template-columns:200px 1fr; background:var(--q-panel); }
+.lessoncard > canvas { width:200px; height:100%; min-height:190px; object-fit:cover; border-right:3px solid var(--q-ink); }
+.lc { padding:.8rem 1rem; display:grid; gap:.5rem; align-content:start; }
+.lc strong { font-size:1.05rem; } .lc p { margin:0; font:.88rem/1.55 Georgia,serif; }
+.lc .meta, .lc .chips2 { display:flex; gap:.4rem; flex-wrap:wrap; align-items:center; font-size:.75rem; }
+.rune-chip { display:inline-flex; gap:.3rem; align-items:center; border:2px solid var(--q-ink); padding:0 .4rem 0 0; background:var(--q-paper); font-size:.72rem; }
+.rune-chip canvas { width:22px; height:22px; border-right:2px solid var(--q-ink); }
+.lc small { color:var(--q-muted); font-size:.74rem; }
+.prog { height:10px; border:2px solid var(--q-ink); background:var(--q-paper); } .prog i { display:block; height:100%; width:50%; background:var(--q-accent); }
+.h2line { display:flex; gap:.6rem; align-items:baseline; font:700 1.15rem Georgia,serif; margin:.4rem 0 0; }
+.pip { font:700 .64rem ui-monospace,monospace; letter-spacing:.06em; background:var(--q-accent); color:var(--q-accent-ink); border:2px solid var(--q-ink); padding:0 .4rem; text-transform:uppercase; white-space:nowrap; }
+.pip[data-done] { background:#4e9a52; color:#fff; } .pip[data-off] { background:var(--q-paper); color:var(--q-muted); }
+.variants { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-top:1.2rem; }
+.variants .mini { gap:.4rem; } .variants .mini p { margin:0; font-size:.8rem; }
+/* 8. runes and badges */
+.ladder { display:grid; gap:.5rem; padding:1rem; }
+.rung { display:grid; grid-template-columns:44px 1fr; gap:.7rem; align-items:center; border:2px solid var(--q-ink); padding:.4rem .6rem; background:var(--q-paper); }
+.rung canvas { width:44px; height:44px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.rung small { display:block; color:var(--q-muted); font-size:.72rem; }
+.arrow { text-align:center; color:var(--q-muted); line-height:1; }
+.badgepage { padding:1rem 1.2rem; display:grid; grid-template-columns:120px 1fr; gap:1rem; align-items:start; }
+.badgepage > canvas { width:120px; height:120px; border:3px solid var(--q-ink); background:var(--q-paper); }
+.badgepage h3 { margin:0 0 .2rem; font-size:1.1rem; } .badgepage p { margin:.2rem 0; font-size:.82rem; }
+.skills { display:flex; gap:.35rem; flex-wrap:wrap; margin:.3rem 0; }
+.two { display:grid; grid-template-columns:1fr 1.15fr; gap:1.4rem; }
+@media (max-width:860px) { .lessoncard,.badgepage,.two,.variants { grid-template-columns:1fr; } .lessoncard > canvas { width:100%; height:160px; border-right:0; border-bottom:3px solid var(--q-ink); } }
 </style>
 </head>
 <body>
@@ -362,6 +394,61 @@ no new region proposed. 2 more fitting notes and "Retrieval Marsh" is ready to p
   segment  note + heading range
    stop    runes, trial, XP</pre><small>The sidecar file belongs to the lesson, not the note, so a note can appear in many lessons and stay untouched.</small></div>
 </div>
+</section>
+
+<section>
+<h2>7 · The lesson card on a note</h2>
+<div class="frame notepage">
+  <div class="crumb">Notes · Model Mines · Quest 1</div>
+  <h3>I Ran Out With Hours Left</h3>
+  <p class="by">Tjakoen Stolk · 2026-11-23 · about 22 min read</p>
+  <div class="frame lessoncard">
+    <canvas id="c-lc" width="56" height="48" aria-hidden="true"></canvas>
+    <div class="lc">
+      <span class="ribbon">Lesson · Model Mines · Quest 1 of 3</span>
+      <strong>Learn this note as a quest</strong>
+      <p>In four short stops I talk you through the night I ran out of tokens and what it changed: why a limit is a design input, what a model layer routes, and the one rule I will not bend. You read the note while I explain it, then try one small task at the end of each stop.</p>
+      <div class="meta"><span class="chip">4 stops</span><span class="chip">about 18 min of audio</span><span class="chip">Lv 2 intro</span><span class="chip">+1,050 XP</span></div>
+      <div class="chips2"><span>You will collect</span><span class="rune-chip"><canvas data-rune="2" width="7" height="7"></canvas>Design input</span><span class="rune-chip"><canvas data-rune="3" width="7" height="7"></canvas>Model layer</span><span class="rune-chip"><canvas data-rune="4" width="7" height="7"></canvas>The rule I keep</span></div>
+      <div class="prog" title="2 of 4 stops done"><i></i></div>
+      <div class="row"><button class="primary">Continue at stop 3</button><button>See it on the map</button></div>
+      <small>2 of 4 stops done. Progress is saved in this browser, and the guild card can export it.</small>
+    </div>
+  </div>
+  <p style="font:15px/1.7 Georgia,serif;margin:.4rem 0 0">It was a Tuesday afternoon and the usage meter said I had spent the week's allowance on day two...</p>
+  <div class="h2line"><span>Limits are a design input</span><span class="pip" data-done>&#9654; Stop 2 · done</span></div>
+  <div class="h2line"><span>What a Model Intelligence Layer does</span><span class="pip">&#9654; Stop 3 · next</span></div>
+</div>
+<p class="cap">The card sits under the byline, above the contents block, and only appears when the note has a lesson and is published. Its summary is the lesson's own, written in my words, so it explains what the lesson adds instead of repeating the note. Each section that belongs to a stop gets a small pip that opens the lesson at that stop. Everything on the card is plain text and links, so it works with the art off.</p>
+<div class="variants">
+  <div class="frame mini"><h3>Not started</h3><p>Button reads Start lesson. No progress bar. The runes are listed so the reader knows what they will collect.</p></div>
+  <div class="frame mini"><h3>A lesson that spans notes</h3><p>"This note is stops 3 and 4 of Set up your own loop. Stops 1 and 2 are in one-loop-three-harnesses." The card links to both notes and to the first unfinished stop.</p></div>
+  <div class="frame mini"><h3>A note in several lessons</h3><p>Rows, one per lesson: "The light chain, in order: lesson 2, stop 1" and "How the layer runs: lesson 2, stop 4". Each row has its own button and progress.</p></div>
+</div>
+</section>
+
+<section>
+<h2>8 · Runes and badges are different things</h2>
+<div class="two">
+  <div class="frame ladder">
+    <div class="rung"><canvas data-rune="2" width="7" height="7"></canvas><div><strong>Rune</strong><small>One concept, taught in one stop. Collected in the Codex. Cosmetic, self-reported.</small></div></div>
+    <div class="arrow">&#9660; a trial proves the stop</div>
+    <div class="rung"><canvas data-rune="5" width="7" height="7"></canvas><div><strong>Stop and trial</strong><small>Do the small task, tick it, earn the XP.</small></div></div>
+    <div class="arrow">&#9660; finish every stop in a region</div>
+    <div class="rung"><canvas id="c-rb" width="16" height="16"></canvas><div><strong>Region badge</strong><small>Has criteria, shows the runes as its skills, and has a page you can share.</small></div></div>
+  </div>
+  <div class="frame badgepage">
+    <canvas id="c-bp" width="16" height="16" aria-hidden="true"></canvas>
+    <div>
+      <h3>Walks the Loop Forest</h3>
+      <p><strong>Criteria.</strong> Finished every stop and its trial in the 4 Loop Forest quests: 13 stops.</p>
+      <p><strong>Skills shown.</strong> The runes collected on the way.</p>
+      <div class="skills"><span class="rune-chip"><canvas data-rune="0" width="7" height="7"></canvas>The prompt is the spec</span><span class="rune-chip"><canvas data-rune="1" width="7" height="7"></canvas>One heartbeat</span><span class="rune-chip"><canvas data-rune="6" width="7" height="7"></canvas>The plan lives in files</span><span class="rune-chip"><canvas data-rune="7" width="7" height="7"></canvas>The contract</span></div>
+      <p style="color:var(--q-muted)">Self-reported. This page rebuilds from the holder's save link and is not a signed credential.</p>
+    </div>
+  </div>
+</div>
+<p class="cap">A rune is not a badge. A rune is a concept, one per idea a stop teaches, and it lives in the Codex. A badge is earned by finishing a region, so it needs the trials, not just the runes. The badge page borrows the runes as its skill list, the way a certification lists skills, and that is the only place the two meet. Badges reuse the existing badge-class machinery and medallion. Optional cosmetic achievements, such as collecting every Mines rune, can exist but are never badges.</p>
 </section>
 </main>
 
@@ -536,9 +623,15 @@ function guideDraw(cv){ const s=spr(); s.rect(-4,3,8,8,P.castle); s.rect(-4,3,2,
 function itemDraw(cv,kind){ const s=spr(); if(kind===0){ s.rect(-3,-3,7,6,P.wall); s.rect(-3,-3,7,1,P.roof); s.rect(-2,-1,5,1,P.rockd); s.rect(-2,1,3,1,P.rockd); } else if(kind===1){ s.rect(-3,-4,7,8,P.castle); s.rect(-3,-4,1,8,P.castle2); s.rect(-1,-2,4,1,P.wall); s.rect(-1,0,3,1,P.wall); } else { s.rect(-3,-3,7,6,P.wall); s.set(0,-4,P.pin); s.rect(-1,-2,3,1,P.rockd); }
   s.outline(P.outline); const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.fillStyle=P.paper; ctx.fillRect(0,0,cv.width,cv.height); const sc=cv.width/9; s.blit((x,y,c)=>{ ctx.fillStyle=c; ctx.fillRect(Math.round((x+4)*sc),Math.round((y+4)*sc),Math.ceil(sc),Math.ceil(sc)); },0,0); }
 function starDraw(cv){ const g=px(cv,9,9); g.clear('rgba(0,0,0,0)'); const c=P.amber, o=P.outline; [[4,0],[4,1],[3,2],[4,2],[5,2],[0,3],[1,3],[2,3],[3,3],[4,3],[5,3],[6,3],[7,3],[8,3],[1,4],[2,4],[3,4],[4,4],[5,4],[6,4],[7,4],[2,5],[3,5],[4,5],[5,5],[6,5],[2,6],[3,6],[5,6],[6,6],[1,7],[2,7],[6,7],[7,7]].forEach(([x,y])=>g.dot(x,y,c)); g.dot(4,1,'#fff'); }
+
+function drawCards(){
+  const lc=document.getElementById('c-lc'); render(lc,{x:86,y:100,z:1});
+  document.querySelectorAll('canvas[data-rune]').forEach(c=>runeDraw(c,+c.dataset.rune,[P.roof,P.castle,P.forest,P.pin,P.you,P.roof2,P.castle2,P.rockd][+c.dataset.rune%8]));
+  badge(document.getElementById('c-bp'),P.forest); badge(document.getElementById('c-rb'),P.forest);
+}
 function drawRpg(){ guideDraw(document.getElementById('c-guide')); runeDraw(document.getElementById('c-rune'),2,P.roof); runeDraw(document.getElementById('c-mrune'),2,P.roof);
   const r=document.getElementById('runes'); r.innerHTML=''; for(let i=0;i<8;i++){ const c=document.createElement('canvas'); c.width=56;c.height=56; if(i>2) c.className='off'; r.appendChild(c); runeDraw(c,i,i>2?P.rockd:[P.roof,P.castle,P.forest][i]); }
-  itemDraw(document.getElementById('c-i1'),0); itemDraw(document.getElementById('c-i2'),1); itemDraw(document.getElementById('c-i3'),2); starDraw(document.getElementById('c-star')); starDraw(document.getElementById('c-star2')); }
+  itemDraw(document.getElementById('c-i1'),0); itemDraw(document.getElementById('c-i2'),1); itemDraw(document.getElementById('c-i3'),2); starDraw(document.getElementById('c-star')); starDraw(document.getElementById('c-star2')); drawCards(); }
 const _drawAll=drawAll; drawAll=function(){ _drawAll(); drawRpg(); };
 const root=document.documentElement;
 document.getElementById('flavor').onchange=e=>{ root.dataset.theme=e.target.value; drawAll(); };
