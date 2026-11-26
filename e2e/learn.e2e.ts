@@ -45,7 +45,12 @@ test("the shell steps aside on arrival, and the sidebar can come back", async ({
   await expect(page.locator(".app-shell__aside")).toBeHidden();
   await page.locator('[data-shell="rail-toggle"]').first().click();
   await expect(shell).toHaveAttribute("data-rail-collapsed", "false");
-  await expect(page.getByRole("link", { name: "Back to the site" })).toHaveAttribute("href", "/");
+  await expect(page.locator('.tab-bar a.tab[href="/learn"]')).toContainText("Learn AI with me");
+  const gap = await page.evaluate(() => {
+    const frame = document.getElementById("learn-frame")!.getBoundingClientRect(), status = document.querySelector(".app-shell__status")!.getBoundingClientRect();
+    return Math.round(status.top - frame.bottom);
+  });
+  expect(gap, "the map runs down to the status bar").toBeLessThanOrEqual(1);
 });
 
 test("#quest=<id> and #stop=<id>.<n> fly to the place on load", async ({ page }) => {
