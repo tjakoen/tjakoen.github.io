@@ -21,6 +21,14 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 - **Real pixel art.** Solid pixels, one outline pixel around every sprite, two-tone shading, no smoothing.
   The map is drawn from code: noise terrain, a biome per region, roads, and hand-built sprites for each
   landmark (pines, mountains with a cave, the hall, the castle, the summit flag).
+- **You are here.** The blue dot is gone. A small pixel adventurer labelled You stands beside the next
+  unfinished quest on the route, so the marker says where you are in the path and not just where the map
+  happens to be. The find-me button and Continue both go there.
+- **The map has life, slowly.** Ferries sail between the Foothills pier and the Guild Hall harbour along the
+  south coast. A kraken waves its tentacles in the top-left corner. Gulls circle the port, birds circle the
+  forest and nest in its trees, and the Guild Hall chimney smokes. The water glints at about a third of the
+  earlier pace. A bank of cloud runs around the edge of the map so the world ends in weather rather than a
+  line. Everything moves in pixel steps, holds still under reduced motion, and follows the Motion button.
 - **One style, two rules.** Art, meaning the terrain, landmarks, detail scenes and the moving layer, is solid
   pixels with the dark outline color around every building and mountain, two-tone shading, no translucency, no
   blur and no smoothing. Ground patches blend softly like terrain and carry no outline. Chrome, meaning the
@@ -62,8 +70,9 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 ## Decisions already made
 
 - No Foothills notes. The first stop points out to Claude Academy for the basics. The exact URL is
-  still to confirm before it ships. Foothills is one island of its own off the south-west coast, reached by a
-  dotted ferry route to a dock on the mainland, because it points outside the site. The first region on the
+  still to confirm before it ships. Foothills is one island of its own off the south-west coast, a port with a pier, because it points
+  outside the site. Ferries sail from that pier along the south coast to a harbour at the Guild Hall, on a
+  faint dotted route. The first region on the
   mainland is Loop Forest.
 - Map mode is a screen of its own, the way the builder is. The explorer rail is collapsed, the assistant
   sidebar is hidden and the terminal is hidden, so the map takes the whole window. The sidebar comes back as
@@ -124,7 +133,7 @@ fills the viewport and everything else floats on it, as in Google Maps.
   and rope bridges looping between them, a hearth on a round platform in the central tree, and lanterns. The
   four stations are a scroll house, a workshop, a lantern tower and a gate house. No place is a plain oval: ground
   patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes a switchback trail with camps and the flag. The
-  Foothills become a start camp on that island. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
+  Foothills become a port island with a lighthouse, a boathouse, a pier for the ferries and the start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
   what the lesson is about. Only the landmark nearest the middle of the view shows its detail, and it eases in over about a
   third of a second. Drag to another region and the old detail fades out while the next fades in, and the
   pins of the other regions dim, so the map feels like one place rather than a switch. Each scene is baked
