@@ -10,6 +10,8 @@ import { dirname, join, normalize } from "node:path";
 // The page's own globals, read inside page.evaluate. They live in the page, so they are only declared here.
 type Scene = { n: number; ox: number; oy: number; W: number; H: number; cv: HTMLCanvasElement };
 declare const root: HTMLElement, base: HTMLCanvasElement, wavesCv: HTMLCanvasElement, baseP: HTMLCanvasElement, DET: Scene[], glints: number[][];
+type Sprite = { m: Map<string, string> };
+declare const SPR: { boatR: Sprite[]; boatL: Sprite[]; kraken: Sprite }, PEOPLE: Record<string, Sprite[]>;
 declare function reskin(): Promise<void>;
 
 const here = dirname(new URL(import.meta.url).pathname);
@@ -47,6 +49,15 @@ for (const flavor of FLAVORS) {
           layer: png(document.getElementById("c-layer") as HTMLCanvasElement),
           scenes: DET.map((d: any) => ({ n: d.n, ox: d.ox, oy: d.oy, W: d.W, H: d.H, png: png(d.cv) })),
           glints,
+          // The movers, as pixel lists grouped by colour. The page builds them from this instead of drawing them on load.
+          sprites: (() => {
+            const ser = (s: { m: Map<string, string> }) => {
+              const g: Record<string, number[]> = {};
+              for (const [k, c] of s.m) { const [x, y] = k.split(",").map(Number); (g[c] ||= []).push(x!, y!); }
+              return g;
+            };
+            return { boatR: SPR.boatR.map(ser), boatL: SPR.boatL.map(ser), kraken: ser(SPR.kraken), people: Object.fromEntries(Object.entries(PEOPLE).map(([k, v]) => [k, v.map(ser)])) };
+          })(),
         };
       },
       [flavor, scheme],
@@ -61,7 +72,7 @@ for (const flavor of FLAVORS) {
     for (const sc of out.scenes) put(`scene-${sc.n}.png`, sc.png);
     writeFileSync(
       join(dir, "manifest.json"),
-      JSON.stringify({ det: out.scenes.map(({ n, ox, oy, W, H }: any) => ({ n, ox, oy, W, H })), glints: out.glints }) + "\n",
+      JSON.stringify({ det: out.scenes.map(({ n, ox, oy, W, H }: any) => ({ n, ox, oy, W, H })), glints: out.glints, sprites: out.sprites }) + "\n",
     );
     files++;
   }

@@ -99,3 +99,27 @@ for (const flavor of FLAVORS) {
     });
   }
 }
+
+declare const ART_SPRITES: unknown, SPR: Record<string, unknown>, PEOPLE: Record<string, unknown>;
+declare function makeMoverSprites(): void;
+declare function makePeople(): void;
+
+test("the movers are built from the baked data, and match what the page draws", async ({ page }) => {
+  await page.goto("/learn");
+  for (const flavor of FLAVORS) {
+    for (const scheme of SCHEMES) {
+      const frame = await setShellTheme(page, flavor, scheme);
+      const out = await frame.evaluate(() => {
+        const dump = () => JSON.stringify([SPR, PEOPLE], (_k, v) => (v instanceof Map ? [...v].sort((a, b) => (a[0] < b[0] ? -1 : 1)) : v));
+        const baked = ART_SPRITES !== null;
+        const fromData = dump();
+        makeMoverSprites();
+        makePeople();
+        return { baked, same: fromData === dump(), size: fromData.length };
+      });
+      expect(out.baked, `${flavor} ${scheme} has baked sprites`).toBe(true);
+      expect(out.same, `${flavor} ${scheme}: baked sprites equal the drawn ones`).toBe(true);
+      expect(out.size).toBeGreaterThan(1000);
+    }
+  }
+});
