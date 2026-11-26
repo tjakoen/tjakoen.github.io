@@ -780,10 +780,10 @@ function bakeScenes(){
 
 /* The terrain and every static sprite are drawn once into an offscreen canvas, one pixel per map pixel, with a margin of open
    water. Each frame is then a single scaled drawImage plus the few things that depend on the view (camp, pins, you). */
-const M=120; let base=null, glints=[];
+const M=200; let base=null, glints=[];
 function bake(){ base=document.createElement('canvas'); base.width=WW+2*M; base.height=WH+2*M; const b=base.getContext('2d'); glints=[];
   const isWater=c=>c===P.water||c===P.water2||c===P.wave||c===P.foam;
-  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); const c=inW?cols[y*WW+x]:(hash2(x,y)%31===0?P.wave:P.water); b.fillStyle=c; b.fillRect(x+M,y+M,1,1); if(isWater(c)&&hash2(x,y)%53===0) glints.push([x,y,hash2(x,y)>>9]); }
+  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); let c; if(inW) c=cols[y*WW+x]; else { const u=(Math.abs(x-100)/RING_RX)**RING_N+(Math.abs(y-80)/RING_RY)**RING_N+(vn(x+3,y+5,5)-.5)*.4; c=u<1?(hash2(x,y)%31===0?P.wave:P.water):((vn(x,y,6)+vn(x+50,y+20,16))/2>.5?P.snow:P.snow2); } b.fillStyle=c; b.fillRect(x+M,y+M,1,1); if(isWater(c)&&hash2(x,y)%53===0) glints.push([x,y,hash2(x,y)>>9]); }
   const put=(wx,wy,c)=>{ b.fillStyle=c; b.fillRect(wx+M,wy+M,1,1); };
   sprites.cave.blit(put,104,127); sprites.forEach(s=>s.f(put));
   const isLand=(x,y)=>x>=0&&y>=0&&x<WW&&y<WH&&land[y*WW+x];
@@ -802,7 +802,7 @@ let lastDraw=0, dq=0, focusN=0, fadeT=0; const FADE={}; // FADE[n] is how visibl
 const drawSoon=()=>{ if(dq) return; dq=requestAnimationFrame(()=>{ dq=0; draw(); }); };
 function draw(tick){
   const {vx,vy,z}=origin(); ctx.imageSmoothingEnabled=false; if(!tick) lastDraw=performance.now(); fctx.clearRect(0,0,fx.width,fx.height);
-  ctx.fillStyle=P.water; ctx.fillRect(0,0,CW,CH);
+  ctx.fillStyle=P.snow2; ctx.fillRect(0,0,CW,CH); // beyond the sea there is only cloud
   { const ix=Math.floor(vx), iy=Math.floor(vy), sw=Math.ceil(CW/z)+2, sh=Math.ceil(CH/z)+2; ctx.drawImage(base,ix+M,iy+M,sw,sh,-Math.round((vx-ix)*z),-Math.round((vy-iy)*z),sw*z,sh*z); }
   const put=(wx,wy,c)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
   // Landmark detail maps replace the low-resolution landmark once you are close, one region at a time. The landmark nearest the
@@ -861,7 +861,7 @@ let anim=0;
 function setZ(newZ,ax,ay){ // keep the world point under (ax,ay) css px fixed
   const o=origin(); const wx=o.vx+(ax/S)/o.z, wy=o.vy+(ay/S)/o.z; V.z=newZ; const p=pads();
   V.cx=wx-((ax/S)-(CW/2+p.l/2/S))/V.z; V.cy=wy-((ay/S)-(CH/2-p.b/2/S))/V.z; clampV(); }
-function clampV(){ V.cx=Math.max(-30,Math.min(WW+30,V.cx)); V.cy=Math.max(-24,Math.min(WH+24,V.cy)); }
+function clampV(){ V.cx=Math.max(-40,Math.min(WW+40,V.cx)); V.cy=Math.max(-30,Math.min(WH+30,V.cy)); }
 function stepZoom(dir,ax,ay){ const i=LV.indexOf(V.z), j=Math.max(0,Math.min(LV.length-1,i+dir)); if(j===i) return; setZ(LV[j],ax??innerWidth/2,ay??innerHeight/2); draw(); }
 function flyTo(cx,cy,z){ cancelAnimationFrame(anim); const f={...V}, t0=performance.now(), dur=700; const i0=LV.indexOf(f.z), i1=LV.indexOf(z), n=Math.abs(i1-i0);
   (function step(now){ const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3); V.cx=f.cx+(cx-f.cx)*e; V.cy=f.cy+(cy-f.cy)*e; const k=Math.min(n,Math.floor(t*(n+1))); V.z=LV[i0+Math.sign(i1-i0)*k]; draw(); if(t<1) anim=requestAnimationFrame(step); })(t0); }
