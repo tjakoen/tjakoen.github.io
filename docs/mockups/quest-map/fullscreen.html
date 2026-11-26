@@ -459,6 +459,7 @@ body { margin:0; background:var(--q-water); }
     <label><input type="checkbox" data-layer="people" checked> People at work</label>
     <label><input type="checkbox" data-layer="sea" checked> Ships and sea life</label>
     <label><input type="checkbox" data-layer="air" checked> Birds and smoke</label>
+    <label><input type="checkbox" data-layer="waves" checked> Waves and sparkle</label>
   </div>
 </div><div class="scale"><strong id="zname">World</strong><div class="zlevels"><i data-on></i><i></i><i></i><i></i></div></div></div>
 <div class="attrib2">Map data ©2026 the notes</div>
@@ -543,7 +544,7 @@ function buildWorld(){
   layoutQuests();
   cols=new Array(WW*WH); roadMain=new Set(); roadMinor=new Set(); sprites=[];
   for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; let c;
-    if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water;  }
+    if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water; if(LAYERS.waves&&d>3&&hash2(x,y)%31===0) c=P.wave; }
     else { const d=distTo(x,y,0,2); const r=reg[i];
       if(d<=2) c=(x+y)%2?P.sand:P.sand2;
       else if(r===1){ c=vn(x,y,4)>.52?P.grass:P.grass2; if(hash2(x,y)%67===0) c='#ffffff'; if(hash2(x,y)%97===0) c=P.amber; }
@@ -862,7 +863,7 @@ function bakeScenes(){
 const M=200; let base=null, glints=[];
 function bake(){ base=document.createElement('canvas'); base.width=WW+2*M; base.height=WH+2*M; const b=base.getContext('2d'); glints=[];
   const isWater=c=>c===P.water||c===P.water2||c===P.wave||c===P.foam;
-  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); let c; if(inW) c=cols[y*WW+x]; else { const u=(Math.abs(x-100)/RING_RX)**RING_N+(Math.abs(y-80)/RING_RY)**RING_N+(vn(x+3,y+5,5)-.5)*.4; c=u<1?P.water:((vn(x,y,6)+vn(x+50,y+20,16))/2>.5?P.snow:P.snow2); } b.fillStyle=c; b.fillRect(x+M,y+M,1,1);  }
+  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); let c; if(inW) c=cols[y*WW+x]; else { const u=(Math.abs(x-100)/RING_RX)**RING_N+(Math.abs(y-80)/RING_RY)**RING_N+(vn(x+3,y+5,5)-.5)*.4; c=u<1?((LAYERS.waves&&hash2(x,y)%31===0)?P.wave:P.water):((vn(x,y,6)+vn(x+50,y+20,16))/2>.5?P.snow:P.snow2); } b.fillStyle=c; b.fillRect(x+M,y+M,1,1); if(LAYERS.waves&&isWater(c)&&hash2(x,y)%53===0) glints.push([x,y,hash2(x,y)>>9]); }
   const put=(wx,wy,c)=>{ b.fillStyle=c; b.fillRect(wx+M,wy+M,1,1); };
   sprites.cave.blit(put,104,127); sprites.forEach(s=>s.f(put));
   const isLand=(x,y)=>x>=0&&y>=0&&x<WW&&y<WH&&land[y*WW+x];
@@ -882,7 +883,7 @@ function bake(){ base=document.createElement('canvas'); base.width=WW+2*M; base.
   for(let q=0;q<240;q++){ const t=q/240*6.2832, h=hash2(q,31), [px,py]=ringXY(t); puff(px+(h%3)-1,py+((h>>3)%3)-1,4+(h>>6)%4); if(q%3===0){ const [ix,iy]=ringXY(t,.94); puff(ix,iy,3+(h>>9)%3); } }
   makeMoverSprites(); makePeople();
   bakeScenes(); }
-let view='explorer'; const LAYERS={routes:true,people:true,sea:true,air:true}; let baseP=null;
+let view='explorer'; const LAYERS={routes:true,people:true,sea:true,air:true,waves:true}; let baseP=null;
 const PATHCOL=['#888888','#2f7d5b','#e8503f','#3b82f6','#f5b83d','#a483cf','#2aa6b8','#888888'];
 function mixHex(a,b,t){ const ok=/^#[0-9a-f]{6}$/i; if(!ok.test(a)||!ok.test(b)) return a; const x=parseInt(a.slice(1),16), y=parseInt(b.slice(1),16); return '#'+[16,8,0].map(sh=>Math.round(((x>>sh)&255)*(1-t)+((y>>sh)&255)*t).toString(16).padStart(2,'0')).join(''); }
 let lastDraw=0, dq=0, focusN=0, fadeT=0; const FADE={}; // FADE[n] is how visible region n's detail map is, 0 to 1
@@ -1050,7 +1051,7 @@ const lbtn=document.getElementById('layers'), lpop=document.getElementById('laye
 lbtn.onclick=()=>{ const o=lpop.hidden; lpop.hidden=!o; lbtn.setAttribute('aria-expanded',String(o)); };
 document.addEventListener('pointerdown',e=>{ if(!lpop.hidden&&!e.target.closest('.zbar')){ lpop.hidden=true; lbtn.setAttribute('aria-expanded','false'); } });
 lpop.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; lpop.querySelectorAll('[data-view]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); document.body.dataset.view=view; lpop.dataset.view=view; if(view==='path') fctx.clearRect(0,0,fx.width,fx.height); draw(); drawSoon(); });
-lpop.querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{ LAYERS[c.dataset.layer]=c.checked; draw(); });
+lpop.querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{ LAYERS[c.dataset.layer]=c.checked; if(c.dataset.layer==='waves') reskin(); else draw(); });
 document.getElementById('zin').onclick=()=>stepZoom(1); document.getElementById('zout').onclick=()=>stepZoom(-1);
 document.getElementById('me').onclick=()=>where();
 const root=document.documentElement;
