@@ -125,7 +125,7 @@ test.describe("quest map behaviour", () => {
     expect(before.mine).toEqual([0]);
     await page.evaluate(() => selectStop("loop-setup", 1));
     await page.locator("#panel [data-act=done]").click();
-    const after = await page.evaluate(() => ({ you: [...YOU], mine: [...PROG["loop-setup"]].sort() }));
+    const after = await page.evaluate(() => ({ you: [...YOU], mine: [...PROG["loop-setup"]].toSorted((a, b) => a - b) }));
     expect(after.mine).toEqual([0, 1]);
     expect(after.you).not.toEqual(before.you);
     await expect(page.locator("#panel [data-act=done]")).toContainText("Undo");
@@ -137,7 +137,7 @@ test.describe("quest map behaviour", () => {
     await open(page);
     const n = await page.evaluate(() => QUESTS.filter((q) => q.done).length);
     for (const i of [1, 2]) {
-      await page.evaluate((i) => selectStop("loop-setup", i), i);
+      await page.evaluate((idx) => selectStop("loop-setup", idx), i);
       await page.locator("#panel [data-act=done]").click();
     }
     expect(await page.evaluate(() => QUESTS.find((q) => q.id === "loop-setup")!.done)).toBe(true);
