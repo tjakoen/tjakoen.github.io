@@ -865,9 +865,9 @@ function draw(tick){
       ctx.globalAlpha=na*na*(3-2*na); ctx.drawImage(sc.cv,0,0,sc.W,sc.H,dx,dy,dw,dh); ctx.globalAlpha=1; });
     if(moving) drawSoon(); else fadeT=0; }
   const dpf=n=>{ const sc=DET.find(d=>d.n===n); return (dx,dy,c)=>{ const sz=z/2, sx=Math.round((sc.ox+dx/2-vx)*z), sy=Math.round((sc.oy+dy/2-vy)*z); if(sx<-sz||sy<-sz||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,sz,sz); }; };
-  // the selected quest's route: a dashed trail along the place's own paths, tunnels or streets, through its stops
-  if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id), rt=qq&&routeOf(qq); if(rt&&(FADE[qq.region]||0)>.3){ const dp=dpf(qq.region), off=Math.floor((motion?performance.now():0)/220); let acc=0; for(let i=0;i<rt.length-1;i++){ const [x0,y0]=rt[i],[x1,y1]=rt[i+1], d=Math.hypot(x1-x0,y1-y0); for(let t=0;t<d;t+=1){ const k=t/d, x=Math.round(x0+(x1-x0)*k), y=Math.round(y0+(y1-y0)*k); if(Math.floor((acc+t+off)/4)%3<2){ for(let j=-1;j<3;j++) for(let i=-1;i<3;i++) dp(x+i,y+j,P.outline); } } acc+=d; }
-    acc=0; for(let i=0;i<rt.length-1;i++){ const [x0,y0]=rt[i],[x1,y1]=rt[i+1], d=Math.hypot(x1-x0,y1-y0); for(let t=0;t<d;t+=1){ const k=t/d, x=Math.round(x0+(x1-x0)*k), y=Math.round(y0+(y1-y0)*k); if(Math.floor((acc+t+off)/4)%3<2){ dp(x,y,'#ffd34d'); dp(x+1,y,'#ffd34d'); dp(x,y+1,'#f5b83d'); dp(x+1,y+1,'#f5b83d'); } } acc+=d; } } }
+  // the selected quest's route: round dots that flow from the first stop to the last along the place's own paths
+  if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id), rt=qq&&routeOf(qq); if(rt&&(FADE[qq.region]||0)>.3){ const dp=dpf(qq.region), SP=9; let L=0; for(let i=0;i<rt.length-1;i++) L+=Math.hypot(rt[i+1][0]-rt[i][0],rt[i+1][1]-rt[i][1]); const flow=((motion?performance.now():0)/1000*8)%SP;
+    for(let sdist=flow;sdist<L;sdist+=SP){ const [x,y]=alongRoute(rt,sdist/L), cx=Math.round(x), cy=Math.round(y); for(let j=-2;j<=2;j++) for(let i=-2;i<=2;i++){ const d2=i*i+j*j; if(d2<=5) dp(cx+i,cy+j,d2>=4?P.outline:(d2===0?'#fff3b0':'#ffd34d')); } } } }
   // people, boats and birds are drawn after the trail, so the trail never covers them
   movers(put,z,motion?performance.now():0,dpf);
   // pins
