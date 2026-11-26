@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-26
-readingTime: "~11 min"
+readingTime: "~12 min"
 tags: [ai, rag, retrieval, standards, tooling]
 people: [shivani-virdi]
 sources: [book-vectorless-rag-post]
@@ -17,7 +17,7 @@ summary: >
   picks a branch and opens one section, where most RAG systems pick pages by vector similarity. It works
   the same for Claude, Codex and OpenCode through one CLAUDE.md linked as AGENTS.md, with skills, two
   code indexes and PANTRY's project index below it. It is why I steer and review instead of briefing.
-  It is traceable, it costs extra reads, and my 37 notes still have no tree.
+  It is traceable, it costs extra reads, and my 38 notes still have no tree.
 social: |
   I build with an AI loop, and it starts blank every session. So it needs a way to find the one file
   that applies. I called that keeping good docs. It turns out to be vectorless RAG.
@@ -407,6 +407,16 @@ The reason is what I no longer do:
   read and the answer is a path. That is [watching its hands](watch-its-hands.md), and a branch it
   chose is a hand I can watch.
 
+It makes the loop better as well as cheaper, in three ways:
+
+- **Every session starts from the same standards.** A session follows my voice rules because it reads
+  them, not because I remembered to paste them in.
+- **A fix compounds.** When a session picks the wrong file, I reword one description, and every later
+  session in every repo picks better.
+- **The loop survives a switch.** When I ran out of Claude mid-task, Codex finished the work on the same
+  branch without a changed instruction, which is the story in
+  [The Loop Outlives the Model](one-loop-three-harnesses.md).
+
 So I steer and I review, and I rarely re-explain. That is what I mean by low effort. The tree does not
 make the model smarter. It makes the starting line the same every time, on every repo the
 [loop](one-loop-every-repo.md) runs in.
@@ -416,6 +426,27 @@ tree against sessions without it, and every number in this note measures reading
 
 PANTRY's run ledger records token use by model and plan, so a real comparison could live there. That
 is an idea and not a build.
+
+## Why this kind fits a loop
+
+Nobody chose this. It grew out of onboarding docs, and I only held it up against the alternatives
+afterward. It fits for reasons I can name, and they are about what my loop needs, not about vectorless
+being better in general:
+
+- **The library is small and already has headings.** Thirty-one standards and a contents page. Vectors
+  earn their place when there is far more text than a model can scan and no structure to follow. Mine
+  is the opposite.
+- **A wrong pick is something I can fix.** If a session opens the wrong standard, I reword one line of
+  a description. A wrong similarity hit is a distance between two lists of numbers, and there is
+  nothing there to edit.
+- **It costs nothing to keep.** The pages are files I write anyway. There is no pipeline to run and no
+  store to re-embed.
+- **Every tool can read it.** Claude, Codex and OpenCode all read plain Markdown and a symlink. A
+  vector index would be one more thing to wire into each of them.
+
+Best is the wrong word. It fits my size and my kind of material, and the decision chain in the
+[companion](how-my-sessions-walk-the-tree.md#which-one-to-reach-for) says where it stops fitting. I
+have not benchmarked it against a vector index on my own files.
 
 ## Where it runs out
 
@@ -427,7 +458,7 @@ Three places:
 - **The tree has to fit.** Twenty-nine descriptions work because they are short. PANTRY's index is
   already bigger, 18,203 characters against 14,257, and it grows with every plan, finished ones
   included.
-- **Some of it is not a tree.** There are 37 notes in this folder, plus run reports and finished plans
+- **Some of it is not a tree.** There are 38 notes in this folder, plus run reports and finished plans
   in their own. When a session needs to know whether I have already written about something, it has
   grep and my memory, and my memory is the reason this whole setup exists.
 
