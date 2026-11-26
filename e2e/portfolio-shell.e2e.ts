@@ -19,7 +19,7 @@ test.describe("the portfolio workspace shell (BREAD frame, on /)", () => {
     // the activity-bar is icon-only (aria-label is the Explorer toggle) — it's ONLY the Explorer
     // toggle now; the fixed APP links live below it in the labeled .app-dock instead, never
     // hidden by the explorer's own collapse/mobile-drawer state.
-    await expect(page.locator('.activity-bar__item[data-shell="rail-toggle"]')).toHaveAttribute("aria-label", "Explorer");
+    await expect(page.locator('.activity-bar__item[data-shell="rail-toggle"]')).toHaveAttribute("aria-label", "Menu, Explorer");
     for (const [label, href] of [["Notes", "/notes"], ["Calendar", "/calendar"], ["Mail", "/mail"], ["About", "/about"]] as const)
       await expect(page.locator(`.app-dock__item[href="${href}"] .app-dock__label`)).toHaveText(label);
     // the assistant + console live on the page — the site-wide AI's home
