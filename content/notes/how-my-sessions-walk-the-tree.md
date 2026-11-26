@@ -3,7 +3,7 @@ title: "How My Sessions Walk the Tree: graphify, tokensave and PANTRY"
 audience: [build]
 level: deep
 companion: true
-subtitle: "The tool-by-tool half of my vectorless RAG setup: how a session steps through skills, two code graphs and a project index to reach one section instead of a whole file."
+subtitle: "How a session steps through skills, two code graphs and a project index to reach one section instead of a whole file."
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
@@ -11,15 +11,13 @@ date: 2026-11-26
 readingTime: "~6 min"
 tags: [ai, retrieval, tooling, graphify, tokensave, pantry]
 summary: >
-  The companion to my vectorless RAG note. It draws the usual similarity steps, then shows each layer
-  of the tree my sessions walk: standards mounted as skills, graphify and tokensave for code questions,
-  and PANTRY's index for the project. It ends with a decision chain for what to build, what has landed
-  since the first draft, and the counts behind every figure.
+  The tool-by-tool half of my vectorless RAG setup: the usual similarity steps drawn out, each layer of
+  the tree my sessions walk, a decision chain for what to build, and what has landed since the first
+  draft.
 ---
 
-> This is the companion to [My AI Workflow Is Vectorless RAG and I Didn't Call It That](vectorless-rag-by-accident.md),
-> which explains RAG, the vectorless kind and what the setup does for the loop. This one is the
-> tool-by-tool half, for the reader who wants to see how it is wired.
+> The companion to [My AI Workflow Is Vectorless RAG and I Didn't Call It That](vectorless-rag-by-accident.md).
+> Read that one first. This is the part for the reader who wants to see how it is wired.
 
 ## The usual way, step by step
 
