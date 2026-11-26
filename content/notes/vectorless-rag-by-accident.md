@@ -294,7 +294,7 @@ Once I saw the root, every other layer was something I had built for a different
 and the [note standard](/standards/note-standard). Each opens with a field called *when*, which becomes
 the skill's description, and until the model opens a standard the description is all it sees. The
 standards' own rules say it is the only thing an agent reads when deciding whether to open the file at
-all. That is a node summary in a section tree. I wrote a whole contract for wording it (start with
+all. That is a node summary in a section tree. I wrote a whole contract for wording it (nearly all start with
 "Read this BEFORE") without knowing I was tuning a retrieval index.
 
 It even has a scar from a classic tree failure. My loop standard shared a name with a built-in skill,
