@@ -288,16 +288,21 @@ body { margin:0; background:var(--q-water); }
 #stage { position:fixed; inset:0; cursor:grab; touch-action:none; background:var(--q-water); }
 #stage.drag { cursor:grabbing; }
 #map, #fx { position:absolute; left:0; top:0; image-rendering:pixelated; } #fx { pointer-events:none; }
-#over { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+#over { position:absolute; inset:0; pointer-events:none; overflow:hidden; contain:layout style; }
+#stage { will-change:transform; }
 .hit { position:absolute; width:var(--ps,30px); height:var(--ps,30px); margin:0; padding:0; box-sizing:border-box; border:2px solid var(--q-outline); border-radius:50%; background:#c8382a; color:#fff; font:700 calc(var(--ps,30px) * .43)/1 ui-monospace,"SF Mono",Menlo,Consolas,monospace; display:grid; place-items:center; box-shadow:2px 2px 0 var(--q-outline); cursor:pointer; pointer-events:auto; transform:translate(-50%,calc(-100% - 7px)); transition:transform .12s ease, opacity .3s ease; image-rendering:pixelated; }
 .hit::before { content:""; position:absolute; inset:calc((44px - var(--ps,30px)) / -2); } /* a 44px target around a 30px marker */
 .hit::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--q-outline); border-bottom:0; }
 .hit:hover { transform:translate(-50%,calc(-100% - 7px)) scale(1.12); }
 .hit[data-state="done"] { background:#2f7d33; }
 .hit[data-state="locked"] { background:#6b6b6b; }
+.hit[data-off] { opacity:.28; }
+.lbl.off { opacity:.3; }
+.hit[data-state="ext"] { background:#2f7d5b; }
 .hit[data-state="stop"] { z-index:5; background:#f5b83d; color:#3b2d1c; width:calc(var(--ps,30px) * .87); height:calc(var(--ps,30px) * .87); }
 .hit[data-selected] { transform:translate(-50%,calc(-100% - 7px)) scale(1.25); z-index:2; box-shadow:0 0 0 3px #f5b83d, 2px 2px 0 3px var(--q-outline); }
 .hit.mark { pointer-events:none; }
+.hit[data-selected]:not([data-state="stop"]) { opacity:0; pointer-events:none; transform:translate(-50%,calc(-100% - 7px)) scale(.55); transition:opacity .28s ease, transform .28s ease; }
 .you { position:absolute; transform:translate(-50%,-100%); pointer-events:none; display:flex; flex-direction:column; align-items:center; z-index:3; }
 .you canvas { width:32px; height:40px; image-rendering:pixelated; animation:youbob 1.4s steps(2) infinite; }
 .you span { order:-1; margin-bottom:3px; font:700 10px/1.3 ui-monospace,"SF Mono",Menlo,Consolas,monospace; background:var(--q-accent); color:var(--q-accent-ink); border:2px solid var(--q-outline); padding:0 5px; box-shadow:2px 2px 0 var(--q-outline); }
@@ -344,7 +349,21 @@ body { margin:0; background:var(--q-water); }
 .rowbtn .n { width:24px; height:24px; background:var(--q-pin); color:#fff; display:grid; place-items:center; font-weight:700; border:2px solid var(--q-outline); }
 .rowbtn[data-done] .n { background:#4e9a52; } .rowbtn small { display:block; color:var(--q-muted); font-size:.7rem; } .rowbtn:hover { background:var(--q-ground); }
 .rowbtn .go { color:var(--q-muted); }
-.stopline { display:grid; grid-template-columns:22px 1fr; gap:.4rem; font-size:.78rem; padding:.15rem 0; cursor:pointer; }
+.stopbox { border:2px solid var(--q-ink); background:var(--q-paper); box-shadow:3px 3px 0 var(--q-ink); }
+.stopbox__h { display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; padding:.4rem .6rem; background:var(--q-panel); border-bottom:2px solid var(--q-ink); }
+.stopline { display:grid; grid-template-columns:24px 1fr; gap:.6rem; align-items:center; font-size:.8rem; line-height:1.35; padding:.5rem .6rem; cursor:pointer; border-bottom:1px solid var(--q-line); }
+.stopline:last-child { border-bottom:0; }
+.stopline:hover { background:color-mix(in srgb,var(--q-accent) 16%,transparent); }
+.stopline[data-sel] { background:var(--q-accent); color:var(--q-accent-ink); }
+.stopline[data-sel] .sn { background:var(--q-accent-ink); color:var(--q-accent); }
+.pfoot { position:sticky; bottom:0; z-index:3; display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.45rem .6rem; background:var(--q-panel); border-top:3px solid var(--q-ink); }
+.pcount { color:var(--q-muted); font-size:.72rem; }
+.pfoot .steps { display:flex; gap:.3rem; margin-left:auto; }
+.pfoot .step { width:34px; height:30px; display:grid; place-items:center; padding:0; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); box-shadow:2px 2px 0 var(--q-ink); cursor:pointer; }
+.pfoot .step:hover:not([disabled]) { background:var(--q-accent); color:var(--q-accent-ink); }
+.pfoot .step[disabled] { opacity:.35; cursor:default; box-shadow:none; }
+.pfoot .step:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
+.pfoot svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
 .stopline .sn { width:20px; height:20px; background:var(--q-accent); color:var(--q-accent-ink); display:grid; place-items:center; font-size:.7rem; font-weight:700; border:2px solid var(--q-ink); }
 .stopline[data-sel] strong { color:var(--q-roof); }
 .chipsbar { position:fixed; left:384px; top:12px; display:flex; gap:.4rem; z-index:5; flex-wrap:wrap; max-width:calc(100vw - 700px); }
@@ -577,6 +596,8 @@ function pads(){ if(collapsed) return {l:0,b:0}; return wide()?{l:384,b:0}:{l:0,
 function origin(){ const p=pads(), z=V.z; let vx=V.cx-(CW/2+p.l/2/S)/z, vy=V.cy-(CH/2-p.b/2/S)/z; vx=Math.round(vx*z)/z; vy=Math.round(vy*z)/z; return {vx,vy,z}; }
 function resize(){ CW=Math.ceil(innerWidth/S); CH=Math.ceil(innerHeight/S); cv.width=CW; cv.height=CH; cv.style.width=CW*S+'px'; cv.style.height=CH*S+'px'; fx.width=CW; fx.height=CH; fx.style.width=CW*S+'px'; fx.style.height=CH*S+'px'; draw(); }
 
+const CHIPREG={Loop:2,Models:3,Leading:4,Design:5};
+function regionOk(n){ if(filter==='All') return true; if(CHIPREG[filter]) return CHIPREG[filter]===n; if(filter==='Not started') return byReg(n).some(x=>!x.done); return true; }
 function filterOk(q){ if(filter==='All') return true; if(filter==='Loop') return q.region===2; if(filter==='Models') return q.region===3; if(filter==='Leading') return q.region===4; if(filter==='Design') return q.region===5; if(filter==='Not started') return !q.done; return true; }
 
 /* ===== Landmark detail maps =====
@@ -619,6 +640,7 @@ const stopPos=(qq,i)=>{ const rt=routeOf(qq); const n=Math.min(qq.stops.length,9
 /* ===== Life: ferries, a kraken, gulls, forest birds and chimney smoke. Drawn in pixel steps, slowly. ===== */
 /* The cloud ring is the border of the map: a rounded outline far outside the island with open sea in between. The kraken keeps the spot in the top-left sea that it was given. */
 const RING_RX=185, RING_RY=145, RING_N=2.6, ringXY=(t,k=1)=>{ const c=Math.cos(t), s=Math.sin(t); return [Math.round(100+k*RING_RX*Math.sign(c)*Math.abs(c)**(2/RING_N)), Math.round(80+k*RING_RY*Math.sign(s)*Math.abs(s)**(2/RING_N))]; }, KRAKEN=[-41,26];
+const extras=()=>{ const a=sceneM(1,51,14), b=sceneM(1,84,26); return [{id:'academy',wx:a[0],wy:a[1],sym:'\u2197',label:'Claude Academy, the basics, outside this site',text:'Claude Academy',sub:'The basics, outside this site',act:()=>{ selectRegion(1); toast('Opens Claude Academy in a new tab (URL to confirm before launch)'); }},{id:'ferry',wx:b[0],wy:b[1],sym:'\u2192',label:'Ferry to the Guild Hall',text:'Ferry',sub:'Sails to the Guild Hall',act:()=>selectRegion(4)}]; };
 const SEA=[[48,128],[52,140],[62,147],[80,153],[100,156],[120,156],[140,151],[160,146],[172,138],[180,128],[184,116],[188,104],[188,95]];
 const SEG=[]; let SEA_LEN=0; for(let i=0;i<SEA.length-1;i++){ const d=Math.hypot(SEA[i+1][0]-SEA[i][0],SEA[i+1][1]-SEA[i][1]); SEG.push(d); SEA_LEN+=d; }
 function seaAt(s){ for(let i=0;i<SEG.length;i++){ if(s<=SEG[i]||i===SEG.length-1){ const k=Math.min(1,s/SEG[i]); return [SEA[i][0]+(SEA[i+1][0]-SEA[i][0])*k,SEA[i][1]+(SEA[i+1][1]-SEA[i][1])*k,Math.sign(SEA[i+1][0]-SEA[i][0])||1]; } s-=SEG[i]; } }
@@ -830,7 +852,8 @@ function draw(tick){
   const dpf=n=>{ const sc=DET.find(d=>d.n===n); return (dx,dy,c)=>{ const sz=z/2, sx=Math.round((sc.ox+dx/2-vx)*z), sy=Math.round((sc.oy+dy/2-vy)*z); if(sx<-sz||sy<-sz||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,sz,sz); }; };
   movers(put,z,motion?performance.now():0,dpf);
   // the selected quest's route: a dashed trail along the place's own paths, tunnels or streets, through its stops
-  if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id), rt=qq&&routeOf(qq); if(rt&&(FADE[qq.region]||0)>.3){ const dp=dpf(qq.region); let acc=0; for(let i=0;i<rt.length-1;i++){ const [x0,y0]=rt[i],[x1,y1]=rt[i+1], d=Math.hypot(x1-x0,y1-y0); for(let t=0;t<d;t+=1){ const k=t/d, x=Math.round(x0+(x1-x0)*k), y=Math.round(y0+(y1-y0)*k); if(Math.floor((acc+t)/3)%2===0){ dp(x,y,P.amber); dp(x+1,y,P.amber); dp(x,y+1,P.mainEdge); dp(x+1,y+1,P.mainEdge); } } acc+=d; } } }
+  if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id), rt=qq&&routeOf(qq); if(rt&&(FADE[qq.region]||0)>.3){ const dp=dpf(qq.region), off=Math.floor((motion?performance.now():0)/220); let acc=0; for(let i=0;i<rt.length-1;i++){ const [x0,y0]=rt[i],[x1,y1]=rt[i+1], d=Math.hypot(x1-x0,y1-y0); for(let t=0;t<d;t+=1){ const k=t/d, x=Math.round(x0+(x1-x0)*k), y=Math.round(y0+(y1-y0)*k); if(Math.floor((acc+t+off)/4)%3<2){ for(let j=-1;j<3;j++) for(let i=-1;i<3;i++) dp(x+i,y+j,P.outline); } } acc+=d; }
+    acc=0; for(let i=0;i<rt.length-1;i++){ const [x0,y0]=rt[i],[x1,y1]=rt[i+1], d=Math.hypot(x1-x0,y1-y0); for(let t=0;t<d;t+=1){ const k=t/d, x=Math.round(x0+(x1-x0)*k), y=Math.round(y0+(y1-y0)*k); if(Math.floor((acc+t+off)/4)%3<2){ dp(x,y,'#ffd34d'); dp(x+1,y,'#ffd34d'); dp(x,y+1,'#f5b83d'); dp(x+1,y+1,'#f5b83d'); } } acc+=d; } } }
   // pins
   const zp=z>=4?3:2; const items=[];
   // Pins are real markers, not pixel art: round, numbered, high contrast, and sized for a finger. The terrain stays pixel art.
@@ -838,12 +861,13 @@ function draw(tick){
   const pinAt=(wx,wy,n,state,selected)=>{ if(n===0){ items.push({key:'pfog',wx,wy,kind:'mark',n:'?',state,selected:false}); return; } pinBuf.push({n,state,selected}); };
   const add=(key,wx,wy,kind,o)=>{ if(kind==='lbl'&&o.cls&&o.cls.includes('tag')){ const last=items[items.length-1]; if(last&&last.kind==='hit') last.tag=o; return; } items.push({key,wx,wy,kind,...(kind==='hit'?pinBuf.pop():{}),...o}); };
   if(z===2){
-    REG.forEach(r=>{ const st=byReg(r.n).length&&byReg(r.n).every(x=>x.done)?'done':(r.n===1?'done':'open'); const selR=sel.t==='region'&&sel.id===r.n; pinAt(r.pin[0],r.pin[1],r.n,st,selR); add('hr'+r.n,r.pin[0],r.pin[1],'hit',{label:r.name+', region '+r.n,act:()=>selectRegion(r.n)}); add('tr'+r.n,r.pin[0],r.pin[1],'lbl',{text:r.name,sub:byReg(r.n).length?(byReg(r.n).length+' quests \u00b7 '+byReg(r.n).filter(x=>x.done).length+' done'):'The basics, outside this site',cls:'quest tag'}); add('lr'+r.n,r.lbl[0],r.lbl[1],'lbl',{text:r.name,cls:'region'}); });
+    REG.forEach(r=>{ const st=byReg(r.n).length&&byReg(r.n).every(x=>x.done)?'done':(r.n===1?'done':'open'); const selR=sel.t==='region'&&sel.id===r.n; pinAt(r.pin[0],r.pin[1],r.n,st,selR); add('hr'+r.n,r.pin[0],r.pin[1],'hit',{label:r.name+', region '+r.n,act:()=>selectRegion(r.n),off:!regionOk(r.n)}); add('tr'+r.n,r.pin[0],r.pin[1],'lbl',{text:r.name,sub:byReg(r.n).length?(byReg(r.n).length+' quests \u00b7 '+byReg(r.n).filter(x=>x.done).length+' done'):'The basics, outside this site',cls:'quest tag'}); add('lr'+r.n,r.lbl[0],r.lbl[1],'lbl',{text:r.name,cls:'region'+(regionOk(r.n)?'':' off')}); });
     pinAt(166,112,0,'locked',false); add('lfog',166,119,'lbl',{text:'Unmapped',sub:'2 more notes to chart',cls:'region box'});
   } else {
     if(z===3) REG.forEach(r=>add('lr'+r.n,r.lbl[0],r.lbl[1]+6,'lbl',{text:r.name,cls:'region faint'}));
-    QUESTS.forEach((qq,i)=>{ const n=byReg(qq.region).indexOf(qq)+1, ok=filterOk(qq), selQ=sel.t==='quest'&&sel.id===qq.id||(sel.t==='stop'&&sel.id===qq.id); pinAt(qq.pos[0],qq.pos[1],n,!ok?'locked':qq.done?'done':'open',selQ);
-      add('hq'+qq.id,qq.pos[0],qq.pos[1],'hit',{label:qq.title+', quest '+n,act:()=>selectQuest(qq.id),region:qq.region}); add('lq'+qq.id,qq.pos[0],qq.pos[1],'lbl',{text:qq.short,sub:'Lv '+qq.lv+' '+qq.level+' \u00b7 '+qq.min+' min \u00b7 '+qq.stops.length+' stops',cls:'quest tag'}); });
+    if(z>=3) extras().forEach(e=>{ pinAt(e.wx,e.wy,e.sym,'ext',false); add('x'+e.id,e.wx,e.wy,'hit',{label:e.label,act:e.act,region:1}); add('tx'+e.id,e.wx,e.wy,'lbl',{text:e.text,sub:e.sub,cls:'quest tag'}); });
+    QUESTS.forEach((qq,i)=>{ const n=byReg(qq.region).indexOf(qq)+1, ok=filterOk(qq), selQ=sel.t==='quest'&&sel.id===qq.id||(sel.t==='stop'&&sel.id===qq.id); pinAt(qq.pos[0],qq.pos[1],n,qq.done?'done':'open',selQ);
+      add('hq'+qq.id,qq.pos[0],qq.pos[1],'hit',{label:qq.title+', quest '+n,act:()=>selectQuest(qq.id),region:qq.region,off:!ok}); add('lq'+qq.id,qq.pos[0],qq.pos[1],'lbl',{text:qq.short,sub:'Lv '+qq.lv+' '+qq.level+' \u00b7 '+qq.min+' min \u00b7 '+qq.stops.length+' stops',cls:'quest tag'}); });
     if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id); qq.stops.slice(0,9).forEach((s,i)=>{ const p=stopPos(qq,i); pinAt(p[0],p[1],i+1,'stop',sel.t==='stop'&&sel.i===i);
       add('hs'+i,p[0],p[1],'hit',{label:'Stop '+(i+1)+': '+s,act:()=>selectStop(qq.id,i),region:qq.region}); add('ls'+i,p[0],p[1],'lbl',{text:'Stop '+(i+1),sub:s.length>40?s.slice(0,38)+'...':s,cls:'quest tag',prio:(sel.t==='stop'&&sel.i===i)?2:1}); }); }
   }
@@ -862,13 +886,13 @@ function syncOverlay(items,vx,vy,z,zp){ const keep=new Set();
         if(it.kind==='mark') e.setAttribute('aria-hidden','true'); else { e.setAttribute('aria-label',it.label); e.addEventListener('pointerdown',ev=>ev.stopPropagation()); e.addEventListener('click',ev=>{ ev.stopPropagation(); e.dataset.quiet=1; e._act(); }); e.addEventListener('pointerleave',()=>{ delete e.dataset.quiet; }); } }
       else { e=document.createElement('div'); e.className='lbl '+(it.cls||''); e.innerHTML=it.text+(it.sub?'<small>'+it.sub+'</small>':''); if(it.done) e.dataset.done=1; }
       over.appendChild(e); els.set(it.key,e); }
-    e._act=it.act; const sx=Math.round((it.wx-vx)*z)*S, sy=Math.round((it.wy-vy)*z)*S; e.style.left=sx+'px'; e.style.top=sy+'px';
+    e._act=it.act; const sx=Math.round((it.wx-vx)*z)*S, sy=Math.round((it.wy-vy)*z)*S; if(e._x!==sx){ e._x=sx; e.style.left=sx+'px'; } if(e._y!==sy){ e._y=sy; e.style.top=sy+'px'; }
     if(it.kind==='you'){ drawYou(e.firstChild); e.style.left=(sx-28)+'px'; }
-    if(it.kind==='hit'||it.kind==='mark'){ const t=it.state==='done'?'\u2713':String(it.n), pn=e.firstChild; if(pn.textContent!==t) pn.textContent=t; e.dataset.state=it.state; if(it.selected) e.dataset.selected=1; else delete e.dataset.selected;
+    if(it.kind==='hit'||it.kind==='mark'){ const t=it.state==='done'?'\u2713':String(it.n), pn=e.firstChild; if(pn.textContent!==t) pn.textContent=t; if(e.dataset.state!==it.state) e.dataset.state=it.state; if(it.selected){ if(!e.dataset.selected) e.dataset.selected=1; } else if(e.dataset.selected) delete e.dataset.selected; if(it.off){ if(!e.dataset.off) e.dataset.off=1; } else if(e.dataset.off) delete e.dataset.off;
       /* The name card shows only on hover or focus, or while the pin is selected. A click opens it in the panel. */
       if(it.tag){ const h=it.tag.text+(it.tag.sub?'<small>'+it.tag.sub+'</small>':''); if(e._tg!==h){ e._tg=h; e.lastChild.innerHTML=h; } }
-      if(sx>innerWidth-240) e.dataset.flip=1; else delete e.dataset.flip;
-      if(z>=4&&it.region&&focusN&&it.region!==focusN) e.dataset.far=1; else delete e.dataset.far; } });
+      if(sx>innerWidth-240){ if(!e.dataset.flip) e.dataset.flip=1; } else if(e.dataset.flip) delete e.dataset.flip;
+      if(z>=4&&it.region&&focusN&&it.region!==focusN){ if(!e.dataset.far) e.dataset.far=1; } else if(e.dataset.far) delete e.dataset.far; } });
   for(const [k,e] of els) if(!keep.has(k)){ e.remove(); els.delete(k); } }
 
 /* ===== motion: pan by drag, integer zoom steps, fly-to ===== */
@@ -881,9 +905,15 @@ function clampV(){ if(!CW){ V.cx=Math.max(-70,Math.min(WW+70,V.cx)); V.cy=Math.m
   const p=pads(), z=V.z, ox=(CW/2+p.l/2/S)/z, oy=(CH/2-p.b/2/S)/z, m=6;
   const xl=100-RING_RX-m+ox, xh=100+RING_RX+m-CW/z+ox, yl=80-RING_RY-m+oy, yh=80+RING_RY+m-CH/z+oy;
   V.cx=xl>xh?(xl+xh)/2:Math.max(xl,Math.min(xh,V.cx)); V.cy=yl>yh?(yl+yh)/2:Math.max(yl,Math.min(yh,V.cy)); }
-function stepZoom(dir,ax,ay){ const i=LV.indexOf(V.z), j=Math.max(0,Math.min(LV.length-1,i+dir)); if(j===i) return; setZ(LV[j],ax??innerWidth/2,ay??innerHeight/2); draw(); }
-function flyTo(cx,cy,z){ cancelAnimationFrame(anim); const f={...V}, t0=performance.now(), dur=700; const i0=LV.indexOf(f.z), i1=LV.indexOf(z), n=Math.abs(i1-i0);
-  (function step(now){ const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3); V.cx=f.cx+(cx-f.cx)*e; V.cy=f.cy+(cy-f.cy)*e; const k=Math.min(n,Math.floor(t*(n+1))); V.z=LV[i0+Math.sign(i1-i0)*k]; draw(); if(t<1) anim=requestAnimationFrame(step); })(t0); }
+/* Zoom changes are a CSS scale on the whole stage (canvas and pins together), eased, with the camera panning in JS. Zooming in scales the old level up and swaps to the new crisp level at the end; zooming out swaps first and scales down. Only a transform animates, so the compositor does the work. */
+let zt=0;
+function tweenScale(from,to,ox,oy,dur){ stage.style.transition='none'; stage.style.transformOrigin=ox+'px '+oy+'px'; stage.style.transform=from===1?'none':'scale('+from+')'; void stage.offsetWidth; stage.style.transition='transform '+dur+'ms cubic-bezier(.33,1,.68,1)'; stage.style.transform=to===1?'none':'scale('+to+')'; }
+function endTween(){ clearTimeout(zt); stage.style.transition='none'; stage.style.transform='none'; }
+function stepZoom(dir,ax,ay){ ax=ax??innerWidth/2; ay=ay??innerHeight/2; const i=LV.indexOf(V.z), j=Math.max(0,Math.min(LV.length-1,i+dir)); if(j===i) return; const z0=V.z, z1=LV[j]; cancelAnimationFrame(anim); endTween();
+  if(z1<z0){ setZ(z1,ax,ay); clampV(); draw(); tweenScale(z0/z1,1,ax,ay,260); } else { tweenScale(1,z1/z0,ax,ay,240); zt=setTimeout(()=>{ endTween(); setZ(z1,ax,ay); clampV(); draw(); },245); } }
+function flyTo(cx,cy,z){ cancelAnimationFrame(anim); endTween(); const f={...V}, t0=performance.now(), dur=z!==f.z?640:480, p=pads(), ox=innerWidth/2+p.l/2, oy=innerHeight/2-p.b/2, zin=z>f.z;
+  if(zin) tweenScale(1,z/f.z,ox,oy,dur); else if(z<f.z){ V.z=z; tweenScale(f.z/z,1,ox,oy,dur); }
+  (function step(now){ const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3); V.cx=f.cx+(cx-f.cx)*e; V.cy=f.cy+(cy-f.cy)*e; if(t>=1&&zin){ endTween(); V.z=z; } draw(); if(t<1) anim=requestAnimationFrame(step); })(t0); }
 const stage=document.getElementById('stage'); let drag=null;
 stage.addEventListener('pointerdown',e=>{ if(e.target.closest('.col,.ctl,.topright,.chipsbar,.zbar')) return; cancelAnimationFrame(anim); drag={x:e.clientX,y:e.clientY,moved:false}; stage.setPointerCapture(e.pointerId); stage.classList.add('drag'); });
 stage.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; if(Math.abs(dx)+Math.abs(dy)>2) drag.moved=true; drag.x=e.clientX; drag.y=e.clientY; V.cx-=dx/(V.z*S); V.cy-=dy/(V.z*S); clampV(); drawSoon(); });
@@ -904,7 +934,14 @@ function sceneHead(kind,h=44){ return `<div class="pc-head"><canvas class="scene
 const ORDER=()=>REG.flatMap(r=>byReg(r.n));
 /* Previous and next sit at the right of the pinned bar: regions in a region, quests along the whole route in a quest, stops in a stop. */
 const stepBtn=(dir,o,kind)=>{ const path=dir<0?'M15 6l-6 6 6 6':'M9 6l6 6-6 6', word=dir<0?'Previous':'Next'; return o?`<button class="step" ${o.a} aria-label="${word} ${kind}: ${o.t}" title="${word} ${kind}: ${o.t}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}"/></svg></button>`:`<button class="step" disabled aria-label="No ${word.toLowerCase()} ${kind}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}"/></svg></button>`; };
-const pnav=(label,attr,crumb,st)=>`<nav class="pnav" aria-label="Place navigation"><button class="back" ${attr}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>${label}</span></button><span class="crumb">${crumb}</span>${st?`<span class="steps">${stepBtn(-1,st.prev,st.kind)}${stepBtn(1,st.next,st.kind)}</span>`:''}</nav>`;
+function seq(){ if(sel.t==='region') return {kind:'regions',n:REG.length,i:sel.id-1,go:j=>selectRegion(j+1)};
+  if(sel.t==='quest'){ const o=ORDER(), i=o.findIndex(x=>x.id===sel.id); return {kind:'quests',n:o.length,i,go:j=>selectQuest(o[j].id)}; }
+  if(sel.t==='stop'){ const qq=QUESTS.find(x=>x.id===sel.id), n=Math.min(qq.stops.length,9); return {kind:'stops',n,i:sel.i,go:j=>selectStop(sel.id,j)}; } return null; }
+/* Panel controls, lower right: first, previous, next, last, at the level you are on (regions, quests or stops). */
+function footer(){ if(q.trim()) return ''; const sq=seq(); if(!sq) return ''; const ic={first:'M7 6v12M17 6l-6 6 6 6',prev:'M15 6l-6 6 6 6',next:'M9 6l6 6-6 6',last:'M17 6v12M7 6l6 6-6 6'}, lab={first:'First',prev:'Previous',next:'Next',last:'Last'}, atS=sq.i<=0, atE=sq.i>=sq.n-1;
+  const btn=k=>{ const dis=(k==='first'||k==='prev')?atS:atE; return `<button class="step" data-nav="${k}" ${dis?'disabled':''} aria-label="${lab[k]} ${sq.kind.slice(0,-1)}" title="${lab[k]} ${sq.kind.slice(0,-1)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ic[k]}"/></svg></button>`; };
+  return `<div class="pfoot" role="group" aria-label="Move between ${sq.kind}"><span class="pcount">${sq.i+1} of ${sq.n} ${sq.kind}</span><span class="steps">${btn('first')}${btn('prev')}${btn('next')}${btn('last')}</span></div>`; }
+const pnav=(label,attr,crumb,st)=>`<nav class="pnav" aria-label="Place navigation"><button class="back" ${attr}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>${label}</span></button><span class="crumb">${crumb}</span></nav>`;
 function neighbours(){ if(sel.t==='region'){ const a=REG[sel.id-2], b=REG[sel.id]; return {kind:'region',prev:a&&{t:a.name,a:`data-r="${a.n}"`},next:b&&{t:b.name,a:`data-r="${b.n}"`}}; }
   if(sel.t==='quest'){ const o=ORDER(), i=o.findIndex(x=>x.id===sel.id), a=o[i-1], b=o[i+1]; return {kind:'quest',prev:a&&{t:a.short,a:`data-q="${a.id}"`},next:b&&{t:b.short,a:`data-q="${b.id}"`}}; }
   if(sel.t==='stop'){ const qq=QUESTS.find(x=>x.id===sel.id), n=Math.min(qq.stops.length,9), j=sel.i; return {kind:'stop',prev:j>0&&{t:'Stop '+j,a:`data-s="${j-1}"`},next:j<n-1&&{t:'Stop '+(j+2),a:`data-s="${j+1}"`}}; }
@@ -924,28 +961,32 @@ function renderPanel(){
       <div class="sub">${dn} of ${QUESTS.length} quests done. Drag to pan, scroll or +/- to zoom, Esc to return here.</div></div>`; }
   else if(sel.t==='region'){ const r=REG[sel.id-1], qs=byReg(r.n);
     h=pnav('All regions','data-act="home"',r.name,neighbours())+sceneHead(r.scene)+`<div class="pc-body"><h3>${r.name}</h3><div class="sub">${r.sub}</div><p style="margin:0;font:.86rem/1.55 Georgia,serif">${r.blurb}</p>
-      <div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${i+1}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}</div>`; }
+      ${r.n===1?'<div class="row"><button class="primary" data-act="academy">Open Claude Academy \u2197</button><button data-act="ferry">Ferry to the Guild Hall</button></div>':''}<div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${i+1}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}</div>`; }
   else { const qq=QUESTS.find(x=>x.id===sel.id), r=REG[qq.region-1], i=byReg(r.n).indexOf(qq)+1;
     h=(sel.t==='stop'?pnav(qq.short,`data-q="${qq.id}"`,`${qq.short} › Stop ${sel.i+1}`,neighbours()):pnav(r.name,`data-r="${r.n}"`,`${r.name} › ${qq.short}`,neighbours()))+sceneHead(r.scene,40)+`<div class="pc-body"><span class="ribbon">${r.name} · Quest ${i} of ${byReg(r.n).length}</span><h3>${qq.title}</h3>
       <div class="row"><span class="chip">Class: ${qq.cls}</span><span class="chip">Level: ${qq.level}</span></div>
       <div class="stats"><div class="stat"><small>Quest level</small><strong>Lv ${qq.lv}</strong></div><div class="stat"><small>Experience</small><strong>+${qq.xp.toLocaleString()} XP</strong></div><div class="stat"><small>Reading</small><strong>~${qq.min} min</strong></div></div>
       <div><strong>It covers</strong><ul style="margin:.2rem 0 0;padding-left:1rem">${qq.learn.map(l=>`<li>${l}</li>`).join('')}</ul></div>
-      <div><strong>${qq.stops.length} stops</strong>${qq.stops.map((s,j)=>`<div class="stopline" data-s="${j}" ${sel.t==='stop'&&sel.i===j?'data-sel':''}><span class="sn">${j+1}</span><span><strong>${s}</strong></span></div>`).join('')}</div>
+      <div class="stopbox"><div class="stopbox__h"><strong>${qq.stops.length} stops</strong><span class="sub">in lesson order, along the route</span></div>${qq.stops.map((st,j)=>`<div class="stopline" data-s="${j}" ${sel.t==='stop'&&sel.i===j?'data-sel':''}><span class="sn">${j+1}</span><span>${st}</span></div>`).join('')}</div>
       <div class="row"><button class="primary" data-act="begin">Begin quest</button><button data-act="note">Read the note only</button></div></div>`; }
-  panel.innerHTML=h; panel.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind));
+  panel.innerHTML=h+footer(); panel.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind));
 }
-panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],[data-act],[data-s]'); if(!b) return; e.preventDefault();
+panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],[data-act],[data-s],[data-nav]'); if(!b) return; e.preventDefault();
+  if(b.dataset.nav){ const sq=seq(); if(!sq||b.disabled) return; const j={first:0,prev:sq.i-1,next:sq.i+1,last:sq.n-1}[b.dataset.nav]; if(j>=0&&j<sq.n&&j!==sq.i) sq.go(j); return; }
   if(b.dataset.q){ q=''; document.getElementById('q').value=''; selectQuest(b.dataset.q); }
   else if(b.dataset.r) selectRegion(+b.dataset.r);
   else if(b.dataset.s!==undefined) selectStop(sel.id,+b.dataset.s);
   else if(b.dataset.act==='home') home();
   else if(b.dataset.act==='clear'){ q=''; document.getElementById('q').value=''; renderPanel(); }
   else if(b.dataset.act==='start'){ selectRegion(1); }
+  else if(b.dataset.act==='academy'){ toast('Opens Claude Academy in a new tab (URL to confirm before launch)'); }
+  else if(b.dataset.act==='ferry'){ selectRegion(4); }
   else if(b.dataset.act==='cont'){ const nx=QUESTS.find(x=>!x.done); selectQuest(nx.id); }
-  else if(b.dataset.act==='begin'||b.dataset.act==='note'){ const t=document.getElementById('toast'); t.textContent=b.dataset.act==='begin'?'Opens the note with the quest book (lesson mode)':'Opens the note on its own'; t.hidden=false; setTimeout(()=>t.hidden=true,2200); } });
+  else if(b.dataset.act==='begin'||b.dataset.act==='note'){ toast(b.dataset.act==='begin'?'Opens the note with the quest book (lesson mode)':'Opens the note on its own'); } });
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2400); }
 document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; renderPanel(); });
 document.getElementById('fold').addEventListener('click',()=>{ collapsed=!collapsed; panel.hidden=collapsed; document.getElementById('fold').textContent=collapsed?'▶':'◀'; draw(); });
-document.querySelectorAll('.chipsbar .chip').forEach(c=>c.addEventListener('click',()=>{ filter=c.textContent; document.querySelectorAll('.chipsbar .chip').forEach(x=>x.toggleAttribute('data-on',x===c)); draw(); }));
+document.querySelectorAll('.chipsbar .chip').forEach(c=>c.addEventListener('click',()=>{ filter=c.textContent; document.querySelectorAll('.chipsbar .chip').forEach(x=>x.toggleAttribute('data-on',x===c)); if(CHIPREG[filter]) selectRegion(CHIPREG[filter]); else if(sel.t!=='none'||V.z!==2) home(); else draw(); drawSoon(); }));
 document.getElementById('zin').onclick=()=>stepZoom(1); document.getElementById('zout').onclick=()=>stepZoom(-1);
 document.getElementById('me').onclick=()=>flyTo(YOU[0],YOU[1]+4,4);
 const root=document.documentElement;
@@ -978,7 +1019,6 @@ function fxFrame(t){
   if(z>=4) for(const n in SPEC) if((FADE[n]||0)>.6) SPEC[n].lights.forEach(([x,y],k)=>{ const [wx,wy]=sceneM(+n,x,y); px(wx,wy-1,(f+k)%2?P.glow:P.amber); px(wx,wy-2,((f+k)%3)?P.amber:P.pinHi); });
   if(z<4) for(let i=0;i<5;i++){ const w=((f+i)%4<2)?0:1, o=w+(i>2?1:0); px(151+i,10+o,P.flag); if(i<4) px(151+i,11+o,P.pinHi); }
   else for(const n in SPEC) if((FADE[n]||0)>.6) SPEC[n].flags.forEach(([x,y])=>{ const [wx,wy]=sceneM(+n,x,y); for(let i=0;i<5;i++){ const o=(((f+i)%4<2)?0:1)+(i>2?1:0); px(wx+i,wy+o,P.flag); } });
-  { const r=f%7; for(let a=0;a<12;a++){ const th=a/12*Math.PI*2; if(r<4) px(YOU[0]+Math.round(Math.cos(th)*(r+2)),YOU[1]+Math.round(Math.sin(th)*(r+2)),P.you); } }
   fctx.globalAlpha=1;
 }
 function fxLoop(now){ raf=0; if(!motion||document.hidden) return; if(now-lastT>=160){ lastT=now; draw(true); fxFrame(now); } raf=requestAnimationFrame(fxLoop); }
