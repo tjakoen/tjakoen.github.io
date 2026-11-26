@@ -295,7 +295,7 @@ body { margin:0; background:var(--q-water); }
 .hit:hover { transform:translate(-50%,calc(-100% - 7px)) scale(1.12); }
 .hit[data-state="done"] { background:#2f7d33; }
 .hit[data-state="locked"] { background:#6b6b6b; }
-.hit[data-state="stop"] { background:#f5b83d; color:#3b2d1c; width:calc(var(--ps,30px) * .87); height:calc(var(--ps,30px) * .87); }
+.hit[data-state="stop"] { z-index:5; background:#f5b83d; color:#3b2d1c; width:calc(var(--ps,30px) * .87); height:calc(var(--ps,30px) * .87); }
 .hit[data-selected] { transform:translate(-50%,calc(-100% - 7px)) scale(1.25); z-index:2; box-shadow:0 0 0 3px #f5b83d, 2px 2px 0 3px var(--q-outline); }
 .hit.mark { pointer-events:none; }
 .you { position:absolute; transform:translate(-50%,-100%); pointer-events:none; display:flex; flex-direction:column; align-items:center; z-index:3; }
@@ -310,7 +310,7 @@ body { margin:0; background:var(--q-water); }
 .hit:hover .tagc, .hit:focus-visible .tagc { display:block; }
 .hit[data-quiet] .tagc { display:none !important; } /* a click opens the panel, so the card steps out of the way until the pointer leaves */
 .hit[data-flip] .tagc { left:auto; right:calc(100% + 8px); }
-.hit:hover, .hit:focus-visible { z-index:6; }
+.hit:hover, .hit:focus-visible { z-index:7; }
 .hit:focus-visible { outline:3px solid var(--q-accent); outline-offset:3px; }
 #over .lbl { transform:translate(-50%,0); }
 #over .lbl.region { font-size:.82rem; letter-spacing:.2em; }
@@ -833,7 +833,7 @@ function draw(tick){
   const pinAt=(wx,wy,n,state,selected)=>{ if(n===0){ items.push({key:'pfog',wx,wy,kind:'mark',n:'?',state,selected:false}); return; } pinBuf.push({n,state,selected}); };
   const add=(key,wx,wy,kind,o)=>{ if(kind==='lbl'&&o.cls&&o.cls.includes('tag')){ const last=items[items.length-1]; if(last&&last.kind==='hit') last.tag=o; return; } items.push({key,wx,wy,kind,...(kind==='hit'?pinBuf.pop():{}),...o}); };
   if(z===2){
-    REG.forEach(r=>{ const st=byReg(r.n).length&&byReg(r.n).every(x=>x.done)?'done':(r.n===1?'done':'open'); const selR=sel.t==='region'&&sel.id===r.n; pinAt(r.pin[0],r.pin[1],r.n,st,selR); add('hr'+r.n,r.pin[0],r.pin[1],'hit',{label:r.name+', region '+r.n,act:()=>selectRegion(r.n)}); add('lr'+r.n,r.lbl[0],r.lbl[1],'lbl',{text:r.name,cls:'region'}); });
+    REG.forEach(r=>{ const st=byReg(r.n).length&&byReg(r.n).every(x=>x.done)?'done':(r.n===1?'done':'open'); const selR=sel.t==='region'&&sel.id===r.n; pinAt(r.pin[0],r.pin[1],r.n,st,selR); add('hr'+r.n,r.pin[0],r.pin[1],'hit',{label:r.name+', region '+r.n,act:()=>selectRegion(r.n)}); add('tr'+r.n,r.pin[0],r.pin[1],'lbl',{text:r.name,sub:byReg(r.n).length?(byReg(r.n).length+' quests \u00b7 '+byReg(r.n).filter(x=>x.done).length+' done'):'The basics, outside this site',cls:'quest tag'}); add('lr'+r.n,r.lbl[0],r.lbl[1],'lbl',{text:r.name,cls:'region'}); });
     pinAt(166,112,0,'locked',false); add('lfog',166,119,'lbl',{text:'Unmapped',sub:'2 more notes to chart',cls:'region box'});
   } else {
     if(z===3) REG.forEach(r=>add('lr'+r.n,r.lbl[0],r.lbl[1]+6,'lbl',{text:r.name,cls:'region faint'}));
@@ -889,10 +889,11 @@ addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT'||e.target.tagName=
 
 /* ===== selection and the place panel ===== */
 const panel=document.getElementById('panel');
-function home(){ sel={t:'none'}; renderPanel(); flyTo(104,84,2); }
-function selectRegion(n){ sel={t:'region',id:n}; const r=REG[n-1]; renderPanel(); flyTo(r.c[0],r.c[1],3); }
-function selectQuest(id){ sel={t:'quest',id}; const qq=QUESTS.find(x=>x.id===id); renderPanel(); flyTo(qq.pos[0],qq.pos[1]+6,4); }
-function selectStop(id,i){ sel={t:'stop',id,i}; const qq=QUESTS.find(x=>x.id===id), p=stopPos(qq,i); renderPanel(); flyTo(p[0],p[1],6); }
+function openPanel(){ if(collapsed){ collapsed=false; panel.hidden=false; document.getElementById('fold').textContent='\u25C0'; } }
+function home(){ sel={t:'none'}; openPanel(); renderPanel(); flyTo(104,84,2); }
+function selectRegion(n){ sel={t:'region',id:n}; const r=REG[n-1]; openPanel(); renderPanel(); flyTo(r.c[0],r.c[1],3); }
+function selectQuest(id){ sel={t:'quest',id}; const qq=QUESTS.find(x=>x.id===id); openPanel(); renderPanel(); flyTo(qq.pos[0],qq.pos[1]+6,4); }
+function selectStop(id,i){ sel={t:'stop',id,i}; const qq=QUESTS.find(x=>x.id===id), p=stopPos(qq,i); openPanel(); renderPanel(); flyTo(p[0],p[1],6); }
 const hours=Math.round(QUESTS.reduce((a,x)=>a+x.min,0)/6)/10;
 function sceneHead(kind,h=44){ return `<div class="pc-head"><canvas class="scene" data-kind="${kind}" width="110" height="${h}"></canvas></div>`; }
 const ORDER=()=>REG.flatMap(r=>byReg(r.n));
