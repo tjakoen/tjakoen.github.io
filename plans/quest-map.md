@@ -117,8 +117,9 @@ fills the viewport and everything else floats on it, as in Google Maps.
 - **Landmark detail maps.** From the Landmark level each landmark turns into its own small map, drawn at twice
   the world's resolution. The castle in GRAIN Keep becomes walls, corner towers, a gate, a keep, a library and an
   armory. The Guild Hall becomes a village with streets, a plaza, a market and a notice board. The Model Mines
-  mountain becomes a mine with shafts, timber, rails, an ore vault and lanterns. Loop Forest becomes a clearing
-  with a ring road and four stations. The Summit becomes a switchback trail with camps and the flag. The
+  mountain becomes a lobed mine hill with shafts, timber, rails, an ore vault, lanterns and snow caps. Loop
+  Forest becomes a clearing with a winding loop road and four stations. No place is a plain oval: ground
+  patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes a switchback trail with camps and the flag. The
   Foothills become a start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
   what the lesson is about. Only the landmark nearest the middle of the view shows its detail, and it eases in over about a
   third of a second. Drag to another region and the old detail fades out while the next fades in, and the
