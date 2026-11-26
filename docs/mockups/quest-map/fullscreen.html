@@ -861,7 +861,11 @@ let anim=0;
 function setZ(newZ,ax,ay){ // keep the world point under (ax,ay) css px fixed
   const o=origin(); const wx=o.vx+(ax/S)/o.z, wy=o.vy+(ay/S)/o.z; V.z=newZ; const p=pads();
   V.cx=wx-((ax/S)-(CW/2+p.l/2/S))/V.z; V.cy=wy-((ay/S)-(CH/2-p.b/2/S))/V.z; clampV(); }
-function clampV(){ V.cx=Math.max(-70,Math.min(WW+70,V.cx)); V.cy=Math.max(-55,Math.min(WH+55,V.cy)); }
+/* The view stops at the cloud wall: its edge may reach the edge of the sea and no further, so there is no empty cloud beyond the ring. */
+function clampV(){ if(!CW){ V.cx=Math.max(-70,Math.min(WW+70,V.cx)); V.cy=Math.max(-55,Math.min(WH+55,V.cy)); return; }
+  const p=pads(), z=V.z, ox=(CW/2+p.l/2/S)/z, oy=(CH/2-p.b/2/S)/z, m=6;
+  const xl=100-RING_RX-m+ox, xh=100+RING_RX+m-CW/z+ox, yl=80-RING_RY-m+oy, yh=80+RING_RY+m-CH/z+oy;
+  V.cx=xl>xh?(xl+xh)/2:Math.max(xl,Math.min(xh,V.cx)); V.cy=yl>yh?(yl+yh)/2:Math.max(yl,Math.min(yh,V.cy)); }
 function stepZoom(dir,ax,ay){ const i=LV.indexOf(V.z), j=Math.max(0,Math.min(LV.length-1,i+dir)); if(j===i) return; setZ(LV[j],ax??innerWidth/2,ay??innerHeight/2); draw(); }
 function flyTo(cx,cy,z){ cancelAnimationFrame(anim); const f={...V}, t0=performance.now(), dur=700; const i0=LV.indexOf(f.z), i1=LV.indexOf(z), n=Math.abs(i1-i0);
   (function step(now){ const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3); V.cx=f.cx+(cx-f.cx)*e; V.cy=f.cy+(cy-f.cy)*e; const k=Math.min(n,Math.floor(t*(n+1))); V.z=LV[i0+Math.sign(i1-i0)*k]; draw(); if(t<1) anim=requestAnimationFrame(step); })(t0); }

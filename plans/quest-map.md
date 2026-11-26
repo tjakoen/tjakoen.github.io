@@ -32,7 +32,7 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   climbers work the switchback to the summit. The snowfield under the peak has a frozen lake, snowy pines and
   cabins. After dark, fireflies drift over the forest. The water glints at about a third of the earlier pace.
   Open sea runs a long way around the island, then ends at a rounded wall of cloud at the border of the map,
-  and past it there is only more cloud, never open water. You reach the cloud by panning out. A kraken lives in
+  and past it there is only more cloud, never open water. You reach the cloud by panning out, and the view stops at the wall, so you never scroll into empty cloud. A kraken lives in
   the sea at the top-left. Everything moves in pixel steps, holds still under reduced motion, and follows the
   Motion button.
 - **One style, two rules.** Art, meaning the terrain, landmarks, detail scenes and the moving layer, is solid
