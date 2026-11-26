@@ -139,12 +139,17 @@ fills the viewport and everything else floats on it, as in Google Maps.
   Forest becomes an elf town in the canopy: great trees with houses built into their crowns, plank walkways
   and rope bridges looping between them, a hearth on a round platform in the central tree, and lanterns. The
   four stations are a scroll house, a workshop, a lantern tower and a gate house. No place is a plain oval: ground
-  patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes one peak with a single switchback trail, a camp, two cabins and a frozen lake, kept quiet on purpose. The
+  patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes a peak with a switchback trail, tents and climbers, igloos and a frozen lake. The
   Foothills become a port island with a lighthouse, a boathouse, a pier for the ferries and the start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
   what the lesson is about. Only the landmark nearest the middle of the view shows its detail, and it eases in over about a
   third of a second. Drag to another region and the old detail fades out while the next fades in, and the
   pins of the other regions dim, so the map feels like one place rather than a switch. Each scene is baked
-  once into an offscreen canvas, and a selected quest draws a trail through its stops.
+  once into an offscreen canvas, and a selected quest draws a dashed trail along its route.
+- **Stops follow routes, not straight lines.** Each quest has a route through its place along things you can
+  really walk: the mine's tunnels, the village streets, the castle road to the keep, the forest walkways in the
+  canopy and the summit trail, up for one quest and down for the other. The stops sit at even steps along the
+  route in lesson order, so the numbers read as a walk from first to last. Selecting a quest or a stop draws a
+  dashed amber trail along that route, and nothing cuts across walls or rock.
 - **Pins and labels are real elements over the canvas, and they are not pixel art.** The terrain and landmarks
   are pixel art. A pin is a clean round marker with a number, a white edge and a pointer, so it reads against
   busy terrain: red for open, green with a check for done, grey for filtered out, amber for a stop. It stays
