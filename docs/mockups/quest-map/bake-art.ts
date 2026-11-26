@@ -7,6 +7,11 @@ import { chromium } from "@playwright/test";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, normalize } from "node:path";
 
+// The page's own globals, read inside page.evaluate. They live in the page, so they are only declared here.
+type Scene = { n: number; ox: number; oy: number; W: number; H: number; cv: HTMLCanvasElement };
+declare const root: HTMLElement, base: HTMLCanvasElement, wavesCv: HTMLCanvasElement, baseP: HTMLCanvasElement, DET: Scene[], glints: number[][];
+declare function reskin(): Promise<void>;
+
 const here = dirname(new URL(import.meta.url).pathname);
 const FLAVORS = ["sourdough", "baguette", "brioche"];
 const SCHEMES = ["light", "dark"];

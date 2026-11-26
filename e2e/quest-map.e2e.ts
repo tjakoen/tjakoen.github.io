@@ -7,6 +7,20 @@ import { createServer, type Server } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 
+// The page's own globals, which these tests read inside page.evaluate. They exist in the page, not here, so they are only declared.
+type Quest = { id: string; region: number; stops: string[]; done: boolean; pos: number[] };
+declare const root: HTMLElement, base: HTMLCanvasElement, WW: number, WH: number, YOU: number[], sel: { t: string; id?: unknown; i?: number };
+declare const QUESTS: Quest[], PROG: Record<string, Set<number>>, LAYERS: { waves: boolean };
+declare const SPEC: Record<number, { cx: number; cy: number; W: number; H: number }>;
+declare function selectRegion(n: number): void;
+declare function selectStop(id: string, i: number): void;
+declare function stopPos(q: Quest, i: number): number[];
+declare function routeOf(q: Quest): number[][] | undefined;
+declare function nearOnRoute(rt: number[][], x: number, y: number): { d: number } | null;
+declare function syncSettings(): void;
+declare function reskin(): Promise<void>;
+declare function artKey(): string;
+
 const ROOT = join(import.meta.dirname, "..", "docs", "mockups", "quest-map");
 const TYPES: Record<string, string> = { ".html": "text/html", ".png": "image/png", ".json": "application/json" };
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
@@ -32,7 +46,7 @@ test.beforeAll(async () => {
 });
 test.afterAll(() => void server.close());
 
-async function open(page: Page, flavor = "sourdough", scheme = "light", reducedMotion: "reduce" | "no-preference" = "reduce") {
+async function open(page: Page, flavor = "sourdough", scheme: "light" | "dark" = "light", reducedMotion: "reduce" | "no-preference" = "reduce") {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.emulateMedia({ colorScheme: scheme, reducedMotion });
   await page.goto(`${origin}/fullscreen.html`, { waitUntil: "load" });
