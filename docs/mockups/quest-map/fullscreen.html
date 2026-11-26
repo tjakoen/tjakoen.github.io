@@ -471,6 +471,7 @@ let cols=[], sprites=[], roadMain=new Set(), roadMinor=new Set();
 function distTo(x,y,type,r=3){ let best=9; for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){ const xx=x+dx,yy=y+dy; const t=(xx<0||yy<0||xx>=WW||yy>=WH)?0:land[yy*WW+xx]; if(t===type) best=Math.min(best,Math.max(Math.abs(dx),Math.abs(dy))); } return best; }
 function line(pts,fn){ for(let k=0;k<pts.length-1;k++){ let [x0,y0]=pts[k],[x1,y1]=pts[k+1]; const n=Math.max(Math.abs(x1-x0),Math.abs(y1-y0)); for(let t=0;t<=n;t++){ const x=Math.round(x0+(x1-x0)*t/n), y=Math.round(y0+(y1-y0)*t/n+Math.sin(t/n*6.28*1)*2*(k%2?1:-1)); fn(x,y,t); } } }
 function buildWorld(){
+  layoutQuests();
   cols=new Array(WW*WH); roadMain=new Set(); roadMinor=new Set(); sprites=[];
   for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; let c;
     if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water; if(d>3&&hash2(x,y)%31===0) c=P.wave; }
@@ -545,7 +546,6 @@ const YOU=[66,96];
 const LEVEL={intro:1,intermediate:2,deep:3}, CLASS={learn:'Learner',build:'Builder',lead:'Leader',teach:'Teacher'};
 QUESTS.forEach(q=>{ q.lv=LEVEL[q.level]||1; q.xp=25*q.min+100*q.stops.length; q.cls=q.aud.map(a=>CLASS[a]||a).join(', '); q.done=DONE.has(q.id); });
 const byReg=n=>QUESTS.filter(q=>q.region===n);
-const stopPos=(q,i)=>{ const off=[[-15,10],[-6,17],[6,17],[15,10],[19,0],[-19,0],[0,23],[12,22],[-12,22]][i%9]; return [q.pos[0]+off[0],q.pos[1]+off[1]]; };
 
 /* ===== view: integer zoom levels, 2 css px per canvas px, centre in world coords ===== */
 const S=2, LV=[2,3,4,6], LNAME=['World','Regions','Landmark','Stops'];
@@ -559,6 +559,100 @@ function resize(){ CW=Math.ceil(innerWidth/S); CH=Math.ceil(innerHeight/S); cv.w
 
 function filterOk(q){ if(filter==='All') return true; if(filter==='Loop') return q.region===2; if(filter==='Models') return q.region===3; if(filter==='Leading') return q.region===4; if(filter==='Design') return q.region===5; if(filter==='Not started') return !q.done; return true; }
 
+/* ===== Landmark detail maps =====
+   Zoom to the Landmark level and each landmark turns into its own small map, drawn at twice the world's resolution:
+   the castle becomes a keep inside walls, the guild hall a village with streets, the mountain a mine with tunnels.
+   Quests sit at buildings and stops sit at rooms, so the place you zoom into is the place the lesson is about.
+   Scenes are baked once into offscreen canvases (one detail pixel is half a map pixel), then drawn with one drawImage each. */
+const RING=n=>Array.from({length:n},(_,i)=>[Math.round(48+34*Math.cos(i/n*6.2832-1.5708)),Math.round(38+24*Math.sin(i/n*6.2832-1.5708))]);
+const SPEC={
+  1:{cx:34,cy:121,W:80,H:56,q:[],slots:[],lights:[[40,40],[30,38]],flags:[[68,12]]},
+  2:{cx:62,cy:92,W:96,H:76,q:[[48,12],[84,38],[48,64],[12,38]],slots:RING(12),lights:[[48,38],[48,19],[82,38]],flags:[]},
+  3:{cx:104,cy:126,W:130,H:70,q:[[65,62],[26,24],[65,20]],slots:[[65,58],[65,46],[45,44],[26,40],[26,24],[85,38],[105,32],[105,20],[65,20]],lights:[[65,56],[65,44],[40,44],[26,34],[85,36],[105,28],[60,18],[70,18]],flags:[]},
+  4:{cx:146,cy:92,W:108,H:76,q:[[24,42],[62,42],[54,30]],slots:[[54,30],[24,42],[62,42],[54,56],[16,26],[90,26],[16,60],[90,60],[36,62]],lights:[[44,31],[64,31],[54,50],[24,36]],flags:[[54,2]]},
+  5:{cx:92,cy:54,W:100,H:80,q:[[26,38],[50,42]],slots:[[50,66],[50,14],[50,40],[26,34],[74,34],[30,50],[13,13],[87,13],[87,63]],lights:[[38,58],[62,58],[13,10],[87,10]],flags:[[53,2]]},
+  6:{cx:150,cy:36,W:84,H:70,q:[[26,58],[42,10]],slots:[[26,58],[52,56],[28,48],[54,40],[32,32],[48,24],[42,14],[60,30],[22,40]],lights:[[24,56],[58,42],[28,28]],flags:[[46,3]]}
+};
+const sceneM=(n,x,y)=>{ const s=SPEC[n]; return [Math.round(s.cx-s.W/4)+x/2, Math.round(s.cy-s.H/4)+y/2]; };
+function layoutQuests(){ for(const n in SPEC){ byReg(+n).forEach((qq,i)=>{ const p=SPEC[n].q[i]; if(p) qq.pos=sceneM(+n,p[0],p[1]); }); } }
+const stopPos=(qq,i)=>{ const s=SPEC[qq.region], k=byReg(qq.region).indexOf(qq), sl=s.slots, p=sl[(k*3+i)%sl.length]; return sceneM(qq.region,p[0],p[1]); };
+let DET=[];
+function bakeScenes(){
+  DET=[];
+  for(const n in SPEC){ const sp=SPEC[n], W=sp.W, H=sp.H, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const g=cv.getContext('2d');
+    const R=(x,y,w,h,c)=>{ g.fillStyle=c; g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h)); };
+    const D=(x,y,r,c)=>{ g.fillStyle=c; for(let j=-r;j<=r;j++) for(let i=-r;i<=r;i++) if(i*i+j*j<=r*r+r*.6) g.fillRect(x+i,y+j,1,1); };
+    const L=(x0,y0,x1,y1,c,t=1)=>{ const m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0))||1; for(let k=0;k<=m;k++) R(x0+(x1-x0)*k/m-t/2,y0+(y1-y0)*k/m-t/2,t,t,c); };
+    const blob=(base,edge)=>{ for(let y=0;y<H;y++) for(let x=0;x<W;x++){ const dx=(x+.5-W/2)/(W/2), dy=(y+.5-H/2)/(H/2), d=dx*dx+dy*dy+((hash2(x,y)%97)/97-.5)*.16; if(d<1){ g.fillStyle=d>.84?edge:base; g.fillRect(x,y,1,1); } } };
+    const speckle=(x,y,w,h,c,k)=>{ for(let i=0;i<k;i++){ const q=hash2(i*7+x,y*3+i); R(x+q%w,y+((q>>8)%h),1,1,c); } };
+    const pine=(x,y)=>{ R(x,y,2,3,P.trunk); R(x-3,y-3,8,3,P.forest); R(x-2,y-6,6,3,P.forest); R(x-1,y-9,4,3,P.forest2); };
+    const glow=(x,y)=>{ R(x-1,y-1,4,4,'rgba(245,184,61,.35)'); R(x,y,2,2,P.glow); };
+    const house=(x,y,w,h,ro,ro2)=>{ R(x,y,w,h,P.wall); R(x+w/2,y,w/2,h,P.wall2); R(x-2,y-6,w+4,7,ro); R(x+w/2,y-6,w/2+2,7,ro2); R(x+w/2-2,y+h-5,4,5,P.outline); R(x+2,y+3,3,3,P.glow); };
+    const tent=(x,y,c1,c2)=>{ for(let j=0;j<8;j++){ R(x-j,y+j,j+1,1,c1); R(x+1,y+j,j+1,1,c2); } R(x,y+8,2,1,P.outline); };
+    if(n==1){ blob(P.grass,P.grass2);
+      [[20,34,22,10],[52,30,18,8]].forEach(([x,y,w,h])=>{ for(let j=0;j<h;j++){ const hw=Math.round(w/2*Math.sqrt(1-((j-h)/h)**2)); R(x+w/2-hw,y+j,hw*2,1,j<2?P.grass2:P.grass); } });
+      L(40,56,40,34,P.road,4); R(60,8,2,16,P.trunk); R(54,6,16,9,P.wall); R(55,7,14,7,P.roof); tent(18,36,P.roof,P.roof2); tent(30,40,P.field,P.field2); D(40,40,2,P.trunk); R(39,36,2,3,P.amber); speckle(8,8,64,40,P.meadow,26); R(60,2,1,8,P.outline); R(61,2,8,4,P.flag); }
+    if(n==2){ blob(P.grass,P.forest2);
+      for(let a=0;a<60;a++){ const t=a/60*6.2832, x=Math.round(48+44*Math.cos(t)), y=Math.round(38+34*Math.sin(t)); pine(x,y+4); }
+      for(let a=0;a<240;a++){ const t=a/240*6.2832, x=Math.round(48+34*Math.cos(t)), y=Math.round(38+24*Math.sin(t)); R(x-2,y-2,5,5,P.roadEdge); }
+      for(let a=0;a<240;a++){ const t=a/240*6.2832, x=Math.round(48+34*Math.cos(t)), y=Math.round(38+24*Math.sin(t)); R(x-1,y-1,3,3,P.road); }
+      [[48,38,48,14],[48,38,84,38],[48,38,48,62],[48,38,12,38]].forEach(([a,b,c,d])=>L(a,b,c,d,P.road,2));
+      D(48,38,4,P.rockd); D(48,38,3,P.trunk); R(47,34,2,3,P.amber); R(47,32,2,2,P.glow);
+      R(40,8,16,10,P.wall); R(38,4,20,6,P.roof); R(46,4,12,6,P.roof2); R(44,12,3,4,P.glow); R(50,12,3,4,P.glow);
+      R(76,32,16,12,P.stone); R(76,28,16,5,P.rock2); D(84,38,4,P.outline); D(84,38,2,P.rock); R(83,34,2,8,P.rockd);
+      R(47,58,2,10,P.trunk); R(44,56,8,4,P.glow); R(43,55,10,1,P.outline);
+      R(6,34,10,8,P.wall); R(4,32,14,3,P.roof); R(5,28,1,8,P.trunk); R(6,28,6,3,P.amber);
+      speckle(14,14,68,50,P.meadow,24); }
+    if(n==3){ blob(P.rock,P.rock2); const DK='#2a2430';
+      for(let y=4;y<22;y+=2) speckle(10,y,110,2,P.rock2,6);
+      const tun=(x0,y0,x1,y1,t)=>L(x0,y0,x1,y1,DK,t);
+      tun(65,68,65,24,6); tun(65,44,26,44,5); tun(26,44,26,24,5); tun(65,36,105,36,5); tun(105,36,105,22,5);
+      R(50,10,32,16,DK); R(18,16,16,12,DK); R(98,12,16,12,DK);
+      R(54,14,3,3,P.amber); R(62,19,3,3,P.amber); R(70,12,3,3,P.glow); R(75,18,3,3,P.amber); R(22,20,3,3,P.glow); R(104,16,3,3,P.amber); R(58,12,2,4,'#a483cf'); R(66,22,2,3,'#a483cf');
+      for(let y=60;y>26;y-=8){ R(61,y,1,6,P.trunk); R(69,y,1,6,P.trunk); R(61,y-1,9,1,P.trunk); }
+      for(let x=34;x<62;x+=8){ R(x,41,1,6,P.trunk); R(x,41,1,1,P.trunk); }
+      for(let y=24;y<=68;y+=2){ R(64,y,1,1,P.mainEdge); R(67,y,1,1,P.mainEdge); if(y%4===0) R(63,y,5,1,P.trunk); }
+      R(58,60,2,10,P.trunk); R(70,60,2,10,P.trunk); R(58,58,14,2,P.trunk);
+      R(78,63,12,5,P.rockd); R(78,63,12,2,P.rock2); R(80,68,2,2,DK); R(86,68,2,2,DK); R(80,61,8,2,P.amber);
+      R(60,0,12,9,P.trunk); R(58,0,16,3,P.roof); R(64,-0,4,2,P.roof2); R(65,9,2,4,DK);
+      SPEC[3].lights.forEach(([x,y])=>glow(x,y)); }
+    if(n==4){ blob(P.grass,P.grass2);
+      R(6,32,96,12,P.roadEdge); R(6,33,96,10,P.road); R(48,4,12,68,P.roadEdge); R(49,4,10,68,P.road);
+      R(40,28,28,20,P.roadEdge); R(41,29,26,18,P.sand); speckle(41,29,26,18,P.sand2,50);
+      R(38,6,32,22,P.wall); R(54,6,16,22,P.wall2); R(34,0,40,8,P.roof); R(54,0,20,8,P.roof2); R(50,18,8,10,P.outline); R(52,10,4,4,P.glow); R(44,12,3,4,P.glow); R(61,12,3,4,P.glow); R(53,-2,1,3,P.outline);
+      house(8,12,16,12,P.roof,P.roof2); house(84,12,16,12,P.roof2,P.roof); house(8,50,16,12,P.roof2,P.roof); house(30,52,14,10,P.roof,P.roof2); house(66,52,14,10,P.roof2,P.roof); house(86,50,16,12,P.roof,P.roof2);
+      R(42,34,8,6,P.field); R(42,32,8,3,P.flag); R(58,34,8,6,P.field2); R(58,32,8,3,P.amber); R(50,38,6,4,P.trunk);
+      R(20,38,10,7,P.trunk); R(21,39,8,5,P.wall); R(23,40,4,1,P.outline); R(23,42,3,1,P.outline);
+      D(54,58,3,P.rockd); D(54,58,1,P.water);
+      for(let x=10;x<30;x+=3) R(x,28,1,3,P.trunk); for(let x=78;x<100;x+=3) R(x,28,1,3,P.trunk);
+      pine(4,36); pine(100,36); pine(30,68); pine(76,68); pine(18,66);
+      SPEC[4].lights.forEach(([x,y])=>glow(x,y)); }
+    if(n==5){ blob(P.grass,P.grass2);
+      R(14,14,72,52,P.sand); speckle(15,15,70,50,P.sand2,300);
+      R(10,10,80,5,P.wall2); R(10,10,5,56,P.wall2); R(85,10,5,56,P.wall2); R(10,61,32,5,P.wall2); R(58,61,32,5,P.wall2);
+      for(let x=10;x<90;x+=4) R(x,8,2,2,P.wall); for(let y=10;y<66;y+=4){ R(8,y,2,2,P.wall); R(90,y,2,2,P.wall); } for(let x=10;x<42;x+=4) R(x,66,2,2,P.wall); for(let x=58;x<90;x+=4) R(x,66,2,2,P.wall);
+      [[4,4],[82,4],[4,56],[82,56]].forEach(([x,y])=>{ R(x,y,16,16,P.wall2); R(x+2,y+2,12,12,P.wall); R(x+4,y+4,8,8,P.roof); R(x+8,y+4,4,8,P.roof2); R(x+7,y+7,2,2,P.outline); });
+      R(38,56,24,14,P.wall2); R(40,58,20,12,P.wall); R(45,60,10,10,P.outline); for(let x=46;x<55;x+=2) R(x,60,1,10,P.stone);
+      R(45,40,10,26,P.roadEdge); R(46,40,8,26,P.road);
+      R(32,16,36,28,P.wall); R(50,16,18,28,P.wall2); for(let x=32;x<68;x+=4) R(x,14,2,2,P.wall); R(40,6,20,12,P.castle); R(50,6,10,12,P.castle2);
+      R(49,0,1,8,P.outline); R(50,0,7,4,P.flag); R(46,36,8,8,P.outline); R(47,37,6,7,P.trunk); R(38,24,3,5,P.glow); R(59,24,3,5,P.glow); R(48,22,4,6,P.glow);
+      R(16,20,16,14,P.wall2); R(14,16,20,6,P.roof); R(24,16,10,6,P.roof2); R(22,28,4,6,P.outline); R(18,24,3,3,P.glow); R(27,24,3,3,P.glow);
+      R(66,20,16,14,P.wall2); R(64,16,20,6,P.roof2); R(72,16,10,6,P.roof); R(72,28,4,6,P.outline); R(72,24,4,3,P.flag);
+      D(30,50,4,P.wall2); D(30,50,2,P.water); R(66,46,14,10,P.trunk); R(64,44,18,3,P.roof);
+      pine(2,40); pine(96,42); pine(4,72); pine(94,72);
+      SPEC[5].lights.forEach(([x,y])=>glow(x,y)); }
+    if(n==6){ blob(P.snow,P.snow2);
+      for(let y=6;y<46;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw,y,hw*2,1,P.rock); R(42,y,hw,1,P.rock2); }
+      for(let y=6;y<18;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw+2,y,hw*2-4,1,P.snow); R(42,y,hw-2,1,P.snow2); }
+      speckle(14,26,56,18,P.rockd,40);
+      const pts=[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]]; for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.roadEdge,4);
+      for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.road,2);
+      tent(20,50,P.roof,P.roof2); tent(54,42,P.field,P.field2); tent(24,22,P.roof2,P.roof);
+      R(42,0,1,10,P.outline); R(43,0,8,5,P.flag); R(43,1,3,2,P.pinHi);
+      speckle(6,6,70,56,P.snow2,40);
+      SPEC[6].lights.forEach(([x,y])=>glow(x,y)); }
+    DET.push({n:+n,ox:Math.round(sp.cx-W/4),oy:Math.round(sp.cy-H/4),W,H,cv}); } }
+
 /* The terrain and every static sprite are drawn once into an offscreen canvas, one pixel per map pixel, with a margin of open
    water. Each frame is then a single scaled drawImage plus the few things that depend on the view (camp, pins, you). */
 const M=120; let base=null, glints=[];
@@ -566,7 +660,7 @@ function bake(){ base=document.createElement('canvas'); base.width=WW+2*M; base.
   const isWater=c=>c===P.water||c===P.water2||c===P.wave||c===P.foam;
   for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); const c=inW?cols[y*WW+x]:(hash2(x,y)%31===0?P.wave:P.water); b.fillStyle=c; b.fillRect(x+M,y+M,1,1); if(isWater(c)&&hash2(x,y)%53===0) glints.push([x,y,hash2(x,y)>>9]); }
   const put=(wx,wy,c)=>{ b.fillStyle=c; b.fillRect(wx+M,wy+M,1,1); };
-  sprites.cave.blit(put,104,127); sprites.forEach(s=>s.f(put)); }
+  sprites.cave.blit(put,104,127); sprites.forEach(s=>s.f(put)); bakeScenes(); }
 let lastDraw=0, dq=0;
 const drawSoon=()=>{ if(dq) return; dq=requestAnimationFrame(()=>{ dq=0; draw(); }); };
 function draw(){
@@ -574,10 +668,8 @@ function draw(){
   ctx.fillStyle=P.water; ctx.fillRect(0,0,CW,CH);
   { const ix=Math.floor(vx), iy=Math.floor(vy), sw=Math.ceil(CW/z)+2, sh=Math.ceil(CH/z)+2; ctx.drawImage(base,ix+M,iy+M,sw,sh,-Math.round((vx-ix)*z),-Math.round((vy-iy)*z),sw*z,sh*z); }
   const put=(wx,wy,c)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
-  if(z>=4){ tentSpr().blit(put,92,134); tentSpr().blit(put,96,136); torchSpr().blit(put,100,128); torchSpr().blit(put,108,128); cartSpr().blit(put,112,134); for(let x=100;x<122;x+=2) put(x,135,P.trunk); for(let x=100;x<124;x++) put(x,136,P.rockd); torchSpr().blit(put,72,138); }
-  // Region detail: a closer map has its own footpaths between a region's quests, and small props around each quest.
-  if(z>=3){ REG.forEach(r=>{ const qs=byReg(r.n); if(qs.length<2) return; line(qs.map(x=>[x.pos[0],x.pos[1]+2]),(x,y,t)=>{ if(t%3===2||x<0||y<0||x>=WW||y>=WH||!land[y*WW+x]) return; put(x,y,P.roadEdge); }); }); }
-  if(z>=4){ QUESTS.forEach(qq=>{ for(let k=0;k<12;k++){ const h=hash2(qq.pos[0]*31+k,qq.pos[1]*17+k*5), x=qq.pos[0]+(h%19)-9, y=qq.pos[1]+((h>>6)%13)-5; if(x<0||y<0||x>=WW||y>=WH||!land[y*WW+x]) continue; const c=h%5; put(x,y,c===0?'#f2c94c':c===1?'#f4f4f4':c===2?'#e86aa6':P.rockd); if(c>=3) put(x+1,y,P.rock2); } }); }
+  // Landmark detail maps replace the low-resolution landmark once you are close.
+  if(z>=4) DET.forEach(sc=>{ const dx=Math.round((sc.ox-vx)*z), dy=Math.round((sc.oy-vy)*z), dw=sc.W*z/2, dh=sc.H*z/2; if(dx>=CW||dy>=CH||dx+dw<=0||dy+dh<=0) return; ctx.drawImage(sc.cv,0,0,sc.W,sc.H,dx,dy,dw,dh); });
   if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id); line([qq.pos.slice(),...qq.stops.slice(0,9).map((_,i)=>stopPos(qq,i))],(x,y,t)=>{ if(t%2) return; put(x,y,P.main); put(x,y+1,P.mainEdge); }); }
   // pins
   const zp=z>=4?3:2; const items=[];
@@ -707,8 +799,9 @@ function fxFrame(t){
   const f=Math.floor(t/160);
   const px=(wx,wy,c,a=1)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; fctx.globalAlpha=a; fctx.fillStyle=c; fctx.fillRect(sx,sy,z,z); };
   for(let i=0;i<glints.length;i++){ const g=glints[i], ph=(f+g[2])%8; if(ph<2) px(g[0],g[1],P.foam,ph?.9:.5); }
-  if(z>=4){ [[100,128],[108,128],[72,138]].forEach(([x,y])=>{ px(x,y-4,f%2?P.glow:P.amber); px(x,y-5,(f%3)?P.amber:P.pinHi); }); }
-  for(let i=0;i<5;i++){ const w=((f+i)%4<2)?0:1, o=w+(i>2?1:0); px(151+i,10+o,P.flag); if(i<4) px(151+i,11+o,P.pinHi,.8); }
+  if(z>=4) for(const n in SPEC) SPEC[n].lights.forEach(([x,y],k)=>{ const [wx,wy]=sceneM(+n,x,y); px(wx,wy-1,(f+k)%2?P.glow:P.amber); px(wx,wy-2,((f+k)%3)?P.amber:P.pinHi); });
+  if(z<4) for(let i=0;i<5;i++){ const w=((f+i)%4<2)?0:1, o=w+(i>2?1:0); px(151+i,10+o,P.flag); if(i<4) px(151+i,11+o,P.pinHi,.8); }
+  else for(const n in SPEC) SPEC[n].flags.forEach(([x,y])=>{ const [wx,wy]=sceneM(+n,x,y); for(let i=0;i<5;i++){ const o=(((f+i)%4<2)?0:1)+(i>2?1:0); px(wx+i,wy+o,P.flag); } });
   { const r=f%7; for(let a=0;a<12;a++){ const th=a/12*Math.PI*2; px(YOU[0]+Math.round(Math.cos(th)*(r+2)),YOU[1]+Math.round(Math.sin(th)*(r+2)),P.you,1-r/7); } }
   fctx.globalAlpha=1;
 }
