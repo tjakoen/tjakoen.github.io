@@ -28,6 +28,14 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   numbered stop pins. The RPG quest modal opens over the zoomed map.
 - **Warm paper, amber accent.** It shares the ant colony's palette, so the site keeps one voice. Labels
   carry a halo the way map labels do.
+- **Theming follows the site.** The chrome (panel, modal, search, chips, guild card, book pages) reads
+  GRAIN tokens only, so it works in sourdough, baguette and brioche, in light and dark. The art palette
+  is quest-specific and keyed on data-color-scheme, never on the flavor. The page is a scoped exception to
+  the one-hue rule, art only, and nothing depends on color alone. Every flavor and scheme pair gets a
+  contrast check, and the mockup has the switcher.
+- **The lesson book is a quest book.** The transcript plays as dialogue from a pixel Guide, a rune lights in
+  the note's margin when a concept is taught, runes collect in a Codex, each stop ends with a Trial, sources
+  sit in a Pack, and Save progress is resting at a campfire. Plain text and captions stay underneath.
 - Final build uses a self-hosted pixel font. The mockup falls back to monospace.
 
 ## Decisions already made
@@ -43,6 +51,13 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   reaches a server. The badge page says plainly that it is self-reported.
 - Quest badges live in their own namespace. Classroom award pages carry student names and must never
   share a collection, an index or a feed with them.
+
+## Notes and lessons are many to many
+
+A quest is a stop on the map. A lesson is one recording, made of ordered segments, and a segment is a
+note plus a heading range. So one long note can become several lessons, and a pair of notes can teach as
+one lesson. The sidecar file (cues, runes, plain-words digest, trial) belongs to the lesson, never to the
+note, so notes stay untouched.
 
 ## The map from what exists
 
@@ -101,7 +116,8 @@ This is the part that keeps the map alive without hand editing.
 - [ ] Guild card: seeded character, optional username, save file and save code, load.
 - [ ] Badge link that rebuilds the card from the hash, with the self-reported notice on the page.
 - [ ] Path badges as a new badge class reusing the medallion, in the quest palette, in their own namespace.
-- [ ] Lesson mode: the sidebar becomes the book. Sidecar file per note holds cues, concept ids and the plain-words digest. The note itself is untouched.
+- [ ] Lesson mode: the sidebar becomes the quest book. A sidecar file per lesson holds segments, cues, rune ids, the plain-words digest and the trial. The notes themselves are untouched.
+- [ ] Wire the quest UI to GRAIN tokens and verify every flavor and scheme pair for contrast.
 - [ ] Concept highlight in the note, driven through the GRAIN surface and verb registry, not a back channel.
 - [ ] Reduced motion, captions, keyboard path and contrast checked in both themes.
 - [ ] First recording for one quest, to prove the book end to end before recording the rest.
