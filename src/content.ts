@@ -254,6 +254,10 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // clipboard only; no hidden text addresses a crawler.
     const aiPrompt = kind === "entry" && collection.prefix === "/notes" && slug
       ? renderAiPrompt(title, `${SITE.origin}/notes/${slug}`) : "";
+    // The facts JSON-LD needs that the rendered head does not carry (dates, tags, the reading time),
+    // handed to seo.ts as x- metas the way a note's share image already is.
+    const articleHead = kind === "entry" && collection.prefix === "/notes" && frontmatter
+      ? renderArticleMeta(frontmatter) : "";
     const aiHead = aiPrompt && slug
       ? `<link rel="alternate" type="text/markdown" href="${escapeHtml(`/notes/${slug}.md`)}">` : "";
     const copyScript = shareBlock || shareDialog || body.includes(" data-copy-template") ? CONTENT_COPY_SCRIPT : "";
@@ -329,7 +333,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     if (kind === "entry" && collection.prefix === "/standards")
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
-      title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}${aiHead}`,
+      title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}${aiHead}${articleHead}`,
       board: `${draftFlag}${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${changelog}${credits}${whereNext}${videoCard}${gallery}${shareBlock}${shareDialog}${aiPrompt ? AI_PROMPT_SCRIPT : ""}${copyScript}`,
     });
   };
@@ -1274,7 +1278,8 @@ function renderNoteContents(body: string, frontmatter: Record<string, unknown> |
   if (!summary && heads.length < CONTENTS_MIN_SECTIONS) return "";
 
   const meta = [`${heads.length} sections`, reading].filter(Boolean).join(" \u00b7 ");
-  const lede = summary ? `<p class="note-contents__summary">${escapeHtml(summary)}</p>` : "";
+  // Labelled TL;DR so a reader, and an assistant reading the rendered text, finds the short answer first.
+  const lede = summary ? `<p class="note-contents__summary"><strong class="note-contents__label">TL;DR</strong> ${escapeHtml(summary)}</p>` : "";
   const items = heads
     .map((h) => `<li><a href="#${escapeHtml(h.id)}">${escapeHtml(h.label)}</a></li>`)
     .join("");
@@ -1510,6 +1515,23 @@ function renderShareDialog(title: string, href: string): string {
   <div class="crumb-pop__foot"><button class="btn" type="button" data-share-copy aria-live="polite" autofocus>Copy link</button>
   <button class="btn" data-variant="soft" value="">Done</button></div></form></dialog></template>
 <script>(function(){var b=document.querySelector('[data-note-share]'),t=document.querySelector('[data-note-share-template]');if(!b||!t||typeof HTMLDialogElement!=='function')return;b.hidden=false;b.addEventListener('click',function(){var d=t.content.firstElementChild.cloneNode(true);document.body.appendChild(d);d.addEventListener('close',function(){d.remove();});window.dispatchEvent(new CustomEvent('note-share:open',{detail:d}));d.showModal();});})();</script>`;
+}
+
+/** The x- metas seo.ts turns into a note's BlogPosting dates, keywords and abstract. */
+export function renderArticleMeta(fm: Record<string, unknown>): string {
+  const day = (v: unknown) => {
+    const t = v instanceof Date ? v.toISOString() : typeof v === "string" ? v : "";
+    return /^\d{4}-\d{2}-\d{2}/.test(t) ? t.slice(0, 10) : "";
+  };
+  const one = (name: string, value: string) => value ? `<meta name="${name}" content="${escapeHtml(value)}">` : "";
+  const tags = Array.isArray(fm.tags) ? fm.tags.filter((t): t is string => typeof t === "string").join(", ") : "";
+  const published = day(fm.date);
+  return [
+    one("x-note-published", published),
+    one("x-note-modified", day(fm.updated) || published),
+    one("x-note-keywords", tags),
+    one("x-note-reading-time", typeof fm.readingTime === "string" ? fm.readingTime.trim() : ""),
+  ].filter(Boolean).join("");
 }
 
 /** The prompt a reader pastes into an assistant. The Markdown twin is the same note without the page

@@ -110,7 +110,7 @@ function breadcrumb(origin: string, path: string, title: string) {
 }
 
 // The JSON-LD graph for a page: WebSite+Person on home, BlogPosting on a note, else WebPage+breadcrumb.
-function jsonLd(origin: string, path: string, url: string, title: string, desc: string | null): string {
+function jsonLd(origin: string, path: string, url: string, title: string, desc: string | null, html = "", image = ""): string {
   const person = personNode(origin);
   const website = {
     "@type": "WebSite",
@@ -126,6 +126,13 @@ function jsonLd(origin: string, path: string, url: string, title: string, desc: 
     return ld({ "@context": "https://schema.org", "@graph": [person, website] });
   }
   if (isArticle(path)) {
+    // A note hands its own facts over as x- metas (see renderArticleMeta in content.ts).
+    const meta = (n: string) => { const v = html.match(new RegExp(`<meta name="${n}" content="([^"]*)"`, "i"))?.[1]; return v ? decode(v) : ""; };
+    const published = meta("x-note-published");
+    const modified = meta("x-note-modified");
+    const keywords = meta("x-note-keywords");
+    // schema.org wants an ISO 8601 duration, so "~25 min" becomes PT25M; anything else is left out.
+    const minutes = meta("x-note-reading-time").match(/(\d+)\s*min/i)?.[1];
     return ld({
       "@context": "https://schema.org",
       "@type": "BlogPosting",
@@ -134,7 +141,11 @@ function jsonLd(origin: string, path: string, url: string, title: string, desc: 
       url,
       mainEntityOfPage: url,
       inLanguage: "en",
-      image: `${origin}${SITE.ogImage}`,
+      image: image || `${origin}${SITE.ogImage}`,
+      ...(published ? { datePublished: published } : {}),
+      ...(modified ? { dateModified: modified } : {}),
+      ...(keywords ? { keywords } : {}),
+      ...(minutes ? { timeRequired: `PT${minutes}M` } : {}),
       author: { "@type": "Person", name: SITE.author.name, url: `${origin}/`, sameAs: SITE.author.sameAs },
       publisher: { "@type": "Person", name: SITE.author.name, url: `${origin}/` },
     });
@@ -222,7 +233,7 @@ export function enrichHead(html: string, pathname: string, origin: string): stri
     `<meta name="twitter:title" content="${titleAttr}">`,
     descEsc ? `<meta name="twitter:description" content="${descEsc}">` : "",
     `<meta name="twitter:image" content="${image}">`,
-    jsonLd(origin, path, url, titleText, descText),
+    jsonLd(origin, path, url, titleText, descText, html, image),
     analyticsBeacon(),
   ].filter(Boolean);
 
