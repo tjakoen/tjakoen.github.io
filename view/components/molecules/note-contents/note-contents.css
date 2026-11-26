@@ -56,6 +56,15 @@
   max-width: 34rem;
 }
 
+/* The TL;DR label: a quiet small-caps lead-in, weight rather than colour, so the sentence stays the summary. */
+.note-contents__label {
+  font-size: var(--text-sm, 0.85em);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-fg, inherit);
+}
+
 /* --- the contents ------------------------------------------------------------
    A details element, so it costs one line closed and needs no script to open. The marker is the
    browser's own, rotated by the open state, because a hand-drawn triangle is one more thing to keep
