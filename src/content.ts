@@ -249,6 +249,13 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // A draft gets none: its own banner asks the reader not to pass it on.
     const shareDialog = kind === "entry" && collection.prefix === "/notes" && slug
       ? renderShareDialog(title, `${SITE.origin}/notes/${slug}`) : "";
+    // The "copy prompt for AI" button: a prompt naming the note, its address and its clean Markdown
+    // twin, so a reader can paste it into any assistant. It lives in the visible page and the reader's
+    // clipboard only; no hidden text addresses a crawler.
+    const aiPrompt = kind === "entry" && collection.prefix === "/notes" && slug
+      ? renderAiPrompt(title, `${SITE.origin}/notes/${slug}`) : "";
+    const aiHead = aiPrompt && slug
+      ? `<link rel="alternate" type="text/markdown" href="${escapeHtml(`/notes/${slug}.md`)}">` : "";
     const copyScript = shareBlock || shareDialog || body.includes(" data-copy-template") ? CONTENT_COPY_SCRIPT : "";
     // /badges entry pages: a badge-CLASS page (roster of recipients) or a per-recipient CERT page.
     // The template (art + issuer + verification + roster/share) sits above the MILL-rendered body.
@@ -274,7 +281,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     const sourceToggle = kind === "entry" && slug
       ? `<nav class="content-source" aria-label="${isCalendarEntry ? "Event page navigation" : "View"}">
       <a class="tab" aria-current="page" href="${escapeHtml(`${collection.prefix}/${slug}`)}">Rendered</a>
-      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>${collection.prefix === "/notes" ? '\n      <button class="tab content-source__bionic" type="button" data-bionic-toggle aria-pressed="false" title="Bold the start of each word" hidden>Bionic</button>' : ""}${shareDialog ? '\n      <button class="tab content-source__share" type="button" data-note-share hidden>Share</button>' : ""}${isCalendarEntry ? '\n      <a class="tab" href="/calendar">Calendar feed</a>' : ""}
+      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>${collection.prefix === "/notes" ? '\n      <button class="tab content-source__bionic" type="button" data-bionic-toggle aria-pressed="false" title="Bold the start of each word" hidden>Bionic</button>' : ""}${shareDialog ? '\n      <button class="tab content-source__share" type="button" data-note-share hidden>Share</button>' : ""}${aiPrompt ? `\n      <button class="tab content-source__ai" type="button" data-ai-prompt="${escapeHtml(aiPrompt)}" title="Copy a ready-made prompt that asks an AI to summarize this note" aria-live="polite" hidden>Copy AI prompt</button>` : ""}${isCalendarEntry ? '\n      <a class="tab" href="/calendar">Calendar feed</a>' : ""}
       </nav>`
       : "";
     // NOTE: the /notes index's "See what's new" AI trigger (data-ai-run demo.run) used to render
@@ -322,8 +329,8 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     if (kind === "entry" && collection.prefix === "/standards")
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
-      title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}`,
-      board: `${draftFlag}${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${changelog}${credits}${whereNext}${videoCard}${gallery}${shareBlock}${shareDialog}${copyScript}`,
+      title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}${aiHead}`,
+      board: `${draftFlag}${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${changelog}${credits}${whereNext}${videoCard}${gallery}${shareBlock}${shareDialog}${aiPrompt ? AI_PROMPT_SCRIPT : ""}${copyScript}`,
     });
   };
 }
@@ -1504,6 +1511,21 @@ function renderShareDialog(title: string, href: string): string {
   <button class="btn" data-variant="soft" value="">Done</button></div></form></dialog></template>
 <script>(function(){var b=document.querySelector('[data-note-share]'),t=document.querySelector('[data-note-share-template]');if(!b||!t||typeof HTMLDialogElement!=='function')return;b.hidden=false;b.addEventListener('click',function(){var d=t.content.firstElementChild.cloneNode(true);document.body.appendChild(d);d.addEventListener('close',function(){d.remove();});window.dispatchEvent(new CustomEvent('note-share:open',{detail:d}));d.showModal();});})();</script>`;
 }
+
+/** The prompt a reader pastes into an assistant. The Markdown twin is the same note without the page
+ *  chrome, so the assistant reads the words and none of the layout. */
+export function renderAiPrompt(title: string, url: string): string {
+  return [
+    `Summarize this note: "${title}"`,
+    `Read it at ${url} (clean Markdown: ${url}.md).`,
+    "Give a summary of five sentences or fewer, then list the claims it makes and the limits it admits.",
+    "Keep its own caveats; do not turn a hedge into a promise. Quote nothing beyond a short phrase, and say if you could not open the link.",
+  ].join("\n");
+}
+
+/** Wires the Copy AI prompt button. Hidden until this runs, so a reader without JavaScript never
+ *  sees a button that does nothing. */
+const AI_PROMPT_SCRIPT = `<script>(function(){var b=document.querySelector('[data-ai-prompt]');if(!b)return;b.hidden=false;var l=b.textContent,r;b.addEventListener('click',async function(){clearTimeout(r);var v=b.getAttribute('data-ai-prompt')||'';try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(v);}else{throw new Error('no clipboard');}b.textContent='Copied';}catch(_){b.textContent='Copy failed';}r=setTimeout(function(){b.textContent=l;},1600);});})();</script>`;
 
 function renderNoteCredits(frontmatter: Record<string, unknown>): string {
   const people = slugList(frontmatter.people);

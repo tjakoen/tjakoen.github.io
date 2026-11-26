@@ -42,3 +42,12 @@ test("drafts are served unlisted: under /drafts, noindex, and in no content rout
   const published = await createPortfolioContentRoutes()(`/notes/${slug}`);
   expect(published === null || published.status === 404).toBe(true);
 });
+
+import { renderAiPrompt } from "./content.ts";
+import { test as aiTest, expect as aiExpect } from "bun:test";
+
+aiTest("the AI prompt names the note, its address and its Markdown twin", () => {
+  const p = renderAiPrompt("A note", "https://portfolio.tjakoen.com/notes/a-note");
+  aiExpect(p).toContain("https://portfolio.tjakoen.com/notes/a-note.md");
+  aiExpect(p).toContain("A note");
+});
