@@ -7,13 +7,14 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-26
-readingTime: "~12 min"
+readingTime: "~10 min"
 tags: [ai, rag, retrieval, standards, tooling]
 people: [shivani-virdi]
 sources: [book-vectorless-rag-post]
 summary: >
   I build with an AI loop that starts blank every session, so it needs a way to find the one file that
-  applies. That step is retrieval, and mine is vectorless RAG: the model reads a table of contents,
+  applies. In plain words, vectorless RAG means building your agent a map so it finds things on its own,
+  and that is what mine does: the model reads a table of contents,
   picks a branch and opens one section, where most RAG systems pick pages by vector similarity. It works
   the same for Claude, Codex and OpenCode through one CLAUDE.md linked as AGENTS.md, with skills, two
   code indexes and PANTRY's project index below it. It is why I steer and review instead of briefing.
@@ -23,8 +24,8 @@ social: |
   that applies. I called that keeping good docs. It turns out to be vectorless RAG.
 
   RAG means the AI looks things up before it answers. Most setups chop the documents into chunks, turn
-  them into numbers and fetch whatever sits nearest the question. Vectorless RAG skips that. The model
-  reads a table of contents, picks a branch and opens only the section it needs.
+  them into numbers and fetch whatever sits nearest the question. In plain words, vectorless RAG means
+  building your agent a map, a table of contents, and letting it find things on its own.
 
   Mine is one file, CLAUDE.md, linked as AGENTS.md so Claude, Codex and OpenCode all read the same one.
   A question about my voice rules read 36 lines of a 677-line file.
@@ -40,7 +41,7 @@ socialImage:
   - "/media/notes/vectorless-rag-by-accident-social-2-setup.png"
   - "/media/notes/vectorless-rag-by-accident-social-3-effort.png"
 socialImageAlt:
-  - "Card one of three, how my AI loop finds the right page. Two panels side by side. Vectors, the usual way: a scatter of dots with a ring around the nearest few, and three steps: chop documents into chunks, turn chunks into numbers, fetch the nearest few. Vectorless, the way my loop runs: a small tree with one path drawn in ink down to a filled leaf, and three steps: write a contents page, the model picks a branch, it opens that one section. Below: my loop starts blank every session and I run the right-hand kind; one question about my voice rules read 36 lines of a 677-line file."
+  - "Card one of three, how my AI loop finds the right page. Two panels side by side. Vectors, the usual way: a scatter of dots with a ring around the nearest few, and three steps: chop documents into chunks, turn chunks into numbers, fetch the nearest few. Vectorless, the way my loop runs: a small tree with one path drawn in ink down to a filled leaf, and three steps: write a contents page, the model picks a branch, it opens that one section. Below: in plain words, build your AI a map, then let it find things; my loop starts blank every session and I run the right-hand kind."
   - "Card two of three, one contents page and three AI tools. Claude, Codex and OpenCode read the same file. A box for CLAUDE.md, linked as AGENTS.md, with four branches below it: skills, 29 with one line each; code graphs, graphify and tokensave; PANTRY, the project index; and a CLAUDE.md per folder. One path in ink runs from skills to a filled box, one section, 36 of 677 lines. The loop walks down and reads only what the question needs. That is the whole trick, no vector database."
   - "Card three of three, so I stopped briefing the loop. It reads a table of contents instead. Three outcomes: no briefing, one line of what I want; no carrying state, a resume card in the plan that any of the three tools picks up; no guessing, when it is wrong I ask which file it read and the answer is a path. Under them a bar for the whole 677-line file with one narrow band lit in ink. One question about my voice rules read 36 lines. Vectorless RAG for my AI loop, a name that came from Shivani Virdi."
 ---
@@ -50,66 +51,74 @@ checks it and leaves a note for the next session, whether the session is Claude,
 The loop only works if a session that remembers nothing can find the one file that applies, out of
 thirty-odd standards, without me standing there pointing.
 
-That finding step is retrieval, and for months I called it keeping good docs. The AI world calls it
-vectorless RAG, a name I met in a [LinkedIn post](https://www.linkedin.com/posts/shivanivirdi_everyone-thinks-rag-chunking-embeddings-share-7527002415418732544-54j2/)
-by [Shivani Virdi](/people#shivani-virdi). This note is about RAG for the loop: what RAG is, what the
-vectorless kind does differently, and why it is the part that makes my loop cheap to run. The
-tool-by-tool setup lives in a [companion note](how-my-sessions-walk-the-tree.md).
+For months I called that keeping good docs. The AI world calls it vectorless RAG, a name I met in a
+[LinkedIn post](https://www.linkedin.com/posts/shivanivirdi_everyone-thinks-rag-chunking-embeddings-share-7527002415418732544-54j2/)
+by [Shivani Virdi](/people#shivani-virdi). This note covers what it is and why it makes my loop cheap
+and good to run. The tool-by-tool setup lives in a [companion note](how-my-sessions-walk-the-tree.md).
 
-<svg viewBox="0 0 520 400" width="100%" role="img"
-     aria-label="One lap of my AI loop, top to bottom, with a path back to the top. Orient: a short brief from PANTRY on what is in flight. Find what applies, drawn in ink because it is the retrieval step: read the contents page, pick the skill, open one section. Do the work. Check it, with the gates and a second pass. Hand off: leave a resume card in the plan. From the hand-off an arrow returns to the top, labelled next session, any of the three tools."
+## The short version
+
+The name is bigger than the idea. Vectorless RAG means pointing your agent in the right direction. You
+build it a map, a contents page that says what lives where, and it uses the map to find what it needs
+on its own.
+
+<svg viewBox="0 0 520 262" width="100%" role="img"
+     aria-label="Two pictures side by side. Without a map: a scatter of nine document boxes with an agent below them, marked with a question mark, reaching for a few at random. With a map: the agent reads a map, drawn in ink and labelled what is where, and the map points to the one document it needs, out of four, which is outlined in ink."
      style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;
             font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
   <defs>
-    <marker id="fl-vectorless6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <marker id="fl-vectorless7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
     </marker>
   </defs>
+  <line x1="260" y1="10" x2="260" y2="240" style="stroke:var(--color-line);stroke-width:1"/>
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="100" y="16" width="260" height="48" rx="6"/>
-    <rect x="100" y="176" width="260" height="48" rx="6"/>
-    <rect x="100" y="256" width="260" height="48" rx="6"/>
-    <rect x="100" y="336" width="260" height="48" rx="6"/>
+    <rect x="42" y="44" width="36" height="26" rx="3"/><rect x="102" y="38" width="36" height="26" rx="3"/>
+    <rect x="164" y="50" width="36" height="26" rx="3"/><rect x="62" y="96" width="36" height="26" rx="3"/>
+    <rect x="132" y="90" width="36" height="26" rx="3"/><rect x="194" y="102" width="36" height="26" rx="3"/>
+    <rect x="42" y="144" width="36" height="26" rx="3"/><rect x="112" y="140" width="36" height="26" rx="3"/>
+    <rect x="178" y="148" width="36" height="26" rx="3"/>
   </g>
-  <rect x="100" y="96" width="260" height="48" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.2;stroke-dasharray:4 4;fill:none">
+    <line x1="122" y1="204" x2="64" y2="172"/><line x1="130" y1="202" x2="150" y2="168"/>
+    <line x1="140" y1="206" x2="196" y2="176"/>
+  </g>
+  <circle cx="130" cy="218" r="16" style="fill:none;stroke:var(--color-fg);stroke-width:1.5"/>
   <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="230" y1="64" x2="230" y2="94" marker-end="url(#fl-vectorless6)"/>
-    <line x1="230" y1="144" x2="230" y2="174" marker-end="url(#fl-vectorless6)"/>
-    <line x1="230" y1="224" x2="230" y2="254" marker-end="url(#fl-vectorless6)"/>
-    <line x1="230" y1="304" x2="230" y2="334" marker-end="url(#fl-vectorless6)"/>
-    <path d="M360,360 H470 V40 H362" marker-end="url(#fl-vectorless6)"/>
+    <line x1="318" y1="140" x2="343" y2="140" marker-end="url(#fl-vectorless7)"/>
+    <line x1="417" y1="140" x2="458" y2="126" marker-end="url(#fl-vectorless7)"/>
   </g>
+  <circle cx="300" cy="140" r="16" style="fill:none;stroke:var(--color-fg);stroke-width:1.5"/>
+  <rect x="345" y="112" width="72" height="56" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="460" y="70" width="40" height="26" rx="3"/><rect x="460" y="154" width="40" height="26" rx="3"/>
+    <rect x="460" y="196" width="40" height="26" rx="3"/>
+  </g>
+  <rect x="460" y="112" width="40" height="26" rx="3" style="fill:none;stroke:var(--color-fg);stroke-width:2.5"/>
   <g text-anchor="middle">
-    <text x="230" y="37" style="fill:var(--color-fg)">Orient</text>
-    <text x="230" y="55" style="fill:var(--color-muted);font-size:11.5px">a short brief: what is in flight</text>
-    <text x="230" y="117" style="fill:var(--color-bg)">Find what applies</text>
-    <text x="230" y="135" style="fill:var(--color-bg);font-size:11.5px">contents page, skill, one section</text>
-    <text x="230" y="197" style="fill:var(--color-fg)">Do the work</text>
-    <text x="230" y="215" style="fill:var(--color-muted);font-size:11.5px">with that section in front of it</text>
-    <text x="230" y="277" style="fill:var(--color-fg)">Check it</text>
-    <text x="230" y="295" style="fill:var(--color-muted);font-size:11.5px">the gates, then a second pass</text>
-    <text x="230" y="357" style="fill:var(--color-fg)">Hand off</text>
-    <text x="230" y="375" style="fill:var(--color-muted);font-size:11.5px">a resume card in the plan</text>
-  </g>
-  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
-       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
-    <text x="494" y="200" transform="rotate(-90 494 200)">next session, any of the three tools</text>
+    <text x="130" y="24" style="fill:var(--color-fg)">Without a map</text>
+    <text x="390" y="24" style="fill:var(--color-fg)">With a map</text>
+    <text x="130" y="223" style="fill:var(--color-fg)">?</text>
+    <text x="300" y="168" style="fill:var(--color-muted);font-size:11.5px">agent</text>
+    <text x="381" y="137" style="fill:var(--color-bg)">map</text>
+    <text x="381" y="154" style="fill:var(--color-bg);font-size:11px">what is where</text>
+    <text x="130" y="254" style="fill:var(--color-muted);font-size:12px">guesses through the pile</text>
+    <text x="390" y="254" style="fill:var(--color-muted);font-size:12px">reads the map, opens one file</text>
   </g>
 </svg>
 
-*One lap of my loop. The ink box is the retrieval step, and it is the only box this note is about.*
+*Left: the agent guesses through a pile. Right: it reads the map and opens the one file it needs.*
 
-## What RAG is, if you have never met it
+## What RAG is
 
-A language model knows two things: what it absorbed in training, and what is in the prompt right now.
-It has never seen your syllabus, your wiki or your repository, so if you ask about them it guesses,
-fluently, which is the worst way to be wrong.
+A language model knows what it learned in training and what is in the prompt right now. It has never
+seen your syllabus, your wiki or your repository, so if you ask about them it guesses, fluently, which
+is the worst way to be wrong.
 
-If you have ever pasted a document into a chat and asked about it, you have done RAG by hand.
-Retrieval-augmented generation automates the pasting. A program picks the pages most likely to hold the
-answer, puts them in the prompt beside your question, and the model answers from them. The name comes
-from a [2020 paper](https://arxiv.org/abs/2005.11401) by Patrick Lewis and colleagues, who found their
-pages with a vector index, which matters in a minute.
+Pasting a document into a chat and asking about it is RAG by hand. Retrieval-augmented generation
+automates the pasting: a program picks the pages most likely to hold the answer, puts them in the prompt
+beside your question, and the model answers from them. The name comes from a
+[2020 paper](https://arxiv.org/abs/2005.11401) by Patrick Lewis and colleagues.  
 
 <svg viewBox="0 0 520 320" width="100%" role="img"
      aria-label="How RAG works, top to bottom. Your question comes in. A retrieve step, drawn in ink because it is the only part that differs between systems, searches the library of your documents and picks the right pages. The question and those pages go into the prompt together. The model writes its answer from them."
@@ -152,45 +161,24 @@ pages with a vector index, which matters in a minute.
 *RAG in four boxes. Every RAG system has all four. The ink box is where they differ, and it is the
 whole argument of this note.*
 
-You can skip all of it for a small library. [Anthropic says](https://www.anthropic.com/news/contextual-retrieval)
-a knowledge base under about 200,000 tokens, roughly 500 pages, can simply go in the prompt. RAG is for
-the libraries that do not fit.
-
-## What people use it for
-
-Anything where the answer lives in a pile of documents that is too big to paste and too specific for
-the model to know.
-
-| Use | What gets looked up |
-|---|---|
-| A support bot | The help center, and past answers |
-| A company assistant | The wiki, the policies, old tickets |
-| Reading a contract or a financial filing | One long document with real structure |
-| A coding assistant | The repository |
-| **An AI loop that builds software (mine)** | The standards, the plans, the code and the state of the project |
-
-The last row is the one this note is about. It is retrieval for an agent that works, not for a chatbot
-that answers, so it has to be right at the start of every session with nobody watching.
-
-It took off for a boring reason. Retraining a model on your documents is slow and goes stale the day a
-policy changes. Retrieval only needs the pages updated, and the answer can point back at its source.
+Support bots search help centers, company assistants search wikis, coding assistants search
+repositories. Mine is an AI loop that builds software, so it searches my standards, plans and code.
+That is retrieval for an agent that works, not for a chatbot that answers, so it has to be right at the
+start of every session with nobody watching.
 
 ## Two ways to pick the pages
 
-**The usual way is to find what looks similar.** Cut every document into chunks. Turn each chunk into a
-list of numbers, built so that similar meaning gives similar numbers. Turn the question into numbers
-the same way, and fetch the chunks that sit nearest. That works even when the question and the answer
-share no words.
-
-Its weakness is that close in meaning is not the same as the right page. A question about this year's
-revenue sits near every paragraph that mentions revenue, last year's included. When the answer is wrong
-the reason is a distance between two lists of numbers, which is hard to read. The
+**The usual way is to find what looks similar.** Cut the documents into chunks, turn each chunk into a
+list of numbers so that similar meaning gives similar numbers, turn the question into numbers the same
+way, and fetch the nearest chunks. That works even when the question and the answer share no words. The
+weakness is that close in meaning is not the same as the right page: a question about this year's
+revenue sits near every paragraph about revenue, last year's included. When the answer is wrong, the
+reason is a distance between two lists of numbers. The
 [companion](how-my-sessions-walk-the-tree.md#the-usual-way-step-by-step) draws the steps.
 
-**The other way is to read the contents page.** Vectorless RAG throws out the map and gives the model
-what a person would use. You parse a document into a tree of sections, each with a title and a short
-summary. The model reads the top, picks a branch, reads what is under it, and keeps going until it
-reaches the page with the answer. No embeddings, no vector database.
+**The other way is to read the contents page.** You give the model a tree of sections, each with a title
+and a short summary. It reads the top, picks a branch, and keeps going until it reaches the page with the
+answer. No embeddings, no vector database.
 
 <svg viewBox="0 0 520 290" width="100%" role="img"
      aria-label="Two ways to retrieve, side by side. On the left, find what looks similar: a scatter of dots with the question in the middle and a dashed ring around the three nearest dots, which are the chunks that come back, the rest left out. On the right, read the contents, open one file: a small tree with a root called contents and three branches called figures, voice and graph. One path is drawn in ink, from contents to voice to a leaf called punctuation, which is the one section opened."
@@ -247,44 +235,32 @@ reaches the page with the answer. No embeddings, no vector database.
 *The same job done two ways. Left: the nearest chunks win. Right: the model chooses a branch at each
 level, for a reason it can say out loud.*
 
-The best-known version is [PageIndex](https://github.com/VectifyAI/PageIndex), an MIT-licensed project
-from Vectify AI. Its README claims 98.7 percent on FinanceBench against 50 percent for vector RAG.
-Treat that as a claim. It is self-reported, the README does not name the vector system it beat, and I
-did not run the [evaluation](https://github.com/VectifyAI/Mafin2.5-FinanceBench).
-
-A close cousin has no index at all. In a [Latent Space interview](https://www.latent.space/p/claude-code)
-in May 2025, Boris Cherny, who leads Claude Code, said early versions used off-the-shelf RAG and that
-"eventually, we landed on just agentic search as the way to do stuff," meaning glob, grep and file
-reads. An index has to be built, the code drifts out of sync with it, and it has to live somewhere.
-
-So there are three answers to the ink box. Vectors pick by distance. PageIndex reasons over a tree
-built ahead of time. Claude Code searches live with no index. Mine is closest to the second, with the
-tree written by hand. Shivani's post draws the same line, and it is fair to both sides: she says
-vectorless RAG breaks on flat text and on corpora too big for the context window, and that most
-production systems end up using both kinds.
+Two real versions exist. PageIndex, an open-source project, builds the tree for you. Claude Code skips
+the index and searches live with glob, grep and file reads. Mine is closest to PageIndex, with the tree
+written by hand. The [companion](how-my-sessions-walk-the-tree.md#two-real-versions-of-the-contents-page-idea)
+has the details, including a benchmark claim I would not repeat without running it. Shivani's post draws
+the same line and is fair to both sides: she says vectorless RAG breaks on flat text and on corpora too
+big for the context window, and that most production systems end up using both kinds.
 
 ## I thought I was just being tidy
 
-None of this started as retrieval, and none of it started as a loop. I am disorganized and the AI is not, and I needed it to find things
-without me pointing.
+None of this started as retrieval, or as a loop. I am disorganized and the AI is not, and I needed it to
+find things without me pointing.
 
-Every repo opens with a CLAUDE.md, and the harness loads it first. The one here has a section called
-*Start here*, a numbered reading order: the philosophy, the intake skill, [voice](/standards/voice),
-figures, the note standard, the README standard, the code graph, the backlog, the plan. Ten entries,
-each a line on what it is and when to open it. That is a table of contents, written as onboarding for a
-new teammate, and the model reads it the way PageIndex's model reads its tree.
+Every repo opens with a CLAUDE.md, and the harness loads it first. Mine has a section called *Start
+here*, a numbered reading order of ten entries, each a line on what it is and when to open it. That is a
+table of contents written as onboarding for a new teammate.
 
-I do not only work with Claude, so the file has a second name. [AGENTS.md](https://agents.md) is the
-open convention other tools read, Codex and OpenCode among them. In this repo it is a symlink to
-CLAUDE.md, as it is in the standards folder, [PANTRY](/pantry) and [GRAIN](/grain). My global
-instructions work the same way: Claude, Codex and OpenCode each load a link to one shared file. One
-contents page, however many readers. [The Loop Outlives the Model](one-loop-three-harnesses.md) tells
-that part of the story.
+I do not only work with Claude, so the file has a second name. [AGENTS.md](https://agents.md) is the open
+convention other tools read, Codex and OpenCode among them. Here it is a symlink to CLAUDE.md, as it is in
+the standards folder, [PANTRY](/pantry) and [GRAIN](/grain), and my global instructions link the same way.
+One contents page, however many readers. [The Loop Outlives the Model](one-loop-three-harnesses.md) tells
+that story.
 
 > I was not building a retrieval system. I was writing a table of contents for a reader who reads
 > every word and remembers none of it tomorrow.
 
-## The tree, in one picture
+## The map, in one picture
 
 Once I saw the root, every other layer was something I had built for a different reason.
 
@@ -340,28 +316,21 @@ Once I saw the root, every other layer was something I had built for a different
 *The tree my sessions walk. The root and the branches are built from files I wrote for other reasons.
 The dashed box is the part with no tree.*
 
-- **Skills** are the named sections. Twenty-nine standards, each with a one-line description that says
-  when to read it, and nearly all of them start with "Read this BEFORE".
-- **Code graphs** are indexes looked up by symbol. [graphify](https://github.com/safishamsi/graphify)
-  and [tokensave](https://github.com/aovestdipaperino/tokensave) answer where something is defined and
-  what calls it, without a model in the loop.
-- **PANTRY** is the project's contents page. It tells a session what is in flight, what waits on me and
-  what drifted.
+- **Skills** are the named sections: 29 standards, each with a one-line description of when to read it.
+- **Code graphs** ([graphify](https://github.com/safishamsi/graphify) and
+  [tokensave](https://github.com/aovestdipaperino/tokensave)) answer where something is defined and what
+  calls it, with no model involved.
+- **PANTRY** is the project's contents page: what is in flight, what waits on me, what drifted.
 - **A CLAUDE.md per folder** is a subtree that loads when a session first reads a file inside it.
 
-Each layer gets its own section in the [companion](how-my-sessions-walk-the-tree.md).
+The [companion](how-my-sessions-walk-the-tree.md) gives each layer its own section.
 
 ## What one question costs
 
-Here is one real question: can I put a backtick in a note? The session takes four steps:
-
-1. CLAUDE.md points at the voice standard for prose in my name.
-2. The skill description says to read it before any prose with my byline.
-3. The standards index lists its sections, one of them punctuation.
-4. The session opens that section, lines 159 to 194, and the answer is no, not in prose.
-
-I traced it by hand from the index, not from a log, so read it as the route the setup allows. The
-[companion](how-my-sessions-walk-the-tree.md#one-question-walked-down-the-tree) draws it.
+Here is one real question: can I put a backtick in a note? CLAUDE.md points at the voice standard, its
+skill description says to read it before any prose with my byline, the standards index lists its
+sections, and the session opens one of them, lines 159 to 194. The answer is no, not in prose. I traced that by hand from the index, not from a log. The
+[companion](how-my-sessions-walk-the-tree.md#one-question-walked-down-the-tree) draws the walk.
 
 <svg viewBox="0 0 620 290" width="100%" role="img"
      aria-label="What one question costs in VOICE.md, which is 677 lines and 49,380 characters. The file is drawn as a strip with one narrow band lit in ink, lines 159 to 194, the punctuation section. Below it, two bars on the same scale. Opening the whole file reads 49,380 characters, a full-width bar. Opening only the section reads 2,848 characters, 5.8 percent, a short ink bar. The point: 94 percent of the file never enters the session."
@@ -386,94 +355,110 @@ I traced it by hand from the index, not from a log, so read it as the route the 
 *The same file read two ways, one scale. The lit band is everything the question needed. A snapshot of
 2026-11-26, counted from the repo.*
 
-Opening the voice standard whole reads 49,380 characters. Opening only the section reads 2,848, which
-is 5.8 percent of the file, and 0.6 percent of all the standards together (489,462 characters). The
-tree is not free, because the 14,257 characters of skill descriptions ride along in every session. What
-it buys is that the expensive part is read one section at a time.
+Opening the voice standard whole reads 49,380 characters. Opening only the section reads 2,848, which is
+5.8 percent of the file and 0.6 percent of all the standards together (489,462 characters). The tree is
+not free, because the 14,257 characters of skill descriptions ride along in every session. What it buys
+is that the expensive part is read one section at a time.
 
 ## What it does for the loop
 
-The savings are the part I can measure. They are not the reason I keep it.
+<svg viewBox="0 0 520 400" width="100%" role="img"
+     aria-label="One lap of my AI loop, top to bottom, with a path back to the top. Orient: a short brief from PANTRY on what is in flight. Find what applies, drawn in ink because it is the retrieval step: read the contents page, pick the skill, open one section. Do the work. Check it, with the gates and a second pass. Hand off: leave a resume card in the plan. From the hand-off an arrow returns to the top, labelled next session, any of the three tools."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-vectorless6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="100" y="16" width="260" height="48" rx="6"/>
+    <rect x="100" y="176" width="260" height="48" rx="6"/>
+    <rect x="100" y="256" width="260" height="48" rx="6"/>
+    <rect x="100" y="336" width="260" height="48" rx="6"/>
+  </g>
+  <rect x="100" y="96" width="260" height="48" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="230" y1="64" x2="230" y2="94" marker-end="url(#fl-vectorless6)"/>
+    <line x1="230" y1="144" x2="230" y2="174" marker-end="url(#fl-vectorless6)"/>
+    <line x1="230" y1="224" x2="230" y2="254" marker-end="url(#fl-vectorless6)"/>
+    <line x1="230" y1="304" x2="230" y2="334" marker-end="url(#fl-vectorless6)"/>
+    <path d="M360,360 H470 V40 H362" marker-end="url(#fl-vectorless6)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="230" y="37" style="fill:var(--color-fg)">Orient</text>
+    <text x="230" y="55" style="fill:var(--color-muted);font-size:11.5px">a short brief: what is in flight</text>
+    <text x="230" y="117" style="fill:var(--color-bg)">Find what applies</text>
+    <text x="230" y="135" style="fill:var(--color-bg);font-size:11.5px">contents page, skill, one section</text>
+    <text x="230" y="197" style="fill:var(--color-fg)">Do the work</text>
+    <text x="230" y="215" style="fill:var(--color-muted);font-size:11.5px">with that section in front of it</text>
+    <text x="230" y="277" style="fill:var(--color-fg)">Check it</text>
+    <text x="230" y="295" style="fill:var(--color-muted);font-size:11.5px">the gates, then a second pass</text>
+    <text x="230" y="357" style="fill:var(--color-fg)">Hand off</text>
+    <text x="230" y="375" style="fill:var(--color-muted);font-size:11.5px">a resume card in the plan</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
+       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="494" y="200" transform="rotate(-90 494 200)">next session, any of the three tools</text>
+  </g>
+</svg>
 
-The reason is what I no longer do:
+*One lap of my loop. The ink box is the retrieval step, and it is the only box this note is about.*
 
-- **I do not brief a session.** I give one line of what I want. The session reads the contents page,
-  asks PANTRY what is in flight, and finds the standard that applies.
-- **I do not carry state between sessions.** A session that stops leaves a resume card in its plan:
-  what stopped, what is next, what it waits on. The next one, in any of the three tools, starts there.
+The savings are the part I can measure. They are not why I keep it. I keep it for what I no longer do:
+
+- **I do not brief a session.** I give one line of what I want, and it finds the standard that applies.
+- **I do not carry state between sessions.** A session that stops leaves a resume card in its plan, and
+  the next one, in any of the three tools, starts there.
 - **I do not babysit the index.** A hook refreshes the code graph after every edit, and a check at
   session start says when a skill or the graph has fallen behind its source.
-- **I do not guess where it went wrong.** When a session gets something wrong, I ask which file it
-  read and the answer is a path. That is [watching its hands](watch-its-hands.md), and a branch it
-  chose is a hand I can watch.
+- **I do not guess where it went wrong.** I ask which file it read, and the answer is a path. That is
+  [watching its hands](watch-its-hands.md).
 
-It makes the loop better as well as cheaper, in three ways:
+It makes the loop better as well as cheaper. Every session starts from the same standards, so it follows
+my voice rules because it reads them and not because I remembered to paste them in. A fix compounds:
+when a session picks the wrong file I reword one description, and every later session in every repo
+picks better. And the loop survives a switch. When I ran out of Claude mid-task, Codex finished the work
+on the same branch without a changed instruction, which is the story in
+[The Loop Outlives the Model](one-loop-three-harnesses.md).
 
-- **Every session starts from the same standards.** A session follows my voice rules because it reads
-  them, not because I remembered to paste them in.
-- **A fix compounds.** When a session picks the wrong file, I reword one description, and every later
-  session in every repo picks better.
-- **The loop survives a switch.** When I ran out of Claude mid-task, Codex finished the work on the same
-  branch without a changed instruction, which is the story in
-  [The Loop Outlives the Model](one-loop-three-harnesses.md).
-
-So I steer and I review, and I rarely re-explain. That is what I mean by low effort. The tree does not
-make the model smarter. It makes the starting line the same every time, on every repo the
-[loop](one-loop-every-repo.md) runs in.
-
-The limit on that claim: it is my experience and not a measurement. I have not timed sessions with the
-tree against sessions without it, and every number in this note measures reading, not effort.
-
-PANTRY's run ledger records token use by model and plan, so a real comparison could live there. That
-is an idea and not a build.
+So I steer and I review, and I rarely re-explain. That is what I mean by low effort, and it is my
+experience, not a measurement. I have not timed sessions with the tree against sessions without it, and
+every number in this note measures reading, not effort.
 
 ## Why this kind fits a loop
 
 Nobody chose this. It grew out of onboarding docs, and I only held it up against the alternatives
-afterward. It fits for reasons I can name, and they are about what my loop needs, not about vectorless
-being better in general:
+afterward. It fits for reasons about what my loop needs, not about vectorless being better in general:
 
 - **The library is small and already has headings.** Thirty-one standards and a contents page. Vectors
-  earn their place when there is far more text than a model can scan and no structure to follow. Mine
-  is the opposite.
-- **A wrong pick is something I can fix.** If a session opens the wrong standard, I reword one line of
-  a description. A wrong similarity hit is a distance between two lists of numbers, and there is
-  nothing there to edit.
-- **It costs nothing to keep.** The pages are files I write anyway. There is no pipeline to run and no
-  store to re-embed.
-- **Every tool can read it.** Claude, Codex and OpenCode all read plain Markdown and a symlink. A
-  vector index would be one more thing to wire into each of them.
+  earn their place when there is far more text than a model can scan and no structure to follow.
+- **A wrong pick is something I can fix.** I reword one line of a description. A wrong similarity hit is
+  a distance between two lists of numbers, and there is nothing there to edit.
+- **It costs nothing to keep, and every tool can read it.** The pages are files I write anyway, and
+  Claude, Codex and OpenCode all read plain Markdown and a symlink.
 
 Best is the wrong word. It fits my size and my kind of material, and the decision chain in the
-[companion](how-my-sessions-walk-the-tree.md#which-one-to-reach-for) says where it stops fitting. I
-have not benchmarked it against a vector index on my own files.
+[companion](how-my-sessions-walk-the-tree.md#which-one-to-reach-for) says where it stops fitting. I have
+not benchmarked it against a vector index on my own files.
 
 ## Where it runs out
 
-Three places:
-
-- **Every drill-down is a read.** A session spends its first turns walking CLAUDE.md, then a skill,
-  then the file, before it has done any work. That is cheap on a big question and silly on a trivial
-  one.
+- **Every drill-down is a read.** A session walks CLAUDE.md, then a skill, then the file before it has done any work. That is cheap on a big question and silly on a trivial one.
 - **The tree has to fit.** Twenty-nine descriptions work because they are short. PANTRY's index is
-  already bigger, 18,203 characters against 14,257, and it grows with every plan, finished ones
-  included.
-- **Some of it is not a tree.** There are 38 notes in this folder, plus run reports and finished plans
-  in their own. When a session needs to know whether I have already written about something, it has
-  grep and my memory, and my memory is the reason this whole setup exists.
+  already bigger, 18,203 characters against 14,257, and it grows with every plan.
+- **Some of it is not a tree.** There are 38 notes in this folder, plus run reports and finished plans in
+  their own. When a session needs to know whether I have already written about something, it has grep and
+  my memory, and my memory is the reason this whole setup exists.
 
-That flat pile is where similarity earns its place, which is why I expect production systems to end up
-hybrid. I have not built that half. It is a guess about what I will need, and I am labelling it one.
-
-If you want the tools themselves, the graphs, PANTRY's index and the decision chain for what to build,
-they are in [How My Sessions Walk the Tree](how-my-sessions-walk-the-tree.md).
+That flat pile is where similarity would earn its place. I have not built that half, and I am labelling it a guess.
 
 ## The name was the only part missing
 
 I would still describe all of this as "I keep good docs," and I would still be telling the truth. Good
-docs, written for a reader who reads every word and forgets them by tomorrow, turn out to be a
-retrieval system with the serial numbers filed off. Other people gave it a name, a benchmark and a
-GitHub repository. My version has [a longer story](ten-times-zero.md) behind it, and a symlink.
+docs, written for a reader who reads every word and forgets them by tomorrow, turn out to be a retrieval
+system with the serial numbers filed off. Other people gave it a name, a benchmark and a GitHub
+repository. My version has [a longer story](ten-times-zero.md) behind it, and a symlink.
 
 The table of contents was already there.
 
@@ -482,12 +467,11 @@ The table of contents was already there.
 What the claims above rest on, and what I did and did not check.
 
 - Patrick Lewis and colleagues, [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401), NeurIPS 2020. The paper that named RAG.
-- Anthropic, [Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval), 2024-09-19. The 200,000 token rule. I read the page and did not reproduce its results.
-- Vectify AI, [PageIndex](https://github.com/VectifyAI/PageIndex). I read the README. The FinanceBench claim links to a [write-up](https://vectify.ai/blog/Mafin2.5) and an [evaluation repo](https://github.com/VectifyAI/Mafin2.5-FinanceBench) that I did not open.
-- Boris Cherny on [Latent Space](https://www.latent.space/p/claude-code), 2025-05-07. The agentic search passage is about forty-five minutes into the transcript, and I checked the quoted words against it.
+
 - The [AGENTS.md](https://agents.md) convention. The symlinks are checked in this repo, the standards folder, PANTRY and GRAIN, and in the global links for Claude, Codex and OpenCode.
+- PageIndex, the Cherny interview and Anthropic's contextual retrieval are cited in the [companion](how-my-sessions-walk-the-tree.md), with what I checked.
+- [Shivani Virdi](/people#shivani-virdi), [a LinkedIn post](https://www.linkedin.com/posts/shivanivirdi_everyone-thinks-rag-chunking-embeddings-share-7527002415418732544-54j2/), November 2026. It is where I met the name "vectorless RAG", and why I went looking. I read the post, and the primary sources are what the claims rest on.
 - The loop, effort and resume-card claims are my own experience of running it, and they are not measured. The counts and character figures are from my own repository on 2026-11-26.
-- [Shivani Virdi](/people#shivani-virdi), [a LinkedIn post](https://www.linkedin.com/posts/shivanivirdi_everyone-thinks-rag-chunking-embeddings-share-7527002415418732544-54j2/), November 2026. It is where I met the name "vectorless RAG", and it is why I went looking. I read the post, and the primary sources above are what the claims rest on. Her 98.7 percent figure is the same self-reported PageIndex number I flagged earlier.
 
 ---
 

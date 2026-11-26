@@ -95,8 +95,8 @@ ${column(96, "Vectors", "the usual way", ["Chop documents into chunks", "Turn ch
 ${column(620, "Vectorless", "the way my loop runs", ["Write a contents page", "The model picks a branch", "It opens that one section"], true)}
 ${scatter()}
 ${tree()}
-${t(96, 970, "My loop starts blank every session. I run the right-hand kind.", 30)}
-${t(96, 1014, "One question about my voice rules read 36 lines of a 677-line file.", 27, MUTED, "font-style:italic")}`,
+${t(96, 970, "In plain words: build your AI a map, then let it find things.", 30)}
+${t(96, 1014, "My loop starts blank every session. I run the right-hand kind.", 27, MUTED, "font-style:italic")}`,
   "Next: how it is wired across three tools →",
 );
 
