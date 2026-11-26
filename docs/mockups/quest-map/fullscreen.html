@@ -391,6 +391,18 @@ body { margin:0; background:var(--q-water); }
 .ctl .single { width:44px; height:42px; padding:0; }
 .zbar { position:fixed; left:12px; bottom:14px; display:flex; gap:.6rem; align-items:flex-end; z-index:5; }
 .zbar .scale { font-size:.7rem; }
+.zbar button.tile { padding:0; cursor:pointer; }
+.zbar button.tile:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
+.layerpop { position:absolute; left:0; bottom:calc(100% + 8px); width:230px; display:grid; gap:.45rem; padding:.6rem .7rem .7rem; background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font-size:.76rem; z-index:6; }
+.layerpop[hidden] { display:none; }
+.lp-h { font:700 .62rem/1 ui-monospace,"SF Mono",Menlo,monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--q-muted); }
+.lp-types { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+.lp-types button { display:grid; gap:.25rem; padding:0; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); cursor:pointer; box-shadow:2px 2px 0 var(--q-ink); overflow:hidden; font-size:.7rem; }
+.lp-types button[aria-pressed="true"] { outline:3px solid var(--q-accent); outline-offset:1px; }
+.lp-types canvas { width:100%; height:auto; display:block; image-rendering:pixelated; }
+.lp-types span { padding:.15rem .3rem .25rem; font-weight:700; }
+.layerpop label { display:flex; gap:.45rem; align-items:center; cursor:pointer; }
+.layerpop input { accent-color:var(--q-accent); }
 .zbar .tile { width:64px; height:64px; border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); background:var(--q-panel); position:relative; overflow:hidden; }
 .zbar .tile canvas { width:100%; height:100%; } .zbar .tile span { position:absolute; left:0; right:0; bottom:0; font-size:.6rem; text-align:center; background:var(--q-panel); border-top:2px solid var(--q-ink); }
 .zlevels { display:flex; gap:3px; margin-top:2px; } .zlevels i { width:16px; height:6px; border:2px solid var(--q-ink); background:var(--q-paper); } .zlevels i[data-on] { background:var(--q-accent); }
@@ -432,7 +444,19 @@ body { margin:0; background:var(--q-water); }
   </div>
 </div>
 <div class="ctl"><button class="single" id="me" title="Find my adventurer" aria-label="Find my adventurer">◎</button><div class="stack"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button></div></div>
-<div class="zbar"><div class="tile"><canvas id="c-layer" width="32" height="32"></canvas><span>Layers</span></div><div class="scale"><strong id="zname">World</strong><div class="zlevels"><i data-on></i><i></i><i></i><i></i></div></div></div>
+<div class="zbar"><button class="tile" id="layers" aria-expanded="false" aria-controls="layerpop" title="Layers: map type and details"><canvas id="c-layer" width="32" height="32"></canvas><span>Layers</span></button>
+<div class="layerpop" id="layerpop" hidden>
+  <strong class="lp-h">Map type</strong>
+  <div class="lp-types">
+    <button data-view="explorer" aria-pressed="true"><canvas id="th-ex" width="44" height="36" aria-hidden="true"></canvas><span>Explorer</span></button>
+    <button data-view="path" aria-pressed="false"><canvas id="th-pa" width="44" height="36" aria-hidden="true"></canvas><span>Path only</span></button>
+  </div>
+  <strong class="lp-h">Details</strong>
+  <label><input type="checkbox" data-layer="routes" checked> Route dots</label>
+  <label><input type="checkbox" data-layer="people" checked> People at work</label>
+  <label><input type="checkbox" data-layer="sea" checked> Ships and sea life</label>
+  <label><input type="checkbox" data-layer="air" checked> Birds and smoke</label>
+</div><div class="scale"><strong id="zname">World</strong><div class="zlevels"><i data-on></i><i></i><i></i><i></i></div></div></div>
 <div class="attrib2">Map data ©2026 the notes</div>
 <div class="toast2" id="toast" hidden></div>
 <script>
@@ -705,18 +729,18 @@ function folk(dpf,T){ for(const n in WALK){ if((FADE[n]||0)<.6) continue; const 
 function bird(put,x,y,f,col,under){ x=Math.round(x); y=Math.round(y); const up=f%2; if(under) put(x,y+1,under); put(x,y,col); put(x-1,y-(up?1:0),col); put(x+1,y-(up?1:0),col); }
 function movers(put,z,T,dpf){
   const f=Math.floor(T/800), L=SEA_LEN;
-  [0,.37,.71].forEach((ph,i)=>{ let s=((T/1000)*1.4+ph*2*L)%(2*L); const back=s>L; if(back) s=2*L-s; const [x,y,dx]=seaAt(s), d=back?-dx:dx; (d>0?SPR.boatR:SPR.boatL)[i].blit(put,Math.round(x),Math.round(y)+(f%2)); put(Math.round(x-d*5),Math.round(y)+1,P.foam); put(Math.round(x-d*8),Math.round(y)+1,P.wave); });
+  if(LAYERS.sea) [0,.37,.71].forEach((ph,i)=>{ let s=((T/1000)*1.4+ph*2*L)%(2*L); const back=s>L; if(back) s=2*L-s; const [x,y,dx]=seaAt(s), d=back?-dx:dx; (d>0?SPR.boatR:SPR.boatL)[i].blit(put,Math.round(x),Math.round(y)+(f%2)); put(Math.round(x-d*5),Math.round(y)+1,P.foam); put(Math.round(x-d*8),Math.round(y)+1,P.wave); });
   // the kraken in the top-left corner: a head on the water and slow tentacles
-  { const kx=KRAKEN[0], ky=KRAKEN[1]; [[-10,-1,-1,0,17],[-7,0,-1,2,13],[7,0,1,4,13],[10,-1,1,1,17]].forEach(([dx,dy,dir,ph,len])=>tentacle(put,kx+dx,ky+dy,dir,ph,T,len));
+  if(LAYERS.sea){ const kx=KRAKEN[0], ky=KRAKEN[1]; [[-10,-1,-1,0,17],[-7,0,-1,2,13],[7,0,1,4,13],[10,-1,1,1,17]].forEach(([dx,dy,dir,ph,len])=>tentacle(put,kx+dx,ky+dy,dir,ph,T,len));
     SPR.kraken.blit(put,kx,ky+(f%2?0:1)); for(let dx=-11;dx<=11;dx+=2) put(kx+dx,ky+1+((dx+f)%4?0:1),P.foam); }
   // gulls over the Foothills port, and birds over the forest
-  for(let g=0;g<3;g++){ const a=T/4200+g*2.1, r=11+g*5; bird(put,32+Math.cos(a)*r*1.4,122+Math.sin(a)*r*.6,f+g,'#f4f4f0',P.outline); }
-  if(z>=3) for(let g=0;g<4;g++){ const a=-T/5200+g*1.6, r=12+g*4; bird(put,62+Math.cos(a)*r*1.5,92+Math.sin(a)*r*.8,f+g,P.outline); }
-  if(z>=4) folk(dpf,T);
+  if(LAYERS.air) for(let g=0;g<3;g++){ const a=T/4200+g*2.1, r=11+g*5; bird(put,32+Math.cos(a)*r*1.4,122+Math.sin(a)*r*.6,f+g,'#f4f4f0',P.outline); }
+  if(LAYERS.air&&z>=3) for(let g=0;g<4;g++){ const a=-T/5200+g*1.6, r=12+g*4; bird(put,62+Math.cos(a)*r*1.5,92+Math.sin(a)*r*.8,f+g,P.outline); }
+  if(z>=4&&LAYERS.people) folk(dpf,T);
   // fish jumping now and then, and fireflies over the forest after dark
-  [[60,148,0],[110,157,3.1],[28,143,5.7],[150,150,8.3]].forEach(([fx,fy,o])=>{ const ph=(T/1000+o)%11; if(ph<1.1){ const k=ph/1.1; put(Math.round(fx+k*6),Math.round(fy-Math.sin(k*Math.PI)*5),'#cfe6f5'); put(Math.round(fx+k*6)-1,Math.round(fy-Math.sin(k*Math.PI)*5)+1,'#cfe6f5'); } else if(ph<1.5){ put(fx+6,fy,P.foam); put(fx+7,fy,P.foam); put(fx+5,fy,P.foam); } else if(ph<1.9&&false){} });
-  if(z>=3&&(document.documentElement.dataset.colorScheme==='dark'||(!document.documentElement.dataset.colorScheme&&matchMedia('(prefers-color-scheme: dark)').matches))) for(let q=0;q<10;q++){ const h=hash2(q,41), fxp=48+(h%32)+Math.sin(T/2600+q)*3, fyp=78+((h>>8)%28)+Math.cos(T/3100+q*2)*2; if(Math.sin(T/1300+q*1.7)>.15) put(Math.round(fxp),Math.round(fyp),P.glow); }
-  if(z>=4&&(FADE[4]||0)>.5){ const [sx,sy]=sceneM(4,66,0); for(let i=0;i<4;i++){ const k=((T/320)+i*4)%16; put(sx+Math.round(Math.sin(T/900+i)*1.5),Math.round(sy-k*.6),i%2?P.foam:P.snow2); } } }
+  if(LAYERS.sea) [[60,148,0],[110,157,3.1],[28,143,5.7],[150,150,8.3]].forEach(([fx,fy,o])=>{ const ph=(T/1000+o)%11; if(ph<1.1){ const k=ph/1.1; put(Math.round(fx+k*6),Math.round(fy-Math.sin(k*Math.PI)*5),'#cfe6f5'); put(Math.round(fx+k*6)-1,Math.round(fy-Math.sin(k*Math.PI)*5)+1,'#cfe6f5'); } else if(ph<1.5){ put(fx+6,fy,P.foam); put(fx+7,fy,P.foam); put(fx+5,fy,P.foam); } else if(ph<1.9&&false){} });
+  if(LAYERS.air&&z>=3&&(document.documentElement.dataset.colorScheme==='dark'||(!document.documentElement.dataset.colorScheme&&matchMedia('(prefers-color-scheme: dark)').matches))) for(let q=0;q<10;q++){ const h=hash2(q,41), fxp=48+(h%32)+Math.sin(T/2600+q)*3, fyp=78+((h>>8)%28)+Math.cos(T/3100+q*2)*2; if(Math.sin(T/1300+q*1.7)>.15) put(Math.round(fxp),Math.round(fyp),P.glow); }
+  if(LAYERS.air&&z>=4&&(FADE[4]||0)>.5){ const [sx,sy]=sceneM(4,66,0); for(let i=0;i<4;i++){ const k=((T/320)+i*4)%16; put(sx+Math.round(Math.sin(T/900+i)*1.5),Math.round(sy-k*.6),i%2?P.foam:P.snow2); } } }
 function drawYou(cv){ if(cv._pal===P.outline) return; cv._pal=P.outline; const g=cv.getContext('2d'); g.clearRect(0,0,16,20);
   const o=spr(); o.rect(-3,-16,6,2,'#2f7d5b').rect(-4,-14,8,1,'#2f7d5b').rect(-3,-13,6,4,'#f2c9a0').set(-2,-12,'#1c1b17').set(1,-12,'#1c1b17').rect(-4,-9,8,6,'#3b82f6').rect(-4,-6,8,1,'#8a5a2b').rect(-5,-8,1,4,'#3b82f6').rect(4,-8,1,4,'#3b82f6').rect(-3,-3,2,3,'#5b3a1f').rect(1,-3,2,3,'#5b3a1f').rect(4,-9,2,5,'#8a5a2b');
   o.outline(P.outline).blit((x,y,c)=>{ g.fillStyle=c; g.fillRect(x,y,1,1); },8,19); }
@@ -840,6 +864,11 @@ function bake(){ base=document.createElement('canvas'); base.width=WW+2*M; base.
   const isLand=(x,y)=>x>=0&&y>=0&&x<WW&&y<WH&&land[y*WW+x];
   const disc=(x,y,r,c)=>{ for(let j=-r;j<=r;j++) for(let i=-r;i<=r;i++) if(i*i+j*j<=r*r+r*.5) put(x+i,y+j,c); };
   const plank=(x0,y0,x1,y1)=>{ const m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0))||1; for(let k=0;k<=m;k++){ const x=Math.round(x0+(x1-x0)*k/m), y=Math.round(y0+(y1-y0)*k/m); for(let j=-1;j<=1;j++) for(let i=-1;i<=1;i++) put(x+i,y+j,P.outline); } for(let k=0;k<=m;k++){ const x=Math.round(x0+(x1-x0)*k/m), y=Math.round(y0+(y1-y0)*k/m); put(x,y,k%2?P.trunk:P.wall2); } };
+  /* Path only: the same island as flat paper, tinted by region, with the roads that join the regions. Everything decorative is left out. */
+  { const G=(getComputedStyle(document.documentElement).getPropertyValue('--paper-2')||'').trim(); const lum=/^#[0-9a-f]{6}$/i.test(G)?(parseInt(G.slice(1,3),16)*.3+parseInt(G.slice(3,5),16)*.59+parseInt(G.slice(5,7),16)*.11):200, K=lum<110?'#ffffff':'#000000'; baseP=document.createElement('canvas'); baseP.width=WW; baseP.height=WH; const pb=baseP.getContext('2d');
+    const isL=(x,y)=>x>=0&&y>=0&&x<WW&&y<WH&&land[y*WW+x];
+    for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; if(!land[i]){ pb.fillStyle=P.water; } else { const coast=!(isL(x-1,y)&&isL(x+1,y)&&isL(x,y-1)&&isL(x,y+1)); pb.fillStyle=coast?mixHex(G,K,.32):mixHex(G,PATHCOL[reg[i]]||'#888888',.2); } pb.fillRect(x,y,1,1); }
+    roadMinor.forEach(i=>{ pb.fillStyle=mixHex(G,K,.25); pb.fillRect(i%WW,(i/WW)|0,1,1); }); roadMain.forEach(i=>{ pb.fillStyle=mixHex(G,K,.55); pb.fillRect(i%WW,(i/WW)|0,1,1); }); }
   /* the ferry route: a faint dotted line along the south coast from the Foothills pier to the Guild Hall harbour */
   for(let i=0;i<SEA.length-1;i++){ const [x0,y0]=SEA[i],[x1,y1]=SEA[i+1], m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0)); for(let k=0;k<=m;k+=4) put(Math.round(x0+(x1-x0)*k/m),Math.round(y0+(y1-y0)*k/m),P.wave); }
   plank(41,127,47,127);
@@ -849,27 +878,35 @@ function bake(){ base=document.createElement('canvas'); base.width=WW+2*M; base.
   for(let q=0;q<240;q++){ const t=q/240*6.2832, h=hash2(q,31), [px,py]=ringXY(t); puff(px+(h%3)-1,py+((h>>3)%3)-1,4+(h>>6)%4); if(q%3===0){ const [ix,iy]=ringXY(t,.94); puff(ix,iy,3+(h>>9)%3); } }
   makeMoverSprites(); makePeople();
   bakeScenes(); }
+let view='explorer'; const LAYERS={routes:true,people:true,sea:true,air:true}; let baseP=null;
+const PATHCOL=['#888888','#2f7d5b','#e8503f','#3b82f6','#f5b83d','#a483cf','#2aa6b8','#888888'];
+function mixHex(a,b,t){ const ok=/^#[0-9a-f]{6}$/i; if(!ok.test(a)||!ok.test(b)) return a; const x=parseInt(a.slice(1),16), y=parseInt(b.slice(1),16); return '#'+[16,8,0].map(sh=>Math.round(((x>>sh)&255)*(1-t)+((y>>sh)&255)*t).toString(16).padStart(2,'0')).join(''); }
 let lastDraw=0, dq=0, focusN=0, fadeT=0; const FADE={}; // FADE[n] is how visible region n's detail map is, 0 to 1
 const drawSoon=()=>{ if(dq) return; dq=requestAnimationFrame(()=>{ dq=0; draw(); }); };
 function draw(tick){
   const {vx,vy,z}=origin(); ctx.imageSmoothingEnabled=false; if(!tick) lastDraw=performance.now(); fctx.clearRect(0,0,fx.width,fx.height);
-  ctx.fillStyle=P.snow2; ctx.fillRect(0,0,CW,CH); // beyond the sea there is only cloud
-  { const ix=Math.floor(vx), iy=Math.floor(vy), sw=Math.ceil(CW/z)+2, sh=Math.ceil(CH/z)+2; ctx.drawImage(base,ix+M,iy+M,sw,sh,-Math.round((vx-ix)*z),-Math.round((vy-iy)*z),sw*z,sh*z); }
+  if(view==='path'){ ctx.fillStyle=P.water; ctx.fillRect(0,0,CW,CH); ctx.drawImage(baseP,0,0,WW,WH,Math.round(-vx*z),Math.round(-vy*z),WW*z,WH*z); }
+  else { ctx.fillStyle=P.snow2; ctx.fillRect(0,0,CW,CH); // beyond the sea there is only cloud
+  { const ix=Math.floor(vx), iy=Math.floor(vy), sw=Math.ceil(CW/z)+2, sh=Math.ceil(CH/z)+2; ctx.drawImage(base,ix+M,iy+M,sw,sh,-Math.round((vx-ix)*z),-Math.round((vy-iy)*z),sw*z,sh*z); } }
   const put=(wx,wy,c)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
   // Landmark detail maps replace the low-resolution landmark once you are close, one region at a time. The landmark nearest the
   // middle of the view fades in, every other one fades out, so dragging from region to region crossfades them.
-  let focus=0; if(z>=4){ let best=1e9; DET.forEach(sc=>{ const d=Math.hypot(V.cx-(sc.ox+sc.W/4),(V.cy-(sc.oy+sc.H/4))*1.2); if(d<best){ best=d; focus=sc.n; } }); if(best>34) focus=0; }
+  let focus=0; if(z>=4&&view!=='path'){ let best=1e9; DET.forEach(sc=>{ const d=Math.hypot(V.cx-(sc.ox+sc.W/4),(V.cy-(sc.oy+sc.H/4))*1.2); if(d<best){ best=d; focus=sc.n; } }); if(best>34) focus=0; }
   focusN=focus; { const now=performance.now(), dt=Math.min(100,fadeT?now-fadeT:16); fadeT=now; let moving=false;
     DET.forEach(sc=>{ const t=sc.n===focus?1:0, a=FADE[sc.n]||0, na=a<t?Math.min(t,a+dt/340):Math.max(t,a-dt/340); FADE[sc.n]=na; if(na!==t) moving=true;
       if(na<=0) return; const dx=Math.round((sc.ox-vx)*z), dy=Math.round((sc.oy-vy)*z), dw=sc.W*z/2, dh=sc.H*z/2; if(dx>=CW||dy>=CH||dx+dw<=0||dy+dh<=0) return;
       ctx.globalAlpha=na*na*(3-2*na); ctx.drawImage(sc.cv,0,0,sc.W,sc.H,dx,dy,dw,dh); ctx.globalAlpha=1; });
     if(moving) drawSoon(); else fadeT=0; }
+  if(view==='path'){ const rr=(x,y,c)=>{ put(x,y,c); if(z<=3){ put(x+1,y,c); } else { put(x+1,y,c); put(x,y+1,c); put(x+1,y+1,c); } };
+    const seg=(a,b,c)=>{ const m=Math.max(Math.abs(b[0]-a[0]),Math.abs(b[1]-a[1]))*(z>=4?2:1)||1; for(let t=0;t<=m;t++) rr(Math.round(a[0]+(b[0]-a[0])*t/m),Math.round(a[1]+(b[1]-a[1])*t/m),c); };
+    QUESTS.forEach(qq=>{ const rt=routeOf(qq); if(!rt) return; const c=PATHCOL[qq.region]; for(let i=0;i<rt.length-1;i++) seg(sceneM(qq.region,rt[i][0],rt[i][1]),sceneM(qq.region,rt[i+1][0],rt[i+1][1]),c);
+      qq.stops.slice(0,9).forEach((_,i)=>{ const q2=stopPos(qq,i), sx=Math.round(q2[0]), sy=Math.round(q2[1]), done=PROG[qq.id].has(i); put(sx,sy,done?'#2f7d33':'#ffffff'); put(sx+1,sy,done?'#2f7d33':'#ffffff'); put(sx,sy+1,done?'#2f7d33':'#ffffff'); put(sx+1,sy+1,done?'#2f7d33':'#ffffff'); put(sx-1,sy,P.outline); put(sx+2,sy+1,P.outline); put(sx,sy-1,P.outline); put(sx+1,sy+2,P.outline); }); }); }
   const dpf=n=>{ const sc=DET.find(d=>d.n===n); return (dx,dy,c)=>{ const sz=z/2, sx=Math.round((sc.ox+dx/2-vx)*z), sy=Math.round((sc.oy+dy/2-vy)*z); if(sx<-sz||sy<-sz||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,sz,sz); }; };
   // the selected quest's route: round dots that flow from the first stop to the last along the place's own paths
-  if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id), rt=qq&&routeOf(qq); if(rt&&(FADE[qq.region]||0)>.3){ const dp=dpf(qq.region), SP=9; let L=0; for(let i=0;i<rt.length-1;i++) L+=Math.hypot(rt[i+1][0]-rt[i][0],rt[i+1][1]-rt[i][1]); const flow=((motion?performance.now():0)/1000*8)%SP;
+  if(z>=4&&view!=='path'&&LAYERS.routes&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id), rt=qq&&routeOf(qq); if(rt&&(FADE[qq.region]||0)>.3){ const dp=dpf(qq.region), SP=9; let L=0; for(let i=0;i<rt.length-1;i++) L+=Math.hypot(rt[i+1][0]-rt[i][0],rt[i+1][1]-rt[i][1]); const flow=((motion?performance.now():0)/1000*8)%SP;
     for(let sdist=flow;sdist<L;sdist+=SP){ const [x,y]=alongRoute(rt,sdist/L), cx=Math.round(x), cy=Math.round(y); for(let j=-2;j<=2;j++) for(let i=-2;i<=2;i++){ const d2=i*i+j*j; if(d2<=5) dp(cx+i,cy+j,d2>=4?P.outline:(d2===0?'#fff3b0':'#ffd34d')); } } } }
   // people, boats and birds are drawn after the trail, so the trail never covers them
-  movers(put,z,motion?performance.now():0,dpf);
+  if(view!=='path') movers(put,z,motion?performance.now():0,dpf);
   // pins
   const zp=z>=4?3:2; const items=[];
   // Pins are real markers, not pixel art: round, numbered, high contrast, and sized for a finger. The terrain stays pixel art.
@@ -1005,6 +1042,11 @@ function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.
 document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; renderPanel(); });
 document.getElementById('fold').addEventListener('click',()=>{ collapsed=!collapsed; panel.hidden=collapsed; document.getElementById('fold').textContent=collapsed?'▶':'◀'; draw(); });
 document.querySelectorAll('.chipsbar .chip').forEach(c=>c.addEventListener('click',()=>{ filter=c.textContent; document.querySelectorAll('.chipsbar .chip').forEach(x=>x.toggleAttribute('data-on',x===c)); if(CHIPREG[filter]) selectRegion(CHIPREG[filter]); else if(sel.t!=='none'||V.z!==2) home(); else draw(); drawSoon(); }));
+const lbtn=document.getElementById('layers'), lpop=document.getElementById('layerpop');
+lbtn.onclick=()=>{ const o=lpop.hidden; lpop.hidden=!o; lbtn.setAttribute('aria-expanded',String(o)); };
+document.addEventListener('pointerdown',e=>{ if(!lpop.hidden&&!e.target.closest('.zbar')){ lpop.hidden=true; lbtn.setAttribute('aria-expanded','false'); } });
+lpop.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; lpop.querySelectorAll('[data-view]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); document.body.dataset.view=view; if(view==='path') fctx.clearRect(0,0,fx.width,fx.height); draw(); drawSoon(); });
+lpop.querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{ LAYERS[c.dataset.layer]=c.checked; draw(); });
 document.getElementById('zin').onclick=()=>stepZoom(1); document.getElementById('zout').onclick=()=>stepZoom(-1);
 document.getElementById('me').onclick=()=>where();
 const root=document.documentElement;
@@ -1019,7 +1061,8 @@ tb.onclick=()=>setOpen(!tr.hasAttribute('data-open'));
 document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.topright')) setOpen(false); });
 syncSettings();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>reskin());
-function reskin(){ loadPalette(); buildWorld(); bake(); layer(); renderPanel(); draw(); }
+function thumbs(){ const a=document.getElementById('th-ex'), b=document.getElementById('th-pa'); if(!a||!b||!base||!baseP) return; [[a,base,M],[b,baseP,0]].forEach(([cv,src,o])=>{ const g=cv.getContext('2d'); g.imageSmoothingEnabled=false; g.drawImage(src,o,o,WW,WH,0,0,cv.width,cv.height); }); const g=b.getContext('2d'); QUESTS.forEach(qq=>{ const rt=routeOf(qq); if(!rt) return; g.strokeStyle=PATHCOL[qq.region]; g.lineWidth=2; g.beginPath(); rt.forEach((pt,i)=>{ const m=sceneM(qq.region,pt[0],pt[1]); const x=m[0]*b.width/WW, y=m[1]*b.height/WH; if(i) g.lineTo(x,y); else g.moveTo(x,y); }); g.stroke(); }); }
+function reskin(){ loadPalette(); buildWorld(); bake(); layer(); thumbs(); renderPanel(); draw(); }
 function layer(){ const c=document.getElementById('c-layer'),x=c.getContext('2d'); x.imageSmoothingEnabled=false; for(let y=0;y<32;y++) for(let i=0;i<32;i++){ x.fillStyle=cols[(y*4+16)*WW+(i*4+16)]||P.water; x.fillRect(i,y,1,1);} }
 
 /* ---- Motion. A second canvas over the map, redrawn about seven times a second so it moves in pixel steps.
@@ -1029,7 +1072,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let motion=!reduce.matches, raf=0, lastT=0;
 const mbtn=document.getElementById('motion');
 function fxFrame(t){
-  if(t-lastDraw<260) return; // the view is moving: draw nothing extra, so pan, zoom and fly stay smooth
+  if(view==='path'||t-lastDraw<260) return; // the view is moving: draw nothing extra, so pan, zoom and fly stay smooth
   const {vx,vy,z}=origin(); fctx.clearRect(0,0,fx.width,fx.height);
   const f=Math.floor(t/160);
   const px=(wx,wy,c,a=1)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; fctx.globalAlpha=a; fctx.fillStyle=c; fctx.fillRect(sx,sy,z,z); };
@@ -1045,7 +1088,7 @@ mbtn.onclick=()=>setMotion(!motion);
 reduce.addEventListener('change',e=>setMotion(!e.matches));
 document.addEventListener('visibilitychange',()=>{ if(motion&&!raf) raf=requestAnimationFrame(fxLoop); });
 addEventListener('resize',resize);
-loadPalette(); buildWorld(); bake(); layer(); renderPanel(); resize(); setMotion(motion);
+loadPalette(); buildWorld(); bake(); layer(); thumbs(); renderPanel(); resize(); setMotion(motion);
 
 </script>
 </body>
