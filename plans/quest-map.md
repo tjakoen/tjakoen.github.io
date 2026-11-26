@@ -319,12 +319,13 @@ Each note that is a quest gets a Where this sits card above the lesson card: a c
 
 What exists: the fourteen published notes in the region table above are placed from content/quests/regions.json, and the index is generated from each note's own level, audience, tags, sources and reading time. A region that lists a draft, or a note that does not exist, fails the check, which is the draft pin this plan asks for.
 
-What needs a decision from the owner before the next slice:
+Decided on 2026-11-27:
 
-1. **The Claude Academy address.** The Harbor stop has an empty url in regions.json. The plan says to confirm the exact address before it ships, and nothing here has guessed one.
-2. **The order inside each region.** It is still the guess from the table. The check reports a note's place on the route, so correcting the order is one edit to regions.json.
-3. **Where the map reads its quests from.** The map still reads the sample data inside view/learn-map/map.html. Switching it to content/quests/index.json is a change to the quest ids and stop counts the map shows, so it should wait for the cuts in quest-lessons, which decide the stops.
-4. **Notes that fit nothing.** Today every published note outside the table reports fits no region yet. The five-note region proposal waits for the owner to say which tag sets count as a region.
+1. **The Claude Academy address** is https://academy.claude.com, the address Anthropic's own article gives for the platform. It is set in regions.json.
+2. **The order inside each region** is a progression from the way in to the deeper part: an intro first, then the practice, then the measured or long reading. Loop Forest runs loop-setup, one-loop-every-repo, one-loop-three-harnesses, the-check-that-never-ran. Model Mines runs necessity, plan-big-type-small, how-the-model-layer-works. Summit now starts with ten-times-zero and ends with build-the-floor, the longest note. The other two regions keep their order.
+3. **The map reads the index** as soon as the content is decided, meaning the cuts in quest-lessons. Until then it keeps its sample data.
+
+Suggested for the fourth question, which waits for the owner's yes: every published note carries the tag ai, so it says nothing about a region. Group on the other tags. Today workflow and tooling mark Loop Forest, tokenomics marks Model Mines, leadership marks Guild Hall, design-systems marks GRAIN Keep and web-platform or stack marks Summit. A note that fits no region is grouped by its first tag after ai, and when five or more share one, the tool proposes a region with a name and a landmark for a person to approve in the change that publishes the note. A note with only the tag ai is reported as cannot be placed, because it says too little to place.
 
 ## Honest limits
 

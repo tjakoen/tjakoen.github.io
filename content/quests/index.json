@@ -2,6 +2,27 @@
   "generated": "bun tools/quests.ts write",
   "quests": [
     {
+      "id": "loop-setup",
+      "region": 2,
+      "title": "Set Up the Loop With One Prompt",
+      "level": "intro",
+      "audience": [
+        "learn",
+        "build"
+      ],
+      "minutes": 12,
+      "tags": [
+        "ai",
+        "workflow",
+        "tooling"
+      ],
+      "sources": [
+        "book-beyond-vibe-coding",
+        "book-loop-engineering",
+        "book-ai-native-engineering"
+      ]
+    },
+    {
       "id": "one-loop-every-repo",
       "region": 2,
       "title": "I Was Shipping Faster Than I Could Understand It",
@@ -33,27 +54,6 @@
         "ai",
         "workflow",
         "standards",
-        "tooling"
-      ],
-      "sources": [
-        "book-beyond-vibe-coding",
-        "book-loop-engineering",
-        "book-ai-native-engineering"
-      ]
-    },
-    {
-      "id": "loop-setup",
-      "region": 2,
-      "title": "Set Up the Loop With One Prompt",
-      "level": "intro",
-      "audience": [
-        "learn",
-        "build"
-      ],
-      "minutes": 12,
-      "tags": [
-        "ai",
-        "workflow",
         "tooling"
       ],
       "sources": [
@@ -214,27 +214,6 @@
       "sources": []
     },
     {
-      "id": "build-the-floor",
-      "region": 6,
-      "title": "Everybody Wants the Agent. Somebody Has to Build the Floor.",
-      "level": "intro",
-      "audience": [
-        "lead",
-        "build"
-      ],
-      "minutes": 39,
-      "tags": [
-        "ai",
-        "workflow",
-        "standards",
-        "tooling",
-        "web-platform"
-      ],
-      "sources": [
-        "book-loop-engineering"
-      ]
-    },
-    {
       "id": "ten-times-zero",
       "region": 6,
       "title": "Ten Times Zero Is Still Zero",
@@ -252,6 +231,27 @@
       ],
       "sources": [
         "book-ai-native-engineering",
+        "book-loop-engineering"
+      ]
+    },
+    {
+      "id": "build-the-floor",
+      "region": 6,
+      "title": "Everybody Wants the Agent. Somebody Has to Build the Floor.",
+      "level": "intro",
+      "audience": [
+        "lead",
+        "build"
+      ],
+      "minutes": 39,
+      "tags": [
+        "ai",
+        "workflow",
+        "standards",
+        "tooling",
+        "web-platform"
+      ],
+      "sources": [
         "book-loop-engineering"
       ]
     }
