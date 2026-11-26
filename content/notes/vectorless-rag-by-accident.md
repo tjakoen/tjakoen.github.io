@@ -7,15 +7,16 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-26
-readingTime: "~16 min"
+readingTime: "~19 min"
 tags: [ai, rag, retrieval, standards, tooling]
 summary: >
   RAG gives a model the right pages before it answers. The common version picks pages by similarity,
   using vectors. Vectorless RAG gives the model a tree of sections instead and lets it read down to the
   page it needs, which is what PageIndex does and what Claude Code does in its own way with grep. My
   setup with Claude is the tree kind: CLAUDE.md is the contents page, 29 standards are skills with a
-  one-line description each, and a standards index lets a session read 2,848 characters of a library of
-  494,868. It is traceable and cheap to keep, it costs extra reads, and my 37 notes still have no tree.
+  one-line description each, graphify and tokensave index the code by symbol, PANTRY hands out a project index,
+  and a standards index lets a session read 2,848 characters of a library of 494,868. It is traceable and
+  cheap to keep, it costs extra reads, and my 37 notes still have no tree.
 social: |
   I have been running vectorless RAG for months and had no word for it.
 
@@ -23,7 +24,8 @@ social: |
   documents into chunks, turn each chunk into numbers, fetch whatever sits nearest the question. Mine
   does it with a table of contents. CLAUDE.md lists the standards, each standard has a one-line
   description, and a session opens the one section it needs. One answer cost 2,848 characters of
-  reading out of a library of 494,868.
+  reading out of a library of 494,868. The code gets two graph indexes, graphify and tokensave, and PANTRY
+  serves the project's contents page.
 
   It is easy to trace and it costs me nothing extra. It also costs more reads, and my notes are still
   a flat pile with no tree.
@@ -268,7 +270,7 @@ branch can never be picked.
 resolves them out of the portfolio package and mounts them as skills in the other repos, so a session
 in GRAIN reads the same sections as a session in this one. One copy of each section, many readers. The
 honest bit is that the mount is a sync I still run by hand, and a repo I forgot to sync is reading
-last week's tree.
+last week's tree. It also serves the project's own contents page, which gets its own section below.
 
 **The code graph is the index at the back of the book.** For questions about code, the graph standard
 says to ask the graph before reaching for grep. graphify builds it by static analysis, no model and no
@@ -276,7 +278,7 @@ API cost, and it answers "where is this defined" and "what calls it" with a hand
 nodes. It is an exact index, and you can tell by how it fails. Give it a partial name and it answers
 *No matching nodes found*, which reads like a broken tool and is really a lookup refusing to guess. A
 vector store would have handed back something close. Sometimes close is what I want, and the graph
-will never give it to me.
+will never give it to me. More on how I run it two sections down.
 
 **Every package carries its own subtree.** The standards folder has its own CLAUDE.md, with its own
 reading order and its own rules, and each package in the stack keeps a CLAUDE.md and a PLAN.md of its
@@ -285,7 +287,7 @@ drafted this note. The session opened the note standard, and the standards folde
 it, unasked. Nobody searched for them. They were on the branch.
 
 <svg viewBox="0 0 520 352" width="100%" role="img"
-     aria-label="The retrieval tree my sessions walk. At the root, CLAUDE.md, the table of contents. Three branches below it: the skills, which are named sections; graphify, an index looked up by symbol; and a CLAUDE.md per folder, which is a subtree. Under the skills branch, the session reads the descriptions and opens one section, the voice standard, and reads that one file whole. Off to the side, outside the tree, sit the notes and run reports, a flat pile with no tree yet."
+     aria-label="The retrieval tree my sessions walk. At the root, CLAUDE.md, the table of contents. Four branches below it: the skills, which are named sections; the code graphs, graphify and tokensave, indexes looked up by symbol; PANTRY, the project's index; and a CLAUDE.md per folder, which is a subtree. Under the skills branch, the session reads the descriptions and opens one section, the voice standard, and reads that one file whole. Off to the side, outside the tree, sit the notes and run reports, a flat pile with no tree yet."
      style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;
             font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
   <defs>
@@ -295,42 +297,121 @@ it, unasked. Nobody searched for them. They were on the branch.
   </defs>
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
     <rect x="160" y="16" width="200" height="48" rx="6"/>
-    <rect x="10" y="118" width="150" height="48" rx="6"/>
-    <rect x="185" y="118" width="150" height="48" rx="6"/>
-    <rect x="360" y="118" width="150" height="48" rx="6"/>
+    <rect x="6" y="118" width="118" height="48" rx="6"/>
+    <rect x="136" y="118" width="118" height="48" rx="6"/>
+    <rect x="266" y="118" width="118" height="48" rx="6"/>
+    <rect x="396" y="118" width="118" height="48" rx="6"/>
   </g>
-  <rect x="10" y="236" width="150" height="48" rx="6"
+  <rect x="6" y="236" width="150" height="48" rx="6"
         style="fill:var(--color-fg);stroke:var(--color-fg)"/>
   <rect x="200" y="290" width="310" height="48" rx="6"
         style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:5 4"/>
   <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="230" y1="64" x2="95" y2="116" marker-end="url(#fl-vectorless0)"/>
-    <line x1="260" y1="64" x2="260" y2="116" marker-end="url(#fl-vectorless0)"/>
-    <line x1="290" y1="64" x2="425" y2="116" marker-end="url(#fl-vectorless0)"/>
-    <line x1="85" y1="166" x2="85" y2="234" marker-end="url(#fl-vectorless0)"/>
+    <line x1="210" y1="64" x2="65" y2="116" marker-end="url(#fl-vectorless0)"/>
+    <line x1="240" y1="64" x2="195" y2="116" marker-end="url(#fl-vectorless0)"/>
+    <line x1="280" y1="64" x2="325" y2="116" marker-end="url(#fl-vectorless0)"/>
+    <line x1="310" y1="64" x2="455" y2="116" marker-end="url(#fl-vectorless0)"/>
+    <line x1="65" y1="166" x2="65" y2="234" marker-end="url(#fl-vectorless0)"/>
   </g>
   <g text-anchor="middle">
     <text x="260" y="37" style="fill:var(--color-fg)">CLAUDE.md</text>
     <text x="260" y="55" style="fill:var(--color-muted);font-size:11.5px">the table of contents</text>
-    <text x="85" y="139" style="fill:var(--color-fg)">skills</text>
-    <text x="85" y="157" style="fill:var(--color-muted);font-size:11.5px">named sections</text>
-    <text x="260" y="139" style="fill:var(--color-fg)">graphify</text>
-    <text x="260" y="157" style="fill:var(--color-muted);font-size:11.5px">an index, by symbol</text>
-    <text x="435" y="139" style="fill:var(--color-fg)">CLAUDE.md per folder</text>
-    <text x="435" y="157" style="fill:var(--color-muted);font-size:11.5px">a subtree</text>
-    <text x="85" y="257" style="fill:var(--color-bg)">the voice standard</text>
-    <text x="85" y="275" style="fill:var(--color-bg);font-size:11.5px">one file, read whole</text>
+    <text x="65" y="139" style="fill:var(--color-fg)">skills</text>
+    <text x="65" y="157" style="fill:var(--color-muted);font-size:11.5px">named sections</text>
+    <text x="195" y="139" style="fill:var(--color-fg)">code graphs</text>
+    <text x="195" y="157" style="fill:var(--color-muted);font-size:11.5px">graphify, tokensave</text>
+    <text x="325" y="139" style="fill:var(--color-fg)">PANTRY</text>
+    <text x="325" y="157" style="fill:var(--color-muted);font-size:11.5px">the project's index</text>
+    <text x="455" y="139" style="fill:var(--color-fg)">folder CLAUDE.md</text>
+    <text x="455" y="157" style="fill:var(--color-muted);font-size:11.5px">a subtree</text>
+    <text x="81" y="257" style="fill:var(--color-bg)">the voice standard</text>
+    <text x="81" y="275" style="fill:var(--color-bg);font-size:11.5px">one file, read whole</text>
     <text x="355" y="311" style="fill:var(--color-muted)">notes and run reports</text>
     <text x="355" y="329" style="fill:var(--color-muted);font-size:11.5px">a flat pile, no tree yet</text>
   </g>
   <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
        stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
-    <text x="85" y="204">reads the descriptions</text>
+    <text x="65" y="204">reads the descriptions</text>
   </g>
 </svg>
 
-*The tree my sessions walk. The root and three branches are files I wrote for other reasons. The
-dashed box is the part with no tree.*
+*The tree my sessions walk. The root and the branches are built from files I wrote for other reasons.
+The dashed box is the part with no tree.*
+
+## How I use graphify and tokensave
+
+graphify is the code graph from the layers above, and with tokensave it is the part of my setup that
+is retrieval without being a table of contents. It reads the repo by static analysis, with no model and no
+API bill, and writes a graph: a node for each function, file and Markdown heading, and an edge for each
+call, import and link. For this repo that is 6,367 nodes and 7,521 edges today, 2,071 of them code and
+4,296 of them documents, mostly headings. (A snapshot, counted from the graph file.)
+
+A session asks it a structural question and gets a small neighborhood back. Ask for the standards
+index and it returns the tool, its functions (the ones that list, read and find a section) and its
+test: 31 nodes within two hops, each with a file and a line. That is the part of the code the question
+is about, instead of five files read whole. One of the 31 is the site's SEO file, which has nothing to
+do with the question, so a neighborhood is a lead and not a verdict.
+
+It never ranks by closeness, which puts it in neither camp of this note. It finds a node by name or
+says it found none. The rule I learned the hard way follows from that: ask with names the code
+contains, not with a description of the idea. Names land on real nodes. A sentence about "how the
+login flow cleans its input" lands on headings in my plan files.
+
+It stays fresh because a hook runs after every edit and refreshes the graph in the background. That
+takes a few seconds in my repos and costs nothing, since no model is involved. Where it is honest about
+its limits, I measured them in August 2026:
+
+- It does not node methods or non-exported functions. Checking my docs against the graph flagged 7
+  symbols, 3 of them truly dead, so about 43 percent precision, and that check reports at the lowest
+  severity for exactly that reason.
+- Labels collide. PANTRY's own graph has 19 of them, so a name is a lead and not a unique key.
+- A graph of one repo cannot see another's symbols. The portfolio's docs mirror its sibling repos, and
+  against its own graph 73.5 percent of the symbols in those docs were flagged, against 26.5 percent
+  against a merged graph of the whole estate. PANTRY builds the merged one.
+
+tokensave is the second code index I run, and the two overlap less than they look. It is a graph in a
+database that the session reaches through tools instead of a command: search for a symbol, ask who
+calls it, ask what a change would touch, read a file's map of symbols instead of the file. Here it
+holds 10,681 nodes and 5,452 edges over 2,455 files, most of the edges calls (4,641), and a re-sync
+after an edit took 723 milliseconds. graphify covers code and Markdown headings and is walked as a
+graph. tokensave covers code only and answers exact questions about it, which is why my rules send
+symbol questions to it and architecture questions to graphify. Its own counter says it has saved about
+223,000 tokens in this project. That is the tool's estimate of reads avoided, and I have not audited it.
+
+Which tool answers which question is a rule I keep in my global instructions, and it is worth
+setting beside the three kinds of retrieval above:
+
+| The question | Goes to | What kind of retrieval |
+|---|---|---|
+| Where is this defined, what calls it, what would a change touch | The symbol index (tokensave) | An exact lookup, no similarity |
+| How do the modules, docs and plans connect | graphify, or PANTRY's map | A walk over a structure |
+| Where does this literal string appear | grep | Exact text |
+| How do I work in this repo | CLAUDE.md, the skills, PANTRY's index | Read the contents page |
+
+## PANTRY is the project's contents page
+
+CLAUDE.md tells a session how to work. It does not tell a session what is going on in the project
+today, and that is the job of PANTRY, the app I run beside the chat. Its README calls it a developer
+docs cockpit: one small server that serves a project's plan board, its docs, a map of the whole
+codebase and some machine-readable pages an agent can read to get oriented. It runs no model of its
+own, and its own index file says so.
+
+The first call of any session is to PANTRY. It hands back a short brief, with what is in flight, what
+waits on me, and what drifted, and then a file called llms.txt. That file is a Markdown list with one
+line and one link for every plan, document, standard and recent run in the project, 18,203 characters
+of it today. A program builds it out of files I wrote anyway. It is the same shape as the table of
+contents in CLAUDE.md, one level up, and a model reads it the way PageIndex's model reads its tree: look
+at the headings, pick a branch.
+
+Past that, a session asks for one named surface and leaves the rest closed. The surfaces are the
+brief, the map of the codebase, the run ledger, token use by model and plan, and one the tool itself
+calls the full retrieval payload. PANTRY also hands out plans, so two sessions do not claim the same
+one, but that is coordination and not retrieval, and it sits on the same tree.
+
+PANTRY is where I find out the tree has gone stale, too. Its check ran at the start of this very
+session and said that the merged graph was older than the repo's own extraction, and that two mounted
+skills were behind their source. The graph and the skills are the two places a tree can drift out from
+under a session without anyone noticing.
 
 ## One question, walked down the tree
 
@@ -430,7 +511,9 @@ a trivial one.
 The tree has to fit. All twenty-nine skill descriptions load into every session, and they work because
 they are short. At a few hundred they would not, and I would be paying for a table of contents longer
 than the chapter I came for. PageIndex's README makes the same point from the other side, since its
-whole pitch depends on the tree being small enough for the model to hold.
+whole pitch depends on the tree being small enough for the model to hold. The top of my tree
+that worries me most is not the skills. It is PANTRY's index, at 18,203 characters against the
+descriptions' 14,315, and it grows with every plan, finished ones included.
 
 And some of what I have is not a tree. There are 37 notes in this folder as of today, counting this
 one. There are run reports and finished plans piling up in their own folders. None of them has a table
@@ -467,7 +550,8 @@ half landed.
   trust a street sign, so a tree pointing at a file that changed underneath it is worse than no tree.
 - **A retrieval trace** is half done. A run report from 2026-11-21 carries a section listing which files
   the session read. That is the receipt I wanted, with a catch: the session writes it, and no tool
-  captures it. It is a claim a session makes about itself.
+  captures it. It is a claim a session makes about itself. A mechanical version would fit PANTRY's run ledger, which
+already records token use by model, plan and area. That is an idea and not a build.
 
 The flat pile of notes is still flat.
 
@@ -488,6 +572,7 @@ What the claims above rest on, and what I did and did not check.
 - Anthropic, [Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval), 2024-09-19. The 200,000 token rule and the 5.7 to 1.9 percent figures. I read the page, and I did not reproduce the results.
 - Vectify AI, [PageIndex](https://github.com/VectifyAI/PageIndex). The README is what I read. The FinanceBench claim links to a [write-up](https://vectify.ai/blog/Mafin2.5) and an [evaluation repo](https://github.com/VectifyAI/Mafin2.5-FinanceBench) that I did not open.
 - Boris Cherny on [Latent Space](https://www.latent.space/p/claude-code), 2025-05-07. The agentic search passage is about forty-five minutes into the transcript, and I checked the quoted words against it.
+- The graphify, tokensave and PANTRY figures are counted from my own repository and my own running PANTRY and tokensave on 2026-11-26, and the August figures are from my notes on measuring graphify. None of them comes from a vendor.
 - The name "vectorless RAG" reached me through a LinkedIn post by Shivani Virdi, and it is why I went looking. Nothing above rests on it.
 
 ---
