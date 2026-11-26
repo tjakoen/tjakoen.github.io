@@ -94,7 +94,9 @@ fills the viewport and everything else floats on it, as in Google Maps.
 - **The panel has a pinned back button.** A bar at the top of the panel stays in view while the panel
   scrolls. It holds a real button at the top left that names where it goes (All regions from a region, the
   region from a quest, the quest from a stop, and Back from a search) and a short breadcrumb beside it.
-  Escape does the same one step.
+  Escape does the same one step. Previous and next buttons at the right of the bar step through regions in a
+  region, through the whole route of quests in a quest, and through stops in a stop. They are disabled at
+  the ends, name their target in a tooltip, and the left and right square bracket keys do the same.
 - **The panel replaces the modal.** Welcome, region, quest and stop are four states of one place panel,
   the way a place card works. The RPG details (class, level, XP, what it covers, stops) live in the quest
   state. Begin quest opens the note in lesson mode. The separate modal over the zoomed map is dropped.
