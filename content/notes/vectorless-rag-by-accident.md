@@ -366,11 +366,11 @@ The dashed box is the part with no tree.*
 
 Two tools index the code, and neither ranks by closeness. [graphify](https://github.com/safishamsi/graphify)
 reads the repo by static analysis, with no model, and writes a graph with a node for each function,
-file and Markdown heading. Here that is 6,367 nodes and 7,521 edges.
+file and Markdown heading. Here that is about 6,400 nodes and 7,500 edges.
 [tokensave](https://github.com/aovestdipaperino/tokensave) keeps a code-only graph in a database that
 the session queries through tools: find a symbol, ask who calls it, ask what a change would touch. Here
-it holds 10,681 nodes and 5,452 edges over 2,455 files, and a re-sync after an edit took 723
-milliseconds. (Snapshots from 2026-11-26.)
+it holds about 10,700 nodes and 5,450 edges over 2,455 files, and a re-sync after an edit took under a
+second. (Snapshots from 2026-11-26.)
 
 <svg viewBox="0 0 520 300" width="100%" role="img"
      aria-label="Two code indexes answering questions about the standards index tool. On the left, graphify returns a neighborhood: a hub node, the file standards-index.ts, linked to six function nodes called toc, read, find, buildIndex, summarize and indexStandard, plus one dashed stray node, the site's SEO file, that has nothing to do with the question. 31 nodes within two hops in all. On the right, tokensave returns a call chain: two test callers, a fixture and a folder test, both call buildIndex, drawn in ink, which calls one function, indexStandard."
@@ -520,12 +520,12 @@ standards index rather than from a log, so read it as the route the setup allows
 
 *Five stops, and the last one reads thirty-six lines.*
 
-Opening the voice standard whole would read 49,431 characters. Opening only the section reads 2,848,
-which is 5.8 percent of the file. Against every standard whole (494,868 characters) it is 0.6 percent.
+Opening the voice standard whole would read 49,380 characters. Opening only the section reads 2,848,
+which is 5.8 percent of the file. Against every standard whole (489,462 characters) it is 0.6 percent.
 All of these are snapshots of today's files.
 
 <svg viewBox="0 0 620 290" width="100%" role="img"
-     aria-label="What one question costs in VOICE.md, which is 677 lines and 49,431 characters. The file is drawn as a strip with one narrow band lit in ink, lines 159 to 194, the punctuation section. Below it, two bars on the same scale. Opening the whole file reads 49,431 characters, a full-width bar. Opening only the section reads 2,848 characters, 5.8 percent, a short ink bar. The point: 94 percent of the file never enters the session."
+     aria-label="What one question costs in VOICE.md, which is 677 lines and 49,380 characters. The file is drawn as a strip with one narrow band lit in ink, lines 159 to 194, the punctuation section. Below it, two bars on the same scale. Opening the whole file reads 49,380 characters, a full-width bar. Opening only the section reads 2,848 characters, 5.8 percent, a short ink bar. The point: 94 percent of the file never enters the session."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;
             --paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
@@ -536,7 +536,7 @@ All of these are snapshots of today's files.
   <rect x="159.6" y="64" width="30" height="44" style="fill:var(--ink)"/>
   <text x="159" y="126" style="fill:var(--muted);font-size:12.5px">lines 159 to 194: the punctuation section</text>
   <text x="28" y="164" style="fill:var(--ink);font-size:14px">Open the whole file</text>
-  <text x="592" y="164" text-anchor="end" style="fill:var(--muted);font-size:12.5px">49,431 characters</text>
+  <text x="592" y="164" text-anchor="end" style="fill:var(--muted);font-size:12.5px">49,380 characters</text>
   <rect x="28" y="171" width="564" height="16" style="fill:var(--bar)"/>
   <text x="28" y="216" style="fill:var(--ink);font-size:14px">Open only the section</text>
   <rect x="28" y="223" width="32.5" height="16" style="fill:var(--ink)"/>
@@ -547,7 +547,7 @@ All of these are snapshots of today's files.
 *The same file read two ways, one scale. The lit band is everything the question needed. A snapshot of
 2026-11-26, counted from the repo.*
 
-The tree is not free, because those 14,315 characters of descriptions ride along in every session. What
+The tree is not free, because those 14,257 characters of descriptions ride along in every session. What
 it buys is that the expensive part is read one section at a time.
 
 ## Which one to reach for
@@ -625,7 +625,7 @@ Three places it runs out:
 - Every drill-down is a read. A session spends its first turns walking CLAUDE.md, then a skill, then
   the file, before it has done any work. That is cheap on a big question and silly on a trivial one.
 - The tree has to fit. Twenty-nine descriptions work because they are short. PANTRY's index is already
-  bigger, 18,203 characters against 14,315, and it grows with every plan, finished ones included. That
+  bigger, 18,203 characters against 14,257, and it grows with every plan, finished ones included. That
   is the top of the tree I worry about first.
 - Some of it is not a tree. There are 37 notes in this folder, plus run reports and finished plans in
   their own. When a session needs to know whether I have already written about something, it has grep
