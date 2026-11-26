@@ -11,12 +11,12 @@ date: 2026-11-26
 readingTime: "~6 min"
 tags: [ai, retrieval, tooling, graphify, tokensave, pantry]
 summary: >
-  The tool-by-tool half of my vectorless RAG setup: the usual similarity steps drawn out, each layer of
+  The tool-by-tool half of the retrieval behind my AI loop: the usual similarity steps drawn out, each layer of
   the tree my sessions walk, a decision chain for what to build, and what has landed since the first
   draft.
 ---
 
-> The companion to [My AI Workflow Is Vectorless RAG and I Didn't Call It That](vectorless-rag-by-accident.md).
+> The companion to [My AI Loop Runs on Vectorless RAG and I Didn't Call It That](vectorless-rag-by-accident.md).
 > Read that one first. This is the part for the reader who wants to see how it is wired.
 
 ## The usual way, step by step
