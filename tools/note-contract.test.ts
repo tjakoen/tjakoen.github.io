@@ -72,7 +72,7 @@ test("a card is never declared without alt text, and every declared card exists 
 });
 
 test("every note declares the required frontmatter the standard lists", () => {
-  const required = ["title", "subtitle", "author", "status", "type", "date", "readingTime"];
+  const required = ["title", "subtitle", "author", "status", "type", "date", "readingTime", "tags", "summary"];
   const missing = notes.flatMap((n) => {
     const fm = readFileSync(n.file, "utf8").match(/^---\n([\s\S]*?)\n---\n/)?.[1] ?? "";
     return required.filter((k) => !new RegExp(`^${k}:`, "m").test(fm)).map((k) => `${n.file}: no ${k}`);
