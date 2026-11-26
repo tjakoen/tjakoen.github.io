@@ -35,6 +35,7 @@
         <li class="book"><a class="book__spine" href="#book-clean-code" aria-controls="book-clean-code"><span class="book__title">Clean Code</span><span class="book__author">Martin</span><span class="book__cat" title="Code"><span class="visually-hidden">Category: Code</span><span aria-hidden="true">CODE</span></span></a></li>
         <li class="book" data-kind="essay"><a class="book__spine" href="#book-scrum-guide" aria-controls="book-scrum-guide"><span class="book__title">The Scrum Guide</span><span class="book__author">Schwaber</span><span class="book__cat" title="Process"><span class="visually-hidden">Category: Process</span><span aria-hidden="true">PROC</span></span></a></li>
         <li class="book" data-kind="essay"><a class="book__spine" href="#book-cure-for-ai-slop" aria-controls="book-cure-for-ai-slop"><span class="book__title">The Cure for AI Slop</span><span class="book__author">Chelebi</span><span class="book__cat" title="AI"><span class="visually-hidden">Category: AI</span><span aria-hidden="true">AI</span></span></a></li>
+        <li class="book" data-kind="essay"><a class="book__spine" href="#book-vectorless-rag-post" aria-controls="book-vectorless-rag-post"><span class="book__title">Vectorless RAG</span><span class="book__author">Virdi</span><span class="book__cat" title="AI"><span class="visually-hidden">Category: AI</span><span aria-hidden="true">AI</span></span></a></li>
         <li class="book" data-kind="essay"><a class="book__spine" href="#book-ai-native-starter-pack" aria-controls="book-ai-native-starter-pack"><span class="book__title">AI-Native Starter Pack</span><span class="book__author">Medin</span><span class="book__cat" title="AI"><span class="visually-hidden">Category: AI</span><span aria-hidden="true">AI</span></span></a></li>
       </ol>
       <div class="shelf__board" aria-hidden="true"></div>
@@ -132,6 +133,13 @@
         <p class="book-card__what">A video test of writing rules for language models. A skill built from Simplified Technical English cut rule violations far more than a list of banned words did, on both Claude and GPT.</p>
         <p class="book-card__why"><strong>Why it is here.</strong> It is a video, not a book, so it stands thin on the shelf. It gave my <a href="/standards/voice">VOICE</a> standard its rule about plain verbs, and its numbers are the receipt in <a href="/notes/the-voice-file">Write for the Person Who Has to Read It</a>. It measured rule violations, not whether readers found the point faster, and I say so in both places.</p>
         <a class="btn" href="https://www.chele.bi/videos/the-cure-for-ai-slop" target="_blank" rel="noopener noreferrer">Watch the video</a>
+      </article>
+      <article class="book-card" id="book-vectorless-rag-post" tabindex="-1">
+        <p class="book-card__meta"><a href="/people#shivani-virdi">Shivani Virdi</a>, 2026 · AI</p>
+        <h3 class="book-card__title">Vectorless RAG, a LinkedIn post</h3>
+        <p class="book-card__what">A post that sets two kinds of retrieval side by side. Vector RAG chunks a document, embeds the chunks and fetches the nearest. Vectorless RAG parses the document into a tree of sections and lets the model drill down, with no embeddings and no vector database.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> It is a post, not a book, so it stands thin on the shelf. It gave me the name for what my sessions already did, and it names the same limits I measured: the tree has to fit in the context window, flat text has no tree to walk, and most production systems end up using both kinds.</p>
+        <a class="btn" href="https://www.linkedin.com/posts/shivanivirdi_everyone-thinks-rag-chunking-embeddings-share-7527002415418732544-54j2/" target="_blank" rel="noopener noreferrer">Read the post</a>
       </article>
       <article class="book-card" id="book-ai-native-starter-pack" tabindex="-1">
         <p class="book-card__meta"><a href="/people#cole-medin">Cole Medin</a> · AI</p>
