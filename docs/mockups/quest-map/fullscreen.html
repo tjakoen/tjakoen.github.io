@@ -289,18 +289,18 @@ body { margin:0; background:var(--q-water); }
 #stage.drag { cursor:grabbing; }
 #map, #fx { position:absolute; left:0; top:0; image-rendering:pixelated; } #fx { pointer-events:none; }
 #over { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-.hit { position:absolute; width:var(--ps,30px); height:var(--ps,30px); margin:0; padding:0; box-sizing:border-box; border:3px solid #fff; border-radius:50%; background:#c8382a; color:#fff; font:700 calc(var(--ps,30px) * .43)/1 system-ui,-apple-system,"Segoe UI",sans-serif; display:grid; place-items:center; box-shadow:0 2px 5px rgba(0,0,0,.45); cursor:pointer; pointer-events:auto; transform:translate(-50%,calc(-100% - 7px)); transition:transform .12s ease, box-shadow .12s ease; }
+.hit { position:absolute; width:var(--ps,30px); height:var(--ps,30px); margin:0; padding:0; box-sizing:border-box; border:2px solid var(--q-outline); border-radius:50%; background:#c8382a; color:#fff; font:700 calc(var(--ps,30px) * .43)/1 ui-monospace,"SF Mono",Menlo,Consolas,monospace; display:grid; place-items:center; box-shadow:2px 2px 0 var(--q-outline); cursor:pointer; pointer-events:auto; transform:translate(-50%,calc(-100% - 7px)); transition:transform .12s ease; image-rendering:pixelated; }
 .hit::before { content:""; position:absolute; inset:calc((44px - var(--ps,30px)) / -2); } /* a 44px target around a 30px marker */
-.hit::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:6px solid transparent; border-top-color:#fff; border-bottom:0; }
+.hit::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--q-outline); border-bottom:0; }
 .hit:hover { transform:translate(-50%,calc(-100% - 7px)) scale(1.12); }
 .hit[data-state="done"] { background:#2f7d33; }
 .hit[data-state="locked"] { background:#6b6b6b; }
 .hit[data-state="stop"] { background:#f5b83d; color:#3b2d1c; width:calc(var(--ps,30px) * .87); height:calc(var(--ps,30px) * .87); }
-.hit[data-selected] { transform:translate(-50%,calc(-100% - 7px)) scale(1.25); z-index:2; box-shadow:0 0 0 4px rgba(245,184,61,.6), 0 3px 8px rgba(0,0,0,.5); }
+.hit[data-selected] { transform:translate(-50%,calc(-100% - 7px)) scale(1.25); z-index:2; box-shadow:0 0 0 3px #f5b83d, 2px 2px 0 3px var(--q-outline); }
 .hit.mark { pointer-events:none; }
 .hit .pn { pointer-events:none; }
-.hit .tagc { display:none; position:absolute; left:calc(100% + 8px); top:50%; transform:translateY(-50%); width:max-content; max-width:190px; padding:3px 8px; background:var(--q-panel); color:var(--q-ink); border:2px solid var(--q-ink); box-shadow:2px 2px 0 rgba(0,0,0,.22); font:600 12px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif; text-align:left; pointer-events:none; z-index:5; }
-.hit .tagc small { display:block; font-size:11px; font-weight:400; color:var(--q-muted); }
+.hit .tagc { display:none; position:absolute; left:calc(100% + 8px); top:50%; transform:translateY(-50%); width:max-content; max-width:190px; padding:3px 8px; background:var(--q-panel); color:var(--q-ink); border:2px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font:700 11px/1.3 ui-monospace,"SF Mono",Menlo,Consolas,monospace; text-align:left; pointer-events:none; z-index:5; }
+.hit .tagc small { display:block; font:400 11px/1.35 Georgia,serif; color:var(--q-muted); }
 .hit:hover .tagc, .hit:focus-visible .tagc, .hit[data-selected] .tagc { display:block; }
 .hit[data-flip] .tagc { left:auto; right:calc(100% + 8px); }
 .hit:hover, .hit:focus-visible { z-index:6; }
@@ -588,12 +588,17 @@ function bakeScenes(){
     const R=(x,y,w,h,c)=>{ g.fillStyle=c; g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h)); };
     const D=(x,y,r,c)=>{ g.fillStyle=c; for(let j=-r;j<=r;j++) for(let i=-r;i<=r;i++) if(i*i+j*j<=r*r+r*.6) g.fillRect(x+i,y+j,1,1); };
     const L=(x0,y0,x1,y1,c,t=1)=>{ const m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0))||1; for(let k=0;k<=m;k++) R(x0+(x1-x0)*k/m-t/2,y0+(y1-y0)*k/m-t/2,t,t,c); };
-    const blob=(base,edge)=>{ for(let y=0;y<H;y++) for(let x=0;x<W;x++){ const dx=(x+.5-W/2)/(W/2), dy=(y+.5-H/2)/(H/2), d=dx*dx+dy*dy+((hash2(x,y)%97)/97-.5)*.16; if(d<1){ g.fillStyle=d>.84?edge:base; g.fillRect(x,y,1,1); } } };
+    const blob=(base,edge,th=.84)=>{ const m=new Uint8Array(W*H);
+      for(let y=0;y<H;y++) for(let x=0;x<W;x++){ const dx=(x+.5-W/2)/(W/2), dy=(y+.5-H/2)/(H/2), d=dx*dx+dy*dy+((hash2(x,y)%97)/97-.5)*.16; if(d<1){ m[y*W+x]=1; g.fillStyle=th>=.95?base:(d>th?edge:base); g.fillRect(x,y,1,1); } }
+      if(th>=.95){ const on=(x,y)=>x>=0&&y>=0&&x<W&&y<H&&m[y*W+x]; g.fillStyle=edge; for(let y=0;y<H;y++) for(let x=0;x<W;x++) if(m[y*W+x]&&!(on(x-1,y)&&on(x+1,y)&&on(x,y-1)&&on(x,y+1))) g.fillRect(x,y,1,1); } };
+    const hill=(rx,ry,base,edge)=>{ const cx=W/2, cy=H/2+1, m=new Uint8Array(W*H);
+      for(let y=0;y<H;y++) for(let x=0;x<W;x++){ const dx=(x+.5-cx)/rx, dy=(y+.5-cy)/ry, d=dx*dx+dy*dy+((hash2(x+9,y+3)%97)/97-.5)*.22; if(d<1){ m[y*W+x]=1; g.fillStyle=base; g.fillRect(x,y,1,1); } }
+      const on=(x,y)=>x>=0&&y>=0&&x<W&&y<H&&m[y*W+x]; g.fillStyle=edge; for(let y=0;y<H;y++) for(let x=0;x<W;x++) if(m[y*W+x]&&!(on(x-1,y)&&on(x+1,y)&&on(x,y-1)&&on(x,y+1))) g.fillRect(x,y,1,1); };
     const speckle=(x,y,w,h,c,k)=>{ for(let i=0;i<k;i++){ const q=hash2(i*7+x,y*3+i); R(x+q%w,y+((q>>8)%h),1,1,c); } };
     const pine=(x,y)=>{ R(x,y,2,3,P.trunk); R(x-3,y-3,8,3,P.forest); R(x-2,y-6,6,3,P.forest); R(x-1,y-9,4,3,P.forest2); };
-    const glow=(x,y)=>{ R(x-1,y-1,4,4,'rgba(245,184,61,.35)'); R(x,y,2,2,P.glow); };
-    const house=(x,y,w,h,ro,ro2)=>{ R(x,y,w,h,P.wall); R(x+w/2,y,w/2,h,P.wall2); R(x-2,y-6,w+4,7,ro); R(x+w/2,y-6,w/2+2,7,ro2); R(x+w/2-2,y+h-5,4,5,P.outline); R(x+2,y+3,3,3,P.glow); };
-    const tent=(x,y,c1,c2)=>{ for(let j=0;j<8;j++){ R(x-j,y+j,j+1,1,c1); R(x+1,y+j,j+1,1,c2); } R(x,y+8,2,1,P.outline); };
+    const glow=(x,y)=>{ for(let j=-2;j<4;j++) for(let i=-2;i<4;i++) if((i+j)%2===0&&(i<0||i>1||j<0||j>1)) R(x+i,y+j,1,1,P.amber); R(x,y,2,2,P.glow); };
+    const house=(x,y,w,h,ro,ro2)=>{ R(x-3,y-7,w+6,h+8,P.outline); R(x,y,w,h,P.wall); R(x+w/2,y,w/2,h,P.wall2); R(x-2,y-6,w+4,7,ro); R(x+w/2,y-6,w/2+2,7,ro2); R(x+w/2-2,y+h-5,4,5,P.outline); R(x+2,y+3,3,3,P.glow); };
+    const tent=(x,y,c1,c2)=>{ for(let j=-1;j<9;j++) R(x-j-1,y+j,2*j+4,1,P.outline); for(let j=0;j<8;j++){ R(x-j,y+j,j+1,1,c1); R(x+1,y+j,j+1,1,c2); } R(x,y+8,2,1,P.outline); };
     if(n==1){ blob(P.grass,P.grass2);
       [[20,34,22,10],[52,30,18,8]].forEach(([x,y,w,h])=>{ for(let j=0;j<h;j++){ const hw=Math.round(w/2*Math.sqrt(1-((j-h)/h)**2)); R(x+w/2-hw,y+j,hw*2,1,j<2?P.grass2:P.grass); } });
       L(40,56,40,34,P.road,4); R(60,8,2,16,P.trunk); R(54,6,16,9,P.wall); R(55,7,14,7,P.roof); tent(18,36,P.roof,P.roof2); tent(30,40,P.field,P.field2); D(40,40,2,P.trunk); R(39,36,2,3,P.amber); speckle(8,8,64,40,P.meadow,26); R(60,2,1,8,P.outline); R(61,2,8,4,P.flag); }
@@ -608,7 +613,7 @@ function bakeScenes(){
       R(47,58,2,10,P.trunk); R(44,56,8,4,P.glow); R(43,55,10,1,P.outline);
       R(6,34,10,8,P.wall); R(4,32,14,3,P.roof); R(5,28,1,8,P.trunk); R(6,28,6,3,P.amber);
       speckle(14,14,68,50,P.meadow,24); }
-    if(n==3){ blob(P.rock,P.rock2); const DK='#2a2430';
+    if(n==3){ blob(P.rock2,P.rock); hill(W/2-8,H/2-6,P.rock,P.outline); const DK='#2a2430';
       for(let y=4;y<22;y+=2) speckle(10,y,110,2,P.rock2,6);
       const tun=(x0,y0,x1,y1,t)=>L(x0,y0,x1,y1,DK,t);
       tun(65,68,65,24,6); tun(65,44,26,44,5); tun(26,44,26,24,5); tun(65,36,105,36,5); tun(105,36,105,22,5);
@@ -618,13 +623,13 @@ function bakeScenes(){
       for(let x=34;x<62;x+=8){ R(x,41,1,6,P.trunk); R(x,41,1,1,P.trunk); }
       for(let y=24;y<=68;y+=2){ R(64,y,1,1,P.mainEdge); R(67,y,1,1,P.mainEdge); if(y%4===0) R(63,y,5,1,P.trunk); }
       R(58,60,2,10,P.trunk); R(70,60,2,10,P.trunk); R(58,58,14,2,P.trunk);
-      R(78,63,12,5,P.rockd); R(78,63,12,2,P.rock2); R(80,68,2,2,DK); R(86,68,2,2,DK); R(80,61,8,2,P.amber);
-      R(60,0,12,9,P.trunk); R(58,0,16,3,P.roof); R(64,-0,4,2,P.roof2); R(65,9,2,4,DK);
+      R(77,60,14,10,DK); R(78,63,12,5,P.rockd); R(78,63,12,2,P.rock2); R(80,68,2,2,DK); R(86,68,2,2,DK); R(80,61,8,2,P.amber);
+      R(57,-1,18,13,DK); R(60,0,12,9,P.trunk); R(58,0,16,3,P.roof); R(64,-0,4,2,P.roof2); R(65,9,2,4,DK);
       SPEC[3].lights.forEach(([x,y])=>glow(x,y)); }
     if(n==4){ blob(P.grass,P.grass2);
       R(6,32,96,12,P.roadEdge); R(6,33,96,10,P.road); R(48,4,12,68,P.roadEdge); R(49,4,10,68,P.road);
       R(40,28,28,20,P.roadEdge); R(41,29,26,18,P.sand); speckle(41,29,26,18,P.sand2,50);
-      R(38,6,32,22,P.wall); R(54,6,16,22,P.wall2); R(34,0,40,8,P.roof); R(54,0,20,8,P.roof2); R(50,18,8,10,P.outline); R(52,10,4,4,P.glow); R(44,12,3,4,P.glow); R(61,12,3,4,P.glow); R(53,-2,1,3,P.outline);
+      R(33,-1,42,30,P.outline); R(38,6,32,22,P.wall); R(54,6,16,22,P.wall2); R(34,0,40,8,P.roof); R(54,0,20,8,P.roof2); R(50,18,8,10,P.outline); R(52,10,4,4,P.glow); R(44,12,3,4,P.glow); R(61,12,3,4,P.glow); R(53,-2,1,3,P.outline);
       house(8,12,16,12,P.roof,P.roof2); house(84,12,16,12,P.roof2,P.roof); house(8,50,16,12,P.roof2,P.roof); house(30,52,14,10,P.roof,P.roof2); house(66,52,14,10,P.roof2,P.roof); house(86,50,16,12,P.roof,P.roof2);
       R(42,34,8,6,P.field); R(42,32,8,3,P.flag); R(58,34,8,6,P.field2); R(58,32,8,3,P.amber); R(50,38,6,4,P.trunk);
       R(20,38,10,7,P.trunk); R(21,39,8,5,P.wall); R(23,40,4,1,P.outline); R(23,42,3,1,P.outline);
@@ -633,20 +638,21 @@ function bakeScenes(){
       pine(4,36); pine(100,36); pine(30,68); pine(76,68); pine(18,66);
       SPEC[4].lights.forEach(([x,y])=>glow(x,y)); }
     if(n==5){ blob(P.grass,P.grass2);
-      R(14,14,72,52,P.sand); speckle(15,15,70,50,P.sand2,300);
+      R(9,9,82,58,P.outline); R(13,13,74,50,P.outline); R(14,14,72,52,P.sand); speckle(15,15,70,50,P.sand2,300);
       R(10,10,80,5,P.wall2); R(10,10,5,56,P.wall2); R(85,10,5,56,P.wall2); R(10,61,32,5,P.wall2); R(58,61,32,5,P.wall2);
       for(let x=10;x<90;x+=4) R(x,8,2,2,P.wall); for(let y=10;y<66;y+=4){ R(8,y,2,2,P.wall); R(90,y,2,2,P.wall); } for(let x=10;x<42;x+=4) R(x,66,2,2,P.wall); for(let x=58;x<90;x+=4) R(x,66,2,2,P.wall);
-      [[4,4],[82,4],[4,56],[82,56]].forEach(([x,y])=>{ R(x,y,16,16,P.wall2); R(x+2,y+2,12,12,P.wall); R(x+4,y+4,8,8,P.roof); R(x+8,y+4,4,8,P.roof2); R(x+7,y+7,2,2,P.outline); });
-      R(38,56,24,14,P.wall2); R(40,58,20,12,P.wall); R(45,60,10,10,P.outline); for(let x=46;x<55;x+=2) R(x,60,1,10,P.stone);
+      [[4,4],[82,4],[4,56],[82,56]].forEach(([x,y])=>{ R(x-1,y-1,18,18,P.outline); R(x,y,16,16,P.wall2); R(x+2,y+2,12,12,P.wall); R(x+4,y+4,8,8,P.roof); R(x+8,y+4,4,8,P.roof2); R(x+7,y+7,2,2,P.outline); });
+      R(37,55,26,16,P.outline); R(38,56,24,14,P.wall2); R(40,58,20,12,P.wall); R(45,60,10,10,P.outline); for(let x=46;x<55;x+=2) R(x,60,1,10,P.stone);
       R(45,40,10,26,P.roadEdge); R(46,40,8,26,P.road);
-      R(32,16,36,28,P.wall); R(50,16,18,28,P.wall2); for(let x=32;x<68;x+=4) R(x,14,2,2,P.wall); R(40,6,20,12,P.castle); R(50,6,10,12,P.castle2);
+      R(31,15,38,30,P.outline); R(39,5,22,14,P.outline); R(32,16,36,28,P.wall); R(50,16,18,28,P.wall2); for(let x=32;x<68;x+=4) R(x,14,2,2,P.wall); R(40,6,20,12,P.castle); R(50,6,10,12,P.castle2);
       R(49,0,1,8,P.outline); R(50,0,7,4,P.flag); R(46,36,8,8,P.outline); R(47,37,6,7,P.trunk); R(38,24,3,5,P.glow); R(59,24,3,5,P.glow); R(48,22,4,6,P.glow);
-      R(16,20,16,14,P.wall2); R(14,16,20,6,P.roof); R(24,16,10,6,P.roof2); R(22,28,4,6,P.outline); R(18,24,3,3,P.glow); R(27,24,3,3,P.glow);
-      R(66,20,16,14,P.wall2); R(64,16,20,6,P.roof2); R(72,16,10,6,P.roof); R(72,28,4,6,P.outline); R(72,24,4,3,P.flag);
+      R(13,15,22,20,P.outline); R(16,20,16,14,P.wall2); R(14,16,20,6,P.roof); R(24,16,10,6,P.roof2); R(22,28,4,6,P.outline); R(18,24,3,3,P.glow); R(27,24,3,3,P.glow);
+      R(63,15,22,20,P.outline); R(66,20,16,14,P.wall2); R(64,16,20,6,P.roof2); R(72,16,10,6,P.roof); R(72,28,4,6,P.outline); R(72,24,4,3,P.flag);
       D(30,50,4,P.wall2); D(30,50,2,P.water); R(66,46,14,10,P.trunk); R(64,44,18,3,P.roof);
       pine(2,40); pine(96,42); pine(4,72); pine(94,72);
       SPEC[5].lights.forEach(([x,y])=>glow(x,y)); }
     if(n==6){ blob(P.snow,P.snow2);
+      for(let y=5;y<47;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw-1,y,hw*2+2,1,P.outline); }
       for(let y=6;y<46;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw,y,hw*2,1,P.rock); R(42,y,hw,1,P.rock2); }
       for(let y=6;y<18;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw+2,y,hw*2-4,1,P.snow); R(42,y,hw-2,1,P.snow2); }
       speckle(14,26,56,18,P.rockd,40);
@@ -811,11 +817,11 @@ function fxFrame(t){
   const {vx,vy,z}=origin(); fctx.clearRect(0,0,fx.width,fx.height);
   const f=Math.floor(t/160);
   const px=(wx,wy,c,a=1)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; fctx.globalAlpha=a; fctx.fillStyle=c; fctx.fillRect(sx,sy,z,z); };
-  for(let i=0;i<glints.length;i++){ const g=glints[i], ph=(f+g[2])%8; if(ph<2) px(g[0],g[1],P.foam,ph?.9:.5); }
+  for(let i=0;i<glints.length;i++){ const g=glints[i], ph=(f+g[2])%8; if(ph<2) px(g[0],g[1],P.foam); }
   if(z>=4) for(const n in SPEC) SPEC[n].lights.forEach(([x,y],k)=>{ const [wx,wy]=sceneM(+n,x,y); px(wx,wy-1,(f+k)%2?P.glow:P.amber); px(wx,wy-2,((f+k)%3)?P.amber:P.pinHi); });
-  if(z<4) for(let i=0;i<5;i++){ const w=((f+i)%4<2)?0:1, o=w+(i>2?1:0); px(151+i,10+o,P.flag); if(i<4) px(151+i,11+o,P.pinHi,.8); }
+  if(z<4) for(let i=0;i<5;i++){ const w=((f+i)%4<2)?0:1, o=w+(i>2?1:0); px(151+i,10+o,P.flag); if(i<4) px(151+i,11+o,P.pinHi); }
   else for(const n in SPEC) SPEC[n].flags.forEach(([x,y])=>{ const [wx,wy]=sceneM(+n,x,y); for(let i=0;i<5;i++){ const o=(((f+i)%4<2)?0:1)+(i>2?1:0); px(wx+i,wy+o,P.flag); } });
-  { const r=f%7; for(let a=0;a<12;a++){ const th=a/12*Math.PI*2; px(YOU[0]+Math.round(Math.cos(th)*(r+2)),YOU[1]+Math.round(Math.sin(th)*(r+2)),P.you,1-r/7); } }
+  { const r=f%7; for(let a=0;a<12;a++){ const th=a/12*Math.PI*2; if(r<4) px(YOU[0]+Math.round(Math.cos(th)*(r+2)),YOU[1]+Math.round(Math.sin(th)*(r+2)),P.you); } }
   fctx.globalAlpha=1;
 }
 function fxLoop(now){ raf=0; if(!motion||document.hidden) return; if(now-lastT>=160){ lastT=now; fxFrame(now); } raf=requestAnimationFrame(fxLoop); }
