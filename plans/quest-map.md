@@ -26,11 +26,10 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   dot marks the adventurer, and a main road in amber links the quests in order.
 - **Zoom adds detail.** Zooming in shows what the world view leaves out: tents, torches, a mine cart and
   numbered stop pins. The RPG quest modal opens over the zoomed map.
-- **The map moves.** A second canvas over the map redraws about seven times a second, so everything moves in
-  pixel steps: glints on the water, drifting cloud shadows, torch flames, smoke from the guild hall chimney,
-  the summit flag, gulls, a pulse on the adventurer and on the selected quest, and fireflies in the forest in
-  the dark scheme. It is decoration only. It starts off when the system asks for reduced motion, and a Motion
-  button turns it on or off either way.
+- **The map moves, a little.** A second canvas over the map redraws about six times a second, in pixel steps:
+  glints on the water, torch flames, the summit flag and a pulse on the adventurer. Nothing else moves. It
+  draws nothing while the view is panning, zooming or flying, so interaction stays smooth. It is decoration
+  only. It starts off when the system asks for reduced motion, and a Motion button turns it on or off either way.
 - **Warm paper, amber accent.** It shares the ant colony's palette, so the site keeps one voice. Labels
   carry a halo the way map labels do.
 - **Theming follows the site.** The chrome (panel, modal, search, chips, guild card, book pages) reads
@@ -193,7 +192,7 @@ This is the part that keeps the map alive without hand editing.
 - [ ] Lesson mode: the sidebar becomes the quest book. A sidecar file per lesson holds segments, cues, rune ids, the plain-words digest and the trial. The notes themselves are untouched.
 - [ ] Wire the quest UI to GRAIN tokens and verify every flavor and scheme pair for contrast.
 - [ ] Concept highlight in the note, driven through the GRAIN surface and verb registry, not a back channel.
-- [ ] Motion layer: water, torches, smoke, flag, gulls, pulses and fireflies, off under reduced motion, with a Motion button.
+- [ ] Motion layer: water glints, torches, the flag and one pulse, paused during pan and zoom, off under reduced motion, with a Motion button.
 - [ ] Reduced motion, captions, keyboard path and contrast checked in both themes.
 - [ ] First recording for one quest, to prove the book end to end before recording the rest.
 
