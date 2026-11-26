@@ -499,7 +499,7 @@ function buildWorld(){
       else if(r===3){ c=vn(x,y,3)>.5?P.rock:P.rock2; if(hash2(x,y)%61===0) c=P.rockd; }
       else if(r===4){ c=(vn(x,y,18)>.44)?(((y>>1)%2)?P.field:P.field2):(vn(x,y,4)>.5?P.grass:P.grass2); }
       else if(r===5){ c=vn(x,y,4)>.5?P.meadow:P.meadow2; if(hash2(x,y)%41===0) c=P.snow; }
-      else if(r===6){ c=vn(x,y,4)>.5?P.snow:P.snow2; if(vn(x+7,y,11)>.66&&(y>>1)%2) c=P.snow2; const lk=((x-152)/10)**2+((y-57)/4.5)**2; if(lk<1) c=lk>.78?P.foam:(((x+y)%2)?P.foam:P.water2); }
+      else if(r===6){ c=vn(x,y,4)>.5?P.snow:P.snow2; if(vn(x+7,y,11)>.66&&(y>>1)%2) c=P.snow2; const lk=((x-152)/10)**2+((y-57)/4.5)**2; if(lk<1) c=lk>.78?P.foam:(((x*3+y*7)%11===0)?P.foam:P.water2); }
       else { c=vn(x,y,4)>.5?P.grass2:P.rock2; } }
     cols[i]=c; }
   // roads
@@ -593,7 +593,7 @@ const SPEC={
   3:{cx:104,cy:126,W:130,H:70,q:[[65,62],[26,24],[65,20]],slots:[[65,58],[65,46],[45,44],[26,40],[26,24],[85,38],[105,32],[105,20],[65,20]],lights:[[65,54],[26,36],[104,28],[66,18]],flags:[]},
   4:{cx:146,cy:92,W:108,H:76,q:[[24,42],[62,42],[54,30]],slots:[[54,30],[24,42],[62,42],[54,56],[16,26],[90,26],[16,60],[90,60],[36,62]],lights:[[44,31],[64,31],[54,50],[24,36]],flags:[[54,2]]},
   5:{cx:92,cy:54,W:100,H:80,q:[[26,38],[50,42]],slots:[[50,66],[50,14],[50,40],[26,34],[74,34],[30,50],[13,13],[87,13],[87,63]],lights:[[38,58],[62,58],[13,10],[87,10]],flags:[[53,2]]},
-  6:{cx:150,cy:36,W:84,H:70,q:[[26,58],[42,10]],slots:[[26,58],[52,56],[28,48],[54,40],[32,32],[48,24],[42,14],[60,30],[22,40]],lights:[[24,56],[58,42],[28,28]],flags:[[46,3]]}
+  6:{cx:150,cy:36,W:84,H:70,q:[[26,58],[42,10]],slots:[[26,60],[44,56],[56,52],[44,46],[30,42],[42,36],[52,30],[46,22],[42,14]],lights:[[26,57]],flags:[[46,3]]}
 };
 const sceneM=(n,x,y)=>{ const s=SPEC[n]; return [Math.round(s.cx-s.W/4)+x/2, Math.round(s.cy-s.H/4)+y/2]; };
 function layoutQuests(){ for(const n in SPEC){ byReg(+n).forEach((qq,i)=>{ const p=SPEC[n].q[i]; if(p) qq.pos=sceneM(+n,p[0],p[1]); }); }
@@ -637,7 +637,7 @@ const WALK={
   4:[{k:'v1',p:[[10,38],[98,38]],v:3,ph:0},{k:'v2',p:[[98,40],[12,40]],v:2.4,ph:30},{k:'v3',p:[[54,8],[54,68]],v:2.6,ph:10},{k:'v1',p:[[60,38]],m:'stay',i:1},{k:'v2',p:[[46,41]],m:'stay',i:2}],
   5:[{k:'guard',p:[[14,12],[86,12],[86,62],[14,62],[14,12]],v:4,m:'loop',ph:0},{k:'guard',p:[[14,12],[86,12],[86,62],[14,62],[14,12]],v:4,m:'loop',ph:132},
      ...[[43,63],[57,63],[45,46],[55,46],[30,13],[70,13],[24,62],[76,62]].map((pt,i)=>({k:'guard',p:[pt],m:'stay',i}))],
-  6:[{k:'climber',p:[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]],v:2.2,ph:0},{k:'climber',p:[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]],v:2,ph:90},{k:'v2',p:[[20,58]],m:'stay',i:1}] };
+  6:[{k:'climber',p:[[26,62],[56,52],[30,42],[52,30],[42,14]],v:2.2,ph:0}] };
 function walkPos(w,T){ const A=w.p; if(A.length===1||w.m==='stay') return [A[0][0],A[0][1]];
   if(!w._L){ w._seg=[]; w._L=0; for(let i=0;i<A.length-1;i++){ const d=Math.hypot(A[i+1][0]-A[i][0],A[i+1][1]-A[i][1]); w._seg.push(d); w._L+=d; } }
   let s=T/1000*w.v+(w.ph||0); const L=w._L; if(w.m==='loop') s=((s%L)+L)%L; else { s=((s%(2*L))+2*L)%(2*L); if(s>L) s=2*L-s; }
@@ -755,23 +755,18 @@ function bakeScenes(){
       D(30,50,4,P.wall2); D(30,50,2,P.water); R(66,46,14,10,P.trunk); R(64,44,18,3,P.roof);
       pine(2,40); pine(96,42); pine(4,72); pine(94,72);
       SPEC[5].lights.forEach(([x,y])=>glow(x,y)); }
-    if(n==6){ blob(P.snow,P.snow2);
+    if(n==6){ /* The summit, kept quiet: one peak, one trail, a camp, two cabins and a lake. */
+      blob(P.snow,P.snow2);
       for(let y=5;y<47;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw-1,y,hw*2+2,1,P.outline); }
       for(let y=6;y<46;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw,y,hw*2,1,P.rock); R(42,y,hw,1,P.rock2); }
       for(let y=6;y<18;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw+2,y,hw*2-4,1,P.snow); R(42,y,hw-2,1,P.snow2); }
-      speckle(14,26,56,18,P.rockd,40);
-      const pts=[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]]; for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.roadEdge,4);
-      for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.road,2);
-      tent(20,50,P.roof,P.roof2); tent(54,42,P.field,P.field2); tent(24,22,P.roof2,P.roof);
+      const pts=[[26,62],[56,52],[30,42],[52,30],[42,14]]; for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.road,2);
+      tent(18,54,P.roof,P.roof2);
       R(42,0,1,10,P.outline); R(43,0,8,5,P.flag); R(43,1,3,2,P.pinHi);
-      speckle(6,6,70,56,P.snow2,40);
-      for(let y=58;y<70;y++) for(let x=24;x<68;x++){ const dx=(x-46)/21, dy=(y-70)/10; if(dx*dx+dy*dy<1){ g.fillStyle=dx*dx+dy*dy>.8?P.foam:(((x+y)%2)?P.foam:P.water2); g.fillRect(x,y,1,1); } }
-      L(36,63,43,66,P.water,1); L(50,62,54,68,P.water,1);
-      house(8,58,14,9,P.roof2,P.roof); house(68,54,14,9,P.roof,P.roof2); R(12,62,2,3,P.glow); R(72,58,2,3,P.glow);
-      const spine=(x,y)=>{ R(x-5,y-10,11,14,VE); R(x-1,y,2,2,P.trunk); R(x-4,y-3,9,3,P.forest); R(x-3,y-6,7,3,P.forest); R(x-2,y-9,5,3,P.forest); R(x-4,y-3,9,1,P.snow); R(x-3,y-6,7,1,P.snow); R(x-2,y-9,5,1,P.snow); };
-      spine(4,46); spine(78,46); spine(72,67); spine(18,68); spine(70,40);
-      R(57,44,8,3,P.outline); R(58,44,6,2,P.rock2); R(59,41,4,3,P.outline); R(60,42,2,2,P.rock); R(61,39,2,3,P.outline); R(61,40,1,2,P.rock2);
-      R(28,48,5,5,P.outline); R(29,49,3,3,P.trunk); R(34,50,4,4,P.outline); R(35,51,2,2,P.trunk);
+      for(let y=58;y<70;y++) for(let x=24;x<68;x++){ const dx=(x-46)/21, dy=(y-70)/10; if(dx*dx+dy*dy<1){ g.fillStyle=dx*dx+dy*dy>.8?P.foam:(((x*3+y*7)%11===0)?P.foam:P.water2); g.fillRect(x,y,1,1); } }
+      house(8,60,14,9,P.roof2,P.roof); house(68,56,14,9,P.roof,P.roof2); R(12,64,2,3,P.glow); R(72,60,2,3,P.glow);
+      const spine=(x,y)=>{ const ly=[[x-4,y-3,9,3],[x-3,y-6,7,3],[x-2,y-9,5,3]]; R(x-2,y-1,4,4,VE); ly.forEach(([a,b,w,h])=>R(a-1,b-1,w+2,h+2,VE)); R(x-1,y,2,2,P.trunk); ly.forEach(([a,b,w,h])=>{ R(a,b,w,h,P.forest); R(a,b,w,1,P.snow); }); };
+      spine(6,50); spine(76,48); spine(70,68);
       SPEC[6].lights.forEach(([x,y])=>glow(x,y)); }
     DET.push({n:+n,ox:Math.round(sp.cx-W/4),oy:Math.round(sp.cy-H/4),W,H,cv}); } }
 
