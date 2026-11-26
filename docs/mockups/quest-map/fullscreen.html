@@ -533,7 +533,7 @@ function buildWorld(){
   layoutQuests();
   cols=new Array(WW*WH); roadMain=new Set(); roadMinor=new Set(); sprites=[];
   for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; let c;
-    if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water; if(LAYERS.waves&&d>3&&hash2(x,y)%31===0) c=P.wave; }
+    if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water; }
     else { const d=distTo(x,y,0,2); const r=reg[i];
       if(d<=2) c=(x+y)%2?P.sand:P.sand2;
       else if(r===1){ c=vn(x,y,4)>.52?P.grass:P.grass2; if(hash2(x,y)%67===0) c='#ffffff'; if(hash2(x,y)%97===0) c=P.amber; }
@@ -850,10 +850,12 @@ function bakeScenes(){
 
 /* The terrain and every static sprite are drawn once into an offscreen canvas, one pixel per map pixel, with a margin of open
    water. Each frame is then a single scaled drawImage plus the few things that depend on the view (camp, pins, you). */
-const M=200; let base=null, glints=[];
+const M=200; let base=null, wavesCv=null, glints=[];
 function bake(){ NIGHT=isNightNow(); CL1=NIGHT?shade(P.snow,.55):P.snow; CL2=NIGHT?shade(P.snow2,.55):P.snow2; base=document.createElement('canvas'); base.width=WW+2*M; base.height=WH+2*M; const b=base.getContext('2d'); glints=[];
+  /* Waves live on their own transparent layer, so the Layers toggle only redraws and never rebakes the map. */
+  wavesCv=document.createElement('canvas'); wavesCv.width=base.width; wavesCv.height=base.height; const wv=wavesCv.getContext('2d'); wv.fillStyle=P.wave;
   const isWater=c=>c===P.water||c===P.water2||c===P.wave||c===P.foam;
-  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); let c; if(inW) c=cols[y*WW+x]; else { const u=(Math.abs(x-100)/RING_RX)**RING_N+(Math.abs(y-80)/RING_RY)**RING_N+(vn(x+3,y+5,5)-.5)*.4; c=u<1?((LAYERS.waves&&hash2(x,y)%31===0)?P.wave:P.water):((vn(x,y,6)+vn(x+50,y+20,16))/2>.5?CL1:CL2); } b.fillStyle=c; b.fillRect(x+M,y+M,1,1); if(LAYERS.waves&&isWater(c)&&hash2(x,y)%53===0) glints.push([x,y,hash2(x,y)>>9]); }
+  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); let c; if(inW) c=cols[y*WW+x]; else { const u=(Math.abs(x-100)/RING_RX)**RING_N+(Math.abs(y-80)/RING_RY)**RING_N+(vn(x+3,y+5,5)-.5)*.4; c=u<1?P.water:((vn(x,y,6)+vn(x+50,y+20,16))/2>.5?CL1:CL2); } b.fillStyle=c; b.fillRect(x+M,y+M,1,1); if(c===P.water){ if(hash2(x,y)%31===0) wv.fillRect(x+M,y+M,1,1); } if(isWater(c)&&hash2(x,y)%53===0) glints.push([x,y,hash2(x,y)>>9]); }
   const put=(wx,wy,c)=>{ b.fillStyle=c; b.fillRect(wx+M,wy+M,1,1); };
   sprites.cave.blit(put,104,127); sprites.forEach(s=>s.f(put));
   const isLand=(x,y)=>x>=0&&y>=0&&x<WW&&y<WH&&land[y*WW+x];
@@ -884,7 +886,7 @@ function draw(tick){
   const {vx,vy,z}=origin(); ctx.imageSmoothingEnabled=false; if(!tick) lastDraw=performance.now(); fctx.clearRect(0,0,fx.width,fx.height);
   if(view==='path'){ ctx.fillStyle=P.water; ctx.fillRect(0,0,CW,CH); ctx.drawImage(baseP,0,0,WW,WH,Math.round(-vx*z),Math.round(-vy*z),WW*z,WH*z); }
   else { ctx.fillStyle=CL2; ctx.fillRect(0,0,CW,CH); // beyond the sea there is only cloud
-  { const ix=Math.floor(vx), iy=Math.floor(vy), sw=Math.ceil(CW/z)+2, sh=Math.ceil(CH/z)+2; ctx.drawImage(base,ix+M,iy+M,sw,sh,-Math.round((vx-ix)*z),-Math.round((vy-iy)*z),sw*z,sh*z); } }
+  { const ix=Math.floor(vx), iy=Math.floor(vy), sw=Math.ceil(CW/z)+2, sh=Math.ceil(CH/z)+2; const args=[ix+M,iy+M,sw,sh,-Math.round((vx-ix)*z),-Math.round((vy-iy)*z),sw*z,sh*z]; ctx.drawImage(base,...args); if(LAYERS.waves) ctx.drawImage(wavesCv,...args); } }
   const put=(wx,wy,c)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
   // Landmark detail maps replace the low-resolution landmark once you are close, one region at a time. The landmark nearest the
   // middle of the view fades in, every other one fades out, so dragging from region to region crossfades them.
@@ -1042,7 +1044,7 @@ const lbtn=document.getElementById('layers'), lpop=document.getElementById('laye
 lbtn.onclick=()=>{ const o=lpop.hidden; lpop.hidden=!o; lbtn.setAttribute('aria-expanded',String(o)); };
 document.addEventListener('pointerdown',e=>{ if(!lpop.hidden&&!e.target.closest('.zbar')){ lpop.hidden=true; lbtn.setAttribute('aria-expanded','false'); } });
 lpop.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; lpop.querySelectorAll('[data-view]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); document.body.dataset.view=view; lpop.dataset.view=view; if(view==='path') fctx.clearRect(0,0,fx.width,fx.height); draw(); drawSoon(); });
-lpop.querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{ LAYERS[c.dataset.layer]=c.checked; if(c.dataset.layer==='waves') reskin(); else draw(); });
+lpop.querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{ LAYERS[c.dataset.layer]=c.checked; draw(); });
 document.getElementById('zin').onclick=()=>stepZoom(1); document.getElementById('zout').onclick=()=>stepZoom(-1);
 document.getElementById('me').onclick=()=>where();
 const root=document.documentElement;
@@ -1072,7 +1074,7 @@ function fxFrame(t){
   const {vx,vy,z}=origin(); fctx.clearRect(0,0,fx.width,fx.height);
   const f=Math.floor(t/160);
   const px=(wx,wy,c,a=1)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; fctx.globalAlpha=a; fctx.fillStyle=c; fctx.fillRect(sx,sy,z,z); };
-  const fg=Math.floor(t/520); for(let i=0;i<glints.length;i++){ const g=glints[i], ph=(fg+g[2])%12; if(ph<2) px(g[0],g[1],P.foam); } // the water is the slowest thing on the map
+  const fg=Math.floor(t/520); if(LAYERS.waves) for(let i=0;i<glints.length;i++){ const g=glints[i], ph=(fg+g[2])%12; if(ph<2) px(g[0],g[1],P.foam); } // the water is the slowest thing on the map
   if(z>=4) for(const n in SPEC) if((FADE[n]||0)>.6) SPEC[n].lights.forEach(([x,y],k)=>{ if(!(NIGHT||(SPEC[n].fires||[]).includes(k))) return; const [wx,wy]=sceneM(+n,x,y); px(wx,wy-1,(f+k)%2?P.glow:P.amber); px(wx,wy-2,((f+k)%3)?P.amber:P.pinHi); });
   if(z<4) for(let i=0;i<5;i++){ const w=((f+i)%4<2)?0:1, o=w+(i>2?1:0); px(151+i,10+o,P.flag); if(i<4) px(151+i,11+o,P.pinHi); }
   else for(const n in SPEC) if((FADE[n]||0)>.6) SPEC[n].flags.forEach(([x,y])=>{ const [wx,wy]=sceneM(+n,x,y); for(let i=0;i<5;i++){ const o=(((f+i)%4<2)?0:1)+(i>2?1:0); px(wx+i,wy+o,P.flag); } });
