@@ -120,8 +120,9 @@ fills the viewport and everything else floats on it, as in Google Maps.
   the world's resolution. The castle in GRAIN Keep becomes walls, corner towers, a gate, a keep, a library and an
   armory. The Guild Hall becomes a village with streets, a plaza, a market and a notice board. The Model Mines
   mountain becomes a lobed mine hill with shafts, timber, rails, an ore vault, lanterns and snow caps. Loop
-  Forest becomes a dense wood of pines and oaks with a winding trail, four small clearings for its stations,
-  and a campfire with stump seats, mushrooms and logs. No place is a plain oval: ground
+  Forest becomes an elf town in the canopy: great trees with houses built into their crowns, plank walkways
+  and rope bridges looping between them, a hearth on a round platform in the central tree, and lanterns. The
+  four stations are a scroll house, a workshop, a lantern tower and a gate house. No place is a plain oval: ground
   patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes a switchback trail with camps and the flag. The
   Foothills become a start camp on that island. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
   what the lesson is about. Only the landmark nearest the middle of the view shows its detail, and it eases in over about a
