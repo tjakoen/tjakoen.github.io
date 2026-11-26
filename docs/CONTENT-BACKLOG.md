@@ -11,7 +11,7 @@
 
 ## The vectorless RAG note (drafted 2026-11-17)
 
-**My AI Workflow Is Vectorless RAG and I Didn't Call It That**
+**My AI Loop Runs on Vectorless RAG and I Didn't Call It That**
 (content/notes/vectorless-rag-by-accident.md, **DRAFT**). A personal note that takes Shivani Virdi's
 LinkedIn post on retrieval by similarity against retrieval by reasoning, credits the idea to her
 plainly, and maps it onto the loop. CLAUDE.md is the table of contents, the standards are skills whose

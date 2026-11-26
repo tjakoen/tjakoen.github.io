@@ -1,25 +1,26 @@
 ---
-title: "My AI Workflow Is Vectorless RAG and I Didn't Call It That"
+title: "My AI Loop Runs on Vectorless RAG and I Didn't Call It That"
 audience: [build]
 level: intro
-subtitle: "Retrieval-augmented generation hands a model the right pages before it answers. Most systems pick those pages by similarity. Mine picks them by reading a table of contents, and that is why my AI loop runs on so little effort from me."
+subtitle: "I build with an AI loop, and the loop only works if a session that remembers nothing can find the right file by itself. That finding step is retrieval. Mine reads a table of contents instead of a vector index, and it is why the loop runs on so little effort from me."
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-26
-readingTime: "~10 min"
+readingTime: "~11 min"
 tags: [ai, rag, retrieval, standards, tooling]
 people: [shivani-virdi]
 sources: [book-vectorless-rag-post]
 summary: >
-  RAG gives a model the right pages before it answers. Most systems pick pages by similarity, using
-  vectors, while vectorless RAG gives the model a tree of sections and lets it read down to the page it
-  needs. My setup is the tree kind for Claude, Codex and OpenCode alike: one contents page, skills with
-  one-line descriptions, two code indexes and PANTRY's project index. It is why a fresh session finds
-  the right file without me pointing, which is most of what keeps the loop low effort. It is traceable
-  and cheap to keep, it costs extra reads, and my 37 notes still have no tree.
+  I build with an AI loop that starts blank every session, so it needs a way to find the one file that
+  applies. That step is retrieval, and mine is vectorless RAG: the model reads a table of contents,
+  picks a branch and opens one section, where most RAG systems pick pages by vector similarity. It works
+  the same for Claude, Codex and OpenCode through one CLAUDE.md linked as AGENTS.md, with skills, two
+  code indexes and PANTRY's project index below it. It is why I steer and review instead of briefing.
+  It is traceable, it costs extra reads, and my 37 notes still have no tree.
 social: |
-  I have been running vectorless RAG for months. I called it keeping good docs.
+  I build with an AI loop, and it starts blank every session. So it needs a way to find the one file
+  that applies. I called that keeping good docs. It turns out to be vectorless RAG.
 
   RAG means the AI looks things up before it answers. Most setups chop the documents into chunks, turn
   them into numbers and fetch whatever sits nearest the question. Vectorless RAG skips that. The model
@@ -28,24 +29,75 @@ social: |
   Mine is one file, CLAUDE.md, linked as AGENTS.md so Claude, Codex and OpenCode all read the same one.
   A question about my voice rules read 36 lines of a 677-line file.
 
-  The real win is effort. I no longer brief a session or carry state between them. I steer and review.
+  That is what keeps the loop cheap to run. I no longer brief a session or carry state between them. I
+  steer and review.
 
   The name came from Shivani Virdi's post on vectorless RAG. Thank you, @Shivani Virdi.
 
   #RAG #AIAgents #ClaudeCode #AgenticAI
-socialImage: "/media/notes/vectorless-rag-by-accident-social.png"
-socialImageAlt: "My AI workflow is vectorless RAG and I didn't call it that. A large 36, then of 677 lines, is all one question about my voice rules read. Under it a long bar for the whole file with one narrow band lit in ink, lines 159 to 194, the section it needed. Below: a contents page the model reads, not a vector database; one file, linked as AGENTS.md, for Claude, Codex and OpenCode; so I steer and review, I do not brief."
+socialImage:
+  - "/media/notes/vectorless-rag-by-accident-social-1-finding.png"
+  - "/media/notes/vectorless-rag-by-accident-social-2-setup.png"
+  - "/media/notes/vectorless-rag-by-accident-social-3-effort.png"
+socialImageAlt:
+  - "Card one of three, how my AI loop finds the right page. Two panels side by side. Vectors, the usual way: a scatter of dots with a ring around the nearest few, and three steps: chop documents into chunks, turn chunks into numbers, fetch the nearest few. Vectorless, the way my loop runs: a small tree with one path drawn in ink down to a filled leaf, and three steps: write a contents page, the model picks a branch, it opens that one section. Below: my loop starts blank every session and I run the right-hand kind; one question about my voice rules read 36 lines of a 677-line file."
+  - "Card two of three, one contents page and three AI tools. Claude, Codex and OpenCode read the same file. A box for CLAUDE.md, linked as AGENTS.md, with four branches below it: skills, 29 with one line each; code graphs, graphify and tokensave; PANTRY, the project index; and a CLAUDE.md per folder. One path in ink runs from skills to a filled box, one section, 36 of 677 lines. The loop walks down and reads only what the question needs. That is the whole trick, no vector database."
+  - "Card three of three, so I stopped briefing the loop. It reads a table of contents instead. Three outcomes: no briefing, one line of what I want; no carrying state, a resume card in the plan that any of the three tools picks up; no guessing, when it is wrong I ask which file it read and the answer is a path. Under them a bar for the whole 677-line file with one narrow band lit in ink. One question about my voice rules read 36 lines. Vectorless RAG for my AI loop, a name that came from Shivani Virdi."
 ---
 
-My AI has never read my standards. Every session starts blank, whether it is Claude, Codex or
-OpenCode, and every session has to find the one file that applies out of thirty-odd, without me
-standing there pointing.
+I build with an AI loop. A session starts blank, orients itself, picks up a plan, does the work,
+checks it and leaves a note for the next session, whether the session is Claude, Codex or OpenCode.
+The loop only works if a session that remembers nothing can find the one file that applies, out of
+thirty-odd standards, without me standing there pointing.
 
-For months I called whatever makes that work "keeping good docs." The AI world calls it vectorless
-RAG, a name I met in a [LinkedIn post](https://www.linkedin.com/posts/shivanivirdi_everyone-thinks-rag-chunking-embeddings-share-7527002415418732544-54j2/)
-by [Shivani Virdi](/people#shivani-virdi). This note covers what RAG is, what the vectorless kind does
-differently, and what my version buys me, including the parts that do not work. The tool-by-tool
-setup lives in a [companion note](how-my-sessions-walk-the-tree.md).
+That finding step is retrieval, and for months I called it keeping good docs. The AI world calls it
+vectorless RAG, a name I met in a [LinkedIn post](https://www.linkedin.com/posts/shivanivirdi_everyone-thinks-rag-chunking-embeddings-share-7527002415418732544-54j2/)
+by [Shivani Virdi](/people#shivani-virdi). This note is about RAG for the loop: what RAG is, what the
+vectorless kind does differently, and why it is the part that makes my loop cheap to run. The
+tool-by-tool setup lives in a [companion note](how-my-sessions-walk-the-tree.md).
+
+<svg viewBox="0 0 520 400" width="100%" role="img"
+     aria-label="One lap of my AI loop, top to bottom, with a path back to the top. Orient: a short brief from PANTRY on what is in flight. Find what applies, drawn in ink because it is the retrieval step: read the contents page, pick the skill, open one section. Do the work. Check it, with the gates and a second pass. Hand off: leave a resume card in the plan. From the hand-off an arrow returns to the top, labelled next session, any of the three tools."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-vectorless6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="100" y="16" width="260" height="48" rx="6"/>
+    <rect x="100" y="176" width="260" height="48" rx="6"/>
+    <rect x="100" y="256" width="260" height="48" rx="6"/>
+    <rect x="100" y="336" width="260" height="48" rx="6"/>
+  </g>
+  <rect x="100" y="96" width="260" height="48" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="230" y1="64" x2="230" y2="94" marker-end="url(#fl-vectorless6)"/>
+    <line x1="230" y1="144" x2="230" y2="174" marker-end="url(#fl-vectorless6)"/>
+    <line x1="230" y1="224" x2="230" y2="254" marker-end="url(#fl-vectorless6)"/>
+    <line x1="230" y1="304" x2="230" y2="334" marker-end="url(#fl-vectorless6)"/>
+    <path d="M360,360 H470 V40 H362" marker-end="url(#fl-vectorless6)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="230" y="37" style="fill:var(--color-fg)">Orient</text>
+    <text x="230" y="55" style="fill:var(--color-muted);font-size:11.5px">a short brief: what is in flight</text>
+    <text x="230" y="117" style="fill:var(--color-bg)">Find what applies</text>
+    <text x="230" y="135" style="fill:var(--color-bg);font-size:11.5px">contents page, skill, one section</text>
+    <text x="230" y="197" style="fill:var(--color-fg)">Do the work</text>
+    <text x="230" y="215" style="fill:var(--color-muted);font-size:11.5px">with that section in front of it</text>
+    <text x="230" y="277" style="fill:var(--color-fg)">Check it</text>
+    <text x="230" y="295" style="fill:var(--color-muted);font-size:11.5px">the gates, then a second pass</text>
+    <text x="230" y="357" style="fill:var(--color-fg)">Hand off</text>
+    <text x="230" y="375" style="fill:var(--color-muted);font-size:11.5px">a resume card in the plan</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
+       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="494" y="200" transform="rotate(-90 494 200)">next session, any of the three tools</text>
+  </g>
+</svg>
+
+*One lap of my loop. The ink box is the retrieval step, and it is the only box this note is about.*
 
 ## What RAG is, if you have never met it
 
@@ -115,7 +167,10 @@ the model to know.
 | A company assistant | The wiki, the policies, old tickets |
 | Reading a contract or a financial filing | One long document with real structure |
 | A coding assistant | The repository |
-| A class helper (one I could picture, not one I run) | The syllabus and the assignment pages |
+| **An AI loop that builds software (mine)** | The standards, the plans, the code and the state of the project |
+
+The last row is the one this note is about. It is retrieval for an agent that works, not for a chatbot
+that answers, so it has to be right at the start of every session with nobody watching.
 
 It took off for a boring reason. Retraining a model on your documents is slow and goes stale the day a
 policy changes. Retrieval only needs the pages updated, and the answer can point back at its source.
@@ -210,7 +265,7 @@ production systems end up using both kinds.
 
 ## I thought I was just being tidy
 
-None of this started as retrieval. I am disorganized and the AI is not, and I needed it to find things
+None of this started as retrieval, and none of it started as a loop. I am disorganized and the AI is not, and I needed it to find things
 without me pointing.
 
 Every repo opens with a CLAUDE.md, and the harness loads it first. The one here has a section called
