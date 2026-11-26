@@ -39,6 +39,11 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   and past it there is only more cloud, never open water. You reach the cloud by panning out, and the view stops at the wall, so you never scroll into empty cloud. A kraken lives in
   the sea at the top-left. Everything moves in pixel steps, holds still under reduced motion, and follows the
   Motion button.
+- **Night makes sense for the assets.** The dark scheme is night. Windows are dim blue-grey by day and lit
+  yellow at night, lanterns and torches are dull dots by day and glow at night while campfires, hearths and
+  lamps in hands stay lit all day, ferries hang a lantern at the mast, the kraken's eyes glow, a beam sweeps
+  from the Foothills lighthouse, fireflies drift over the forest, and the cloud wall and the cloud beyond it
+  dim to a dusk colour instead of staying bright against a dark sea. Switching scheme rebuilds the map once.
 - **One style, two rules.** Art, meaning the terrain, landmarks, detail scenes and the moving layer, is solid
   pixels with the dark outline color around every building and mountain, two-tone shading, no translucency, no
   blur and no smoothing. Trees and plants take a darker green for their edge and houses a darker brown, never black. Ground patches blend
