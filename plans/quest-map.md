@@ -169,7 +169,7 @@ fills the viewport and everything else floats on it, as in Google Maps.
   and rope bridges looping between them, a hearth on a round platform in the central tree, and lanterns. The
   four stations are a scroll house, a workshop, a lantern tower and a gate house. No place is a plain oval: ground
   patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes a peak with a switchback trail, tents and climbers, igloos and a frozen lake. The
-  Foothills become a port island with a lighthouse, a boathouse, a pier for the ferries and the start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
+  Foothills become a port island with a cone-shaped red and white lighthouse that is also drawn on the world map, so it shows at every zoom, a boathouse, a pier for the ferries and the start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
   what the lesson is about. Only the landmark nearest the middle of the view shows its detail, and it eases in over about a
   third of a second. Drag to another region and the old detail fades out while the next fades in, and the
   pins of the other regions dim, so the map feels like one place rather than a switch. Each scene is baked

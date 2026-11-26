@@ -516,6 +516,7 @@ function castleSpr(){ const s=spr();
 function hallSpr(){ const s=spr(); s.rect(-6,-6,13,6,P.wall); s.rect(1,-6,6,6,P.wall2);
   for(let j=0;j<6;j++) for(let i=-8+j;i<=8-j;i++) s.set(i,-7-j,i<=0?P.roof:P.roof2);
   s.rect(-1,-4,3,4,P.outline); s.set(-4,-4,P.glow); s.set(4,-4,P.glow); return s.outline(shade(P.wall2,.45)); }
+function lighthouseSpr(){ const s=spr(), lit=isNightNow(); for(let y=0;y>=-8;y--){ const hw=y>-3?2:1; for(let i=-hw;i<=hw;i++) s.set(i,y,(Math.floor(-y/2)%2===0)?'#f4f4f0':P.flag); } s.rect(-2,-9,5,1,P.wall2); s.rect(-1,-11,3,2,lit?P.glow:'#d8dde3'); s.rect(-1,-12,3,1,P.roof2); s.set(0,-13,P.roof2); return s.outline(shade(P.rock2,.45)); }
 function iglooSpr(){ const s=spr(), e=shade(P.snow2,.6); const rows=[[-4,4],[-4,4],[-3,3],[-2,2],[-1,1]]; rows.forEach(([a,b],j)=>{ for(let i=a;i<=b;i++) s.set(i,-j,i>0?P.snow2:P.snow); }); [[-2,-1],[1,-2],[-1,-3]].forEach(([x,y])=>s.set(x,y,P.snow2)); s.rect(-1,1-1,3,1,'#3b4a63'); s.set(0,-1,'#3b4a63'); return s.outline(e); }
 function houseSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.wall); for(let j=0;j<3;j++) for(let i=-4+j;i<=5-j;i++) s.set(i,-4-j,i<=0?P.roof:P.roof2); s.set(0,-1,P.outline); return s.outline(shade(P.wall2,.45)); }
 function peakSpr(){ const s=mountainSpr(26,.72); s.rect(0,-30,1,6,P.outline); s.rect(1,-30,4,3,P.flag); s.rect(1,-29,1,1,P.pinHi); return s.outline(P.outline); }
@@ -578,7 +579,7 @@ function buildWorld(){
   add(signSpr(),46,112);
   add(mountainSpr(20,.9),104,128); add(mountainSpr(15,.9),122,130); add(mountainSpr(13,.9),86,132);
   add(hallSpr(),146,96); add(houseSpr(),134,100); add(houseSpr(),158,102); add(houseSpr(),156,84);
-  add(castleSpr(),92,56); add(peakSpr(),150,40);
+  add(castleSpr(),92,56); add(peakSpr(),150,40); { const [lx,ly]=sceneM(1,16,38); add(lighthouseSpr(),Math.round(lx),Math.round(ly)); }
   { const sp=()=>{ const q=spr(); q.rect(0,-1,1,2,P.trunk); [[-3,3],[-2,2],[-1,1]].forEach(([_,hw],j)=>{ for(let i=-hw;i<=hw;i++){ q.set(i,-2-2*j,P.forest); q.set(i,-3-2*j,i<=0?P.snow:P.snow2); } }); return q.outline(shade(P.forest2,.5)); };
     [[132,50],[138,60],[166,50],[170,58],[174,66],[128,62],[144,48],[160,66]].forEach(([x,y])=>{ if(land[y*WW+x]&&reg[y*WW+x]===6) add(sp(),x,y); }); add(iglooSpr(),141,57); add(iglooSpr(),164,58); }
   sprites.sort((a,b)=>a.y-b.y);
@@ -773,7 +774,8 @@ function bakeScenes(){
       blob(P.grass,P.sand,.7,1.28); speckle(12,8,66,42,P.sand2,70);
       [[16,12,26,11],[44,10,22,10]].forEach(([x,y,w,h])=>{ for(let j=-1;j<h;j++){ const hw=Math.round(w/2*Math.sqrt(1-((j-h)/h)**2)); R(x+w/2-hw-1,y+j,hw*2+2,1,P.outline); } for(let j=0;j<h;j++){ const hw=Math.round(w/2*Math.sqrt(1-((j-h)/h)**2)); R(x+w/2-hw,y+j,hw*2,1,j<2?P.grass2:P.forest); } });
       L(34,38,70,30,P.roadEdge,4); L(34,38,70,30,P.road,2);
-      R(11,15,10,24,P.outline); R(12,16,8,22,'#f4f4f0'); for(let y=19;y<36;y+=6) R(12,y,8,3,P.flag); R(10,10,12,7,P.outline); R(11,11,10,5,NIGHT?P.glow:'#d8dde3'); R(9,7,14,4,P.outline); R(10,7,12,3,P.roof2); R(10,38,12,3,P.wall2);
+      for(let y=16;y<=38;y++){ const hw=Math.round(3+(y-16)*3/22); R(16-hw-1,y,hw*2+2,1,P.outline); R(16-hw,y,hw*2,1,(Math.floor((y-16)/6)%2===0)?'#f4f4f0':P.flag); R(16,y,hw,1,(Math.floor((y-16)/6)%2===0)?'#dfe3e8':'#c8382a'); }
+      R(10,10,12,7,P.outline); R(11,11,10,5,NIGHT?P.glow:'#d8dde3'); for(let y=3;y<=9;y++){ const hw=Math.round((y-3)*7/6); R(16-hw-1,y,hw*2+3,1,P.outline); R(16-hw,y,hw*2+1,1,P.roof2); } R(8,38,16,3,P.outline); R(9,38,14,2,P.wall2);
       house(60,22,16,10,P.roof2,P.roof);
       L(70,30,87,30,P.outline,8); L(70,30,87,30,P.trunk,6); for(let x=72;x<86;x+=3) R(x,27,1,6,P.wall2); [72,80,86].forEach(x=>{ R(x,24,2,2,P.outline); R(x,34,2,2,P.outline); }); R(84,22,2,5,P.trunk);
       R(55,30,7,7,P.outline); R(56,31,5,5,P.trunk); R(56,33,5,1,P.wall2); D(66,38,3,P.outline); D(66,38,2,P.trunk);
