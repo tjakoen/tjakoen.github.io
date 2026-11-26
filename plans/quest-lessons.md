@@ -25,12 +25,16 @@ decides where a note is cut, how big a stop is, and which lessons exist.
    There is no second unit between a segment and a stop.
 4. **Size.** A stop covers about 600 to 1,500 words of the note. A section is never split across stops. A
    section over 1,500 words stands alone as a reference stop, marked so the book can say "this is the
-   reference part, skim it". Four exist today: the light chain in how-the-model-layer-works (2,212), the
-   related work section of the whitepaper (2,777), what a Model Intelligence Layer does (1,899) and the part
-   that makes it professional in ten-times-zero (1,641). A tail under 500 words folds into the stop
-   before it. A note of 1,200 words or more always gets at least two stops.
+   reference part, skim it". Five exist today: the light chain in how-the-model-layer-works (2,212), the
+   related work section of the whitepaper (2,777), what a Model Intelligence Layer does (1,899), the part
+   that makes it professional in ten-times-zero (1,641) and the shape of the floor in build-the-floor (1,675).
+   A reference stop is always a single section. A tail under 500 words folds into the stop before it, unless
+   the fold would push that stop past 1,500 words, in which case the tail stands alone. A note of 1,200 words
+   or more always gets at least two stops, and that rule wins over the tail rule.
 5. **Lessons hold three to six stops.** A note that yields more is cut into lessons of near equal size, at
-   a section boundary. A lesson is about 15 to 30 minutes of recording.
+   a section boundary. A note that yields fewer joins the next note in its region as one lesson, as long as
+   the lesson stays at six stops or fewer. If no neighbour can take it, a two-stop lesson is allowed, and this
+   plan names it. A lesson is about 15 to 30 minutes of recording.
 6. **Sources never become stops.** Sections named Sources, The sources, References or What I read to get
    here are skipped, and the links inside them feed the Pack tab.
 7. **A concept highlight names a section id and a short quote.** The quote finds the passage inside that
@@ -45,8 +49,9 @@ decides where a note is cut, how big a stop is, and which lessons exist.
 A new note should not need a hand cut. The same tool that checks quest fit (tools/quests.ts check) walks the
 note's H2 sections by these rules and writes a draft lesson file with the stops, the ids and the word
 counts. I then write the stop titles, the digests and the trials. A human can move any boundary. The
-tables below are what the rules produce today, with one correction: watch-its-hands came out as a single
-stop and was split in two by the 1,200 word rule.
+tables below are what the rules produce today, with two corrections: watch-its-hands came out as a single
+stop and was split in two by the 1,200 word rule, and show-them-the-board gets a fourth stop because folding
+its 457 word tail would break the 1,500 word cap.
 
 ## The lesson file
 
@@ -57,7 +62,7 @@ what a note cannot: the stop's title in my words, its cut, its runes, its trial 
 id: loop-setup
 quest: loop-forest-3
 title: Set up your own loop
-summary: In five short stops I walk you through setting up the loop on a repo of your own, from the first prompt to the first run.
+summary: In five short stops I walk you through setting up the loop on a repo of your own, from the first prompt to the first check.
 audio: /media/lessons/loop-setup.m4a
 stops:
   - title: Start with the prompt, then the idea
@@ -65,9 +70,9 @@ stops:
     from: intro
     to: what-the-loop-is
     runes:
-      - id: the-prompt-is-the-spec
+      - id: the-prompt-is-short
         section: start-with-the-prompt
-        quote: The prompt is the first standard
+        quote: The prompt is short
     trial: Write the one prompt you would give a new repo.
     digest: [one line each, three at most]
 ```
@@ -129,12 +134,12 @@ note's section on where the plan lives.
 |---|---|---|---|---|
 | Loop Forest | one-loop-every-repo | 1 | 4 | 2,645 |
 | Loop Forest | one-loop-three-harnesses | 1 | 4 | 3,440 |
-| Loop Forest | loop-setup | 1 | 3 | 3,203 |
-| Loop Forest | the-check-that-never-ran | 1 | 2 | 1,859 |
+| Loop Forest | loop-setup | 1 (shared with the-check-that-never-ran) | 3 | 3,203 |
+| Loop Forest | the-check-that-never-ran | joins the loop-setup lesson | 2 | 1,859 |
 | Model Mines | necessity-and-the-model-layer | 1 | 4 | 4,710 |
 | Model Mines | plan-big-type-small | 1 | 4 | 3,284 |
 | Model Mines | how-the-model-layer-works | 2 | 9 | 9,619 |
-| Guild Hall | show-them-the-board | 1 | 3 | 3,815 |
+| Guild Hall | show-them-the-board | 1 | 4 | 3,815 |
 | Guild Hall | move-bugs-left | 1 | 3 | 2,248 |
 | Guild Hall | the-reviewer-that-learned-to-be-wrong | 2 | 8 | 5,886 |
 | GRAIN Keep | watch-its-hands | 1 | 2 | 1,679 |
@@ -144,8 +149,8 @@ note's section on where the plan lives.
 
 
 
-Counts come from the rules above and move whenever a note is edited. Totals today: 14 notes, 68 stops,
-18 lessons, which is roughly four and a half hours of recording at four minutes a stop. That is the honest
+Counts come from the rules above and move whenever a note is edited. Totals today: 14 notes, 69 stops,
+17 lessons, which is roughly four and a half hours of recording at four minutes a stop. That is the honest
 cost, and why the order below matters.
 
 **Loop Forest · one-loop-every-repo**
@@ -164,18 +169,14 @@ Lesson
 - Stop 3: The model is a routing decision (679 words)
 - Stop 4: A week with one to five projects to The part I keep (1,064 words)
 
-**Loop Forest · loop-setup**
+**Loop Forest · loop-setup and the-check-that-never-ran, one lesson of five stops**
 
 Lesson
 - Stop 1: intro to What the loop is (1,148 words)
 - Stop 2: Your standards are the contract you write to Step three: the checklist (848 words)
 - Stop 3: Step four: the guards, when they earn it to The turn (1,207 words)
-
-**Loop Forest · the-check-that-never-ran**
-
-Lesson
-- Stop 1: One run in a hundred and sixty-five sessions to The story I told myself, and it was a good one (738 words)
-- Stop 2: Then I ran it myself, from the wrong folder to What it says now (1,121 words)
+- Stop 4 (the-check-that-never-ran): One run in a hundred and sixty-five sessions to The story I told myself, and it was a good one (738 words)
+- Stop 5 (the-check-that-never-ran): Then I ran it myself, from the wrong folder to What it says now (1,121 words)
 
 **Model Mines · necessity-and-the-model-layer**
 
@@ -212,7 +213,8 @@ Lesson 2
 Lesson
 - Stop 1: I was building the wrong thing, carefully to The review kit, now with a window (973 words)
 - Stop 2: Crew Watch, attempt number four (1,176 words)
-- Stop 3: My whole AI policy is a demo to What I have not earned yet (1,666 words) (reference stop)
+- Stop 3: My whole AI policy is a demo (1,209 words)
+- Stop 4: The rule that comes with the token to What I have not earned yet (457 words)
 
 **Guild Hall · move-bugs-left**
 
@@ -238,7 +240,7 @@ Lesson 2
 
 Lesson
 - Stop 1: intro to So I built the boring version (1,213 words)
-- Stop 2: What I have not earned to Watch its hands (466 words)
+- Stop 2: What I have not earned to Watch its hands (466 words) (a two-stop lesson, allowed because the region has no other note that fits)
 
 **GRAIN Keep · whitepaper-one-vocabulary**
 

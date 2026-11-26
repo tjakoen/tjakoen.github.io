@@ -25,14 +25,14 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   selected region with a numbered route. Layers sit bottom left and zoom and find-me bottom right. A blue
   dot marks the adventurer, and a main road in amber links the quests in order.
 - **Zoom adds detail.** Zooming in shows what the world view leaves out: tents, torches, a mine cart and
-  numbered stop pins. The RPG quest modal opens over the zoomed map.
+  numbered stop pins. The quest opens in the place panel.
 - **The map moves, a little.** A second canvas over the map redraws about six times a second, in pixel steps:
   glints on the water, torch flames, the summit flag and a pulse on the adventurer. Nothing else moves. It
   draws nothing while the view is panning, zooming or flying, so interaction stays smooth. It is decoration
   only. It starts off when the system asks for reduced motion, and a Motion button turns it on or off either way.
 - **Warm paper, amber accent.** It shares the ant colony's palette, so the site keeps one voice. Labels
   carry a halo the way map labels do.
-- **Theming follows the site.** The chrome (panel, modal, search, chips, guild card, book pages) reads
+- **Theming follows the site.** The chrome (panel, search, chips, guild card, book pages) reads
   GRAIN tokens only, so it works in sourdough, baguette and brioche, in light and dark. The art palette
   is quest-specific and keyed on data-color-scheme, never on the flavor. The page is a scoped exception to
   the one-hue rule, art only, and nothing depends on color alone. Every flavor and scheme pair gets a
@@ -47,7 +47,7 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   two-page spread becomes one page you swipe between. Touch targets are at least 38 pixels.
 - **Per-region scenes.** Each region has a small pixel scene (hills, forest, mines, hall, keep, summit)
   used on the place panel, the lesson card and the mobile card, so nothing is a stretched map crop.
-- **Numbers.** Quest level follows the note's level field: intro is Lv 1, intermediate Lv 2, deep Lv 3.
+- **Numbers.** Quest level follows the note's level field: intro is Lv 1, intermediate Lv 2, deep Lv 3, shown as a label only.
   XP is 25 per reading minute plus 100 per trial, a sample formula to tune after the pilot. Class comes
   from the note's audience, and reading time from its readingTime.
 - Final build uses a self-hosted pixel font. The mockup falls back to monospace.
@@ -138,7 +138,7 @@ The notes already carry what a quest needs. Nothing new is typed per note.
 | Quest field | Comes from |
 |---|---|
 | Region | shared tags, plus a hand-approved region in content/quests/regions |
-| Adventurer level | the note's level: intro, intermediate, deep |
+| Quest level chip | the note's level: intro, intermediate, deep. A difficulty label only. It does not order regions or gate anything. Player level comes from XP alone, on a curve to set after the pilot. |
 | Class | the note's audience: build, lead, learn, teach |
 | XP | readingTime plus the number of stops |
 | You will learn | the note's summary and its headings |
@@ -195,16 +195,26 @@ This is the part that keeps the map alive without hand editing.
 - [ ] Motion layer: water glints, torches, the flag and one pulse, paused during pan and zoom, off under reduced motion, with a Motion button.
 - [ ] Reduced motion, captions, keyboard path and contrast checked in both themes.
 - [ ] First recording for one quest, to prove the book end to end before recording the rest.
+- [ ] Extract the map, place panel, guild card and book into GRAIN once the pilot has run, leaving this site to supply the data and the theme.
 
 ## Where the code lives
 
-The map, modal, guild card and book are generic. They should end up in a GRAIN or CRUMB layer, with
-this site supplying the data and the theme. Build them here first and extract once the shape has held
-for a second quest set. Design work belongs up in grain, so the extraction is part of done, not a
-someday.
+The map, place panel, guild card and book are generic. They should end up in GRAIN, with this site
+supplying the data and the theme. Build them here first and extract them once the pilot lesson has run
+end to end. Design work belongs up in grain, so the extraction is a task on the list below and part of
+done, not a someday.
+
+## Tests and gates
+
+- Unit tests for tools/quests.ts: placement outcomes, the five-note region proposal, and a pin on a draft failing.
+- A keyboard-only walk of the map and the place panel, and a test that Motion starts off under reduced motion.
+- The WCAG gate over the map page and a note with a lesson card, in all six flavor and scheme pairs.
+- The playwright suite, including the visual baselines on macOS, plus the lint gate.
+- A run report under artifacts/runs and a memory note for the decisions made.
 
 ## Honest limits
 
+- Where about four and a half hours of audio is hosted is not decided. A public repository is the wrong home for large files.
 - Progress is local to the browser until saved. Clearing storage without a save file loses it.
 - The badge shows what the holder says they finished. Nothing on a static site can prove it.
 - The region groupings are my first read of the notes, not a curriculum. Order and prerequisites need
@@ -212,6 +222,6 @@ someday.
 
 ## Done when
 
-The map ships with six regions, one fully recorded quest, the check wired into the note skill, tsc and
-bun test green, and screenshots of the map, a modal and the lesson book in light and dark shown in the
-session.
+The map ships with six regions, one fully recorded quest, the check wired into the note skill, the
+extraction into GRAIN done, every gate in Tests and gates green with the totals recorded, and screenshots
+of the map, the place panel and the lesson book in light and dark shown in the session.
