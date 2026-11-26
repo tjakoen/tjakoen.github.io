@@ -1,5 +1,6 @@
 // tools/quests.ts: the quest layer of the learning map (plans/quest-map.md, "Adding a note adds a quest").
 //   bun tools/quests.ts check [slug]   place one note, or every published note, and print the outcome
+//   bun tools/quests.ts propose        propose a region where five or more unplaced notes share a tag
 //   bun tools/quests.ts write          regenerate content/quests/index.json
 //   bun tools/quests.ts verify         fail when the index is stale, or a region lists a draft or a missing note
 // The regions are hand approved in content/quests/regions.json. The index is generated from them and from each note's own
@@ -21,6 +22,10 @@ export const NOTES_DIR = join(ROOT, "content", "notes");
 export const REGIONS_FILE = join(ROOT, "content", "quests", "regions.json");
 export const INDEX_FILE = join(ROOT, "content", "quests", "index.json");
 const LEVELS = ["intro", "intermediate", "deep"];
+// Every published note carries this tag, so it says nothing about where a note belongs.
+export const GENERIC_TAG = "ai";
+// Five unplaced notes that share a tag are enough to propose a region for a person to approve.
+export const REGION_THRESHOLD = 5;
 
 /** Reads the frontmatter block of a note. The values are YAML, which Bun parses. */
 export function readNote(slug: string, text: string): Note {
@@ -40,7 +45,7 @@ export function placeNote(note: Note, regions: Region[]): Placement {
   const missing: string[] = [];
   if (!note.level || !LEVELS.includes(note.level)) missing.push("level");
   if (!note.audience?.length) missing.push("audience");
-  if (!note.tags?.length) missing.push("tags");
+  if (!note.tags?.some((t) => t !== GENERIC_TAG)) missing.push(`a tag besides ${GENERIC_TAG}`);
   if (!note.readingTime) missing.push("readingTime");
   if (missing.length) return { outcome: "cannot-place", missing };
   for (const region of regions) {
@@ -48,6 +53,24 @@ export function placeNote(note: Note, regions: Region[]): Placement {
     if (position >= 0) return { outcome: "fits", region, position };
   }
   return { outcome: "fits-nothing", tags: note.tags! };
+}
+
+export type Proposal = { tag: string; name: string; notes: string[] };
+
+/** Groups the published notes no region lists by their first tag after the generic one. A group of five or more is proposed as a
+ *  region. The name is the tag in capitals and the landmark is left for the person approving it, so the tool never invents art. */
+export function proposeRegions(notes: Note[], regions: Region[]): Proposal[] {
+  const groups = new Map<string, string[]>();
+  for (const note of notes) {
+    const placed = placeNote(note, regions);
+    if (placed.outcome !== "fits-nothing") continue;
+    const tag = placed.tags.find((t) => t !== GENERIC_TAG)!;
+    groups.set(tag, [...(groups.get(tag) ?? []), note.slug]);
+  }
+  return [...groups]
+    .filter(([, slugs]) => slugs.length >= REGION_THRESHOLD)
+    .map(([tag, slugs]) => ({ tag, name: tag.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase()), notes: slugs.toSorted() }))
+    .toSorted((a, b) => b.notes.length - a.notes.length || a.tag.localeCompare(b.tag));
 }
 
 /** "~12 min" is 12. */
@@ -93,6 +116,11 @@ if (import.meta.main) {
         : p.outcome === "fits-nothing" ? `${slug}: fits no region yet (tags: ${p.tags.join(", ")})`
         : p.outcome === "cannot-place" ? `${slug}: cannot be placed, missing ${p.missing.join(", ")}` : `${slug}: a draft, never a quest`);
     }
+  } else if (cmd === "propose") {
+    const notes = readdirSync(NOTES_DIR).filter((f) => f.endsWith(".md")).map((f) => loadNote(f.slice(0, -3))!).filter(Boolean);
+    const found = proposeRegions(notes, regions);
+    if (!found.length) console.log(`no region to propose: no tag is shared by ${REGION_THRESHOLD} or more unplaced notes`);
+    for (const p of found) console.log(`propose a region for the tag ${p.tag} (${p.notes.length} notes): ${p.notes.join(", ")}\n  name: ${p.name}, landmark: to be chosen by a person`);
   } else if (cmd === "write" || cmd === "verify") {
     const { quests, errors } = buildIndex(regions, loadNote);
     if (errors.length) { console.error(errors.join("\n")); process.exit(1); }
@@ -103,5 +131,5 @@ if (import.meta.main) {
       if (have !== next) { console.error("content/quests/index.json is stale: run bun tools/quests.ts write"); process.exit(1); }
       console.log(`index is current, ${quests.length} quests`);
     }
-  } else { console.error("usage: bun tools/quests.ts check [slug] | write | verify"); process.exit(2); }
+  } else { console.error("usage: bun tools/quests.ts check [slug] | propose | write | verify"); process.exit(2); }
 }
