@@ -51,8 +51,8 @@ date: 2026-07-03         # ISO, the day it's written/updated
 readingTime: "~8 min"    # honest estimate, "~N min" format
 tags: [teaching, ai, native-first]   # lowercase, real topics, ~3–6
 summary: >
-  A 1–3 sentence abstract for listing pages and AI/SEO. Says what the piece argues, in his voice,
-  not "this post will discuss…". This is the AEO surface, make it a real answer.
+  A short abstract of about 60 words or fewer, for the TL;DR, listing pages and AI/SEO. The first
+  sentence is the answer. Says what the piece argues, in his voice, not "this post will discuss…".
 social: |
   Ready-to-post copy. Every note has it, with the image and alt text below.
 socialImage: "/media/notes/example-social.png"
@@ -72,13 +72,22 @@ changelog:               # optional, newest first, one line per major change
 | `type` | Kind | `note` for a blog post; `whitepaper` for the long-form formal piece. |
 | `date` | ISO date | The write/update day. |
 | `readingTime` | Honest estimate | `"~N min"`, measured at 220 words per minute over the prose only (frontmatter, code, markup and link URLs do not count). `bun tools/reading-time.ts --check` holds every note to it, and the number is not decoration: the feed's "Longest" sort reads it. |
-| `tags` | Topics | Lowercase, real, ~3–6. Reuse existing tags where they fit. |
-| `summary` | Abstract for listings + AI/SEO | A real answer in his voice. This is the AEO payload; treat it as first-class. |
+| `tags` | Topics | Required. Lowercase, real, ~3–6. Reuse existing tags where they fit. They become the keywords in the note's JSON-LD. |
+| `summary` | The TL;DR, the listing text and the meta description | Required. A real answer in his voice, about 60 words or fewer, with the answer in the first sentence. The note page shows it under the masthead with a TL;DR label, so it is the first text a reader or an assistant meets. This is the AEO payload; treat it as first-class. Notes written before 2026-11-27 run longer, with a median near 100 words, and are being shortened as they are touched. |
 | `social` | Ready-to-post copy | Required, except on a technical companion whose main note's post already points to it; mark that note `companion: true` so the check can tell the exception from an omission. A short post, not the summary. The page renders it at the bottom with the canonical link. |
 | `socialImage` | Social image path | Required wherever `social` is. Supply a 1200×1200 PNG the reader can download and attach to the post, or an animated GIF when the post needs motion. A list posts several; do not list the same picture twice, still and moving. |
 | `socialImageAlt` | Social image alt | Required for every social image. Describe what the card shows. |
 | `updated` | The day of the last major change | Optional. ISO date. Renders as an edited line under the masthead. `date` never moves. |
 | `changelog` | What changed, and when | Optional. A list of `"YYYY-MM-DD \| sentence"` strings. Renders as a block at the foot of the note. |
+
+### What the page does with the frontmatter for machines
+
+A note page is built so that an assistant reading it, in a browser sidebar or by fetching the address, gets the short answer and clean text without a special prompt. Nothing here is hidden from a reader, and no text on the page addresses a crawler.
+
+- The summary renders as the visible TL;DR under the masthead.
+- The page head carries a BlogPosting JSON-LD block. It takes datePublished from the date field and dateModified from the updated field, or from the date field when a note has no updated field, keywords from the tags, and the reading time as an ISO 8601 duration.
+- The page head links the note's raw Markdown as an alternate link of type text/markdown. The same file is served at the note's address with .md added, so the words are available without the page layout.
+- The site also publishes /llms.txt as an index of its pages for models. It is a community convention, not a web standard, so treat it as a courtesy and not as something a tool is guaranteed to read.
 
 ### Edited notes and the changelog
 
