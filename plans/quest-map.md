@@ -127,6 +127,12 @@ fills the viewport and everything else floats on it, as in Google Maps.
   move through regions in a region, through the quest route in a quest and through stops in a stop, with a
   count beside them such as 3 of 9 stops. They are disabled at the ends, and the left and right square bracket
   keys do the same. The stops sit in a bordered box of numbered rows that highlight the current one.
+- **Layers is a real control, like satellite against map.** The tile at the bottom left opens a small panel
+  with two map types and a few details. Explorer is the full pixel world. Path only is the same island as flat
+  paper tinted by region, with the roads that join the regions and every quest's route drawn in its region's
+  colour with a dot at each stop, green for finished ones. It leaves out the art, the people and the weather, and
+  it follows the light and dark schemes. The details are route dots, people at work, ships and sea life, and
+  birds and smoke, each a checkbox. Switching is one redraw of the canvas, with no extra work while idle.
 - **The filter chips work.** Loop, Models, Leading and Design fly to that region, All returns to the world
   view, and Not started dims every region and quest that is already done. Pins and labels that do not match
   fade instead of disappearing.
