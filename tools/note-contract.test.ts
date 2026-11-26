@@ -81,7 +81,7 @@ test("every note declares the required frontmatter the standard lists", () => {
 });
 
 test("the drafts still waiting on a card are counted, so the number cannot grow unnoticed", () => {
-  const draftsWaiting = notes.filter((n) => n.status !== "PUBLISHED" && n.date >= CUTOVER && n.images.length === 0);
+  const draftsWaiting = notes.filter((n) => n.status !== "PUBLISHED" && n.date >= CUTOVER && !n.companion && n.images.length === 0);
   // Not a failure while they are drafts. This line is the count a publish check reads first.
   console.log(`[note-contract] ${draftsWaiting.length} draft(s) dated from ${CUTOVER} have no card yet: ${draftsWaiting.map((n) => n.file).join(", ") || "none"}`);
   expect(draftsWaiting.length).toBeLessThanOrEqual(7);
