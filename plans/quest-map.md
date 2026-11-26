@@ -127,8 +127,8 @@ fills the viewport and everything else floats on it, as in Google Maps.
   busy terrain: red for open, green with a check for done, grey for filtered out, amber for a stop. It stays
   the same size at every zoom level, has a target of at least 44 pixels with its padding, and grows and gains
   a ring when selected. A pin shows no name by default. Hovering or focusing it shows a small card beside it with the name,
-  level, minutes and stop count, flipped to the left near the screen edge, and the selected pin keeps its card.
-  A click opens the quest in the place panel. Pins are smaller while zoomed out and full size from the
+  level, minutes and stop count, flipped to the left near the screen edge. A click opens the quest in the place panel and hides the
+  card until the pointer leaves the pin, so a selected pin never leaves a card covering the map. Pins are smaller while zoomed out and full size from the
   Landmark level. Stop pins are numbered one to nine. Pins are buttons with names and labels are text, so keyboard and screen reader users
   get the same route lists and the canvas is decoration. Arrow keys
   pan and plus and minus zoom. Escape goes up one level.
