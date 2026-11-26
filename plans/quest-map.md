@@ -304,12 +304,12 @@ done, not a someday.
 
 ## Audit follow-ups (2026-11-27)
 
-- [ ] Bake the base map, scenes and sprites to a cached image at build time, so nothing is drawn procedurally on load.
-- [ ] Draw waves on their own layer so toggling them is cheap, and cap the canvas size on very large screens.
-- [ ] Render the region, quest and stop lists as plain HTML so the route works without JavaScript.
-- [ ] Move quests, routes, scene specs and people paths into data, and separate drawing from DOM writes.
-- [ ] Check contrast in all six flavor and scheme pairs, and run the WCAG gate.
-- [ ] Tests for the quest check, routes, progress and the panel controls.
+- [x] Bake the base map, scenes and sprites to a cached image at build time, so nothing is drawn procedurally on load. The base map, waves, path-only map, layer icon and six scenes are baked by bake-art.ts for all six pairs and fetched on load; the baked images hash identical to the drawn ones. The small mover sprites (people, boats, birds, the kraken) are still built on load, and a mockup that is served without the art folder falls back to drawing everything.
+- [x] Draw waves on their own layer so toggling them is cheap, and cap the canvas size on very large screens. The waves are a transparent layer over the base, so the toggle only redraws, and the art pixel scale grows in whole steps so the canvas stays within 1280 by 800.
+- [x] Render the region, quest and stop lists as plain HTML so the route works without JavaScript. route-list.ts writes them from the data block, and a test fails when they drift.
+- [x] Move quests, routes, scene specs and people paths into data, and separate drawing from DOM writes. They live in one JSON block, and paint draws while writeDom is the only place that touches the page.
+- [x] Check contrast in all six flavor and scheme pairs, and run the WCAG gate. The quest ribbon was 3.9 to 1 and is now above 5.7 to 1. The map passes axe in all six pairs across five panel states. The sitemap-wide gate in wcag.e2e.ts was not run, because the mockup is not a route of the site.
+- [x] Tests for the quest check, routes, progress and the panel controls. The routes, progress and panel controls are covered by 13 bun tests and nine browser tests. The quest check from the note skill is not covered, because tools/quests.ts does not exist yet; that stays open with the extraction work above.
 
 ## Honest limits
 
