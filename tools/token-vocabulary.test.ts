@@ -48,6 +48,7 @@ const read = (f: string) => readFileSync(f, "utf8");
 // checkable. Adding a name here without one turns this guard back into decoration.
 const EXTERNALLY_SET = new Map<string, string>([
   ["--read", "runtime: scripts/note-progress.js:32 setProperty, documented in view/components/molecules/note-contents/note-contents.md:22"],
+  ["--ps", "runtime: view/learn-map/map.html:1124 setProperty sets the pin size as the map zooms"],
 ]);
 
 test("every custom property the portfolio reads is defined by GRAIN or the portfolio", () => {
