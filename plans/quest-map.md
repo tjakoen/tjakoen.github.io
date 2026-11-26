@@ -139,7 +139,7 @@ fills the viewport and everything else floats on it, as in Google Maps.
   Forest becomes an elf town in the canopy: great trees with houses built into their crowns, plank walkways
   and rope bridges looping between them, a hearth on a round platform in the central tree, and lanterns. The
   four stations are a scroll house, a workshop, a lantern tower and a gate house. No place is a plain oval: ground
-  patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes a switchback trail with camps and the flag. The
+  patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes one peak with a single switchback trail, a camp, two cabins and a frozen lake, kept quiet on purpose. The
   Foothills become a port island with a lighthouse, a boathouse, a pier for the ferries and the start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
   what the lesson is about. Only the landmark nearest the middle of the view shows its detail, and it eases in over about a
   third of a second. Drag to another region and the old detail fades out while the next fades in, and the
