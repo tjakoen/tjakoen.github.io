@@ -133,8 +133,8 @@ fills the viewport and everything else floats on it, as in Google Maps.
 - **Foothills has things to click.** Zoomed in, the port island has a Claude Academy pin and a Ferry pin. Both
   have hover cards. The Ferry pin flies to the Guild Hall, and the Foothills panel has the same two buttons.
 - **A chosen pin fades out.** When a quest or region pin is clicked its red marker fades away and the stops, or
-  the region, take over. The selected route is a bold amber dashed trail with a dark edge that slowly marches
-  along the path, so it stands out from the terrain. It is drawn beneath the people, boats and birds, so a miner, guard or
+  the region, take over. The selected route is a line of round amber dots with a dark edge that flow slowly
+  from the first stop to the last along the path, so it stands out from the terrain without looking like a snake. It is drawn beneath the people, boats and birds, so a miner, guard or
   climber on the route is never hidden by it.
 - **Zoom is smooth and cheap.** A zoom from the panel, the wheel or the buttons is a CSS scale of the whole
   stage, eased, with only the camera pan done in script. Zooming in scales the old level up and swaps to the
@@ -167,7 +167,7 @@ fills the viewport and everything else floats on it, as in Google Maps.
   really walk: the mine's tunnels, the village streets, the castle road to the keep, the forest walkways in the
   canopy and the summit trail, up for one quest and down for the other. The stops sit at even steps along the
   route in lesson order, so the numbers read as a walk from first to last. Selecting a quest or a stop draws a
-  dashed amber trail along that route, and nothing cuts across walls or rock. Quest pins sit beside the routes, never on them: a pin that would
+  line of round amber dots flowing along that route, and nothing cuts across walls or rock. Quest pins sit beside the routes, never on them: a pin that would
   land close to a route is pushed out to a clear distance from it.
 - **Pins and labels are real elements over the canvas, and they are not pixel art.** The terrain and landmarks
   are pixel art. A pin is a clean round marker with a number, a white edge and a pointer, so it reads against
