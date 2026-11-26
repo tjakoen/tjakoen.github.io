@@ -91,6 +91,10 @@ fills the viewport and everything else floats on it, as in Google Maps.
   closed by default, that opens icon buttons for motion, the three flavors as swatches and auto, light and
   dark. On a phone the icon moves to the bottom left and the panel is a bottom
   sheet. The site sidebar stays closed on this page.
+- **The panel has a pinned back button.** A bar at the top of the panel stays in view while the panel
+  scrolls. It holds a real button at the top left that names where it goes (All regions from a region, the
+  region from a quest, the quest from a stop, and Back from a search) and a short breadcrumb beside it.
+  Escape does the same one step.
 - **The panel replaces the modal.** Welcome, region, quest and stop are four states of one place panel,
   the way a place card works. The RPG details (class, level, XP, what it covers, stops) live in the quest
   state. Begin quest opens the note in lesson mode. The separate modal over the zoomed map is dropped.
@@ -109,7 +113,7 @@ fills the viewport and everything else floats on it, as in Google Maps.
   land on a pin or another tag, or off the screen, is hidden, and the selected quest or stop always wins. Stop
   pins are numbered one to nine. Pins are buttons with names and labels are text, so keyboard and screen reader users
   get the same route lists and the canvas is decoration. Arrow keys
-  pan, plus and minus zoom, and Escape returns to the welcome card.
+  pan and plus and minus zoom. Escape goes up one level.
 - **Working prototype:** docs/mockups/quest-map/fullscreen.html, with the real quests, levels, reading
   times and proposer stops. Drag, scroll, click and search all work.
 

@@ -311,6 +311,13 @@ body { margin:0; background:var(--q-water); }
 .searchbar button { box-shadow:none; border:2px solid var(--q-ink); padding:0 .4rem; }
 .panelcard { background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); overflow:auto; align-self:start; max-height:100%; }
 .panelcard[hidden] { display:none; }
+.pnav { position:sticky; top:0; z-index:3; display:flex; align-items:center; gap:.6rem; padding:.45rem .6rem; background:var(--q-panel); border-bottom:3px solid var(--q-ink); }
+.pnav .back { display:inline-flex; align-items:center; gap:.35rem; flex:none; padding:.3rem .65rem .3rem .45rem; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); font:inherit; font-weight:700; font-size:.8rem; line-height:1.1; cursor:pointer; box-shadow:2px 2px 0 var(--q-ink); max-width:60%; }
+.pnav .back span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pnav .back:hover { background:var(--q-accent); color:var(--q-accent-ink); }
+.pnav .back:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
+.pnav svg { width:16px; height:16px; flex:none; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.pnav .crumb { color:var(--q-muted); font-size:.74rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
 .pc-head canvas { width:100%; height:auto; display:block; border-bottom:3px solid var(--q-ink); }
 .pc-body { padding:.7rem .9rem 1rem; display:grid; gap:.6rem; font-size:.84rem; }
 .pc-body h3 { margin:0; font-size:1.15rem; line-height:1.2; }
@@ -620,7 +627,7 @@ stage.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-d
 stage.addEventListener('pointerup',e=>{ drag=null; stage.classList.remove('drag'); });
 let wheelT=0; stage.addEventListener('wheel',e=>{ e.preventDefault(); const now=performance.now(); if(now-wheelT<160) return; wheelT=now; stepZoom(e.deltaY<0?1:-1,e.clientX,e.clientY); },{passive:false});
 stage.addEventListener('dblclick',e=>{ if(e.target.closest('.hit')) return; stepZoom(1,e.clientX,e.clientY); });
-addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return; const st=60/(V.z*S)*S; if(e.key==='ArrowLeft') V.cx-=st/ S/ 1; else if(e.key==='ArrowRight') V.cx+=st/S; else if(e.key==='ArrowUp') V.cy-=st/S; else if(e.key==='ArrowDown') V.cy+=st/S; else if(e.key==='+'||e.key==='=') stepZoom(1); else if(e.key==='-') stepZoom(-1); else if(e.key==='Escape') home(); else return; e.preventDefault(); clampV(); draw(); });
+addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return; const st=60/(V.z*S)*S; if(e.key==='ArrowLeft') V.cx-=st/ S/ 1; else if(e.key==='ArrowRight') V.cx+=st/S; else if(e.key==='ArrowUp') V.cy-=st/S; else if(e.key==='ArrowDown') V.cy+=st/S; else if(e.key==='+'||e.key==='=') stepZoom(1); else if(e.key==='-') stepZoom(-1); else if(e.key==='Escape') goBack(); else return; e.preventDefault(); clampV(); draw(); });
 
 /* ===== selection and the place panel ===== */
 const panel=document.getElementById('panel');
@@ -630,11 +637,13 @@ function selectQuest(id){ sel={t:'quest',id}; const qq=QUESTS.find(x=>x.id===id)
 function selectStop(id,i){ sel={t:'stop',id,i}; const qq=QUESTS.find(x=>x.id===id), p=stopPos(qq,i); renderPanel(); flyTo(p[0],p[1],6); }
 const hours=Math.round(QUESTS.reduce((a,x)=>a+x.min,0)/6)/10;
 function sceneHead(kind,h=44){ return `<div class="pc-head"><canvas class="scene" data-kind="${kind}" width="110" height="${h}"></canvas></div>`; }
+const pnav=(label,attr,crumb)=>`<nav class="pnav" aria-label="Place navigation"><button class="back" ${attr}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>${label}</span></button><span class="crumb">${crumb}</span></nav>`;
+function goBack(){ if(q.trim()){ q=''; document.getElementById('q').value=''; renderPanel(); } else if(sel.t==='stop') selectQuest(sel.id); else if(sel.t==='quest') selectRegion(QUESTS.find(x=>x.id===sel.id).region); else if(sel.t==='region') home(); }
 function renderPanel(){
   const dn=QUESTS.filter(x=>x.done).length;
   let h='';
   if(q.trim()){ const m=QUESTS.filter(x=>(x.title+' '+x.short).toLowerCase().includes(q.trim().toLowerCase()));
-    h=`<div class="pc-body"><h3>Search</h3><div class="sub">${m.length} quest${m.length===1?'':'s'} match</div><div class="results">${m.map(x=>`<button class="rowbtn" data-q="${x.id}"><span class="n">${byReg(x.region).indexOf(x)+1}</span><span>${x.title}<small>${REG[x.region-1].name} · ${x.min} min</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Nothing yet. A note joins the map when it publishes and has a lesson.</div>'}</div></div>`; }
+    h=pnav('Back','data-act="clear"','Search results')+`<div class="pc-body"><h3>Search</h3><div class="sub">${m.length} quest${m.length===1?'':'s'} match</div><div class="results">${m.map(x=>`<button class="rowbtn" data-q="${x.id}"><span class="n">${byReg(x.region).indexOf(x)+1}</span><span>${x.title}<small>${REG[x.region-1].name} · ${x.min} min</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Nothing yet. A note joins the map when it publishes and has a lesson.</div>'}</div></div>`; }
   else if(sel.t==='none'){
     h=sceneHead('hills')+`<div class="pc-body"><h3>Learn AI with me</h3><div class="sub">${QUESTS.length} quests · 6 regions · about ${hours} hours of reading</div>
       <p style="margin:0;font:.86rem/1.55 Georgia,serif">A guided path through what I have actually built and learned, in my own notes and the sources I used. Pick a region, or zoom in and wander.</p>
@@ -642,10 +651,10 @@ function renderPanel(){
       <div><strong>Regions</strong></div>${REG.slice(1).map(r=>{ const qs=byReg(r.n), d=qs.filter(x=>x.done).length; return `<button class="rowbtn" data-r="${r.n}"><span class="n">${r.n}</span><span>${r.name}<small>${r.sub} · ${d}/${qs.length} done</small></span><span class="go">&#9654;</span></button>`; }).join('')}
       <div class="sub">${dn} of ${QUESTS.length} quests done. Drag to pan, scroll or +/- to zoom, Esc to return here.</div></div>`; }
   else if(sel.t==='region'){ const r=REG[sel.id-1], qs=byReg(r.n);
-    h=sceneHead(r.scene)+`<div class="pc-body"><div class="sub"><a href="#" data-act="home" style="color:inherit">&#8592; All regions</a></div><h3>${r.name}</h3><div class="sub">${r.sub}</div><p style="margin:0;font:.86rem/1.55 Georgia,serif">${r.blurb}</p>
+    h=pnav('All regions','data-act="home"',r.name)+sceneHead(r.scene)+`<div class="pc-body"><h3>${r.name}</h3><div class="sub">${r.sub}</div><p style="margin:0;font:.86rem/1.55 Georgia,serif">${r.blurb}</p>
       <div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${i+1}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}</div>`; }
   else { const qq=QUESTS.find(x=>x.id===sel.id), r=REG[qq.region-1], i=byReg(r.n).indexOf(qq)+1;
-    h=sceneHead(r.scene,40)+`<div class="pc-body"><div class="sub"><a href="#" data-r="${r.n}" style="color:inherit">&#8592; ${r.name}</a></div><span class="ribbon">${r.name} · Quest ${i} of ${byReg(r.n).length}</span><h3>${qq.title}</h3>
+    h=(sel.t==='stop'?pnav(qq.short,`data-q="${qq.id}"`,`${qq.short} › Stop ${sel.i+1}`):pnav(r.name,`data-r="${r.n}"`,`${r.name} › ${qq.short}`))+sceneHead(r.scene,40)+`<div class="pc-body"><span class="ribbon">${r.name} · Quest ${i} of ${byReg(r.n).length}</span><h3>${qq.title}</h3>
       <div class="row"><span class="chip">Class: ${qq.cls}</span><span class="chip">Level: ${qq.level}</span></div>
       <div class="stats"><div class="stat"><small>Quest level</small><strong>Lv ${qq.lv}</strong></div><div class="stat"><small>Experience</small><strong>+${qq.xp.toLocaleString()} XP</strong></div><div class="stat"><small>Reading</small><strong>~${qq.min} min</strong></div></div>
       <div><strong>It covers</strong><ul style="margin:.2rem 0 0;padding-left:1rem">${qq.learn.map(l=>`<li>${l}</li>`).join('')}</ul></div>
@@ -658,6 +667,7 @@ panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],
   else if(b.dataset.r) selectRegion(+b.dataset.r);
   else if(b.dataset.s!==undefined) selectStop(sel.id,+b.dataset.s);
   else if(b.dataset.act==='home') home();
+  else if(b.dataset.act==='clear'){ q=''; document.getElementById('q').value=''; renderPanel(); }
   else if(b.dataset.act==='start'){ selectRegion(1); }
   else if(b.dataset.act==='cont'){ const nx=QUESTS.find(x=>!x.done); selectQuest(nx.id); }
   else if(b.dataset.act==='begin'||b.dataset.act==='note'){ const t=document.getElementById('toast'); t.textContent=b.dataset.act==='begin'?'Opens the note with the quest book (lesson mode)':'Opens the note on its own'; t.hidden=false; setTimeout(()=>t.hidden=true,2200); } });
