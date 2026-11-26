@@ -109,8 +109,6 @@ canvas { display:block; image-rendering:pixelated; }
 
 .lbl { position:absolute; transform:translate(-50%,0); font-weight:700; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--q-label); white-space:nowrap; text-align:center; pointer-events:none;
   text-shadow:-2px 0 var(--q-halo),2px 0 var(--q-halo),0 -2px var(--q-halo),0 2px var(--q-halo),-1px -1px var(--q-halo),1px 1px var(--q-halo),-1px 1px var(--q-halo),1px -1px var(--q-halo); }
-#over .lbl.quest.tag { transform:none; text-align:left; text-transform:none; letter-spacing:0; font:600 12px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--q-panel); color:var(--q-ink); border:2px solid var(--q-ink); padding:3px 8px; max-width:190px; white-space:normal; text-shadow:none; box-shadow:2px 2px 0 rgba(0,0,0,.22); }
-#over .lbl.quest.tag small { font-size:11px; font-weight:400; color:var(--q-muted); letter-spacing:0; }
 .lbl small { display:block; font-size:.6rem; letter-spacing:.04em; text-transform:none; font-weight:400; }
 .lbl.box { background:var(--q-panel); border:2px dashed var(--q-muted); padding:0 .4rem; text-shadow:none; }
 
@@ -289,7 +287,7 @@ body { margin:0; background:var(--q-water); }
 #stage.drag { cursor:grabbing; }
 #map, #fx { position:absolute; left:0; top:0; image-rendering:pixelated; } #fx { pointer-events:none; }
 #over { position:absolute; inset:0; pointer-events:none; overflow:hidden; contain:layout style; }
-#stage { will-change:transform; }
+
 .hit { position:absolute; width:var(--ps,30px); height:var(--ps,30px); margin:0; padding:0; box-sizing:border-box; border:2px solid var(--q-outline); border-radius:50%; background:#c8382a; color:#fff; font:700 calc(var(--ps,30px) * .43)/1 ui-monospace,"SF Mono",Menlo,Consolas,monospace; display:grid; place-items:center; box-shadow:2px 2px 0 var(--q-outline); cursor:pointer; pointer-events:auto; transform:translate(-50%,calc(-100% - 7px)); transition:transform .12s ease, opacity .3s ease; image-rendering:pixelated; }
 .hit::before { content:""; position:absolute; inset:calc((44px - var(--ps,30px)) / -2); } /* a 44px target around a 30px marker */
 .hit::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--q-outline); border-bottom:0; }
@@ -423,6 +421,7 @@ body { margin:0; background:var(--q-water); }
 </style>
 </head>
 <body>
+<noscript><div style="position:fixed;inset:0;overflow:auto;background:#1b1a16;color:#e4e1d8;padding:1.2rem;font:15px/1.6 Georgia,serif"><h1>Learn AI with me</h1><p>The map needs JavaScript. The route, in order, without it:</p><h2>Loop Forest</h2><ol><li>I Was Shipping Faster Than I Could Understand It (10 min, 4 stops)</li><li>The Loop Outlives the Model. (11 min, 4 stops)</li><li>Set Up the Loop With One Prompt (12 min, 3 stops)</li><li>The Check Ran Once in 165 Sessions, and I Got the Reason Wrong (7 min, 2 stops)</li></ol><h2>Model Mines</h2><ol><li>I Ran Out With Hours Left (10 min, 4 stops)</li><li>Plan on the Big Model, Type on the Small One (10 min, 4 stops)</li><li>How the Model Intelligence Layer Works (25 min, 9 stops)</li></ol><h2>Guild Hall</h2><ol><li>I Showed My Team a Dashboard. Two Weeks Later They Showed Me Theirs. (14 min, 4 stops)</li><li>Our CTO Said Move Bugs to the Left. My Tech Lead Built the Tool. (7 min, 3 stops)</li><li>Seven Hundred Commits to Teach a Reviewer It Was Wrong (21 min, 8 stops)</li></ol><h2>GRAIN Keep</h2><ol><li>Watch Its Hands (7 min, 2 stops)</li><li>One Vocabulary, Two Operators (28 min, 5 stops)</li></ol><h2>Summit</h2><ol><li>Ten Times Zero Is Still Zero (25 min, 8 stops)</li><li>Everybody Wants the Agent. Somebody Has to Build the Floor. (39 min, 9 stops)</li></ol></div></noscript>
 <div id="stage"><canvas id="map" aria-hidden="true"></canvas><canvas id="fx" aria-hidden="true"></canvas><div id="over"></div></div>
 <div class="col">
   <div class="searchbar"><button id="fold" aria-label="Fold the panel">◀</button><input id="q" type="search" placeholder="Search quests, notes, topics" aria-label="Search quests"><span>🔍</span></div>
@@ -488,22 +487,12 @@ function spr(){ const m=new Map(); const o={ m,
 /* 3x5 pixel digits for pins */
 const FONT={0:'111101101101111',1:'010110010010111',2:'111001111100111',3:'111001111001111',4:'101101111001001',5:'111100111001111',6:'111100111101111','?':'111001010000010'};
 function glyph(s,ch,x,y,c){ const g=FONT[ch]; for(let i=0;i<15;i++) if(g[i]==='1') s.set(x+i%3,y+Math.floor(i/3),c); }
-function pinSpr(n,state){ const s=spr(); const body=state==='done'?'#4e9a52':state==='locked'?P.fog2:state==='stop'?P.amber:P.pin;
-  const rows=[3,5,7,7,7,5,3]; rows.forEach((w,j)=>{ for(let i=0;i<w;i++) s.set(i-(w>>1),-9+j,body); });
-  s.set(-1,-2,body); s.set(0,-2,body); s.set(1,-2,body); s.set(0,-1,body);
-  s.set(-2,-8,state==='locked'?P.fog:P.pinHi); s.set(-3,-7,state==='locked'?P.fog:P.pinHi);
-  if(state==='done'){ [[-2,-6],[-1,-5],[0,-4],[1,-5],[2,-6],[3,-7]].forEach(([x,y])=>s.set(x-0,y+0,'#fff')); s.set(-2,-6,'#fff'); s.set(-1,-5,'#fff'); s.set(0,-4,'#fff'); s.set(1,-5,'#fff'); s.set(2,-6,'#fff'); }
-  else glyph(s,state==='locked'?'?':n,-1,-7,state==='stop'?P.outline:'#fff');
-  return s.outline(P.outline); }
-function youSpr(){ const s=spr(); [[-2,0],[2,0],[0,-2],[0,2],[-2,-1],[2,1],[-1,-2],[1,2],[-2,1],[2,-1],[1,-2],[-1,2]].forEach(([x,y])=>s.set(x,y,'#cfe2ff')); s.rect(-1,-1,3,3,P.you); s.set(0,0,'#ffffff'); return s; }
-
 /* landmarks */
 function mountainSpr(h,k){ const s=spr(), snow=Math.round(h*.36);
   for(let j=0;j<h;j++){ const half=Math.round(j*k), y=-h+1+j; for(let i=-half;i<=half;i++){ let c=i<=0?P.rock:P.rock2; if(i>0&&(i+j)%5===0) c=P.rockd; if(i<0&&(i-j)%7===0) c=P.rock2;
     if(j<snow+((Math.abs(i)%3)-1)) c=i<=0?P.snow:P.snow2; s.set(i,y,c);} } return s.outline(P.outline); }
 function pineSpr(){ const s=spr(); s.rect(0,-1,1,2,P.trunk); [[0,-2,3],[0,-4,2],[0,-6,1]].forEach(([_,y,hw])=>{ for(let i=-hw;i<=hw;i++) { s.set(i,y,i<=0?P.forest:P.forest2); s.set(i,y-1,i<=0?P.forest:P.forest2);} }); s.set(0,-8,P.forest); return s.outline(shade(P.forest2,.5)); }
 function bushSpr(){ const s=spr(); s.rect(-1,-1,3,2,P.forest); s.set(0,-2,P.forest); s.set(1,0,P.forest2); return s.outline(shade(P.forest2,.5)); }
-function hillSpr(w,h){ const s=spr(); for(let j=0;j<h;j++){ const half=Math.round(w/2*Math.sqrt(1-((h-1-j)/h)**2*0+ (1-(j/h))**2*0 ))- Math.round((h-1-j)*0.0); const hw=Math.round((w/2)*Math.sqrt(1-((h-1-j)/h)**2)); for(let i=-hw;i<=hw;i++) s.set(i,-h+1+j,i<=0?P.grass:P.grass2); } return s.outline(P.outline); }
 function castleSpr(){ const s=spr();
   s.rect(-8,-10,17,10,P.wall); s.rect(1,-10,8,10,P.wall2);
   for(let i=-8;i<=8;i+=4){ s.rect(i,-12,2,2,P.wall); }
@@ -522,7 +511,6 @@ function houseSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.wall); for(let j=0;j<3;j+
 function peakSpr(){ const s=mountainSpr(26,.72); s.rect(0,-30,1,6,P.outline); s.rect(1,-30,4,3,P.flag); s.rect(1,-29,1,1,P.pinHi); return s.outline(P.outline); }
 function caveSpr(){ const s=spr(); s.rect(-2,-3,5,3,P.outline); s.rect(-1,-4,3,1,P.outline); s.set(-3,-1,P.rockd); s.set(3,-1,P.rockd); return s; }
 function signSpr(){ const s=spr(); s.rect(0,-4,1,5,P.trunk); s.rect(-4,-7,9,4,P.wall); s.rect(-3,-6,7,1,P.roof2); return s.outline(P.outline); }
-function tentSpr(){ const s=spr(); for(let j=0;j<5;j++) for(let i=-j;i<=j;i++) s.set(i,-4+j,i<=0?P.roof:P.roof2); s.set(0,0,P.outline); return s.outline(P.outline); }
 function torchSpr(){ const s=spr(); s.rect(0,-3,1,3,P.trunk); s.set(0,-4,P.glow); s.set(0,-5,P.amber); return s.outline(P.outline); }
 function cartSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.rockd); s.rect(-3,-3,7,1,P.rock); s.set(-2,0,P.outline); s.set(2,0,P.outline); s.set(0,-4,P.glow); return s.outline(P.outline); }
 
@@ -660,7 +648,7 @@ const ROUTES={
 const SPEC={
   1:{cx:26,cy:126,W:88,H:56,q:[],slots:[],lights:[[16,17],[84,25],[37,41]],fires:[2],flags:[[51,6]]},
   2:{cx:62,cy:92,W:96,H:76,q:[ringPt(-1.5708),ringPt(0),ringPt(1.5708),ringPt(3.1416)],slots:RING(12),lights:[[48,38],...RING(8)],fires:[0],flags:[]},
-  3:{cx:104,cy:126,W:130,H:70,q:[[65,62],[26,24],[65,20]],slots:[[65,58],[65,46],[45,44],[26,40],[26,24],[85,38],[105,32],[105,20],[65,20]],lights:[[65,54],[26,36],[104,28],[66,18]],flags:[]},
+  3:{cx:104,cy:126,W:130,H:70,q:[[65,62],[26,24],[84,6]],slots:[[65,58],[65,46],[45,44],[26,40],[26,24],[85,38],[105,32],[105,20],[65,20]],lights:[[65,54],[26,36],[104,28],[66,18]],flags:[]},
   4:{cx:146,cy:92,W:108,H:76,q:[[24,42],[62,42],[54,30]],slots:[[54,30],[24,42],[62,42],[54,56],[16,26],[90,26],[16,60],[90,60],[36,62]],lights:[[44,31],[64,31],[54,50],[24,36]],flags:[[54,2]]},
   5:{cx:92,cy:54,W:100,H:80,q:[[26,38],[50,42]],slots:[[50,66],[50,14],[50,40],[26,34],[74,34],[30,50],[13,13],[87,13],[87,63]],lights:[[38,58],[62,58],[13,10],[87,10]],fires:[0,1,2,3],flags:[[53,2]]},
   6:{cx:150,cy:36,W:84,H:70,q:[[26,58],[42,10]],slots:[[26,58],[52,56],[28,48],[54,40],[32,32],[48,24],[42,14],[60,30],[22,40]],lights:[[20,52],[64,44],[24,26]],fires:[0,1,2],flags:[[46,3]]}
@@ -969,10 +957,10 @@ function clampV(){ if(!CW){ V.cx=Math.max(-70,Math.min(WW+70,V.cx)); V.cy=Math.m
   V.cx=xl>xh?(xl+xh)/2:Math.max(xl,Math.min(xh,V.cx)); V.cy=yl>yh?(yl+yh)/2:Math.max(yl,Math.min(yh,V.cy)); }
 /* Zoom changes are a CSS scale on the whole stage (canvas and pins together), eased, with the camera panning in JS. Zooming in scales the old level up and swaps to the new crisp level at the end; zooming out swaps first and scales down. Only a transform animates, so the compositor does the work. */
 let zt=0;
-function tweenScale(from,to,ox,oy,dur){ stage.style.transition='none'; stage.style.transformOrigin=ox+'px '+oy+'px'; stage.style.transform=from===1?'none':'scale('+from+')'; void stage.offsetWidth; stage.style.transition='transform '+dur+'ms cubic-bezier(.33,1,.68,1)'; stage.style.transform=to===1?'none':'scale('+to+')'; }
-function endTween(){ clearTimeout(zt); stage.style.transition='none'; stage.style.transform='none'; }
+function tweenScale(from,to,ox,oy,dur){ if(matchMedia('(prefers-reduced-motion: reduce)').matches) dur=0; stage.style.willChange='transform'; stage.style.transition='none'; stage.style.transformOrigin=ox+'px '+oy+'px'; stage.style.transform=from===1?'none':'scale('+from+')'; void stage.offsetWidth; stage.style.transition='transform '+dur+'ms cubic-bezier(.33,1,.68,1)'; stage.style.transform=to===1?'none':'scale('+to+')'; clearTimeout(tweenScale._w); tweenScale._w=setTimeout(()=>{ if(stage.style.transform==='none') stage.style.willChange='auto'; },dur+80); }
+function endTween(){ clearTimeout(zt); stage.style.transition='none'; stage.style.transform='none'; stage.style.willChange='auto'; }
 function stepZoom(dir,ax,ay){ ax=ax??innerWidth/2; ay=ay??innerHeight/2; const i=LV.indexOf(V.z), j=Math.max(0,Math.min(LV.length-1,i+dir)); if(j===i) return; const z0=V.z, z1=LV[j]; cancelAnimationFrame(anim); endTween();
-  if(z1<z0){ setZ(z1,ax,ay); clampV(); draw(); tweenScale(z0/z1,1,ax,ay,260); } else { tweenScale(1,z1/z0,ax,ay,240); zt=setTimeout(()=>{ endTween(); setZ(z1,ax,ay); clampV(); draw(); },245); } }
+  if(z1<z0){ setZ(z1,ax,ay); clampV(); draw(); tweenScale(z0/z1,1,ax,ay,260); } else { tweenScale(1,z1/z0,ax,ay,240); zt=setTimeout(()=>{ endTween(); setZ(z1,ax,ay); clampV(); draw(); },matchMedia('(prefers-reduced-motion: reduce)').matches?0:245); } }
 function flyTo(cx,cy,z){ cancelAnimationFrame(anim); endTween(); const f={...V}, t0=performance.now(), dur=z!==f.z?640:480, p=pads(), ox=innerWidth/2+p.l/2, oy=innerHeight/2-p.b/2, zin=z>f.z;
   if(zin) tweenScale(1,z/f.z,ox,oy,dur); else if(z<f.z){ V.z=z; tweenScale(f.z/z,1,ox,oy,dur); }
   (function step(now){ const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3); V.cx=f.cx+(cx-f.cx)*e; V.cy=f.cy+(cy-f.cy)*e; if(t>=1&&zin){ endTween(); V.z=z; } draw(); if(t<1) anim=requestAnimationFrame(step); })(t0); }
@@ -995,7 +983,6 @@ const hours=Math.round(QUESTS.reduce((a,x)=>a+x.min,0)/6)/10;
 function sceneHead(kind,h=44){ return `<div class="pc-head"><canvas class="scene" data-kind="${kind}" width="110" height="${h}"></canvas></div>`; }
 const ORDER=()=>REG.flatMap(r=>byReg(r.n));
 /* Previous and next sit at the right of the pinned bar: regions in a region, quests along the whole route in a quest, stops in a stop. */
-const stepBtn=(dir,o,kind)=>{ const path=dir<0?'M15 6l-6 6 6 6':'M9 6l6 6-6 6', word=dir<0?'Previous':'Next'; return o?`<button class="step" ${o.a} aria-label="${word} ${kind}: ${o.t}" title="${word} ${kind}: ${o.t}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}"/></svg></button>`:`<button class="step" disabled aria-label="No ${word.toLowerCase()} ${kind}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}"/></svg></button>`; };
 function seq(){ if(sel.t==='region') return {kind:'regions',n:REG.length,i:sel.id-1,go:j=>selectRegion(j+1)};
   if(sel.t==='quest'){ const o=ORDER(), i=o.findIndex(x=>x.id===sel.id); return {kind:'quests',n:o.length,i,go:j=>selectQuest(o[j].id)}; }
   if(sel.t==='stop'){ const qq=QUESTS.find(x=>x.id===sel.id), n=Math.min(qq.stops.length,9); return {kind:'stops',n,i:sel.i,go:j=>selectStop(sel.id,j)}; } return null; }
