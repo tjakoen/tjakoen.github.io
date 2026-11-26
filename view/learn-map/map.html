@@ -1293,7 +1293,13 @@ mbtn.onclick=()=>setMotion(!motion);
 reduce.addEventListener('change',e=>setMotion(!e.matches));
 document.addEventListener('visibilitychange',()=>{ if(motion&&!raf) raf=requestAnimationFrame(fxLoop); });
 addEventListener('resize',resize);
-window.qmReady=reskin().then(()=>{ resize(); setMotion(motion); });
+/* Deep links: #quest=<id> flies to a quest, #stop=<id>.<n> to stop n of it (counted from 1, as the panel counts).
+   An id the map does not know is ignored, so a stale link opens the map as it is. */
+function applyHash(){ const m=/^#(quest|stop)=([a-z0-9-]+)(?:\.([1-9][0-9]*))?$/.exec(location.hash); if(!m) return;
+  const qq=QUESTS.find(x=>x.id===m[2]); if(!qq) return;
+  if(m[1]==='stop'&&m[3]&&+m[3]<=qq.stops.length) selectStop(qq.id,+m[3]-1); else selectQuest(qq.id); }
+addEventListener('hashchange',applyHash);
+window.qmReady=reskin().then(()=>{ resize(); setMotion(motion); applyHash(); });
 
 </script>
 </body>
