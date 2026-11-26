@@ -108,6 +108,14 @@ They are different things, and the plan keeps them apart.
   but the Codex entries.
 - Cosmetic achievements, such as every Mines rune, may exist later. They are never badges.
 
+## What the mockups quote
+
+The mockups use the real note, I Ran Out With Hours Left: its text, its level (intro), its reading time
+(about 10 minutes), its audience, its four stops and its runes. The Guide's lines are placeholders written
+from the note until the pilot is recorded. Rune names are tied to real sections, for example A worse model
+is a hobby from The night I went looking for a way out, and The plan lives in a file from the Loop Forest
+note's section on where the plan lives.
+
 ## The lessons
 
 | Region | Quest (note) | Lessons | Stops | Words covered |

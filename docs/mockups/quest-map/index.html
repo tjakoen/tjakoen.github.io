@@ -49,7 +49,9 @@ header.top { display:flex; gap:1rem; align-items:center; justify-content:space-b
 h1 { font-size:1rem; margin:0; letter-spacing:.04em; }
 button { font:inherit; color:var(--q-ink); background:var(--q-panel); border:2px solid var(--q-ink); padding:.25rem .7rem; cursor:pointer; box-shadow:3px 3px 0 var(--q-ink); }
 button:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--q-ink); }
-main { max-width:1140px; margin:0 auto; padding:1.2rem; display:grid; gap:2.4rem; }
+main { max-width:1140px; margin:0 auto; padding:1.2rem; display:grid; grid-template-columns:minmax(0,1fr); gap:2.4rem; }
+main > section { min-width:0; }
+header.top { flex-wrap:wrap; }
 h2 { font-size:.85rem; text-transform:uppercase; letter-spacing:.12em; color:var(--q-muted); margin:0 0 .5rem; }
 .cap { color:var(--q-muted); font-size:.82rem; margin:.5rem 0 0; }
 .frame { border:3px solid var(--q-ink); box-shadow:5px 5px 0 var(--q-ink); background:var(--q-panel); }
@@ -58,8 +60,14 @@ canvas { display:block; image-rendering:pixelated; }
 
 /* 1. Google-Maps layout: panel left, map right, controls floating on the map */
 .gm { display:grid; grid-template-columns:340px 1fr; overflow:hidden; }
-.gm .place { border-right:3px solid var(--q-ink); overflow:auto; background:var(--q-panel); max-height:640px; }
+.gm .place { border-right:3px solid var(--q-ink); overflow:auto; background:var(--q-panel); }
+.gm { align-items:stretch; }
+.gm .place { position:relative; overflow:hidden; }
+.place .scroll { position:absolute; inset:0; overflow:auto; }
 .gm .place .hero canvas { width:100%; height:auto; border-bottom:3px solid var(--q-ink); }
+.gm .place { max-height:none; }
+.place .body { padding:.7rem .9rem .9rem; gap:.55rem; }
+.place h3 { font-size:1.15rem; }
 .place .body { padding:.9rem 1rem 1.2rem; display:grid; gap:.75rem; }
 .place h3 { margin:0; font-size:1.3rem; line-height:1.15; }
 .place .sub { color:var(--q-muted); font-size:.8rem; }
@@ -186,9 +194,10 @@ code { background:var(--q-paper); border:1px solid var(--q-line); padding:0 .3re
 .obj i { width:16px; height:16px; border:2px solid var(--q-ink); background:var(--q-paper); margin-top:2px; }
 .obj i[data-d] { background:#4e9a52; box-shadow:inset 0 0 0 3px var(--q-paper); }
 .obj small, .mini small { color:var(--q-muted); display:block; font-size:.7rem; }
-.runes { display:grid; grid-template-columns:repeat(4,1fr); gap:.4rem; }
-.runes canvas { width:100%; aspect-ratio:1; height:auto; border:2px solid var(--q-ink); background:var(--q-panel); }
-.runes .off { opacity:.3; filter:grayscale(1); }
+.runes { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+.runes .rn { display:grid; grid-template-columns:40px 1fr; gap:.4rem; align-items:center; font-size:.72rem; }
+.runes canvas { width:40px; height:40px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.runes .off { opacity:.4; }
 .pack { display:grid; grid-template-columns:36px 1fr; gap:.5rem; align-items:center; }
 .pack canvas { width:36px; height:36px; border:2px solid var(--q-ink); background:var(--q-panel); }
 .levelup { margin-top:1.2rem; display:flex; gap:1rem; align-items:center; justify-content:center; padding:.8rem; background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:4px 4px 0 var(--q-ink); font-weight:700; letter-spacing:.08em; }
@@ -200,7 +209,7 @@ code { background:var(--q-paper); border:1px solid var(--q-line); padding:0 .3re
 select { font:inherit; color:var(--q-ink); background:var(--q-panel); border:2px solid var(--q-ink); padding:.2rem .4rem; }
 button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
 pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height:1.55; background:var(--q-paper); }
-@media (max-width:860px) { .gm,.lesson,.cards,.tabs3,.model { grid-template-columns:1fr; } .gm .place { max-height:none; border-right:0; } .modalwrap { position:relative; inset:auto; width:auto; margin:1rem; } .dim{display:none} }
+@media (max-width:860px) { .mapside .chips, .mapside .scale, .mapside .lbl small { display:none; } .mapside .search { width:calc(100% - 24px); } .place .scroll { position:static; } .gm .place { position:static; } .gm,.lesson,.cards,.tabs3,.model { grid-template-columns:1fr; } .gm .place { max-height:none; border-right:0; } .modalwrap { position:relative; inset:auto; width:auto; margin:1rem; } .dim{display:none} }
 
 /* 7. lesson card on a note */
 .notepage { padding:1.1rem 1.4rem 1.4rem; display:grid; gap:.8rem; }
@@ -233,6 +242,43 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 .skills { display:flex; gap:.35rem; flex-wrap:wrap; margin:.3rem 0; }
 .two { display:grid; grid-template-columns:1fr 1.15fr; gap:1.4rem; }
 @media (max-width:860px) { .lessoncard,.badgepage,.two,.variants { grid-template-columns:1fr; } .lessoncard > canvas { width:100%; height:160px; border-right:0; border-bottom:3px solid var(--q-ink); } }
+
+/* 9. mobile: phone frames */
+.phones { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:2rem 1.5rem; justify-items:center; }
+.phones figure { margin:0; display:grid; gap:.6rem; justify-items:center; }
+.phones figcaption { font-size:.78rem; color:var(--q-muted); max-width:330px; text-align:center; }
+.phone { width:330px; height:660px; border:4px solid var(--q-ink); box-shadow:5px 5px 0 var(--q-ink); background:var(--q-panel); position:relative; display:flex; flex-direction:column; overflow:hidden; }
+.pstatus { height:22px; flex:none; display:flex; justify-content:space-between; padding:2px 10px; font-size:.64rem; background:var(--q-paper); border-bottom:2px solid var(--q-line); }
+.pbody { position:relative; flex:1; overflow:hidden; background:var(--q-paper); }
+.pmap { position:relative; } .pmap canvas { width:100%; height:auto; }
+.psearch { position:absolute; left:8px; right:8px; top:8px; background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:2px 2px 0 var(--q-ink); padding:.25rem .55rem; font-size:.74rem; color:var(--q-muted); display:flex; gap:.5rem; }
+.pchips { position:absolute; left:8px; right:8px; top:50px; display:flex; gap:.3rem; overflow:hidden; }
+.pchips .chip { box-shadow:2px 2px 0 var(--q-ink); font-size:.66rem; white-space:nowrap; }
+.pchips .chip[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.fab { position:absolute; right:8px; width:38px; height:38px; padding:0; }
+.sheet { position:absolute; left:0; right:0; bottom:0; background:var(--q-panel); border-top:3px solid var(--q-ink); padding:.35rem .8rem .8rem; display:grid; gap:.45rem; align-content:start; font-size:.78rem; }
+.sheet .grab { width:44px; height:6px; background:var(--q-ink); justify-self:center; }
+.sheet h3 { margin:0; font-size:1.05rem; }
+.sheet .actions button { padding:.25rem .55rem; font-size:.74rem; }
+.sheet .steps li { padding:.3rem 0; }
+.sheet .stats { gap:.3rem; } .sheet .stat { padding:.2rem .35rem; } .sheet .stat strong { font-size:.8rem; } .sheet .stat small { font-size:.56rem; }
+.sheet ul { margin:0; padding:0; list-style:none; display:grid; gap:.15rem; } .sheet li::before { content:"◆ "; color:var(--q-accent); }
+.pnote { padding:.7rem .9rem; display:grid; gap:.55rem; font:.86rem/1.6 Georgia,serif; }
+.pnote .bar { font:.7rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
+.pnote h3 { font:700 1.3rem/1.2 Georgia,serif; margin:0; }
+.plc { background:var(--q-panel); }
+.plc > canvas { width:100%; height:auto; border-bottom:3px solid var(--q-ink); }
+.plc .lc { padding:.6rem .7rem; } .plc .lc p { font-size:.78rem; line-height:1.45; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+.plc .lc button { width:100%; }
+.dock { position:absolute; left:0; right:0; bottom:0; background:var(--q-panel); border-top:3px solid var(--q-ink); padding:.5rem .7rem .7rem; display:grid; gap:.4rem; }
+.dock .line { display:grid; grid-template-columns:44px 1fr 38px; gap:.5rem; align-items:center; font-size:.75rem; }
+.dock canvas { width:44px; height:44px; border:2px solid var(--q-ink); background:var(--q-ground2); }
+.dock .open { justify-self:center; font-size:.68rem; color:var(--q-muted); }
+.pdim { position:absolute; inset:0; background:color-mix(in srgb,var(--q-outline) 40%,transparent); }
+.dots { display:flex; gap:.4rem; justify-content:center; align-items:center; font-size:.7rem; color:var(--q-muted); }
+.dots i { width:10px; height:10px; border:2px solid var(--q-ink); background:var(--q-paper); } .dots i[data-on] { background:var(--q-accent); }
+.phone .tb { display:flex; gap:.25rem; flex-wrap:wrap; } .phone .tb span { border:2px solid var(--q-ink); padding:0 .4rem; font-size:.66rem; background:var(--q-panel); } .phone .tb span[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.phone .dlg { grid-template-columns:48px 1fr; } .phone .dlg canvas { width:48px; height:48px; }
 </style>
 </head>
 <body>
@@ -245,21 +291,23 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 <h2>1 · The world map (no site sidebar on this page)</h2>
 <div class="frame gm">
   <aside class="place" aria-label="Selected region">
-    <div class="hero"><canvas id="c-hero-img" width="110" height="60"></canvas></div>
+    <div class="scroll">
+    <div class="hero"><canvas class="scene" data-kind="mines" width="110" height="44"></canvas></div>
     <div class="body">
       <div><h3>Model Mines</h3>
-        <div class="sub"><span class="stars">★★★★☆</span> 3 quests · about 1 h 10 min · region 3 of 6</div>
+        <div class="sub"><span class="stars">★★★★☆</span> 3 quests · about 45 min of reading · region 3 of 6</div>
         <div class="sub">Models, limits and cost</div></div>
       <div class="actions"><button class="primary">▶ Start route</button><button>Save</button><button>Share</button></div>
       <div class="tabs"><span data-on>Route</span><span>About</span><span>Sources</span></div>
       <ol class="steps">
-        <li data-sel><span class="n">1</span><div><strong>I Ran Out With Hours Left</strong><small>Lv 2 intro · 22 min · +350 XP</small></div></li>
-        <li><span class="n">2</span><div><strong>Plan on the Big Model, Type on the Small One</strong><small>Lv 2 intro · 18 min · +300 XP</small></div></li>
-        <li><span class="n">3</span><div><strong>How the Model Intelligence Layer Works</strong><small>Lv 4 deep · 48 min · +900 XP</small></div></li>
+        <li data-sel><span class="n">1</span><div><strong>I Ran Out With Hours Left</strong><small>Lv 1 intro · 10 min · +650 XP</small></div></li>
+        <li><span class="n">2</span><div><strong>Plan on the Big Model, Type on the Small One</strong><small>Lv 1 intro · 10 min · +650 XP</small></div></li>
+        <li><span class="n">3</span><div><strong>How the Model Intelligence Layer Works</strong><small>Lv 3 deep · 25 min · +1,050 XP</small></div></li>
       </ol>
       <div class="src"><strong>Outside sources on this route</strong>
         <div>Claude Academy: how models and context work</div>
-        <div>Osmani, Loop Engineering</div></div>
+        <div>Continues from: The Loop Outlives the Model</div></div>
+    </div>
     </div>
   </aside>
   <div class="mapside" id="mapside">
@@ -282,21 +330,21 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
   <div class="modalwrap"><div class="modal">
     <span class="ribbon">Model Mines · Quest 1 of 3</span>
     <h3>I Ran Out With Hours Left</h3>
-    <div class="row"><span class="chip">Class: Builder</span><span class="chip">Level: intro</span></div>
+    <div class="row"><span class="chip">Class: Learner, Builder</span><span class="chip">Level: intro</span></div>
     <div class="stats">
-      <div class="stat"><small>Adventurer level</small><strong>Lv 2 · Intro</strong></div>
-      <div class="stat"><small>Experience</small><strong>+350 XP</strong></div>
-      <div class="stat"><small>Time</small><strong>~22 min</strong></div>
+      <div class="stat"><small>Quest level</small><strong>Lv 1 · Intro</strong></div>
+      <div class="stat"><small>Experience</small><strong>+650 XP</strong></div>
+      <div class="stat"><small>Reading time</small><strong>~10 min</strong></div>
     </div>
     <div class="xp" title="Region progress"><i></i></div>
     <div><strong>You will learn</strong>
-      <ul><li>Why a usage limit is a design input</li><li>What a model layer routes, and why</li><li>How to choose a model that is enough for the step</li></ul></div>
+      <ul><li>Why a worse coding model is a hobby, not a saving</li><li>Why a free endpoint is for public code only</li><li>How one rule is enforced by the setup, not by memory</li></ul></div>
     <div><strong>Sources on the trail</strong>
-      <ul><li data-ext>Claude Academy: how models and context work</li><li data-ext>Osmani, Loop Engineering</li><li>Next stop: Plan on the Big Model</li></ul></div>
+      <ul><li data-ext>Claude Academy: how models and context work</li><li>Continues from: The Loop Outlives the Model</li><li>Next quest: Plan on the Big Model, Type on the Small One</li></ul></div>
     <div class="row"><button class="primary">Begin quest</button><button>Read the note only</button></div>
   </div></div>
 </div>
-<p class="cap">Zooming reveals more detail, the way a map does: tents, torches, a mine cart and numbered stop pins appear that the world view leaves out. Class and level come from the note's own audience and level fields.</p>
+<p class="cap">Zooming reveals more detail, the way a map does: tents, torches, a mine cart and numbered stop pins appear that the world view leaves out. Class, level and reading time come from the note's own audience, level and readingTime fields. XP in this mockup is a sample formula: 25 per reading minute plus 100 per trial.</p>
 </section>
 
 <section>
@@ -323,44 +371,43 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 <h2>4 · Lesson mode: the note keeps its words, the sidebar becomes the quest book</h2>
 <div class="frame lesson">
   <div class="note">
-    <div class="toast">+25 XP · Rune learned: Design input</div>
-    <div class="crumb">Model Mines · Quest 1 · Stop 2 of 4 · Rate limits are a design input</div>
+    <div class="toast">+25 XP · Rune learned: A worse model is a hobby</div>
+    <div class="crumb">Model Mines · Quest 1 · Stop 1 of 4 · The night I went looking for a way out</div>
     <h3>I Ran Out With Hours Left</h3>
-    <p>It was a Tuesday afternoon and the usage meter said I had spent the week's allowance on day two. I had planned for tokens the way I plan for coffee: assume it will be there.</p>
-    <p><canvas class="margin-rune" id="c-mrune" width="7" height="7"></canvas><span class="hl">A limit you hit mid-task is not a billing problem. It is a design input, and the only question is whether you chose the layer that handles it or discovered it at the worst possible moment.</span> So I stopped asking which model is best and started asking which model is enough for this step.</p>
-    <p>That reframing is the whole note. The rest is how the routing works once you accept it.</p>
+    <p>The first thing I tried was running a model on my own machine. I have an RTX 3050 with 8 GB of memory. It runs small models fine and runs the ones I would want for coding badly, and <canvas class="margin-rune" id="c-mrune" width="7" height="7"></canvas><span class="hl">a coding model that is worse than the one I am paying for is not a saving, it is a hobby.</span> I put that idea back on the shelf for a year or two.</p>
+    <p>The second thing was free models online. They exist, they are better than I expected, and the catch is printed on the label: a free endpoint may keep whatever you send it.</p>
   </div>
   <div class="side">
     <div class="hud"><div class="top"><strong>Wren · Apprentice Lv 3</strong><span>1,240 / 4,800 XP</span></div><div class="xp"><i style="width:26%"></i></div></div>
-    <div class="tb"><span data-on>Book</span><span>Log 2/4</span><span>Codex 3/8</span><span>Pack 2</span></div>
+    <div class="tb"><span data-on>Book</span><span>Log 0/4</span><span>Codex 1/4</span><span>Pack 2</span></div>
     <div class="tome" aria-label="Voice lesson, shown as an open quest book">
       <div class="leaf"><h4>Chapter 2 · The Guide speaks</h4>
-        <div class="dlg"><canvas id="c-guide" width="24" height="24"></canvas><div><div class="plate">The Guide</div><div class="say">Here is the thing. A limit is not a billing problem. It is a design input.<span class="caret">▌</span></div></div><span class="adv">▼</span></div>
-        <div class="hist"><p class="fade">So it was a Tuesday, and the meter said I was done for the week.</p><p class="fade">I had planned for tokens like I plan for coffee.</p></div></div>
+        <div class="dlg"><canvas id="c-guide" width="24" height="24"></canvas><div><div class="plate">The Guide</div><div class="say">Running a model at home sounds like the free way out. If it is worse than the one you pay for, it is a hobby, not a saving.<span class="caret">▌</span></div></div><span class="adv">▼</span></div>
+        <div class="hist"><p class="fade">I spent my Codex usage with four hours still to go, and I did not want to stop.</p><p class="fade">So I did what I do when something annoys me enough. I built infrastructure.</p></div></div>
       <div class="leaf"><h4>In plain words</h4>
-        <ul><li>Limits are a constraint you design around.</li><li>Ask "enough for this step", not "best".</li><li>Route cheap work to the cheap model.</li></ul>
-        <div class="rune-card"><canvas id="c-rune" width="7" height="7"></canvas><div><strong>Rune learned</strong><br>Design input<small>+25 XP · added to the Codex</small></div></div>
-        <div class="trial"><h4>Trial</h4><span>List your last five AI tasks and mark which needed the big model.</span><label><input type="checkbox"> Mark trial done · +100 XP</label></div></div>
+        <ul><li>A small local model runs coding work badly.</li><li>A free endpoint may keep whatever you send it.</li><li>So free models are for public code only.</li></ul>
+        <div class="rune-card"><canvas id="c-rune" width="7" height="7"></canvas><div><strong>Rune learned</strong><br>A worse model is a hobby<small>+25 XP · added to the Codex</small></div></div>
+        <div class="trial"><h4>Trial</h4><span>List your projects and mark which are public enough to ever send to a free model.</span><label><input type="checkbox"> Mark trial done · +100 XP</label></div></div>
     </div>
     <div class="controls">
       <div class="ribbonbar"><i></i><u></u></div>
       <div class="row"><div><button aria-label="Previous stop">⏮</button> <button aria-label="Play">▶</button> <button aria-label="Next stop">⏭</button></div><div><button>1x</button> <button>Captions</button> <button>Rest at campfire</button></div></div>
-      <div class="stops"><span>Stops</span><i data-d></i><i data-now></i><i></i><i></i><span>· 3:12 / 9:40</span></div>
+      <div class="stops"><span>Stops</span><i data-now></i><i></i><i></i><i></i><span>· 1:48 / 4:30</span></div>
     </div>
   </div>
 </div>
-<p class="cap">The book is the voice player, dressed as a quest book. The transcript plays as dialogue from a pixel Guide, typed in time with the audio (a reduced-motion reader gets each line at once). When a concept lights up in the note, a rune glows in the margin and joins the Codex. Each stop ends with a Trial. "Rest at campfire" is Save progress. Underneath is a plain audio element with captions, so every word is readable without the art, and XP and runes are cosmetic and self-reported.</p>
+<p class="cap">The book is the voice player, dressed as a quest book. The transcript plays as dialogue from a pixel Guide, typed in time with the audio (a reduced-motion reader gets each line at once). When a concept lights up in the note, a rune glows in the margin and joins the Codex. Each stop ends with a Trial. "Rest at campfire" is Save progress. Underneath is a plain audio element with captions, so every word is readable without the art, and XP and runes are cosmetic and self-reported. The note text and the section are real. The Guide's lines are placeholders written from the note, until the real recording exists.</p>
 <div class="tabs3" style="margin-top:1.2rem">
   <div class="frame mini"><h3>Log · objectives</h3>
-    <div class="obj"><i data-d></i><div>Stop 1 · Why the meter ran out<small>done · +100 XP</small></div></div>
-    <div class="obj"><i></i><div>Stop 2 · Limits are a design input<small>in progress · trial open</small></div></div>
-    <div class="obj"><i></i><div>Stop 3 · What a model layer routes<small>locked until stop 2</small></div></div>
-    <div class="obj"><i></i><div>Stop 4 · Enough for this step<small>locked</small></div></div></div>
-  <div class="frame mini"><h3>Codex · runes</h3><div class="runes" id="runes"></div><small>3 of 8 learned in this quest. A rune is a concept id from the lesson file.</small></div>
+    <div class="obj"><i></i><div>Stop 1 · The night I went looking for a way out<small>in progress · trial open</small></div></div>
+    <div class="obj"><i></i><div>Stop 2 · The old setup and the new one<small>locked until stop 1</small></div></div>
+    <div class="obj"><i></i><div>Stop 3 · What a Model Intelligence Layer does<small>reference stop, skim it</small></div></div>
+    <div class="obj"><i></i><div>Stop 4 · What is built, and the rule I will not bend<small>locked</small></div></div></div>
+  <div class="frame mini"><h3>Codex · runes</h3><div class="runes" id="runes"></div><small>1 of 4 learned in this quest. A rune is a concept id from the lesson file, tied to a section and a quote.</small></div>
   <div class="frame mini"><h3>Pack · sources</h3>
     <div class="pack"><canvas id="c-i1" width="9" height="9"></canvas><div>Claude Academy: models and context<small>external · opens in a new tab</small></div></div>
-    <div class="pack"><canvas id="c-i2" width="9" height="9"></canvas><div>Osmani, Loop Engineering<small>external · from the Reading shelf</small></div></div>
-    <div class="pack"><canvas id="c-i3" width="9" height="9"></canvas><div>Next: Plan on the Big Model<small>note · quest 2</small></div></div></div>
+    <div class="pack"><canvas id="c-i2" width="9" height="9"></canvas><div>The Loop Outlives the Model<small>note · this one continues it</small></div></div>
+    <div class="pack"><canvas id="c-i3" width="9" height="9"></canvas><div>Plan on the Big Model<small>note · next quest</small></div></div></div>
 </div>
 <div class="levelup"><canvas id="c-star" width="9" height="9"></canvas>LEVEL UP · Apprentice → Journeyman<canvas id="c-star2" width="9" height="9"></canvas></div>
 <p class="cap">Level-up banner: announced to screen readers through a polite live region, never by color alone, and skipped when the visitor prefers reduced motion.</p>
@@ -401,29 +448,29 @@ no new region proposed. 2 more fitting notes and "Retrieval Marsh" is ready to p
 <div class="frame notepage">
   <div class="crumb">Notes · Model Mines · Quest 1</div>
   <h3>I Ran Out With Hours Left</h3>
-  <p class="by">Tjakoen Stolk · 2026-11-23 · about 22 min read</p>
+  <p class="by">Tjakoen Stolk · 2026-11-23 · about 10 min read</p>
   <div class="frame lessoncard">
-    <canvas id="c-lc" width="56" height="48" aria-hidden="true"></canvas>
+    <canvas class="scene" data-kind="mines" id="c-lc" width="64" height="56" aria-hidden="true"></canvas>
     <div class="lc">
       <span class="ribbon">Lesson · Model Mines · Quest 1 of 3</span>
       <strong>Learn this note as a quest</strong>
-      <p>In four short stops I talk you through the night I ran out of tokens and what it changed: why a limit is a design input, what a model layer routes, and the one rule I will not bend. You read the note while I explain it, then try one small task at the end of each stop.</p>
-      <div class="meta"><span class="chip">4 stops</span><span class="chip">about 18 min of audio</span><span class="chip">Lv 2 intro</span><span class="chip">+1,050 XP</span></div>
-      <div class="chips2"><span>You will collect</span><span class="rune-chip"><canvas data-rune="2" width="7" height="7"></canvas>Design input</span><span class="rune-chip"><canvas data-rune="3" width="7" height="7"></canvas>Model layer</span><span class="rune-chip"><canvas data-rune="4" width="7" height="7"></canvas>The rule I keep</span></div>
+      <p>In four short stops I talk you through the night I ran out of Codex with hours to go: why a home model or a free one was not the way out, and the one rule I built the whole setup to enforce, which is that my own public code goes to free models and work code never does. You read the note while I explain it, then try one small task at the end of each stop.</p>
+      <div class="meta"><span class="chip">4 stops</span><span class="chip">about 16 min of audio</span><span class="chip">Lv 1 intro</span><span class="chip">+650 XP</span></div>
+      <div class="chips2"><span>You will collect</span><span class="rune-chip"><canvas data-rune="2" width="7" height="7"></canvas>A worse model is a hobby</span><span class="rune-chip"><canvas data-rune="3" width="7" height="7"></canvas>Free may keep it</span><span class="rune-chip"><canvas data-rune="4" width="7" height="7"></canvas>Work code stays home</span></div>
       <div class="prog" title="2 of 4 stops done"><i></i></div>
       <div class="row"><button class="primary">Continue at stop 3</button><button>See it on the map</button></div>
       <small>2 of 4 stops done. Progress is saved in this browser, and the guild card can export it.</small>
     </div>
   </div>
-  <p style="font:15px/1.7 Georgia,serif;margin:.4rem 0 0">It was a Tuesday afternoon and the usage meter said I had spent the week's allowance on day two...</p>
-  <div class="h2line"><span>Limits are a design input</span><span class="pip" data-done>&#9654; Stop 2 · done</span></div>
-  <div class="h2line"><span>What a Model Intelligence Layer does</span><span class="pip">&#9654; Stop 3 · next</span></div>
+  <p style="font:15px/1.7 Georgia,serif;margin:.4rem 0 0">I spent my Codex usage and still had four hours to go before its five-hour usage window refreshed. I was in the zone. I did not want to stop.</p>
+  <div class="h2line"><span>The night I went looking for a way out</span><span class="pip" data-done>&#9654; Stop 1 · done</span></div>
+  <div class="h2line"><span>The old setup and the new one</span><span class="pip">&#9654; Stop 2 · next</span></div>
 </div>
 <p class="cap">The card sits under the byline, above the contents block, and only appears when the note has a lesson and is published. Its summary is the lesson's own, written in my words, so it explains what the lesson adds instead of repeating the note. Each section that belongs to a stop gets a small pip that opens the lesson at that stop. Everything on the card is plain text and links, so it works with the art off.</p>
 <div class="variants">
   <div class="frame mini"><h3>Not started</h3><p>Button reads Start lesson. No progress bar. The runes are listed so the reader knows what they will collect.</p></div>
   <div class="frame mini"><h3>A lesson that spans notes</h3><p>"This note is stops 3 and 4 of Set up your own loop. Stops 1 and 2 are in one-loop-three-harnesses." The card links to both notes and to the first unfinished stop.</p></div>
-  <div class="frame mini"><h3>A note in several lessons</h3><p>Rows, one per lesson: "The light chain, in order: lesson 2, stop 1" and "How the layer runs: lesson 2, stop 4". Each row has its own button and progress.</p></div>
+  <div class="frame mini"><h3>A note in several lessons</h3><p>Rows, one per lesson: "How the layer picks a model: lesson 1, stop 3" and "How the layer runs: lesson 2, stop 4". Each row has its own button and progress.</p></div>
 </div>
 </section>
 
@@ -441,14 +488,88 @@ no new region proposed. 2 more fitting notes and "Retrieval Marsh" is ready to p
     <canvas id="c-bp" width="16" height="16" aria-hidden="true"></canvas>
     <div>
       <h3>Walks the Loop Forest</h3>
-      <p><strong>Criteria.</strong> Finished every stop and its trial in the 4 Loop Forest quests: 13 stops.</p>
+      <p><strong>Criteria.</strong> Finished every stop and its trial in the 4 Loop Forest quests: 13 stops across 4 lessons.</p>
       <p><strong>Skills shown.</strong> The runes collected on the way.</p>
-      <div class="skills"><span class="rune-chip"><canvas data-rune="0" width="7" height="7"></canvas>The prompt is the spec</span><span class="rune-chip"><canvas data-rune="1" width="7" height="7"></canvas>One heartbeat</span><span class="rune-chip"><canvas data-rune="6" width="7" height="7"></canvas>The plan lives in files</span><span class="rune-chip"><canvas data-rune="7" width="7" height="7"></canvas>The contract</span></div>
+      <div class="skills"><span class="rune-chip"><canvas data-rune="0" width="7" height="7"></canvas>The plan lives in a file</span><span class="rune-chip"><canvas data-rune="1" width="7" height="7"></canvas>One heartbeat</span><span class="rune-chip"><canvas data-rune="6" width="7" height="7"></canvas>An honest unattended run</span><span class="rune-chip"><canvas data-rune="7" width="7" height="7"></canvas>The check that never ran</span></div>
       <p style="color:var(--q-muted)">Self-reported. This page rebuilds from the holder's save link and is not a signed credential.</p>
     </div>
   </div>
 </div>
 <p class="cap">A rune is not a badge. A rune is a concept, one per idea a stop teaches, and it lives in the Codex. A badge is earned by finishing a region, so it needs the trials, not just the runes. The badge page borrows the runes as its skill list, the way a certification lists skills, and that is the only place the two meet. Badges reuse the existing badge-class machinery and medallion. Optional cosmetic achievements, such as collecting every Mines rune, can exist but are never badges.</p>
+</section>
+
+<section>
+<h2>9 · On a phone</h2>
+<div class="phones">
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody">
+  <div class="pmap"><canvas id="c-m1" width="130" height="190" aria-label="Pixel art map"></canvas>
+    <div class="psearch">☰ <span>Search quests, notes, topics</span></div>
+    <div class="pchips"><span class="chip" data-on>All</span><span class="chip">Loop</span><span class="chip">Models</span><span class="chip">Leading</span><span class="chip">Not started</span></div>
+    <button class="fab" style="top:96px" aria-label="Find my adventurer">◎</button><button class="fab" style="top:140px" aria-label="Layers">▤</button></div>
+  <div class="sheet" style="height:156px"><div class="grab"></div><h3>Model Mines</h3><div class="sub" style="color:var(--q-muted)">★★★★☆ 3 quests · about 45 min of reading</div>
+    <div class="actions" style="display:flex;gap:.4rem"><button class="primary">▶ Start route</button><button>Save</button><button>Share</button></div></div>
+</div></div><figcaption>1 · The map is full screen. Search and chips float on top, and the place sheet peeks from the bottom. Pinch zooms, and the buttons are the keyboard path.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody">
+  <div class="pmap"><canvas id="c-m2" width="130" height="60" aria-label="Pixel art map"></canvas></div>
+  <div class="sheet" style="top:150px;bottom:0;border-top:3px solid var(--q-ink)"><div class="grab"></div><h3>Model Mines</h3><div class="sub" style="color:var(--q-muted)">3 quests · region 3 of 6 · Models, limits and cost</div>
+    <div class="actions" style="display:flex;gap:.4rem"><button class="primary">▶ Start route</button><button>Save</button><button>Share</button></div>
+    <div class="tabs"><span data-on>Route</span><span>About</span><span>Sources</span></div>
+    <ol class="steps">
+      <li data-sel><span class="n">1</span><div><strong>I Ran Out With Hours Left</strong><small>Lv 1 intro · 10 min · +650 XP</small></div></li>
+      <li><span class="n">2</span><div><strong>Plan on the Big Model, Type on the Small One</strong><small>Lv 1 intro · 10 min · +650 XP</small></div></li>
+      <li><span class="n">3</span><div><strong>How the Model Intelligence Layer Works</strong><small>Lv 3 deep · 25 min · +1,050 XP</small></div></li>
+    </ol>
+    <div class="src"><strong>Outside sources on this route</strong><div>Claude Academy: models and context</div></div></div>
+</div></div><figcaption>2 · Drag the sheet up and it becomes the route list, the same numbered steps as the desktop panel. This is also the screen-reader order.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody">
+  <div class="pmap"><canvas id="c-m3" width="130" height="90" aria-label="Pixel art zoomed map"></canvas></div>
+  <div class="sheet" style="top:210px;bottom:0"><div class="grab"></div><span class="ribbon">Model Mines · Quest 1 of 3</span><h3>I Ran Out With Hours Left</h3>
+    <div class="row"><span class="chip">Learner, Builder</span><span class="chip">Lv 1 intro</span></div>
+    <div class="stats"><div class="stat"><small>Quest level</small><strong>Lv 1</strong></div><div class="stat"><small>Experience</small><strong>+650 XP</strong></div><div class="stat"><small>Reading</small><strong>~10 min</strong></div></div>
+    <div><strong>You will learn</strong><ul><li>Why a worse coding model is a hobby</li><li>Why a free endpoint is for public code only</li><li>How one rule is enforced by the setup</li></ul></div>
+    <div class="row"><button class="primary" style="flex:1">Begin quest</button><button style="flex:1">Read the note</button></div></div>
+</div></div><figcaption>3 · Zoom to a landmark and the quest opens as a sheet over the map, in place of the desktop modal.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody"><div class="pnote">
+  <div class="bar">← Notes · Model Mines · Quest 1</div>
+  <h3>I Ran Out With Hours Left</h3>
+  <div class="bar" style="text-transform:none">Tjakoen Stolk · 2026-11-23 · about 10 min read</div>
+  <div class="frame plc" style="box-shadow:3px 3px 0 var(--q-ink)"><canvas class="scene" data-kind="mines" width="72" height="22" aria-hidden="true"></canvas>
+    <div class="lc"><span class="ribbon">Lesson · Model Mines</span><strong style="font-size:.95rem">Learn this note as a quest</strong>
+      <p>In four short stops I talk you through the night I ran out of Codex with hours to go, and the one rule I built the whole setup to enforce.</p>
+      <div class="meta"><span class="chip">4 stops</span><span class="chip">16 min</span><span class="chip">+650 XP</span></div>
+      <div class="chips2"><span class="rune-chip"><canvas data-rune="2" width="7" height="7"></canvas>A worse model is a hobby</span></div>
+      <button class="primary">Start lesson</button></div></div>
+  <p style="margin:0">I spent my Codex usage and still had four hours to go before its five-hour usage window refreshed. I was in the zone.</p>
+  <div class="h2line" style="font-size:1rem"><span>The night I went looking for a way out</span></div><span class="pip" style="justify-self:start">&#9654; Stop 1</span>
+</div></div></div><figcaption>4 · The lesson card on a note, in one column. The picture becomes a strip, the summary clamps to four lines, and the button is full width.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody"><div class="pnote">
+  <div class="bar">Stop 1 of 4 · The night I went looking for a way out</div>
+  <p style="margin:0">The first thing I tried was running a model on my own machine. I have an RTX 3050 with 8 GB of memory. It runs small models fine and runs the ones I would want for coding badly, and <span class="hl" style="outline-offset:1px">a coding model that is worse than the one I am paying for is not a saving, it is a hobby.</span> I put that idea back on the shelf for a year or two.</p>
+  <div class="toast" style="position:static;justify-self:start;font-size:.66rem">+25 XP · Rune: A worse model is a hobby</div>
+  <p style="margin:0">The second thing was free models online. They exist, they are better than I expected, and the catch is printed on the label.</p></div>
+  <div class="dock"><div class="line"><canvas class="guide" width="24" height="24"></canvas><span>Running a model at home sounds like the free way out. If it is worse than the one you pay for, it is a hobby.</span><button style="padding:0;height:38px">▶</button></div>
+    <div class="ribbonbar"><i style="width:40%"></i><u style="left:40%"></u></div><div class="open">▲ Open the book · stop 1 of 4 · 1:48 / 4:30</div></div>
+</div></div><figcaption>5 · Lesson mode on a phone: the note stays full screen, and the book collapses to a player dock with the Guide's current line. The highlight and the rune toast sit in the text.</figcaption></figure>
+
+<figure><div class="phone"><div class="pstatus"><span>9:41</span><span>▮▮▮ ◔</span></div><div class="pbody"><div class="pnote" style="opacity:.5"><div class="bar">Stop 1 of 4</div><p style="margin:0">The first thing I tried was running a model on my own machine...</p></div><div class="pdim"></div>
+  <div class="sheet" style="top:70px;bottom:0;background:var(--q-ground)"><div class="grab"></div>
+    <div class="hud"><div class="top"><strong>Wren · Apprentice Lv 3</strong><span>1,240 XP</span></div><div class="xp" style="height:10px"><i style="width:26%"></i></div></div>
+    <div class="tb"><span data-on>Book</span><span>Log</span><span>Codex</span><span>Pack</span></div>
+    <div class="leaf" style="min-height:0;border:3px solid var(--q-outline);gap:.4rem;padding:.5rem">
+      <h4>Chapter 1 · The Guide speaks</h4>
+      <div class="dlg"><canvas class="guide" width="24" height="24"></canvas><div><div class="plate">The Guide</div><div class="say">Running a model at home sounds like the free way out. If it is worse than the one you pay for, it is a hobby, not a saving.<span class="caret">▌</span></div></div><span class="adv">▼</span></div>
+      <div class="rune-card"><canvas id="c-rune2" width="7" height="7"></canvas><div><strong>Rune learned</strong><br>A worse model is a hobby<small>+25 XP</small></div></div>
+      <div class="trial"><h4>Trial</h4><span style="font-size:.74rem">List your projects and mark which are public enough to ever send to a free model.</span><label><input type="checkbox"> Mark done · +100 XP</label></div></div>
+    <div class="dots"><span>◀</span><i data-on></i><i></i><span>▶</span><span>page 1 of 2</span></div>
+    <div class="ribbonbar"><i style="width:40%"></i><u style="left:40%"></u></div>
+    <div class="row" style="justify-content:space-between"><button style="padding:0 .5rem">⏮</button><button style="padding:0 .5rem">▶</button><button style="padding:0 .5rem">⏭</button><button style="padding:0 .5rem">1x</button><button style="padding:0 .5rem">Rest</button></div></div>
+</div></div><figcaption>6 · The book opened as a full sheet. The two-page spread becomes one page you swipe between, with the same tabs, rune card, trial and campfire save.</figcaption></figure>
+</div>
+<p class="cap">Touch targets are at least 38 pixels, the sheet and the dock are the only floating layers, and nothing depends on hover. The sheet and dock heights are sample proportions. Real ones should respect the safe area and the on-screen keyboard.</p>
 </section>
 </main>
 
@@ -574,9 +695,12 @@ function render(cv,V){
   sprites.forEach(s=>s.f(put));
   if(V.detail){ tentSpr().blit(put,92,134); tentSpr().blit(put,96,136); torchSpr().blit(put,100,128); torchSpr().blit(put,108,128); cartSpr().blit(put,112,134);
     for(let x=100;x<122;x+=2){ put(x,135,P.trunk); } for(let x=100;x<124;x++) put(x,136,P.rockd); torchSpr().blit(put,72,138); }
-  (V.pins||[]).forEach(p=>{ if(p.you){ youSpr().blit(put,p.x,p.y); return; }
-    if(p.sel){ for(let i=-4;i<=4;i++) put(p.x+i,p.y,'rgba(0,0,0,.28)'); }
-    pinSpr(p.n,p.state).blit(put,p.x,p.y-(p.sel?3:0)); });
+  const zp=z>=3?2:z;
+  (V.pins||[]).forEach(p=>{ const bx=Math.round((p.x-V.x)*z), by=Math.round((p.y-V.y)*z);
+    const pp=(dy)=>(lx,ly,c)=>{ const sx=bx+lx*zp, sy=by+ly*zp-dy; if(sx<-zp||sy<-zp||sx>=W||sy>=H) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,zp,zp); };
+    if(p.you){ youSpr().blit(pp(0),0,0); return; }
+    if(p.sel){ for(let i=-4;i<=4;i++) pp(0)(i,0,'rgba(0,0,0,.28)'); }
+    pinSpr(p.n,p.state).blit(pp(p.sel?3*zp:0),0,0); });
 }
 function placeLabels(host,V,W,H,labels){ host.querySelectorAll('.lbl').forEach(e=>e.remove());
   labels.forEach(l=>{ const e=document.createElement('div'); e.className='lbl'+(l.box?' box':''); e.style.left=((l.x-V.x)*V.z/W*100)+'%'; e.style.top=((l.y-V.y)*V.z/H*100)+'%'; e.innerHTML=l.t+(l.s?`<small>${l.s}</small>`:''); host.appendChild(e); }); }
@@ -606,8 +730,7 @@ let drawAll=function(){
     {you:1,x:66,y:96}, {n:0,state:'locked',x:166,y:112} ]});
   placeLabels(document.getElementById('mapside'),mapV,WW,WH,[
     {x:34,y:126,t:'Foothills',s:'Claude Academy'},{x:62,y:98,t:'Loop Forest'},{x:104,y:132,t:'Model Mines'},{x:146,y:106,t:'Guild Hall'},{x:92,y:62,t:'GRAIN Keep'},{x:150,y:44,t:'Summit'},{x:166,y:118,t:'Unmapped',s:'2 more notes to chart',box:1},{x:46,y:62,t:'Lake of Tokens'} ]);
-  render(document.getElementById('c-hero-img'),{x:78,y:104,z:2});
-  layerTile(document.getElementById('c-layer'));
+    layerTile(document.getElementById('c-layer'));
   const zc=document.getElementById('c-zoom'), zv={x:84,y:100,z:3,detail:1};
   render(zc,{...zv,pins:[{n:1,sel:1,state:'open',x:100,y:114},{n:2,state:'open',x:112,y:122},{n:3,state:'open',x:92,y:127}]});
   placeLabels(document.getElementById('zoomframe'),zv,zc.width,zc.height,[{x:100,y:116,t:'Limits',s:'quest 1'},{x:112,y:124,t:'Plan big',s:'quest 2'},{x:92,y:129,t:'Model layer',s:'quest 3'}]);
@@ -624,13 +747,38 @@ function itemDraw(cv,kind){ const s=spr(); if(kind===0){ s.rect(-3,-3,7,6,P.wall
   s.outline(P.outline); const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.fillStyle=P.paper; ctx.fillRect(0,0,cv.width,cv.height); const sc=cv.width/9; s.blit((x,y,c)=>{ ctx.fillStyle=c; ctx.fillRect(Math.round((x+4)*sc),Math.round((y+4)*sc),Math.ceil(sc),Math.ceil(sc)); },0,0); }
 function starDraw(cv){ const g=px(cv,9,9); g.clear('rgba(0,0,0,0)'); const c=P.amber, o=P.outline; [[4,0],[4,1],[3,2],[4,2],[5,2],[0,3],[1,3],[2,3],[3,3],[4,3],[5,3],[6,3],[7,3],[8,3],[1,4],[2,4],[3,4],[4,4],[5,4],[6,4],[7,4],[2,5],[3,5],[4,5],[5,5],[6,5],[2,6],[3,6],[5,6],[6,6],[1,7],[2,7],[6,7],[7,7]].forEach(([x,y])=>g.dot(x,y,c)); g.dot(4,1,'#fff'); }
 
+
+function scene(cv,kind){ const W=cv.width,H=cv.height, ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false;
+  const put=(x,y,c)=>{ if(x<0||y<0||x>=W||y>=H) return; ctx.fillStyle=c; ctx.fillRect(x,y,1,1); };
+  const gy=Math.round(H*.72); for(let y=0;y<H;y++) for(let x=0;x<W;x++){ put(x,y,y<H*.38?P.water2:y<H*.62?P.wave:P.foam); }
+  for(let dy=-3;dy<=3;dy++) for(let dx=-3;dx<=3;dx++) if(dx*dx+dy*dy<=9) put(W-10+dx,7+dy,P.amber);
+  [[8,6],[22,10],[34,5]].forEach(([x,y],i)=>{ for(let k=0;k<5+i;k++){ put(x+k,y,'#fff'); if(k>0&&k<4+i) put(x+k,y-1,'#fff'); } });
+  const ground={mines:[P.rock,P.rock2],forest:[P.forest,P.forest2],keep:[P.meadow,P.meadow2],hall:[P.field,P.field2],summit:[P.snow,P.snow2],hills:[P.grass,P.grass2]}[kind];
+  for(let y=gy;y<H;y++) for(let x=0;x<W;x++){ put(x,y,((x>>1)+y)%2?ground[0]:ground[1]); }
+  for(let x=0;x<W;x++) put(x,gy,P.outline);
+  const B=(sp,x,y)=>sp.blit(put,x,y);
+  if(kind==='mines'){ B(mountainSpr(Math.round(H*.55),.9),Math.round(W*.36),gy+2); B(mountainSpr(Math.round(H*.4),.9),Math.round(W*.72),gy+2); B(mountainSpr(Math.round(H*.28),.9),Math.round(W*.12),gy+2); B(caveSpr(),Math.round(W*.36),gy+1); B(torchSpr(),Math.round(W*.36)-5,gy+4); B(torchSpr(),Math.round(W*.36)+5,gy+4); B(cartSpr(),Math.round(W*.58),gy+6); B(pineSpr(),W-6,gy+7); }
+  if(kind==='forest'){ for(let i=0;i<7;i++) B(pineSpr(),6+i*Math.round(W/7),gy+5+(i%2)*3); }
+  if(kind==='keep'){ B(castleSpr(),Math.round(W/2),gy+3); }
+  if(kind==='hall'){ B(hallSpr(),Math.round(W*.45),gy+4); B(houseSpr(),Math.round(W*.2),gy+6); B(houseSpr(),Math.round(W*.8),gy+7); }
+  if(kind==='summit'){ B(peakSpr(),Math.round(W/2),gy+3); }
+  if(kind==='hills'){ B(hillSpr(24,9),Math.round(W*.3),gy+5); B(hillSpr(18,7),Math.round(W*.7),gy+6); B(signSpr(),Math.round(W*.5),gy+7); }
+  const adv=spr(); adv.rect(0,-5,2,2,'#e8bf94'); adv.rect(0,-3,2,3,P.castle); adv.set(2,-5,P.trunk); adv.set(2,-4,P.trunk); adv.set(2,-6,P.glow); adv.outline(P.outline); adv.blit(put,Math.round(W*.52),gy+6); }
+function mobileMaps(){
+  const mk=(id,V,pins,labels)=>{ const cv=document.getElementById(id); render(cv,{...V,pins}); placeLabels(cv.parentElement,V,cv.width,cv.height,labels); };
+  const pinsAll=[{n:1,state:'done',x:34,y:108},{n:2,state:'done',x:62,y:78},{n:3,sel:1,state:'open',x:104,y:108},{n:4,state:'open',x:146,y:78},{n:5,state:'open',x:92,y:36},{n:6,state:'open',x:150,y:18},{you:1,x:66,y:96}];
+  mk('c-m1',{x:28,y:8,z:1},pinsAll,[{x:62,y:98,t:'Loop Forest'},{x:104,y:132,t:'Model Mines'},{x:92,y:62,t:'GRAIN Keep'},{x:146,y:106,t:'Guild Hall'}]);
+  mk('c-m2',{x:72,y:108,z:2},[],[]);
+  mk('c-m3',{x:88,y:104,z:3,detail:1},[{n:1,sel:1,state:'open',x:100,y:114},{n:2,state:'open',x:112,y:122},{n:3,state:'open',x:92,y:127}],[]);
+}
 function drawCards(){
-  const lc=document.getElementById('c-lc'); render(lc,{x:86,y:100,z:1});
+  document.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind)); mobileMaps();
+  document.querySelectorAll('canvas.guide').forEach(c=>guideDraw(c));
   document.querySelectorAll('canvas[data-rune]').forEach(c=>runeDraw(c,+c.dataset.rune,[P.roof,P.castle,P.forest,P.pin,P.you,P.roof2,P.castle2,P.rockd][+c.dataset.rune%8]));
   badge(document.getElementById('c-bp'),P.forest); badge(document.getElementById('c-rb'),P.forest);
 }
-function drawRpg(){ guideDraw(document.getElementById('c-guide')); runeDraw(document.getElementById('c-rune'),2,P.roof); runeDraw(document.getElementById('c-mrune'),2,P.roof);
-  const r=document.getElementById('runes'); r.innerHTML=''; for(let i=0;i<8;i++){ const c=document.createElement('canvas'); c.width=56;c.height=56; if(i>2) c.className='off'; r.appendChild(c); runeDraw(c,i,i>2?P.rockd:[P.roof,P.castle,P.forest][i]); }
+function drawRpg(){ guideDraw(document.getElementById('c-guide')); runeDraw(document.getElementById('c-rune'),2,P.roof); runeDraw(document.getElementById('c-rune2'),2,P.roof); runeDraw(document.getElementById('c-mrune'),2,P.roof);
+  const r=document.getElementById('runes'); r.innerHTML=''; ['A worse model is a hobby','Free may keep it','Work code stays home','One decision-maker'].forEach((n,i)=>{ const w=document.createElement('div'); w.className='rn'+(i>0?' off':''); const c=document.createElement('canvas'); c.width=56;c.height=56; const l=document.createElement('small'); l.textContent=n; w.appendChild(c); w.appendChild(l); r.appendChild(w); runeDraw(c,[2,3,4,5][i],i>0?P.rockd:P.roof); });
   itemDraw(document.getElementById('c-i1'),0); itemDraw(document.getElementById('c-i2'),1); itemDraw(document.getElementById('c-i3'),2); starDraw(document.getElementById('c-star')); starDraw(document.getElementById('c-star2')); drawCards(); }
 const _drawAll=drawAll; drawAll=function(){ _drawAll(); drawRpg(); };
 const root=document.documentElement;
