@@ -62,7 +62,9 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 ## Decisions already made
 
 - No Foothills notes. The first stop points out to Claude Academy for the basics. The exact URL is
-  still to confirm before it ships.
+  still to confirm before it ships. Foothills is one island of its own off the south-west coast, reached by a
+  dotted ferry route to a dock on the mainland, because it points outside the site. The first region on the
+  mainland is Loop Forest.
 - Map mode is a screen of its own, the way the builder is. The explorer rail is collapsed, the assistant
   sidebar is hidden and the terminal is hidden, so the map takes the whole window. The sidebar comes back as
   the lesson book inside a quest note.
@@ -120,7 +122,7 @@ fills the viewport and everything else floats on it, as in Google Maps.
   mountain becomes a lobed mine hill with shafts, timber, rails, an ore vault, lanterns and snow caps. Loop
   Forest becomes a clearing with a winding loop road and four stations. No place is a plain oval: ground
   patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes a switchback trail with camps and the flag. The
-  Foothills become a start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
+  Foothills become a start camp on that island. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
   what the lesson is about. Only the landmark nearest the middle of the view shows its detail, and it eases in over about a
   third of a second. Drag to another region and the old detail fades out while the next fades in, and the
   pins of the other regions dim, so the map feels like one place rather than a switch. Each scene is baked
@@ -182,7 +184,7 @@ First six regions, from the published AI notes (order inside each is a guess to 
 
 | Region | Landmark | Notes |
 |---|---|---|
-| Foothills | hills | one external stop: Claude Academy |
+| Foothills | an island with hills, off the coast | one external stop: Claude Academy |
 | Loop Forest | pines | one-loop-every-repo, one-loop-three-harnesses, loop-setup, the-check-that-never-ran |
 | Model Mines | mountain and cave | necessity-and-the-model-layer, plan-big-type-small, how-the-model-layer-works |
 | Guild Hall | hall | show-them-the-board, move-bugs-left, the-reviewer-that-learned-to-be-wrong |
