@@ -1,23 +1,38 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
-import { buildIndex, INDEX_FILE, loadNote, loadRegions, minutesOf, placeNote, readNote, type Note, type Region } from "./quests.ts";
+import { buildIndex, INDEX_FILE, proposeRegions, loadNote, loadRegions, minutesOf, placeNote, readNote, type Note, type Region } from "./quests.ts";
 
 const regions: Region[] = [{ n: 1, id: "forest", name: "Forest", landmark: "pines", notes: ["a", "b"] }];
-const note = (over: Partial<Note> = {}): Note => ({ slug: "a", title: "A", status: "PUBLISHED", level: "intro", audience: ["learn"], tags: ["ai"], readingTime: "~10 min", ...over });
+const note = (over: Partial<Note> = {}): Note => ({ slug: "a", title: "A", status: "PUBLISHED", level: "intro", audience: ["learn"], tags: ["ai", "workflow"], readingTime: "~10 min", ...over });
 
 describe("placeNote", () => {
   test("a published note a region lists fits it, at its place on the route", () => {
     expect(placeNote(note({ slug: "b" }), regions)).toMatchObject({ outcome: "fits", position: 1 });
   });
   test("a published, complete note no region lists fits nothing yet", () => {
-    expect(placeNote(note({ slug: "z" }), regions)).toEqual({ outcome: "fits-nothing", tags: ["ai"] });
+    expect(placeNote(note({ slug: "z" }), regions)).toEqual({ outcome: "fits-nothing", tags: ["ai", "workflow"] });
   });
   test("a note missing what a quest needs cannot be placed, and says what", () => {
-    expect(placeNote(note({ level: undefined, tags: [] }), regions)).toEqual({ outcome: "cannot-place", missing: ["level", "tags"] });
+    expect(placeNote(note({ level: undefined, tags: [] }), regions)).toEqual({ outcome: "cannot-place", missing: ["level", "a tag besides ai"] });
     expect(placeNote(note({ level: "expert" }), regions)).toMatchObject({ outcome: "cannot-place" });
   });
   test("a draft is never placed, even when a region lists it", () => {
     expect(placeNote(note({ status: "DRAFT" }), regions)).toEqual({ outcome: "draft" });
+  });
+});
+
+describe("proposeRegions", () => {
+  const unplaced = (n: number, tags: string[]) => Array.from({ length: n }, (_, i) => note({ slug: `n${tags.join("")}${i}`, tags }));
+  test("five unplaced notes sharing a tag after ai propose a region, and four do not", () => {
+    expect(proposeRegions(unplaced(5, ["ai", "teaching"]), regions)).toEqual([{ tag: "teaching", name: "Teaching", notes: unplaced(5, ["ai", "teaching"]).map((n) => n.slug).toSorted() }]);
+    expect(proposeRegions(unplaced(4, ["ai", "teaching"]), regions)).toEqual([]);
+  });
+  test("notes a region already lists, drafts and notes tagged only ai never count", () => {
+    expect(proposeRegions([...unplaced(5, ["ai", "workflow"]).map((n, i) => (i === 0 ? { ...n, slug: "a" } : n)), ...unplaced(5, ["ai"])], regions)).toEqual([]);
+    expect(proposeRegions(unplaced(5, ["ai", "x"]).map((n) => ({ ...n, status: "DRAFT" })), regions)).toEqual([]);
+  });
+  test("a note tagged only ai cannot be placed, because the tag says too little", () => {
+    expect(placeNote(note({ slug: "z", tags: ["ai"] }), regions)).toEqual({ outcome: "cannot-place", missing: ["a tag besides ai"] });
   });
 });
 
