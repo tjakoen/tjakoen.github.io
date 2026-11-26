@@ -21,9 +21,13 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 - **Real pixel art.** Solid pixels, one outline pixel around every sprite, two-tone shading, no smoothing.
   The map is drawn from code: noise terrain, a biome per region, roads, and hand-built sprites for each
   landmark (pines, mountains with a cave, the hall, the castle, the summit flag).
-- **You are here.** The blue dot is gone. A small pixel adventurer labelled You stands beside the next
-  unfinished quest on the route, so the marker says where you are in the path and not just where the map
-  happens to be. The find-me button and Continue both go there.
+- **You are here is progress, not a cursor.** A small pixel adventurer labelled You stands at the next
+  unfinished stop of the next unfinished quest, so it says how far you have got in the course. Browsing, the
+  next button and selecting things never move it. Finishing a stop does: the stop panel has a Mark stop as done
+  button, which turns that stop green, walks You to the next one and can be undone. The panel carries a You are
+  here badge on that quest and stop, and a Where I am button, shared with the find-me button and Continue, jumps
+  there from anywhere. In the real build progress comes from the saved guild card, and the mockup uses a sample
+  with two quests and one stop done.
 - **The map has life, slowly.** Ferries sail between the Foothills pier and the Guild Hall harbour along the
   south coast. Gulls circle the port, birds circle the forest and nest in its trees, fish jump, and the Guild
   Hall chimney smokes. Up close the places are lived in: a few dwarves swing picks in the mines and one

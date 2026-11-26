@@ -351,7 +351,11 @@ body { margin:0; background:var(--q-water); }
 .rowbtn .go { color:var(--q-muted); }
 .stopbox { border:2px solid var(--q-ink); background:var(--q-paper); box-shadow:3px 3px 0 var(--q-ink); }
 .stopbox__h { display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; padding:.4rem .6rem; background:var(--q-panel); border-bottom:2px solid var(--q-ink); }
-.stopline { display:grid; grid-template-columns:24px 1fr; gap:.6rem; align-items:center; font-size:.8rem; line-height:1.35; padding:.5rem .6rem; cursor:pointer; border-bottom:1px solid var(--q-line); }
+.here { margin-left:auto; font:700 .6rem/1.5 ui-monospace,"SF Mono",Menlo,monospace; background:var(--q-accent); color:var(--q-accent-ink); border:2px solid var(--q-outline); padding:0 .35rem; white-space:nowrap; }
+.stopline[data-done] .sn { background:#2f7d33; color:#fff; }
+.hit[data-sk] { z-index:5; }
+.you.walk { transition:left .9s cubic-bezier(.33,1,.68,1), top .9s cubic-bezier(.33,1,.68,1); }
+.stopline { display:grid; grid-template-columns:24px 1fr auto; gap:.6rem; align-items:center; font-size:.8rem; line-height:1.35; padding:.5rem .6rem; cursor:pointer; border-bottom:1px solid var(--q-line); }
 .stopline:last-child { border-bottom:0; }
 .stopline:hover { background:color-mix(in srgb,var(--q-accent) 16%,transparent); }
 .stopline[data-sel] { background:var(--q-accent); color:var(--q-accent-ink); }
@@ -584,6 +588,11 @@ const DONE=new Set(['one-loop-every-repo','one-loop-three-harnesses']);
 const YOU=[66,96];
 const LEVEL={intro:1,intermediate:2,deep:3}, CLASS={learn:'Learner',build:'Builder',lead:'Leader',teach:'Teacher'};
 QUESTS.forEach(q=>{ q.lv=LEVEL[q.level]||1; q.xp=25*q.min+100*q.stops.length; q.cls=q.aud.map(a=>CLASS[a]||a).join(', '); q.done=DONE.has(q.id); });
+/* Progress is per stop. The saved progress here is a sample: two quests finished and one stop of the third. In the real build it comes from the guild card's save. */
+const PARTIAL={'loop-setup':[0]}, PROG={};
+QUESTS.forEach(q=>{ PROG[q.id]=new Set(DONE.has(q.id)?q.stops.map((_,i)=>i):(PARTIAL[q.id]||[])); });
+function refreshProgress(){ QUESTS.forEach(q=>{ q.done=PROG[q.id].size>=q.stops.length; }); }
+refreshProgress();
 const byReg=n=>QUESTS.filter(q=>q.region===n);
 
 /* ===== view: integer zoom levels, 2 css px per canvas px, centre in world coords ===== */
@@ -633,7 +642,13 @@ function layoutQuests(){ for(const n in SPEC){ const routes=ROUTES[n]||[], sp=SP
     byReg(+n).forEach((qq,i)=>{ let p=sp.q[i]; if(!p) return; p=[p[0],p[1]];
       for(let pass=0;pass<5;pass++){ let moved=false; for(const rt of routes){ const h=nearOnRoute(rt,p[0],p[1]); if(h&&h.d<13){ let dx=p[0]-h.px, dy=p[1]-h.py, m=Math.hypot(dx,dy); if(m<1){ dx=h.ty; dy=-h.tx; m=1; } p=[Math.max(5,Math.min(sp.W-5,h.px+dx/m*15)),Math.max(5,Math.min(sp.H-5,h.py+dy/m*15))]; moved=true; } } if(!moved) break; }
       qq.pos=sceneM(+n,p[0],p[1]); }); }
-  const nx=QUESTS.find(q=>!q.done)||QUESTS[0]; YOU[0]=nx.pos[0]; YOU[1]=nx.pos[1]; } // you stand beside the next quest on your route
+  placeYou(); }
+let YOUQ={id:'',i:0};
+/* You are here: the next unfinished stop of the next unfinished quest. Browsing and the next button never move it; only finishing a stop does. */
+function placeYou(){ const nx=QUESTS.find(q=>!q.done)||QUESTS[QUESTS.length-1]; let i=0; while(i<nx.stops.length-1&&PROG[nx.id].has(i)) i++; YOUQ={id:nx.id,i}; const p=stopPos(nx,Math.min(i,8)); YOU[0]=p[0]; YOU[1]=p[1]; }
+function where(){ selectStop(YOUQ.id,YOUQ.i); }
+function youWalk(){ const el=document.querySelector('.you'); if(el){ el.classList.add('walk'); setTimeout(()=>el.classList.remove('walk'),950); } }
+function markDone(){ if(sel.t!=='stop') return; const set=PROG[sel.id]; if(set.has(sel.i)) set.delete(sel.i); else set.add(sel.i); refreshProgress(); placeYou(); youWalk(); renderPanel(); draw(); toast(set.has(sel.i)?'Stop '+(sel.i+1)+' marked as done. You moved on.':'Stop '+(sel.i+1)+' is open again.'); }
 const routeOf=qq=>{ const r=ROUTES[qq.region]; return r&&r[byReg(qq.region).indexOf(qq)]; };
 function alongRoute(rt,f){ let L=0; const seg=[]; for(let i=0;i<rt.length-1;i++){ const d=Math.hypot(rt[i+1][0]-rt[i][0],rt[i+1][1]-rt[i][1]); seg.push(d); L+=d; } let s=L*f; for(let i=0;i<seg.length;i++){ if(s<=seg[i]||i===seg.length-1){ const k=seg[i]?Math.min(1,s/seg[i]):0; return [rt[i][0]+(rt[i+1][0]-rt[i][0])*k,rt[i][1]+(rt[i+1][1]-rt[i][1])*k]; } s-=seg[i]; } return rt[0]; }
 const stopPos=(qq,i)=>{ const rt=routeOf(qq); const n=Math.min(qq.stops.length,9); if(!rt) return qq.pos; const [x,y]=alongRoute(rt,n===1?.5:.04+.92*i/(n-1)); return sceneM(qq.region,x,y); };
@@ -869,8 +884,8 @@ function draw(tick){
     if(z>=3) extras().forEach(e=>{ pinAt(e.wx,e.wy,e.sym,'ext',false); add('x'+e.id,e.wx,e.wy,'hit',{label:e.label,act:e.act,region:1}); add('tx'+e.id,e.wx,e.wy,'lbl',{text:e.text,sub:e.sub,cls:'quest tag'}); });
     QUESTS.forEach((qq,i)=>{ const n=byReg(qq.region).indexOf(qq)+1, ok=filterOk(qq), selQ=sel.t==='quest'&&sel.id===qq.id||(sel.t==='stop'&&sel.id===qq.id); pinAt(qq.pos[0],qq.pos[1],n,qq.done?'done':'open',selQ);
       add('hq'+qq.id,qq.pos[0],qq.pos[1],'hit',{label:qq.title+', quest '+n,act:()=>selectQuest(qq.id),region:qq.region,off:!ok}); add('lq'+qq.id,qq.pos[0],qq.pos[1],'lbl',{text:qq.short,sub:'Lv '+qq.lv+' '+qq.level+' \u00b7 '+qq.min+' min \u00b7 '+qq.stops.length+' stops',cls:'quest tag'}); });
-    if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id); qq.stops.slice(0,9).forEach((s,i)=>{ const p=stopPos(qq,i); pinAt(p[0],p[1],i+1,'stop',sel.t==='stop'&&sel.i===i);
-      add('hs'+i,p[0],p[1],'hit',{label:'Stop '+(i+1)+': '+s,act:()=>selectStop(qq.id,i),region:qq.region}); add('ls'+i,p[0],p[1],'lbl',{text:'Stop '+(i+1),sub:s.length>40?s.slice(0,38)+'...':s,cls:'quest tag',prio:(sel.t==='stop'&&sel.i===i)?2:1}); }); }
+    if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id); qq.stops.slice(0,9).forEach((s,i)=>{ const p=stopPos(qq,i); pinAt(p[0],p[1],i+1,PROG[qq.id].has(i)?'done':'stop',sel.t==='stop'&&sel.i===i);
+      add('hs'+i,p[0],p[1],'hit',{label:'Stop '+(i+1)+': '+s,act:()=>selectStop(qq.id,i),region:qq.region,stop:1}); add('ls'+i,p[0],p[1],'lbl',{text:'Stop '+(i+1),sub:s.length>40?s.slice(0,38)+'...':s,cls:'quest tag',prio:(sel.t==='stop'&&sel.i===i)?2:1}); }); }
   }
   // you are here dot
   items.push({key:'you',wx:YOU[0],wy:YOU[1],kind:'you'});
@@ -888,8 +903,8 @@ function syncOverlay(items,vx,vy,z,zp){ const keep=new Set();
       else { e=document.createElement('div'); e.className='lbl '+(it.cls||''); e.innerHTML=it.text+(it.sub?'<small>'+it.sub+'</small>':''); if(it.done) e.dataset.done=1; }
       over.appendChild(e); els.set(it.key,e); }
     e._act=it.act; const sx=Math.round((it.wx-vx)*z)*S, sy=Math.round((it.wy-vy)*z)*S; if(e._x!==sx){ e._x=sx; e.style.left=sx+'px'; } if(e._y!==sy){ e._y=sy; e.style.top=sy+'px'; }
-    if(it.kind==='you'){ drawYou(e.firstChild); e.style.left=(sx-28)+'px'; }
-    if(it.kind==='hit'||it.kind==='mark'){ const t=it.state==='done'?'\u2713':String(it.n), pn=e.firstChild; if(pn.textContent!==t) pn.textContent=t; if(e.dataset.state!==it.state) e.dataset.state=it.state; if(it.selected){ if(!e.dataset.selected) e.dataset.selected=1; } else if(e.dataset.selected) delete e.dataset.selected; if(it.off){ if(!e.dataset.off) e.dataset.off=1; } else if(e.dataset.off) delete e.dataset.off;
+    if(it.kind==='you'){ const yq=QUESTS.find(x=>x.id===YOUQ.id); e.title='You are here: stop '+(YOUQ.i+1)+' of '+(yq?yq.short:''); drawYou(e.firstChild); e.style.left=(sx-28)+'px'; }
+    if(it.kind==='hit'||it.kind==='mark'){ const t=it.state==='done'?'\u2713':String(it.n), pn=e.firstChild; if(pn.textContent!==t) pn.textContent=t; if(e.dataset.state!==it.state) e.dataset.state=it.state; if(it.selected){ if(!e.dataset.selected) e.dataset.selected=1; } else if(e.dataset.selected) delete e.dataset.selected; if(it.off){ if(!e.dataset.off) e.dataset.off=1; } else if(e.dataset.off) delete e.dataset.off; if(it.stop){ if(!e.dataset.sk) e.dataset.sk=1; } else if(e.dataset.sk) delete e.dataset.sk;
       /* The name card shows only on hover or focus, or while the pin is selected. A click opens it in the panel. */
       if(it.tag){ const h=it.tag.text+(it.tag.sub?'<small>'+it.tag.sub+'</small>':''); if(e._tg!==h){ e._tg=h; e.lastChild.innerHTML=h; } }
       if(sx>innerWidth-240){ if(!e.dataset.flip) e.dataset.flip=1; } else if(e.dataset.flip) delete e.dataset.flip;
@@ -962,13 +977,14 @@ function renderPanel(){
       <div class="sub">${dn} of ${QUESTS.length} quests done. Drag to pan, scroll or +/- to zoom, Esc to return here.</div></div>`; }
   else if(sel.t==='region'){ const r=REG[sel.id-1], qs=byReg(r.n);
     h=pnav('All regions','data-act="home"',r.name,neighbours())+sceneHead(r.scene)+`<div class="pc-body"><h3>${r.name}</h3><div class="sub">${r.sub}</div><p style="margin:0;font:.86rem/1.55 Georgia,serif">${r.blurb}</p>
-      ${r.n===1?'<div class="row"><button class="primary" data-act="academy">Open Claude Academy \u2197</button><button data-act="ferry">Ferry to the Guild Hall</button></div>':''}<div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${i+1}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}</div>`; }
+      ${r.n===1?'<div class="row"><button class="primary" data-act="academy">Open Claude Academy \u2197</button><button data-act="ferry">Ferry to the Guild Hall</button></div>':''}<div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${i+1}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops${x.id===YOUQ.id?' \u00b7 <b class="here">You are here</b>':''}</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}</div>`; }
   else { const qq=QUESTS.find(x=>x.id===sel.id), r=REG[qq.region-1], i=byReg(r.n).indexOf(qq)+1;
     h=(sel.t==='stop'?pnav(qq.short,`data-q="${qq.id}"`,`${qq.short} › Stop ${sel.i+1}`,neighbours()):pnav(r.name,`data-r="${r.n}"`,`${r.name} › ${qq.short}`,neighbours()))+sceneHead(r.scene,40)+`<div class="pc-body"><span class="ribbon">${r.name} · Quest ${i} of ${byReg(r.n).length}</span><h3>${qq.title}</h3>
       <div class="row"><span class="chip">Class: ${qq.cls}</span><span class="chip">Level: ${qq.level}</span></div>
       <div class="stats"><div class="stat"><small>Quest level</small><strong>Lv ${qq.lv}</strong></div><div class="stat"><small>Experience</small><strong>+${qq.xp.toLocaleString()} XP</strong></div><div class="stat"><small>Reading</small><strong>~${qq.min} min</strong></div></div>
       <div><strong>It covers</strong><ul style="margin:.2rem 0 0;padding-left:1rem">${qq.learn.map(l=>`<li>${l}</li>`).join('')}</ul></div>
-      <div class="stopbox"><div class="stopbox__h"><strong>${qq.stops.length} stops</strong><span class="sub">in lesson order, along the route</span></div>${qq.stops.map((st,j)=>`<div class="stopline" data-s="${j}" ${sel.t==='stop'&&sel.i===j?'data-sel':''}><span class="sn">${j+1}</span><span>${st}</span></div>`).join('')}</div>
+      <div class="stopbox"><div class="stopbox__h"><strong>${qq.stops.length} stops</strong><span class="sub">in lesson order, along the route</span></div>${qq.stops.map((st,j)=>`<div class="stopline" data-s="${j}" ${sel.t==='stop'&&sel.i===j?'data-sel':''} ${PROG[qq.id].has(j)?'data-done':''}><span class="sn">${PROG[qq.id].has(j)?'\u2713':j+1}</span><span>${st}</span>${(qq.id===YOUQ.id&&j===YOUQ.i)?'<b class="here">You are here</b>':''}</div>`).join('')}</div>
+      <div class="row">${sel.t==='stop'?`<button data-act="done">${PROG[qq.id].has(sel.i)?'Undo: open again':'Mark stop '+(sel.i+1)+' as done'}</button>`:''}${(qq.id===YOUQ.id&&(sel.t==='quest'||sel.i===YOUQ.i))?'':'<button data-act="where">\u25CE Where I am</button>'}</div>
       <div class="row"><button class="primary" data-act="begin">Begin quest</button><button data-act="note">Read the note only</button></div></div>`; }
   panel.innerHTML=h+footer(); panel.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind));
 }
@@ -982,14 +998,15 @@ panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],
   else if(b.dataset.act==='start'){ selectRegion(1); }
   else if(b.dataset.act==='academy'){ toast('Opens Claude Academy in a new tab (URL to confirm before launch)'); }
   else if(b.dataset.act==='ferry'){ selectRegion(4); }
-  else if(b.dataset.act==='cont'){ const nx=QUESTS.find(x=>!x.done); selectQuest(nx.id); }
+  else if(b.dataset.act==='cont'||b.dataset.act==='where') where();
+  else if(b.dataset.act==='done') markDone();
   else if(b.dataset.act==='begin'||b.dataset.act==='note'){ toast(b.dataset.act==='begin'?'Opens the note with the quest book (lesson mode)':'Opens the note on its own'); } });
 function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2400); }
 document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; renderPanel(); });
 document.getElementById('fold').addEventListener('click',()=>{ collapsed=!collapsed; panel.hidden=collapsed; document.getElementById('fold').textContent=collapsed?'▶':'◀'; draw(); });
 document.querySelectorAll('.chipsbar .chip').forEach(c=>c.addEventListener('click',()=>{ filter=c.textContent; document.querySelectorAll('.chipsbar .chip').forEach(x=>x.toggleAttribute('data-on',x===c)); if(CHIPREG[filter]) selectRegion(CHIPREG[filter]); else if(sel.t!=='none'||V.z!==2) home(); else draw(); drawSoon(); }));
 document.getElementById('zin').onclick=()=>stepZoom(1); document.getElementById('zout').onclick=()=>stepZoom(-1);
-document.getElementById('me').onclick=()=>flyTo(YOU[0],YOU[1]+4,4);
+document.getElementById('me').onclick=()=>where();
 const root=document.documentElement;
 function syncSettings(){ const th=root.dataset.theme||'sourdough', cs=root.dataset.colorScheme||'auto'; document.querySelectorAll('#flavors button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===th))); document.querySelectorAll('#scheme button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.s===cs))); }
 window.qmSync=()=>{ syncSettings(); reskin(); };
