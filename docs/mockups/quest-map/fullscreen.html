@@ -301,7 +301,8 @@ body { margin:0; background:var(--q-water); }
 .hit .pn { pointer-events:none; }
 .hit .tagc { display:none; position:absolute; left:calc(100% + 8px); top:50%; transform:translateY(-50%); width:max-content; max-width:190px; padding:3px 8px; background:var(--q-panel); color:var(--q-ink); border:2px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font:700 11px/1.3 ui-monospace,"SF Mono",Menlo,Consolas,monospace; text-align:left; pointer-events:none; z-index:5; }
 .hit .tagc small { display:block; font:400 11px/1.35 Georgia,serif; color:var(--q-muted); }
-.hit:hover .tagc, .hit:focus-visible .tagc, .hit[data-selected] .tagc { display:block; }
+.hit:hover .tagc, .hit:focus-visible .tagc { display:block; }
+.hit[data-quiet] .tagc { display:none !important; } /* a click opens the panel, so the card steps out of the way until the pointer leaves */
 .hit[data-flip] .tagc { left:auto; right:calc(100% + 8px); }
 .hit:hover, .hit:focus-visible { z-index:6; }
 .hit:focus-visible { outline:3px solid var(--q-accent); outline-offset:3px; }
@@ -709,7 +710,7 @@ function syncOverlay(items,vx,vy,z,zp){ const keep=new Set();
   over.style.setProperty('--ps', z>=4?'30px':'22px'); // pins are smaller while zoomed out, full size once you are close
   items.forEach(it=>{ keep.add(it.key); let e=els.get(it.key);
     if(!e){ if(it.kind==='mark'||it.kind==='hit'){ e=document.createElement(it.kind==='hit'?'button':'div'); e.className=it.kind==='hit'?'hit':'hit mark'; e.innerHTML='<span class="pn"></span><span class="tagc" aria-hidden="true"></span>';
-        if(it.kind==='mark') e.setAttribute('aria-hidden','true'); else { e.setAttribute('aria-label',it.label); e.addEventListener('pointerdown',ev=>ev.stopPropagation()); e.addEventListener('click',ev=>{ ev.stopPropagation(); e._act(); }); } }
+        if(it.kind==='mark') e.setAttribute('aria-hidden','true'); else { e.setAttribute('aria-label',it.label); e.addEventListener('pointerdown',ev=>ev.stopPropagation()); e.addEventListener('click',ev=>{ ev.stopPropagation(); e.dataset.quiet=1; e._act(); }); e.addEventListener('pointerleave',()=>{ delete e.dataset.quiet; }); } }
       else { e=document.createElement('div'); e.className='lbl '+(it.cls||''); e.innerHTML=it.text+(it.sub?'<small>'+it.sub+'</small>':''); if(it.done) e.dataset.done=1; }
       over.appendChild(e); els.set(it.key,e); }
     e._act=it.act; const sx=Math.round((it.wx-vx)*z)*S, sy=Math.round((it.wy-vy)*z)*S; e.style.left=sx+'px'; e.style.top=sy+'px';
