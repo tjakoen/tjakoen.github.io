@@ -21,6 +21,13 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 - **Real pixel art.** Solid pixels, one outline pixel around every sprite, two-tone shading, no smoothing.
   The map is drawn from code: noise terrain, a biome per region, roads, and hand-built sprites for each
   landmark (pines, mountains with a cave, the hall, the castle, the summit flag).
+- **One style, two rules.** Art, meaning the terrain, landmarks, detail scenes and the moving layer, is solid
+  pixels with the dark outline color around every building and mountain, two-tone shading, no translucency, no
+  blur and no smoothing. Ground patches blend softly like terrain and carry no outline. Chrome, meaning the
+  panel, pins, hover cards, buttons and settings, uses 2 to 3 pixel borders in the ink color, hard offset
+  shadows with no blur, monospace for interface text and Georgia for prose. Pins take the art's outline color
+  for their border so they sit in the same world. Nothing mixes the two: no soft shadows on chrome and no
+  glows or fades in the art.
 - **Google Maps layout.** Search and filter chips float top left, and a place panel on the left carries the
   selected region with a numbered route. Layers sit bottom left and zoom and find-me bottom right. A blue
   dot marks the adventurer, and a main road in amber links the quests in order.
