@@ -7,25 +7,23 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-26
-readingTime: "~19 min"
+readingTime: "~14 min"
 tags: [ai, rag, retrieval, standards, tooling]
 summary: >
-  RAG gives a model the right pages before it answers. The common version picks pages by similarity,
-  using vectors. Vectorless RAG gives the model a tree of sections instead and lets it read down to the
-  page it needs, which is what PageIndex does and what Claude Code does in its own way with grep. My
-  setup with Claude is the tree kind: CLAUDE.md is the contents page, 29 standards are skills with a
-  one-line description each, graphify and tokensave index the code by symbol, PANTRY hands out a project index,
-  and a standards index lets a session read 2,848 characters of a library of 494,868. It is traceable and
-  cheap to keep, it costs extra reads, and my 37 notes still have no tree.
+  RAG gives a model the right pages before it answers. Most systems pick pages by similarity, using
+  vectors, while vectorless RAG gives the model a tree of sections and lets it read down to the page it
+  needs, which is what PageIndex does and what Claude Code does with grep. My setup is the tree kind for
+  Claude, Codex and OpenCode alike: one contents page (CLAUDE.md, with AGENTS.md linked to it), skills
+  with one-line descriptions, two code indexes and PANTRY's project index. It is traceable and cheap to
+  keep, it costs extra reads, and my 37 notes still have no tree.
 social: |
   I have been running vectorless RAG for months and had no word for it.
 
   RAG means the AI looks things up before it answers. Most setups do it with vectors: chop the
   documents into chunks, turn each chunk into numbers, fetch whatever sits nearest the question. Mine
-  does it with a table of contents. CLAUDE.md lists the standards, each standard has a one-line
-  description, and a session opens the one section it needs. One answer cost 2,848 characters of
-  reading out of a library of 494,868. The code gets two graph indexes, graphify and tokensave, and PANTRY
-  serves the project's contents page.
+  does it with a table of contents. One file, CLAUDE.md, symlinked as AGENTS.md so Claude, Codex and
+  OpenCode all read the same one. One answer cost 2,848 characters of reading out of a library of
+  494,868.
 
   It is easy to trace and it costs me nothing extra. It also costs more reads, and my notes are still
   a flat pile with no tree.
@@ -33,28 +31,25 @@ socialImage: "/media/notes/vectorless-rag-by-accident-social.png"
 socialImageAlt: "My AI workflow is vectorless RAG and I didn't call it that: on the left a scatter of dots with a ring around the nearest few, labelled find what looks similar; on the right a small tree with one path drawn in ink down to a filled leaf, labelled read the contents, open one file."
 ---
 
-Claude has never read my standards. Every session starts blank, and every session has to find the one
-file that applies out of thirty-odd, without me standing there pointing.
+My AI has never read my standards. Every session starts blank, whether it is Claude, Codex or
+OpenCode, and every session has to find the one file that applies out of thirty-odd, without me
+standing there pointing.
 
-For months I called whatever makes that work "keeping good docs." It turns out the AI world has a
-name for it, vectorless RAG, and at least one open-source project is built around the idea. This note
-explains what RAG is for anyone who has not met the word, what the vectorless kind does differently,
-what both are used for, and what my own version looks like with the receipts, including the parts that
-do not work.
+For months I called whatever makes that work "keeping good docs." The AI world calls it vectorless
+RAG. This note explains RAG for anyone who has not met the word, what the vectorless kind does
+differently, and what my version looks like with receipts, including the parts that do not work.
 
 ## What RAG is, if you have never met it
 
-A language model knows two things: what it absorbed during training, and whatever is in the prompt
-right now. It has never seen your syllabus, your company wiki or your repository. Ask it about them and
-it will guess, fluently, which is the worst way to be wrong.
+A language model knows two things: what it absorbed in training, and what is in the prompt right now.
+It has never seen your syllabus, your wiki or your repository, so if you ask about them it guesses,
+fluently, which is the worst way to be wrong.
 
-If you have ever pasted a document into a chat and asked a question about it, you have done the manual
-version of the fix. The model answered from the page you handed it, not from memory. RAG, short for
-retrieval-augmented generation, is that move with the pasting automated. A program looks through your
-documents, picks the pages most likely to hold the answer, puts them in the prompt beside your
-question, and the model writes its answer from them. The name came from a 2020 paper by Patrick Lewis
-and colleagues, presented at NeurIPS. Their library was Wikipedia, and they found the pages with a
-vector index, which matters later in this note.
+If you have ever pasted a document into a chat and asked about it, you have done RAG by hand.
+Retrieval-augmented generation automates the pasting. A program picks the pages most likely to hold the
+answer, puts them in the prompt beside your question, and the model answers from them. The name comes
+from a [2020 paper](https://arxiv.org/abs/2005.11401) by Patrick Lewis and colleagues. Their library was
+Wikipedia, and they found pages with a vector index, which matters in a minute.
 
 <svg viewBox="0 0 520 320" width="100%" role="img"
      aria-label="How RAG works, top to bottom. Your question comes in. A retrieve step, drawn in ink because it is the only part that differs between systems, searches the library of your documents and picks the right pages. The question and those pages go into the prompt together. The model writes its answer from them."
@@ -97,14 +92,14 @@ vector index, which matters later in this note.
 *RAG in four boxes. Every RAG system has all four. The ink box is where they differ, and it is the
 whole argument of this note.*
 
-Anthropic is blunt about when you can skip all of this. In its write-up on retrieval, it says a
-knowledge base under about 200,000 tokens, roughly 500 pages, can simply go into the prompt, and that
-prompt caching makes doing so cheaper and faster. RAG is for the libraries that do not fit.
+You can skip all of it for a small library. [Anthropic says](https://www.anthropic.com/news/contextual-retrieval)
+a knowledge base under about 200,000 tokens, roughly 500 pages, can simply go in the prompt. RAG is for
+the libraries that do not fit.
 
 ## What people use it for
 
 Anything where the answer lives in a pile of documents that is too big to paste and too specific for
-the model to know. The common shapes:
+the model to know.
 
 | Use | What gets looked up |
 |---|---|
@@ -112,43 +107,86 @@ the model to know. The common shapes:
 | A company assistant | The wiki, the policies, old tickets |
 | Reading a contract or a financial filing | One long document with real structure |
 | A coding assistant | The repository |
-| A class helper (the kind I could picture, not one I run) | The syllabus and the assignment pages |
+| A class helper (one I could picture, not one I run) | The syllabus and the assignment pages |
 
-The reason it took off is boring and good. Retraining a model on your documents is slow and expensive,
-and it goes stale the day a policy changes. Retrieval stays current, because you only have to update
-the pages. It also lets the answer point back at its source, which is the part a teacher or a manager
-actually wants.
+It took off for a boring reason. Retraining a model on your documents is slow and goes stale the day a
+policy changes. Retrieval only needs the pages updated, and the answer can point back at its source.
 
 ## The usual way: find what looks similar
 
-Most RAG systems pick pages by similarity, and it works in three steps.
+Most RAG systems pick pages by similarity, in three steps.
 
-1. Chop every document into chunks, a few paragraphs each.
-2. Turn each chunk into a long list of numbers, called an embedding, built so that chunks about the
-   same thing get similar lists. Store them in a vector database.
-3. When a question arrives, turn it into numbers the same way and fetch the chunks whose numbers sit
-   nearest.
+<svg viewBox="0 0 520 210" width="100%" role="img"
+     aria-label="Retrieval by similarity in three steps, left to right. Step one, chop: each document is cut into chunks of a few paragraphs. Step two, turn into numbers: each chunk becomes a list of numbers, built so that chunks with similar meaning get similar lists. Step three, fetch the nearest: the question is turned into numbers the same way, and the few chunks closest to it come back."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-vectorless3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="10" y="40" width="150" height="130" rx="6"/>
+    <rect x="185" y="40" width="150" height="130" rx="6"/>
+    <rect x="360" y="40" width="150" height="130" rx="6"/>
+    <rect x="28" y="56" width="114" height="18" rx="3"/>
+    <rect x="28" y="80" width="114" height="18" rx="3"/>
+    <rect x="28" y="104" width="114" height="18" rx="3"/>
+    <rect x="28" y="128" width="114" height="18" rx="3"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="160" y1="105" x2="183" y2="105" marker-end="url(#fl-vectorless3)"/>
+    <line x1="335" y1="105" x2="358" y2="105" marker-end="url(#fl-vectorless3)"/>
+  </g>
+  <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+    <circle cx="385" cy="70" r="3.5"/><circle cx="485" cy="68" r="3.5"/><circle cx="490" cy="135" r="3.5"/>
+    <circle cx="465" cy="158" r="3.5"/><circle cx="395" cy="152" r="3.5"/><circle cx="380" cy="110" r="3.5"/>
+  </g>
+  <circle cx="435" cy="105" r="34" style="fill:none;stroke:var(--color-fg);stroke-width:1.2;stroke-dasharray:5 4"/>
+  <g style="fill:var(--color-fg)">
+    <circle cx="418" cy="92" r="3.8"/><circle cx="452" cy="96" r="3.8"/><circle cx="430" cy="126" r="3.8"/>
+  </g>
+  <circle cx="435" cy="105" r="5" style="fill:var(--color-bg);stroke:var(--color-fg);stroke-width:2"/>
+  <g text-anchor="middle" style="font-size:11.5px">
+    <text x="85" y="69" style="fill:var(--color-muted)">chunk 1</text>
+    <text x="85" y="93" style="fill:var(--color-muted)">chunk 2</text>
+    <text x="85" y="117" style="fill:var(--color-muted)">chunk 3</text>
+    <text x="85" y="141" style="fill:var(--color-muted)">chunk 4</text>
+    <text x="260" y="69" style="fill:var(--color-fg)">0.12  -0.40  0.77 ...</text>
+    <text x="260" y="93" style="fill:var(--color-fg)">0.09  -0.35  0.80 ...</text>
+    <text x="260" y="117" style="fill:var(--color-muted)">-0.51  0.22  0.04 ...</text>
+    <text x="260" y="141" style="fill:var(--color-muted)">0.60  0.31  -0.18 ...</text>
+    <text x="85" y="192" style="fill:var(--color-muted)">a few paragraphs each</text>
+    <text x="260" y="192" style="fill:var(--color-muted)">similar meaning, similar numbers</text>
+    <text x="435" y="192" style="fill:var(--color-muted)">the closest few come back</text>
+  </g>
+  <g text-anchor="middle">
+    <text x="85" y="24" style="fill:var(--color-fg)">1. Chop</text>
+    <text x="260" y="24" style="fill:var(--color-fg)">2. Turn into numbers</text>
+    <text x="435" y="24" style="fill:var(--color-fg)">3. Fetch the nearest</text>
+  </g>
+</svg>
 
-The numbers are positions on a very large map. Close on the map means close in meaning. It is a
-clever idea, and it handles the case where the question and the answer share no words at all.
+*The usual way, start to finish. The numbers are called an embedding, and a vector database stores
+them. The ringed dots are the chunks that go into the prompt.*
 
-Its weakness is the same property. Close in meaning is not the same as the right page. Picture a
-question about this year's revenue. It sits near every paragraph that mentions revenue, including last
-year's, and nothing in the map knows which year you meant. The system hands back a ranked pile and
-leaves the model to sort it out, and when the answer is wrong it is hard to say why, because the reason
-is a distance between two lists of numbers.
+The numbers are positions on a very large map, and close on the map means close in meaning. That
+handles the case where the question and the answer share no words at all. It also has a weakness,
+because close in meaning is not the same as the right page. A question about this year's revenue sits
+near every paragraph that mentions revenue, last year's included, and the map does not know which year
+you meant. When the answer is wrong it is hard to say why, since the reason is a distance between two
+lists of numbers.
 
-The vector camp is not standing still, to be fair. In September 2024 Anthropic published a technique
-called contextual retrieval: before embedding a chunk, add a short note saying where the chunk came
-from. Combined with keyword search and a reranking step, it cut the share of relevant chunks missing
-from the top twenty from 5.7 percent to 1.9 percent in their tests. Similarity can be tuned a long way.
+The vector camp keeps improving. Anthropic's [contextual retrieval](https://www.anthropic.com/news/contextual-retrieval)
+adds a note about where each chunk came from before it is embedded. With keyword search and a reranker
+on top, it cut missed chunks in the top twenty from 5.7 percent to 1.9 percent in their tests.
 
 ## The other way: read the contents page
 
-Vectorless RAG throws out the map and gives the model something a person would use: the table of
-contents. You parse a document into a tree of sections, each with a title and a short summary. The model
-reads the top of the tree, picks a branch, reads what is under it, and keeps going until it reaches the
-page that holds the answer. No embeddings, no vector database.
+Vectorless RAG throws out the map and gives the model what a person would use: a table of contents. You
+parse a document into a tree of sections, each with a title and a short summary. The model reads the
+top, picks a branch, reads what is under it, and keeps going until it reaches the page with the answer.
+No embeddings, no vector database.
 
 <svg viewBox="0 0 520 290" width="100%" role="img"
      aria-label="Two ways to retrieve, side by side. On the left, find what looks similar: a scatter of dots with the question in the middle and a dashed ring around the three nearest dots, which are the chunks that come back, the rest left out. On the right, read the contents, open one file: a small tree with a root called contents and three branches called figures, voice and graph. One path is drawn in ink, from contents to voice to a leaf called punctuation, which is the one section opened."
@@ -172,7 +210,7 @@ page that holds the answer. No embeddings, no vector database.
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
     <line x1="390" y1="70" x2="310" y2="108"/>
     <line x1="390" y1="70" x2="470" y2="108"/>
-    <line x1="390" y1="134" x2="350" y2="178" style="stroke:var(--color-line)"/>
+    <line x1="390" y1="134" x2="350" y2="178"/>
     <rect x="275" y="108" width="70" height="26" rx="5"/>
     <rect x="435" y="108" width="70" height="26" rx="5"/>
     <rect x="312" y="178" width="76" height="26" rx="5"/>
@@ -205,86 +243,67 @@ page that holds the answer. No embeddings, no vector database.
 *The same job done two ways. Left: the nearest chunks win. Right: the model chooses a branch at each
 level, for a reason it can say out loud.*
 
-The best-known version is PageIndex, an open-source project from Vectify AI under the MIT license.
-Its README describes the two steps plainly: build a tree index for each document, then have a language
-model search that tree and read the pages it lands on. Its stated complaint about vectors is the one
-above, that similarity is not relevance, plus a second one: you cannot see why a chunk was chosen.
+The best-known version is [PageIndex](https://github.com/VectifyAI/PageIndex), an MIT-licensed project
+from Vectify AI. It builds a tree index for each document and lets a model search the tree and read the
+pages it lands on. Its README adds a complaint about vectors, that you cannot see why a chunk was
+chosen, and a number: 98.7 percent on FinanceBench against 50 percent for vector RAG. Treat that as a
+claim. It is self-reported, the README does not name the vector system it beat, and I did not run the
+[evaluation](https://github.com/VectifyAI/Mafin2.5-FinanceBench).
 
-PageIndex also publishes a number. It reports 98.7 percent accuracy on FinanceBench, a benchmark of
-questions about financial filings, against 50 percent for vector RAG in its own chart. Treat that as a
-claim and not a result. It is self-reported by the people selling the product, the README does not
-name the vector system it beat, and I have not run the evaluation. Its write-up and evaluation repo
-are linked at the end for anyone who wants to. The same README is honest about a limit: the
-open-source mode reads text-based PDFs only, and scanned files need the paid cloud version.
-
-A close cousin is plain agentic search, where there is no index at all and the model searches with
-ordinary tools. This is what Claude Code does. In a Latent Space interview in May 2025, Boris Cherny,
-who leads Claude Code, said early versions used off-the-shelf RAG with Voyage embeddings, and that
+A close cousin has no index at all. In a [Latent Space interview](https://www.latent.space/p/claude-code)
+in May 2025, Boris Cherny, who leads Claude Code, said early versions used off-the-shelf RAG and that
 "eventually, we landed on just agentic search as the way to do stuff," meaning glob, grep and file
-reads. His reasons were practical. An index has to be built, the code drifts out of sync with it, and
-the index has to live somewhere, which brings its own security questions.
+reads. An index has to be built, the code drifts out of sync with it, and it has to live somewhere.
 
-That is three different answers to the same box in the first figure. Vectors pick by distance.
-PageIndex reasons over a tree it built ahead of time. Claude Code searches live with no index. Mine is
-closest to the second, with the tree written by hand.
+So there are three answers to the ink box. Vectors pick by distance. PageIndex reasons over a tree built
+ahead of time. Claude Code searches live with no index. Mine is closest to the second, with the tree
+written by hand.
 
 ## I thought I was just being tidy
 
-None of this started as retrieval. It started because I am disorganized and the AI is not, and I
-needed it to find things without me standing there pointing.
+None of this started as retrieval. I am disorganized and the AI is not, and I needed it to find things
+without me pointing.
 
-Every repo I work in opens with a CLAUDE.md, and the harness loads it before anything else happens.
-The one in this portfolio has a section called *Start here*, and it is a numbered reading order. The
-philosophy first. Then the intake skill, for when someone pastes me a brief. Then voice, figures, the
-note standard, the README standard, the code graph, the content backlog, the plan. Ten entries, each a
-line saying what the thing is and when to open it.
+Every repo opens with a CLAUDE.md, and the harness loads it first. The one here has a section called
+*Start here*, a numbered reading order: the philosophy, the intake skill, [voice](/standards/voice),
+figures, the note standard, the README standard, the code graph, the backlog, the plan. Ten entries,
+each a line on what it is and when to open it. That is a table of contents, written as onboarding for a
+new teammate, and the model reads it the way PageIndex's model reads its tree.
 
-That is a table of contents. I wrote it as onboarding for a new teammate, and the model reads it
-exactly the way PageIndex's model reads its tree. It looks at the headings and decides which branch to
-open.
+I do not only work with Claude, so the file has a second name. [AGENTS.md](https://agents.md) is the
+open convention other tools read, Codex and OpenCode among them. In this repo it is a symlink to
+CLAUDE.md, as it is in the standards folder, [PANTRY](/pantry) and [GRAIN](/grain). My global
+instructions work the same way: Claude, Codex and OpenCode each load a link to one shared file. One
+contents page, however many readers. [The Loop Outlives the Model](one-loop-three-harnesses.md) tells
+that part of the story.
 
 > I was not building a retrieval system. I was writing a table of contents for a reader who reads
 > every word and remembers none of it tomorrow.
 
-## The whole tree, one layer at a time
+## The tree, one layer at a time
 
-Once I saw the root, the rest of the tree was obvious, because I had built every layer of it for some
-other reason.
+Once I saw the root, every other layer was something I had built for a different reason.
 
 **The standards are the named sections.** Twenty-nine of them are mounted into each session as skills
-(a snapshot, since the number grows): voice, figures, the note standard, the loop, the graph, and the
-rest. Each one opens with a short frontmatter field called *when*, and that field becomes the skill's
-description. Until the model decides to open a standard, the description is all it sees. The rules for
-the standards folder say it flatly: the description "is the only thing an agent reads when deciding
-whether to open the file at all." That is a node summary in a section tree. I wrote a whole contract
-for how to word it (start with "Read this BEFORE", spell out the literal words a real prompt will
-contain) without knowing I was tuning a retrieval index.
+(a snapshot, since the number grows), among them [voice](/standards/voice), [figures](/standards/figures)
+and the [note standard](/standards/note-standard). Each opens with a field called *when*, which becomes
+the skill's description, and until the model opens a standard the description is all it sees. The
+standards' own rules say it is the only thing an agent reads when deciding whether to open the file at
+all. That is a node summary in a section tree. I wrote a whole contract for wording it (start with
+"Read this BEFORE") without knowing I was tuning a retrieval index.
 
-The contract even has a scar from a classic tree failure. Two sections shared a name. The loop
-standard mounted as *loop*, the harness already ships a built-in skill called *loop*, and mine was
-shadowed without a sound. It sat on disk and never fired. It carries a different name now. In a vector
-store, two documents with the same title are a non-event. In a tree, a duplicate heading means one
-branch can never be picked.
+It even has a scar from a classic tree failure. My loop standard shared a name with a built-in skill,
+and mine was shadowed without a sound. In a vector store a duplicate title is a non-event. In a tree it
+means one branch can never be picked.
 
-**PANTRY resolves them.** The standards live once, here, in this repo's standards folder. PANTRY
-resolves them out of the portfolio package and mounts them as skills in the other repos, so a session
-in GRAIN reads the same sections as a session in this one. One copy of each section, many readers. The
-honest bit is that the mount is a sync I still run by hand, and a repo I forgot to sync is reading
-last week's tree. It also serves the project's own contents page, which gets its own section below.
+**PANTRY mounts them.** The standards live once, in this repo's standards folder. PANTRY mounts them as
+skills in the other repos, so a session in GRAIN reads the same sections as one here. The mount is a
+sync I still run by hand, which means a repo I forgot is reading last week's tree.
 
-**The code graph is the index at the back of the book.** For questions about code, the graph standard
-says to ask the graph before reaching for grep. graphify builds it by static analysis, no model and no
-API cost, and it answers "where is this defined" and "what calls it" with a handful of file and line
-nodes. It is an exact index, and you can tell by how it fails. Give it a partial name and it answers
-*No matching nodes found*, which reads like a broken tool and is really a lookup refusing to guess. A
-vector store would have handed back something close. Sometimes close is what I want, and the graph
-will never give it to me. More on how I run it two sections down.
-
-**Every package carries its own subtree.** The standards folder has its own CLAUDE.md, with its own
-reading order and its own rules, and each package in the stack keeps a CLAUDE.md and a PLAN.md of its
-own. A subtree loads when the session first reads a file inside it. That happened the first time I
-drafted this note. The session opened the note standard, and the standards folder's rules arrived with
-it, unasked. Nobody searched for them. They were on the branch.
+**Every folder carries its own subtree.** The standards folder has its own CLAUDE.md, and a subtree
+loads when a session first reads a file inside it. That happened while I drafted this note. The session
+opened the note standard and the standards folder's rules arrived with it, unasked. They were on the
+branch.
 
 <svg viewBox="0 0 520 352" width="100%" role="img"
      aria-label="The retrieval tree my sessions walk. At the root, CLAUDE.md, the table of contents. Four branches below it: the skills, which are named sections; the code graphs, graphify and tokensave, indexes looked up by symbol; PANTRY, the project's index; and a CLAUDE.md per folder, which is a subtree. Under the skills branch, the session reads the descriptions and opens one section, the voice standard, and reads that one file whole. Off to the side, outside the tree, sit the notes and run reports, a flat pile with no tree yet."
@@ -338,85 +357,124 @@ it, unasked. Nobody searched for them. They were on the branch.
 *The tree my sessions walk. The root and the branches are built from files I wrote for other reasons.
 The dashed box is the part with no tree.*
 
-## How I use graphify and tokensave
+## graphify and tokensave index the code
 
-graphify is the code graph from the layers above, and with tokensave it is the part of my setup that
-is retrieval without being a table of contents. It reads the repo by static analysis, with no model and no
-API bill, and writes a graph: a node for each function, file and Markdown heading, and an edge for each
-call, import and link. For this repo that is 6,367 nodes and 7,521 edges today, 2,071 of them code and
-4,296 of them documents, mostly headings. (A snapshot, counted from the graph file.)
+Two tools index the code, and neither ranks by closeness. [graphify](https://github.com/safishamsi/graphify)
+reads the repo by static analysis, with no model, and writes a graph with a node for each function,
+file and Markdown heading. Here that is 6,367 nodes and 7,521 edges.
+[tokensave](https://github.com/aovestdipaperino/tokensave) keeps a code-only graph in a database that
+the session queries through tools: find a symbol, ask who calls it, ask what a change would touch. Here
+it holds 10,681 nodes and 5,452 edges over 2,455 files, and a re-sync after an edit took 723
+milliseconds. (Snapshots from 2026-11-26.)
 
-A session asks it a structural question and gets a small neighborhood back. Ask for the standards
-index and it returns the tool, its functions (the ones that list, read and find a section) and its
-test: 31 nodes within two hops, each with a file and a line. That is the part of the code the question
-is about, instead of five files read whole. One of the 31 is the site's SEO file, which has nothing to
-do with the question, so a neighborhood is a lead and not a verdict.
+<svg viewBox="0 0 520 300" width="100%" role="img"
+     aria-label="Two code indexes answering questions about the standards index tool. On the left, graphify returns a neighborhood: a hub node, the file standards-index.ts, linked to six function nodes called toc, read, find, buildIndex, summarize and indexStandard, plus one dashed stray node, the site's SEO file, that has nothing to do with the question. 31 nodes within two hops in all. On the right, tokensave returns a call chain: two test callers, a fixture and a folder test, both call buildIndex, drawn in ink, which calls one function, indexStandard."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-vectorless4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <line x1="262" y1="10" x2="262" y2="285" style="stroke:var(--color-line);stroke-width:1"/>
+  <g style="stroke:var(--color-line);stroke-width:1;fill:none">
+    <line x1="100" y1="106" x2="60" y2="70"/><line x1="130" y1="106" x2="130" y2="70"/>
+    <line x1="160" y1="106" x2="200" y2="70"/>
+    <line x1="100" y1="134" x2="48" y2="170"/><line x1="130" y1="134" x2="122" y2="170"/>
+    <line x1="160" y1="134" x2="205" y2="170"/>
+    <line x1="190" y1="120" x2="205" y2="120" style="stroke-dasharray:3 3"/>
+  </g>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="33" y="48" width="54" height="22" rx="4"/>
+    <rect x="103" y="48" width="54" height="22" rx="4"/>
+    <rect x="173" y="48" width="54" height="22" rx="4"/>
+    <rect x="11" y="170" width="74" height="22" rx="4"/>
+    <rect x="89" y="170" width="66" height="22" rx="4"/>
+    <rect x="163" y="170" width="84" height="22" rx="4"/>
+    <rect x="205" y="108" width="50" height="24" rx="4" style="stroke-dasharray:4 3"/>
+  </g>
+  <rect x="70" y="106" width="120" height="28" rx="5" style="fill:none;stroke:var(--color-fg);stroke-width:1.5"/>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="280" y="50" width="100" height="26" rx="5"/>
+    <rect x="400" y="50" width="100" height="26" rx="5"/>
+    <rect x="320" y="210" width="140" height="30" rx="5"/>
+  </g>
+  <rect x="330" y="130" width="120" height="30" rx="5" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="330" y1="76" x2="368" y2="128" marker-end="url(#fl-vectorless4)"/>
+    <line x1="450" y1="76" x2="412" y2="128" marker-end="url(#fl-vectorless4)"/>
+    <line x1="390" y1="160" x2="390" y2="208" marker-end="url(#fl-vectorless4)"/>
+  </g>
+  <g text-anchor="middle" style="font-size:11.5px">
+    <text x="60" y="63" style="fill:var(--color-fg)">toc()</text>
+    <text x="130" y="63" style="fill:var(--color-fg)">read()</text>
+    <text x="200" y="63" style="fill:var(--color-fg)">find()</text>
+    <text x="130" y="124" style="fill:var(--color-fg)">standards-index.ts</text>
+    <text x="230" y="124" style="fill:var(--color-muted)">seo.ts</text>
+    <text x="48" y="185" style="fill:var(--color-fg)">buildIndex()</text>
+    <text x="122" y="185" style="fill:var(--color-fg)">summarize()</text>
+    <text x="205" y="185" style="fill:var(--color-fg)">indexStandard()</text>
+    <text x="330" y="67" style="fill:var(--color-fg)">fixture (test)</text>
+    <text x="450" y="67" style="fill:var(--color-fg)">folder test</text>
+    <text x="390" y="149" style="fill:var(--color-bg)">buildIndex()</text>
+    <text x="390" y="229" style="fill:var(--color-fg)">indexStandard()</text>
+    <text x="130" y="272" style="fill:var(--color-muted)">31 nodes within two hops</text>
+    <text x="130" y="288" style="fill:var(--color-muted)">dashed: a stray, not an answer</text>
+    <text x="390" y="272" style="fill:var(--color-muted)">who calls it, what it calls</text>
+    <text x="390" y="288" style="fill:var(--color-muted)">small and exact</text>
+  </g>
+  <g text-anchor="middle">
+    <text x="130" y="24" style="fill:var(--color-fg)">graphify: a neighborhood</text>
+    <text x="390" y="24" style="fill:var(--color-fg)">tokensave: a call chain</text>
+  </g>
+  <g style="fill:var(--color-muted);font-size:11.5px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="398" y="188">calls</text>
+  </g>
+</svg>
 
-It never ranks by closeness, which puts it in neither camp of this note. It finds a node by name or
-says it found none. The rule I learned the hard way follows from that: ask with names the code
-contains, not with a description of the idea. Names land on real nodes. A sentence about "how the
-login flow cleans its input" lands on headings in my plan files.
+*The same question, asked of both: where does the standards index live and what touches it. These are
+real answers from today's repo, trimmed to the interesting nodes.*
 
-It stays fresh because a hook runs after every edit and refreshes the graph in the background. That
-takes a few seconds in my repos and costs nothing, since no model is involved. Where it is honest about
-its limits, I measured them in August 2026:
+Both fail honestly. Ask graphify with a partial name and it says it found no matching nodes, a lookup
+refusing to guess where a vector store would have handed back something close. So the rule is to ask
+with names the code contains, never with a description of an idea. A hook refreshes graphify after every
+edit in a few seconds, and nothing in the loop calls a model.
 
-- It does not node methods or non-exported functions. Checking my docs against the graph flagged 7
-  symbols, 3 of them truly dead, so about 43 percent precision, and that check reports at the lowest
-  severity for exactly that reason.
-- Labels collide. PANTRY's own graph has 19 of them, so a name is a lead and not a unique key.
-- A graph of one repo cannot see another's symbols. The portfolio's docs mirror its sibling repos, and
-  against its own graph 73.5 percent of the symbols in those docs were flagged, against 26.5 percent
-  against a merged graph of the whole estate. PANTRY builds the merged one.
+I measured the limits in August 2026. graphify does not node methods or non-exported functions, so
+checking my docs against it flagged 7 symbols, 3 of them truly dead, about 43 percent precision. Labels
+collide, and a graph of one repo cannot see the symbols of its siblings, so PANTRY builds a merged one.
+A neighborhood is a lead, never a verdict.
 
-tokensave is the second code index I run, and the two overlap less than they look. It is a graph in a
-database that the session reaches through tools instead of a command: search for a symbol, ask who
-calls it, ask what a change would touch, read a file's map of symbols instead of the file. Here it
-holds 10,681 nodes and 5,452 edges over 2,455 files, most of the edges calls (4,641), and a re-sync
-after an edit took 723 milliseconds. graphify covers code and Markdown headings and is walked as a
-graph. tokensave covers code only and answers exact questions about it, which is why my rules send
-symbol questions to it and architecture questions to graphify. Its own counter says it has saved about
-223,000 tokens in this project. That is the tool's estimate of reads avoided, and I have not audited it.
-
-Which tool answers which question is a rule I keep in my global instructions, and it is worth
-setting beside the three kinds of retrieval above:
+My global rule for which tool gets which question:
 
 | The question | Goes to | What kind of retrieval |
 |---|---|---|
-| Where is this defined, what calls it, what would a change touch | The symbol index (tokensave) | An exact lookup, no similarity |
+| Where is this defined, what calls it, what would a change touch | tokensave | An exact lookup, no similarity |
 | How do the modules, docs and plans connect | graphify, or PANTRY's map | A walk over a structure |
 | Where does this literal string appear | grep | Exact text |
 | How do I work in this repo | CLAUDE.md, the skills, PANTRY's index | Read the contents page |
 
 ## PANTRY is the project's contents page
 
-CLAUDE.md tells a session how to work. It does not tell a session what is going on in the project
-today, and that is the job of PANTRY, the app I run beside the chat. Its README calls it a developer
-docs cockpit: one small server that serves a project's plan board, its docs, a map of the whole
-codebase and some machine-readable pages an agent can read to get oriented. It runs no model of its
-own, and its own index file says so.
+CLAUDE.md says how to work. It does not say what is going on in the project today. That is
+[PANTRY](/pantry), the app I run beside the chat: one small server that serves a project's plan board,
+its docs, a map of the codebase and some machine-readable pages for an agent. It runs no model of its
+own.
 
-The first call of any session is to PANTRY. It hands back a short brief, with what is in flight, what
-waits on me, and what drifted, and then a file called llms.txt. That file is a Markdown list with one
-line and one link for every plan, document, standard and recent run in the project, 18,203 characters
-of it today. A program builds it out of files I wrote anyway. It is the same shape as the table of
-contents in CLAUDE.md, one level up, and a model reads it the way PageIndex's model reads its tree: look
-at the headings, pick a branch.
+A session's first call is to PANTRY. It returns a short brief (what is in flight, what waits on me, what
+drifted) and then an index file, llms.txt: a Markdown list with one line and one link for every plan,
+document, standard and run. That is 18,203 characters here today, built by a program from files I wrote
+anyway. It has the same shape as CLAUDE.md, one level up. After that a session asks for one named
+surface, such as the map, the run ledger or token use by plan, and leaves the rest closed.
 
-Past that, a session asks for one named surface and leaves the rest closed. The surfaces are the
-brief, the map of the codebase, the run ledger, token use by model and plan, and one the tool itself
-calls the full retrieval payload. PANTRY also hands out plans, so two sessions do not claim the same
-one, but that is coordination and not retrieval, and it sits on the same tree.
-
-PANTRY is where I find out the tree has gone stale, too. Its check ran at the start of this very
-session and said that the merged graph was older than the repo's own extraction, and that two mounted
-skills were behind their source. The graph and the skills are the two places a tree can drift out from
-under a session without anyone noticing.
+PANTRY is also where I find out the tree went stale. Its check at the start of this session reported
+that the merged graph was older than the repo's own extraction and that two mounted skills were behind
+their source.
 
 ## One question, walked down the tree
 
-Here is the path for a real question: can I put a backtick in a note? I traced it by hand with the
-index tool rather than from a captured log, so read it as the route the setup allows, not a recording.
+Here is the path for one real question: can I put a backtick in a note? I traced it by hand with the
+standards index rather than from a log, so read it as the route the setup allows.
 
 <svg viewBox="0 0 520 360" width="100%" role="img"
      aria-label="One question walked down the tree, top to bottom. The question: can I put a backtick in a note. The reading order in CLAUDE.md points at the voice standard for prose in my name. The voice skill description says to read it before writing any prose that carries my byline. The standards index lists the voice standard's sections. The session opens only the punctuation section, lines 159 to 194 of 677, and finds the answer: no, not in prose."
@@ -457,110 +515,140 @@ index tool rather than from a captured log, so read it as the route the setup al
 
 *Five stops, and the last one reads thirty-six lines.*
 
-The numbers are the point, so here they are. A session that opened the voice standard whole would read
-49,431 characters. A session that opens only the section it needs reads 2,848. And the library the
-tree sits on top of, every standard whole, is 494,868. These are snapshots of today's files.
+Opening the voice standard whole would read 49,431 characters. Opening only the section reads 2,848,
+which is 5.8 percent of the file. Against every standard whole (494,868 characters) it is 0.6 percent.
+All of these are snapshots of today's files.
 
-<svg viewBox="0 0 620 262" width="100%" role="img"
-     aria-label="Characters a session reads, by approach, on a linear scale. Every standard read whole: 494,868. The voice standard read whole: 49,431. The 29 skill descriptions every session carries: 14,315. The one section the question needed: 2,848, a bar too thin to see much of. The point: one answer cost 2,848 characters of reading plus the descriptions every session carries."
+<svg viewBox="0 0 620 290" width="100%" role="img"
+     aria-label="What one question costs in VOICE.md, which is 677 lines and 49,431 characters. The file is drawn as a strip with one narrow band lit in ink, lines 159 to 194, the punctuation section. Below it, two bars on the same scale. Opening the whole file reads 49,431 characters, a full-width bar. Opening only the section reads 2,848 characters, 5.8 percent, a short ink bar. The point: 94 percent of the file never enters the session."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;
             --paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
-  <rect x="0.5" y="0.5" width="619" height="261" style="fill:var(--paper);stroke:var(--edge)"/>
-  <text x="28" y="30" style="fill:var(--muted);font-size:15px">Characters read to answer one question</text>
-  <text x="28" y="62" style="fill:var(--ink);font-size:14px">Every standard, read whole</text>
-  <rect x="28" y="68" width="470" height="14" style="fill:var(--bar)"/>
-  <text x="506" y="80" style="fill:var(--muted);font-size:12.5px">494,868</text>
-  <text x="28" y="108" style="fill:var(--ink);font-size:14px">The voice standard, read whole</text>
-  <rect x="28" y="114" width="47" height="14" style="fill:var(--bar)"/>
-  <text x="83" y="126" style="fill:var(--muted);font-size:12.5px">49,431</text>
-  <text x="28" y="154" style="fill:var(--ink);font-size:14px">The 29 descriptions every session carries</text>
-  <rect x="28" y="160" width="14" height="14" style="fill:var(--ink)"/>
-  <text x="50" y="172" style="fill:var(--muted);font-size:12.5px">14,315</text>
-  <text x="28" y="200" style="fill:var(--ink);font-size:14px">The one section this question needed</text>
-  <rect x="28" y="206" width="3" height="14" style="fill:var(--ink)"/>
-  <text x="39" y="218" style="fill:var(--muted);font-size:12.5px">2,848</text>
-  <text x="28" y="248" style="fill:var(--accent);font-size:13px">One answer: 2,848 characters, on top of the descriptions.</text>
+  <rect x="0.5" y="0.5" width="619" height="289" style="fill:var(--paper);stroke:var(--edge)"/>
+  <text x="28" y="30" style="fill:var(--muted);font-size:15px">One question, one section of VOICE.md</text>
+  <text x="28" y="60" style="fill:var(--ink);font-size:14px">The file: 677 lines</text>
+  <rect x="28" y="68" width="564" height="36" style="fill:var(--bar)"/>
+  <rect x="159.6" y="64" width="30" height="44" style="fill:var(--ink)"/>
+  <text x="159" y="126" style="fill:var(--muted);font-size:12.5px">lines 159 to 194: the punctuation section</text>
+  <text x="28" y="164" style="fill:var(--ink);font-size:14px">Open the whole file</text>
+  <text x="592" y="164" text-anchor="end" style="fill:var(--muted);font-size:12.5px">49,431 characters</text>
+  <rect x="28" y="171" width="564" height="16" style="fill:var(--bar)"/>
+  <text x="28" y="216" style="fill:var(--ink);font-size:14px">Open only the section</text>
+  <rect x="28" y="223" width="32.5" height="16" style="fill:var(--ink)"/>
+  <text x="68" y="236" style="fill:var(--muted);font-size:12.5px">2,848 characters, 5.8 percent</text>
+  <text x="28" y="272" style="fill:var(--accent);font-size:13px">94 percent of the file never enters the session.</text>
 </svg>
 
-*Same scale on every bar. A snapshot of 2026-11-26, counted from the repo.*
+*The same file read two ways, one scale. The lit band is everything the question needed. A snapshot of
+2026-11-26, counted from the repo.*
 
-Read that chart with its own caveat attached. The tree is not free: those 14,315 characters of
-descriptions ride along in every session, whether the task needs them or not. What the tree buys is
-that the expensive part, the standards themselves, is read one section at a time.
+The tree is not free, because those 14,315 characters of descriptions ride along in every session. What
+it buys is that the expensive part is read one section at a time.
 
-## Why I would keep the tree
+## Which one to reach for
 
-**I can trace it.** When a session gets something wrong, I can ask which file it read, and the answer
-is a path. I can open that path and see whether the file was wrong or the reading was. With similarity
-the answer is "these five chunks scored highest," and why they scored highest is a number nobody can
-argue with. I want to [watch its hands](watch-its-hands.md), and a branch it chose is a hand I can
-watch.
+My read, not a benchmark. Nobody has run these head to head on my files, and the one number I quoted
+above is a vendor's own.
 
-**It costs me nothing I was not already paying.** The table of contents is onboarding I would write
-anyway. The skill descriptions are the standards' own frontmatter. The graph rebuilds from the code.
-There is no pipeline to keep alive, no store to re-embed when a file changes, no second copy of the
-docs that can drift from the first. Small and owned, which is how I like most things.
+<svg viewBox="0 0 520 320" width="100%" role="img"
+     aria-label="A decision chain for what to build, top to bottom, with answers to the right. Does it fit in the prompt, under about 500 pages? Yes: paste it all and skip retrieval. No: is it code? Yes: let the model search it live with grep and read files. No: does it have real headings, like manuals, filings and standards? Yes: a tree the model reads, drawn in ink. No: vectors, with keyword search beside them."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-vectorless5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="20" y="16" width="230" height="48" rx="6"/>
+    <rect x="20" y="96" width="230" height="48" rx="6"/>
+    <rect x="20" y="176" width="230" height="48" rx="6"/>
+    <rect x="300" y="16" width="200" height="48" rx="6"/>
+    <rect x="300" y="96" width="200" height="48" rx="6"/>
+    <rect x="20" y="256" width="230" height="48" rx="6"/>
+  </g>
+  <rect x="300" y="176" width="200" height="48" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="250" y1="40" x2="298" y2="40" marker-end="url(#fl-vectorless5)"/>
+    <line x1="250" y1="120" x2="298" y2="120" marker-end="url(#fl-vectorless5)"/>
+    <line x1="250" y1="200" x2="298" y2="200" marker-end="url(#fl-vectorless5)"/>
+    <line x1="135" y1="64" x2="135" y2="94" marker-end="url(#fl-vectorless5)"/>
+    <line x1="135" y1="144" x2="135" y2="174" marker-end="url(#fl-vectorless5)"/>
+    <line x1="135" y1="224" x2="135" y2="254" marker-end="url(#fl-vectorless5)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="135" y="37" style="fill:var(--color-fg)">Does it fit in the prompt?</text>
+    <text x="135" y="55" style="fill:var(--color-muted);font-size:11.5px">under about 500 pages</text>
+    <text x="135" y="117" style="fill:var(--color-fg)">Is it code?</text>
+    <text x="135" y="135" style="fill:var(--color-muted);font-size:11.5px">a repository</text>
+    <text x="135" y="197" style="fill:var(--color-fg)">Does it have real headings?</text>
+    <text x="135" y="215" style="fill:var(--color-muted);font-size:11.5px">manuals, filings, standards</text>
+    <text x="135" y="277" style="fill:var(--color-fg)">Vectors</text>
+    <text x="135" y="295" style="fill:var(--color-muted);font-size:11.5px">with keyword search beside them</text>
+    <text x="400" y="37" style="fill:var(--color-fg)">Paste it all</text>
+    <text x="400" y="55" style="fill:var(--color-muted);font-size:11.5px">skip retrieval</text>
+    <text x="400" y="117" style="fill:var(--color-fg)">Search it live</text>
+    <text x="400" y="135" style="fill:var(--color-muted);font-size:11.5px">grep, read files</text>
+    <text x="400" y="197" style="fill:var(--color-bg)">A tree the model reads</text>
+    <text x="400" y="215" style="fill:var(--color-bg);font-size:11.5px">the headings say where</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
+       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="274" y="33">yes</text>
+    <text x="274" y="113">yes</text>
+    <text x="274" y="193">yes</text>
+    <text x="150" y="84" text-anchor="start">no</text>
+    <text x="150" y="164" text-anchor="start">no</text>
+    <text x="150" y="244" text-anchor="start">no</text>
+  </g>
+</svg>
 
-## Where it runs out
+*Where a pile of documents lands. The ink box is where my own setup sits.*
 
-Every drill-down is a read. A session spends its first turns walking CLAUDE.md, then a skill, then the
-file the skill points at, before it has done any work. That is cheap on a small question and silly on
-a trivial one.
+## Why I keep it, and where it runs out
 
-The tree has to fit. All twenty-nine skill descriptions load into every session, and they work because
-they are short. At a few hundred they would not, and I would be paying for a table of contents longer
-than the chapter I came for. PageIndex's README makes the same point from the other side, since its
-whole pitch depends on the tree being small enough for the model to hold. The top of my tree
-that worries me most is not the skills. It is PANTRY's index, at 18,203 characters against the
-descriptions' 14,315, and it grows with every plan, finished ones included.
+**I can trace it.** When a session gets something wrong, I can ask which file it read, and the answer is
+a path. I can open it and see whether the file was wrong or the reading was. With similarity the answer
+is "these five chunks scored highest," for reasons that are a number. I want to
+[watch its hands](watch-its-hands.md), and a branch it chose is a hand I can watch.
 
-And some of what I have is not a tree. There are 37 notes in this folder as of today, counting this
-one. There are run reports and finished plans piling up in their own folders. None of them has a table
-of contents a model could walk. When a session needs to know whether I have already written about
-something, the only tools it has are grep and my memory, and my memory is the reason this whole setup
-exists.
+**It costs me nothing I was not already paying.** The contents page is onboarding I would write anyway,
+and the graphs rebuild from the code. There is no pipeline to keep alive and no store to re-embed.
+
+Three places it runs out:
+
+- Every drill-down is a read. A session spends its first turns walking CLAUDE.md, then a skill, then
+  the file, before it has done any work. That is cheap on a big question and silly on a trivial one.
+- The tree has to fit. Twenty-nine descriptions work because they are short. PANTRY's index is already
+  bigger, 18,203 characters against 14,315, and it grows with every plan, finished ones included. That
+  is the top of the tree I worry about first.
+- Some of it is not a tree. There are 37 notes in this folder, plus run reports and finished plans in
+  their own. When a session needs to know whether I have already written about something, it has grep
+  and my memory, and my memory is the reason this whole setup exists.
 
 That flat pile is where similarity earns its place, which is why I expect production systems to end up
 hybrid. I have not built that half. It is a guess about what I will need, and I am labelling it one.
 
-## Which one to reach for
-
-This is my read, not a benchmark. Nobody has run these head to head on my files, and the one number I
-quoted above is the vendor's own.
-
-| Your pile | Reach for | Why |
-|---|---|---|
-| Under about 200,000 tokens, roughly 500 pages | Paste it all and skip retrieval | Anthropic's own rule of thumb, and caching makes it cheap |
-| Long documents with real headings: manuals, filings, contracts, a standards folder | A tree the model reads | The structure already says where things are |
-| A big flat pile of short items: tickets, notes, chat logs | Vectors, with keyword search beside them | There are no headings to walk |
-| A code repository | Let the model search it live with grep and read files | What Claude Code settled on |
-
 ## What landed since the first draft
 
-The first draft of this note listed three pieces of work as in flight. Two have landed, and one has
-half landed.
+The first draft listed three pieces of work as in flight. Two landed on 2026-11-17 and one is half done.
 
-- **A standards index** landed on 2026-11-17. It is a tool that lists every standard with the sections
-  inside it, 31 standards and 279 sections today, so a session reads one section by name instead of
-  the whole file. The question walk above runs on it.
-- **A staleness check** landed the same day. It warns at session start when a skill or the code graph is
-  behind its source. It fired at the start of the session that revised this note: one of the 29 skills
-  was behind, and the graph predated the repo's own extraction. The model trusts a heading the way I
-  trust a street sign, so a tree pointing at a file that changed underneath it is worse than no tree.
-- **A retrieval trace** is half done. A run report from 2026-11-21 carries a section listing which files
-  the session read. That is the receipt I wanted, with a catch: the session writes it, and no tool
-  captures it. It is a claim a session makes about itself. A mechanical version would fit PANTRY's run ledger, which
-already records token use by model, plan and area. That is an idea and not a build.
-
-The flat pile of notes is still flat.
+- **A standards index.** A tool lists every standard with its sections, 31 standards and 279 sections
+  today, so a session reads one section by name. The walk above runs on it.
+- **A staleness check.** It warns at session start when a skill or the graph is behind its source, which
+  is the warning PANTRY showed me this morning. A tree pointing at a file that changed underneath it is
+  worse than no tree.
+- **A retrieval trace, half done.** A run report from 2026-11-21 lists the files the session read, with
+  a catch: the session writes it and no tool captures it, so it is a claim a session makes about
+  itself. PANTRY's run ledger already records token use by model, plan and area, so a mechanical version
+  would fit there. That is an idea and not a build.
 
 ## The name was the only part missing
 
 I would still describe all of this as "I keep good docs," and I would still be telling the truth. Good
 docs, written for a reader who reads every word and forgets them by tomorrow, turn out to be a
 retrieval system with the serial numbers filed off. Other people gave it a name, a benchmark and a
-GitHub repository.
+GitHub repository. My version has [a longer story](ten-times-zero.md) behind it, and a symlink.
 
 The table of contents was already there.
 
@@ -569,10 +657,11 @@ The table of contents was already there.
 What the claims above rest on, and what I did and did not check.
 
 - Patrick Lewis and colleagues, [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401), NeurIPS 2020. The paper that named RAG.
-- Anthropic, [Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval), 2024-09-19. The 200,000 token rule and the 5.7 to 1.9 percent figures. I read the page, and I did not reproduce the results.
-- Vectify AI, [PageIndex](https://github.com/VectifyAI/PageIndex). The README is what I read. The FinanceBench claim links to a [write-up](https://vectify.ai/blog/Mafin2.5) and an [evaluation repo](https://github.com/VectifyAI/Mafin2.5-FinanceBench) that I did not open.
+- Anthropic, [Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval), 2024-09-19. The 200,000 token rule and the 5.7 to 1.9 percent figures. I read the page and did not reproduce the results.
+- Vectify AI, [PageIndex](https://github.com/VectifyAI/PageIndex). I read the README. The FinanceBench claim links to a [write-up](https://vectify.ai/blog/Mafin2.5) and an [evaluation repo](https://github.com/VectifyAI/Mafin2.5-FinanceBench) that I did not open.
 - Boris Cherny on [Latent Space](https://www.latent.space/p/claude-code), 2025-05-07. The agentic search passage is about forty-five minutes into the transcript, and I checked the quoted words against it.
-- The graphify, tokensave and PANTRY figures are counted from my own repository and my own running PANTRY and tokensave on 2026-11-26, and the August figures are from my notes on measuring graphify. None of them comes from a vendor.
+- The [AGENTS.md](https://agents.md) convention. The symlinks are checked in this repo, the standards folder, PANTRY and GRAIN, and in the global links for Claude, Codex and OpenCode.
+- [graphify](https://github.com/safishamsi/graphify), [tokensave](https://github.com/aovestdipaperino/tokensave) and [PANTRY](/pantry). The figures are counted from my own repository, my own tokensave and my own running PANTRY on 2026-11-26, and the August figures are from my notes on measuring graphify. None of them comes from a vendor.
 - The name "vectorless RAG" reached me through a LinkedIn post by Shivani Virdi, and it is why I went looking. Nothing above rests on it.
 
 ---
