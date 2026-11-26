@@ -8,7 +8,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-26
-readingTime: "~6 min"
+readingTime: "~9 min"
 tags: [ai, retrieval, tooling, graphify, tokensave, pantry]
 summary: >
   The tool-by-tool half of the retrieval behind my AI loop: the usual similarity steps drawn out, each layer of
@@ -18,6 +18,23 @@ summary: >
 
 > The companion to [My AI Loop Runs on Vectorless RAG and I Didn't Call It That](vectorless-rag-by-accident.md).
 > Read that one first. This is the part for the reader who wants to see how it is wired.
+
+## What RAG gets used for
+
+The lead note says RAG is for any pile of documents that is too big to paste and too specific for the
+model to know. Here is the longer list.
+
+| Use | What gets looked up |
+|---|---|
+| A support bot | The help center, and past answers |
+| A company assistant | The wiki, the policies, old tickets |
+| Reading a contract or a financial filing | One long document with real structure |
+| A coding assistant | The repository |
+| **An AI loop that builds software (mine)** | The standards, the plans, the code and the state of the project |
+
+Anthropic says a library under about 200,000 tokens, roughly 500 pages, can simply go in the prompt, so
+RAG is for the libraries that do not fit. It took off for a boring reason. Retraining a model on your documents is slow and goes stale the day a
+policy changes. Retrieval only needs the pages updated, and the answer can point back at its source.
 
 ## The usual way, step by step
 
@@ -78,8 +95,12 @@ numbers, fetch the nearest.
 *The usual way, start to finish. The numbers are called an embedding, and a vector database stores
 them. The ringed dots are the chunks that go into the prompt.*
 
-The numbers are positions on a very large map, and close on the map means close in meaning. That is
-what makes the next section different: a tree gives up that map and gets a reason in return.
+The numbers are positions in a very large space, and close together means close in meaning. A tree gives
+up that space and gets something in return: a reason the model can say out loud.
+
+The vector camp keeps improving. Anthropic's [contextual retrieval](https://www.anthropic.com/news/contextual-retrieval)
+adds a note about where each chunk came from before it is embedded, and with keyword search and a
+reranker it cut missed chunks in the top twenty from 5.7 percent to 1.9 percent in their tests.
 
 ## The tree, one layer at a time
 
@@ -266,6 +287,24 @@ standards index rather than from a log, so read it as the route the setup allows
 The [lead note](vectorless-rag-by-accident.md) puts the cost of that walk against the whole file: 5.8
 percent of the voice standard, 94 percent never read.
 
+## Two real versions of the contents-page idea
+
+The best-known version is [PageIndex](https://github.com/VectifyAI/PageIndex), an MIT-licensed project
+from Vectify AI. It builds a tree index for each document and lets a model search the tree and read the
+pages it lands on. Its README adds a complaint about vectors, that you cannot see why a chunk was chosen,
+and a number: 98.7 percent on FinanceBench against 50 percent for vector RAG. Treat that as a claim. It is
+self-reported, the README does not name the vector system it beat, and I did not run the
+[evaluation](https://github.com/VectifyAI/Mafin2.5-FinanceBench). Shivani's post quotes the same figure.
+
+A close cousin has no index at all. In a [Latent Space interview](https://www.latent.space/p/claude-code)
+in May 2025, Boris Cherny, who leads Claude Code, said early versions used off-the-shelf RAG and that
+"eventually, we landed on just agentic search as the way to do stuff," meaning glob, grep and file reads.
+An index has to be built, the code drifts out of sync with it, and it has to live somewhere.
+
+So there are three answers to the ink box. Vectors pick by distance. PageIndex reasons over a tree built
+ahead of time. Claude Code searches live with no index. Mine is closest to the second, with the tree
+written by hand.
+
 ## Which one to reach for
 
 My read, not a benchmark. Nobody has run these head to head on my files, and the one benchmark number
@@ -343,8 +382,11 @@ The first draft listed three pieces of work as in flight. Two landed on 2026-11-
 
 What the figures above rest on.
 
+- Vectify AI, [PageIndex](https://github.com/VectifyAI/PageIndex). I read the README. The FinanceBench claim links to a [write-up](https://vectify.ai/blog/Mafin2.5) and an [evaluation repo](https://github.com/VectifyAI/Mafin2.5-FinanceBench) that I did not open.
+- Boris Cherny on [Latent Space](https://www.latent.space/p/claude-code), 2025-05-07. The agentic search passage is about forty-five minutes into the transcript, and I checked the quoted words against it.
+- Anthropic, [Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval), 2024-09-19. The 200,000 token rule and the 5.7 to 1.9 percent figures are theirs. I read the page and did not reproduce the results.
 - [graphify](https://github.com/safishamsi/graphify), [tokensave](https://github.com/aovestdipaperino/tokensave) and [PANTRY](/pantry). The figures are counted from my own repository, my own tokensave and my own running PANTRY on 2026-11-26, and the August figures are from my notes on measuring graphify. None of them comes from a vendor.
-- The research behind the explainer, with the RAG paper, Anthropic's contextual retrieval, PageIndex and the Cherny interview, is listed in the [lead note](vectorless-rag-by-accident.md).
+- The RAG paper, the AGENTS.md convention and Shivani Virdi's post are listed in the [lead note](vectorless-rag-by-accident.md).
 
 ---
 
