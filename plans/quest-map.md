@@ -104,14 +104,17 @@ fills the viewport and everything else floats on it, as in Google Maps.
   because it blurs pixel art.
 - **Semantic zoom.** World shows the six region pins and names. Regions shows every quest pin with its
   short name. Landmark adds the detail sprites and, for the selected quest, amber stop pins. Stops names
-  each stop. Region labels fade as quest labels arrive.
+  each stop. Region labels fade as quest labels arrive. Zooming into a region also reveals its own detail:
+  dotted footpaths between its quests from the Regions level, small props such as flowers and rocks around
+  each quest from the Landmark level, and a trail from the selected quest through its numbered stops.
 - **Pins and labels are real elements over the canvas, and they are not pixel art.** The terrain and landmarks
   are pixel art. A pin is a clean round marker with a number, a white edge and a pointer, so it reads against
   busy terrain: red for open, green with a check for done, grey for filtered out, amber for a stop. It stays
   the same size at every zoom level, has a target of at least 44 pixels with its padding, and grows and gains
-  a ring when selected. Each pin has a name tag beside it, on the right or flipped to the left. A tag that would
-  land on a pin or another tag, or off the screen, is hidden, and the selected quest or stop always wins. Stop
-  pins are numbered one to nine. Pins are buttons with names and labels are text, so keyboard and screen reader users
+  a ring when selected. A pin shows no name by default. Hovering or focusing it shows a small card beside it with the name,
+  level, minutes and stop count, flipped to the left near the screen edge, and the selected pin keeps its card.
+  A click opens the quest in the place panel. Pins are smaller while zoomed out and full size from the
+  Landmark level. Stop pins are numbered one to nine. Pins are buttons with names and labels are text, so keyboard and screen reader users
   get the same route lists and the canvas is decoration. Arrow keys
   pan and plus and minus zoom. Escape goes up one level.
 - **Working prototype:** docs/mockups/quest-map/fullscreen.html, with the real quests, levels, reading
