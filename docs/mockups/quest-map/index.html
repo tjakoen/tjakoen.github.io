@@ -1,33 +1,48 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quest map mockups · pixel art, Google Maps layout</title>
+<title>Quest map mockups · pixel art, GRAIN tokens, RPG lesson book</title>
 <style>
-/* Quest tokens, light and dark. The canvas reads these too, so the whole map re-skins with the page. */
-:root, [data-theme="light"] {
-  --q-water:#8cc4e0; --q-water2:#a6d6ea; --q-wave:#cfeaf5; --q-foam:#f3fbff; --q-sand:#f0dba5; --q-sand2:#e6cb8a;
+/* GRAIN tokens, mirrored from grain/styles (variables.css + themes). The real page imports grain; this copy only lets the mockup run standalone.
+   Two orthogonal axes: data-color-scheme = light|dark (follows the OS), data-theme = flavor (sourdough default, baguette, brioche). */
+:root { --paper:#E2E0D8; --paper-2:#E8E6DF; --panel:#E8E6DF; --ink:#1C1B17; --ink-muted:#5F5D55; --line-soft:rgba(28,27,23,.14); --color-accent:var(--ink); --color-accent-contrast:var(--paper); --color-accent-soft:var(--paper-2); }
+@media (prefers-color-scheme: dark) { :root:not([data-color-scheme="light"]) { --paper:#1B1A16; --paper-2:#232219; --panel:#232219; --ink:#E4E1D8; --ink-muted:#9A968B; --line-soft:rgba(228,225,216,.16); } }
+:root[data-color-scheme="dark"] { --paper:#1B1A16; --paper-2:#232219; --panel:#232219; --ink:#E4E1D8; --ink-muted:#9A968B; --line-soft:rgba(228,225,216,.16); }
+:root[data-theme="baguette"] { --paper:#FAFAF8; --paper-2:#F2F2F0; --panel:#FFFFFF; --ink:#232326; --ink-muted:#6B6B70; --line-soft:rgba(35,35,38,.11); --color-accent:#2C68D6; --color-accent-contrast:#FFFFFF; --color-accent-soft:#E7EEFB; }
+@media (prefers-color-scheme: dark) { :root[data-theme="baguette"]:not([data-color-scheme="light"]) { --paper:#17181A; --paper-2:#202126; --panel:#202126; --ink:#ECECEE; --ink-muted:#96969C; --line-soft:rgba(236,236,238,.15); --color-accent:#6FA0FF; --color-accent-contrast:#16181A; --color-accent-soft:rgba(111,160,255,.16); } }
+:root[data-theme="baguette"][data-color-scheme="dark"] { --paper:#17181A; --paper-2:#202126; --panel:#202126; --ink:#ECECEE; --ink-muted:#96969C; --line-soft:rgba(236,236,238,.15); --color-accent:#6FA0FF; --color-accent-contrast:#16181A; --color-accent-soft:rgba(111,160,255,.16); }
+:root[data-theme="brioche"] { --paper:#F5EEDD; --paper-2:#FBF5E7; --panel:#FFFDF6; --ink:#2C2416; --ink-muted:#6E6249; --line-soft:rgba(44,36,22,.14); --color-accent:#8A5E12; --color-accent-contrast:#FFFFFF; --color-accent-soft:#F3E7CC; }
+@media (prefers-color-scheme: dark) { :root[data-theme="brioche"]:not([data-color-scheme="light"]) { --paper:#1D180F; --paper-2:#262016; --panel:#262016; --ink:#EFE6D2; --ink-muted:#9C907A; --line-soft:rgba(239,230,210,.16); --color-accent:#E3B457; --color-accent-contrast:#1D180F; --color-accent-soft:rgba(227,180,87,.16); } }
+:root[data-theme="brioche"][data-color-scheme="dark"] { --paper:#1D180F; --paper-2:#262016; --panel:#262016; --ink:#EFE6D2; --ink-muted:#9C907A; --line-soft:rgba(239,230,210,.16); --color-accent:#E3B457; --color-accent-contrast:#1D180F; --color-accent-soft:rgba(227,180,87,.16); }
+
+/* UI chrome reads GRAIN tokens only, so it follows every flavor in both schemes. */
+:root { --q-panel:var(--panel); --q-paper:var(--paper); --q-ink:var(--ink); --q-muted:var(--ink-muted); --q-line:color-mix(in srgb,var(--ink) 28%,transparent);
+  --q-ground:var(--paper-2); --q-ground2:color-mix(in srgb,var(--ink) 9%,var(--paper-2)); --q-halo:var(--paper); --q-label:var(--ink);
+  --q-accent:var(--color-accent); --q-accent-ink:var(--color-accent-contrast); }
+/* Art palette: quest-specific, decorative only, keyed on the colour scheme (never on the flavor). */
+:root { --q-water:#8cc4e0; --q-water2:#a6d6ea; --q-wave:#cfeaf5; --q-foam:#f3fbff; --q-sand:#f0dba5; --q-sand2:#e6cb8a;
   --q-grass:#9ccc5f; --q-grass2:#8bbb4f; --q-forest:#4e9a52; --q-forest2:#3f8646; --q-rock:#a39a8c; --q-rock2:#948a7c; --q-rockd:#7e7566;
   --q-field:#e8c65a; --q-field2:#d6b04a; --q-meadow:#b08fd0; --q-meadow2:#a07fc4; --q-snow:#f4f8ff; --q-snow2:#dde6f4;
   --q-road:#fff6dc; --q-road-edge:#b99f6a; --q-main:#f5b83d; --q-main-edge:#a66a14; --q-fog:#d8cdb4; --q-fog2:#c9bd9f;
   --q-outline:#3b2d1c; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#3b82f6; --q-trunk:#7a4a26;
   --q-wall:#e9d9b8; --q-wall2:#cdb88f; --q-castle:#a483cf; --q-castle2:#8566b3; --q-roof:#d65a3e; --q-roof2:#b0432b; --q-flag:#e0463a;
-  --q-stone:#8a8f9c; --q-amber:#f5b83d; --q-glow:#f6c453;
-  --q-paper:#f6efe0; --q-panel:#fffaf0; --q-ground:#f3e6c8; --q-ground2:#e4d0a0; --q-ink:#3b2d1c; --q-line:#d9c59a; --q-muted:#7a6a4c;
-  --q-halo:#fffaf0; --q-label:#5b4a2e;
-}
-[data-theme="dark"] {
-  --q-water:#173347; --q-water2:#1f4560; --q-wave:#2d5f82; --q-foam:#4a86a8; --q-sand:#8c7a4c; --q-sand2:#7c6b40;
+  --q-stone:#8a8f9c; --q-amber:#f5b83d; --q-glow:#f6c453; }
+@media (prefers-color-scheme: dark) { :root:not([data-color-scheme="light"]) { --q-water:#173347; --q-water2:#1f4560; --q-wave:#2d5f82; --q-foam:#4a86a8; --q-sand:#8c7a4c; --q-sand2:#7c6b40;
   --q-grass:#4f7a2e; --q-grass2:#456d28; --q-forest:#2b5f38; --q-forest2:#234f2f; --q-rock:#5b5f6c; --q-rock2:#505460; --q-rockd:#444855;
   --q-field:#a98a2e; --q-field2:#947628; --q-meadow:#6c4f9a; --q-meadow2:#5f448a; --q-snow:#cfd8ea; --q-snow2:#aeb9d0;
   --q-road:#c9b98c; --q-road-edge:#4a3e26; --q-main:#f0b43c; --q-main-edge:#6e4410; --q-fog:#3a3426; --q-fog2:#2f2a1f;
   --q-outline:#0f0c07; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#5b9bff; --q-trunk:#6a3f20;
   --q-wall:#9a8a6a; --q-wall2:#7a6c52; --q-castle:#8f74c4; --q-castle2:#6f55a3; --q-roof:#c95a40; --q-roof2:#a0442e; --q-flag:#e0463a;
-  --q-stone:#6a7080; --q-amber:#f0b43c; --q-glow:#f0b43c;
-  --q-paper:#1b160d; --q-panel:#241e12; --q-ground:#2b2417; --q-ground2:#3a3120; --q-ink:#f3e6c8; --q-line:#4a3e26; --q-muted:#b3a47f;
-  --q-halo:#1b160d; --q-label:#e8dcc0;
-}
+  --q-stone:#6a7080; --q-amber:#f0b43c; --q-glow:#f0b43c; } }
+:root[data-color-scheme="dark"] { --q-water:#173347; --q-water2:#1f4560; --q-wave:#2d5f82; --q-foam:#4a86a8; --q-sand:#8c7a4c; --q-sand2:#7c6b40;
+  --q-grass:#4f7a2e; --q-grass2:#456d28; --q-forest:#2b5f38; --q-forest2:#234f2f; --q-rock:#5b5f6c; --q-rock2:#505460; --q-rockd:#444855;
+  --q-field:#a98a2e; --q-field2:#947628; --q-meadow:#6c4f9a; --q-meadow2:#5f448a; --q-snow:#cfd8ea; --q-snow2:#aeb9d0;
+  --q-road:#c9b98c; --q-road-edge:#4a3e26; --q-main:#f0b43c; --q-main-edge:#6e4410; --q-fog:#3a3426; --q-fog2:#2f2a1f;
+  --q-outline:#0f0c07; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#5b9bff; --q-trunk:#6a3f20;
+  --q-wall:#9a8a6a; --q-wall2:#7a6c52; --q-castle:#8f74c4; --q-castle2:#6f55a3; --q-roof:#c95a40; --q-roof2:#a0442e; --q-flag:#e0463a;
+  --q-stone:#6a7080; --q-amber:#f0b43c; --q-glow:#f0b43c; }
 * { box-sizing:border-box; }
 body { margin:0; background:var(--q-paper); color:var(--q-ink); font:15px/1.5 ui-monospace,"SF Mono",Menlo,Consolas,monospace; }
 header.top { display:flex; gap:1rem; align-items:center; justify-content:space-between; padding:.8rem 1.2rem; border-bottom:2px solid var(--q-line); position:sticky; top:0; background:var(--q-paper); z-index:20; }
@@ -48,13 +63,13 @@ canvas { display:block; image-rendering:pixelated; }
 .place .body { padding:.9rem 1rem 1.2rem; display:grid; gap:.75rem; }
 .place h3 { margin:0; font-size:1.3rem; line-height:1.15; }
 .place .sub { color:var(--q-muted); font-size:.8rem; }
-.stars { color:var(--q-amber); letter-spacing:.1em; }
+.stars { color:var(--q-accent); letter-spacing:.1em; }
 .actions { display:flex; gap:.5rem; flex-wrap:wrap; }
 .actions button { padding:.2rem .6rem; font-size:.8rem; }
-.actions .primary, .primary { background:var(--q-amber); color:#2b2417; }
+.actions .primary, .primary { background:var(--q-accent); color:var(--q-accent-ink); }
 .tabs { display:flex; border-bottom:2px solid var(--q-line); }
 .tabs span { padding:.3rem .8rem; font-size:.8rem; color:var(--q-muted); }
-.tabs span[data-on] { color:var(--q-ink); border-bottom:4px solid var(--q-amber); margin-bottom:-2px; font-weight:700; }
+.tabs span[data-on] { color:var(--q-ink); border-bottom:4px solid var(--q-accent); margin-bottom:-2px; font-weight:700; }
 .steps { list-style:none; margin:0; padding:0; display:grid; gap:0; }
 .steps li { display:grid; grid-template-columns:30px 1fr; gap:.55rem; padding:.45rem 0; position:relative; }
 .steps li::before { content:""; position:absolute; left:13px; top:2rem; bottom:-.5rem; border-left:3px dotted var(--q-main-edge); }
@@ -70,7 +85,7 @@ canvas { display:block; image-rendering:pixelated; }
 .search { position:absolute; left:12px; top:12px; width:min(330px,70%); background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); display:flex; align-items:center; gap:.6rem; padding:.35rem .7rem; font-size:.85rem; color:var(--q-muted); }
 .chips { position:absolute; left:12px; top:64px; display:flex; gap:.4rem; flex-wrap:wrap; max-width:75%; }
 .chips .chip { box-shadow:2px 2px 0 var(--q-ink); color:var(--q-ink); }
-.chips .chip[data-on] { background:var(--q-amber); color:#2b2417; }
+.chips .chip[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
 .ctl { position:absolute; right:12px; bottom:14px; display:grid; gap:8px; justify-items:end; }
 .ctl .stack { display:grid; border:3px solid var(--q-ink); background:var(--q-panel); box-shadow:3px 3px 0 var(--q-ink); }
 .ctl .stack button { border:0; box-shadow:none; width:36px; height:34px; padding:0; font-weight:700; font-size:1.1rem; }
@@ -103,9 +118,9 @@ canvas { display:block; image-rendering:pixelated; }
 .stat small { display:block; color:var(--q-muted); font-size:.62rem; text-transform:uppercase; letter-spacing:.08em; }
 .stat strong { font-size:.98rem; }
 .xp { height:14px; border:2px solid var(--q-ink); background:var(--q-paper); }
-.xp i { display:block; height:100%; width:42%; background:repeating-linear-gradient(90deg,var(--q-amber) 0 6px,var(--q-glow) 6px 8px); }
+.xp i { display:block; height:100%; width:42%; background:repeating-linear-gradient(90deg,var(--q-accent) 0 6px,color-mix(in srgb,var(--q-accent) 65%,var(--q-panel)) 6px 8px); }
 .modal ul { margin:0; padding:0; list-style:none; display:grid; gap:.2rem; font-size:.82rem; }
-.modal li::before { content:"◆ "; color:var(--q-amber); }
+.modal li::before { content:"◆ "; color:var(--q-accent); }
 .modal li[data-ext]::before { content:"◇ "; color:var(--q-you); }
 .row { display:flex; gap:.6rem; flex-wrap:wrap; }
 
@@ -121,24 +136,40 @@ canvas { display:block; image-rendering:pixelated; }
 .field { border:2px dashed var(--q-line); padding:.35rem .55rem; font-size:.8rem; background:var(--q-paper); }
 code { background:var(--q-paper); border:1px solid var(--q-line); padding:0 .3rem; }
 
-/* 4. lesson mode */
-.lesson { display:grid; grid-template-columns:1.5fr 1fr; min-height:560px; }
-.note { padding:1.2rem 1.6rem; border-right:3px solid var(--q-ink); font:15px/1.7 Georgia,serif; }
-.note .crumb { font:.75rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
+/* 4. lesson mode: the book is an in-world object, its pages read GRAIN tokens */
+.lesson { display:grid; grid-template-columns:1.25fr 1fr; min-height:640px; }
+.note { padding:1.2rem 1.6rem 1.2rem 3.2rem; border-right:3px solid var(--q-ink); font:15px/1.7 Georgia,serif; position:relative; }
+.note .crumb { font:.75rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; margin-left:-1.6rem; }
 .note h3 { font-size:1.5rem; line-height:1.2; margin:.4rem 0 1rem; }
-.hl { background:linear-gradient(transparent 55%, color-mix(in srgb,var(--q-glow) 55%,transparent) 55%); outline:2px solid var(--q-amber); outline-offset:2px; position:relative; }
-.hl::after { content:"◆ concept 3"; position:absolute; left:0; top:-1.35rem; font:.65rem ui-monospace,monospace; background:var(--q-amber); color:#2b2417; padding:0 .35rem; white-space:nowrap; }
-.side { padding:1rem; background:linear-gradient(180deg,var(--q-ground2),var(--q-ground)); display:grid; gap:.8rem; align-content:start; }
-.side .tb { display:flex; gap:.3rem; }
+.note p { position:relative; }
+.hl { background:linear-gradient(transparent 55%, color-mix(in srgb,var(--q-accent) 32%,transparent) 55%); outline:2px solid var(--q-accent); outline-offset:2px; }
+.margin-rune { position:absolute; left:-2.1rem; top:.1rem; width:28px; height:28px; border:2px solid var(--q-ink); background:var(--q-panel); box-shadow:0 0 0 3px color-mix(in srgb,var(--q-accent) 45%,transparent); }
+.toast { position:absolute; right:1rem; bottom:1rem; background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); padding:.25rem .7rem; font:700 .74rem ui-monospace,monospace; }
+.side { padding:.9rem; background:var(--q-ground); display:grid; gap:.7rem; align-content:start; }
+.hud { display:grid; gap:.25rem; }
+.hud .top { display:flex; justify-content:space-between; font-size:.78rem; }
+.side .tb { display:flex; gap:.3rem; flex-wrap:wrap; }
 .side .tb span { border:2px solid var(--q-ink); padding:.05rem .55rem; font-size:.72rem; background:var(--q-panel); }
-.side .tb span[data-on] { background:var(--q-amber); color:#2b2417; }
-.book { display:grid; grid-template-columns:1fr 1fr; position:relative; border:3px solid var(--q-ink); background:#6b3f26; padding:7px; box-shadow:4px 4px 0 var(--q-ink); }
-.book::before { content:""; position:absolute; inset:0 auto 0 50%; width:6px; margin-left:-3px; background:repeating-linear-gradient(180deg,#3d2214 0 4px,#6b3f26 4px 8px); z-index:2; }
-.page { background:var(--q-paper); padding:.7rem .75rem; font:.78rem/1.55 Georgia,serif; min-height:250px; background-image:repeating-linear-gradient(180deg,transparent 0 22px,color-mix(in srgb,var(--q-line) 55%,transparent) 22px 23px); }
-.page h4 { margin:0 0 .4rem; font:700 .64rem ui-monospace,monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--q-roof); }
-.page p { margin:0 0 .35rem; color:var(--q-muted); }
-.page p.now { color:var(--q-ink); background:color-mix(in srgb,var(--q-glow) 42%,transparent); box-shadow:0 0 0 2px color-mix(in srgb,var(--q-glow) 70%,transparent); }
-.page ul { margin:0; padding-left:1rem; }
+.side .tb span[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.tome { display:grid; grid-template-columns:1fr 1fr; position:relative; border:3px solid var(--q-outline); background:#6b3f26; padding:8px; box-shadow:4px 4px 0 var(--q-ink); }
+.tome::before { content:""; position:absolute; inset:0 auto 0 50%; width:6px; margin-left:-3px; background:repeating-linear-gradient(180deg,#3d2214 0 4px,#6b3f26 4px 8px); z-index:2; }
+.tome::after { content:""; position:absolute; inset:3px; border:2px dashed #a8794e; pointer-events:none; }
+.leaf { background:var(--q-paper); padding:.65rem .7rem; font:.76rem/1.5 Georgia,serif; min-height:360px; display:grid; gap:.5rem; align-content:start; }
+.leaf h4 { margin:0; font:700 .62rem ui-monospace,monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--q-roof); }
+.dlg { display:grid; grid-template-columns:56px 1fr; gap:.5rem; border:3px solid var(--q-ink); background:var(--q-panel); padding:.4rem; position:relative; }
+.dlg canvas { width:56px; height:56px; border:2px solid var(--q-ink); background:var(--q-ground2); }
+.dlg .plate { font:700 .62rem ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--q-muted); }
+.dlg .say { font:.8rem/1.45 Georgia,serif; color:var(--q-ink); }
+.dlg .caret { animation:blink 1s steps(2) infinite; } @keyframes blink { 50% { opacity:0 } }
+.dlg .adv { position:absolute; right:.35rem; bottom:.1rem; font-size:.7rem; color:var(--q-roof); }
+.hist p { margin:0 0 .3rem; color:var(--q-muted); }
+.hist p.fade { opacity:.6; }
+.rune-card { display:grid; grid-template-columns:44px 1fr; gap:.5rem; border:2px solid var(--q-ink); padding:.35rem; background:color-mix(in srgb,var(--q-accent) 14%,var(--q-paper)); }
+.rune-card canvas { width:44px; height:44px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.rune-card strong { font:700 .72rem ui-monospace,monospace; } .rune-card small { color:var(--q-muted); font-size:.7rem; display:block; }
+.trial { border:2px dashed var(--q-muted); padding:.4rem .5rem; display:grid; gap:.25rem; }
+.trial label { font:.72rem ui-monospace,monospace; display:flex; gap:.4rem; align-items:center; }
+.leaf ul { margin:0; padding-left:1rem; }
 .controls { display:grid; gap:.45rem; }
 .ribbonbar { height:12px; border:2px solid var(--q-ink); background:var(--q-paper); position:relative; }
 .ribbonbar i { position:absolute; inset:0 auto 0 0; width:38%; background:var(--q-roof); }
@@ -147,14 +178,35 @@ code { background:var(--q-paper); border:1px solid var(--q-line); padding:0 .3re
 .controls .row button { padding:.1rem .5rem; }
 .stops { display:flex; gap:.35rem; align-items:center; font-size:.72rem; color:var(--q-muted); }
 .stops i { width:14px; height:14px; border:2px solid var(--q-ink); background:var(--q-paper); }
-.stops i[data-d] { background:#4e9a52; } .stops i[data-now] { background:var(--q-amber); }
+.stops i[data-d] { background:#4e9a52; } .stops i[data-now] { background:var(--q-accent); }
+.tabs3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.mini { padding:.8rem .9rem; display:grid; gap:.5rem; align-content:start; font-size:.8rem; }
+.mini h3 { margin:0; font-size:.78rem; text-transform:uppercase; letter-spacing:.1em; }
+.obj { display:grid; grid-template-columns:20px 1fr; gap:.45rem; align-items:start; }
+.obj i { width:16px; height:16px; border:2px solid var(--q-ink); background:var(--q-paper); margin-top:2px; }
+.obj i[data-d] { background:#4e9a52; box-shadow:inset 0 0 0 3px var(--q-paper); }
+.obj small, .mini small { color:var(--q-muted); display:block; font-size:.7rem; }
+.runes { display:grid; grid-template-columns:repeat(4,1fr); gap:.4rem; }
+.runes canvas { width:100%; aspect-ratio:1; height:auto; border:2px solid var(--q-ink); background:var(--q-panel); }
+.runes .off { opacity:.3; filter:grayscale(1); }
+.pack { display:grid; grid-template-columns:36px 1fr; gap:.5rem; align-items:center; }
+.pack canvas { width:36px; height:36px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.levelup { margin-top:1.2rem; display:flex; gap:1rem; align-items:center; justify-content:center; padding:.8rem; background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:4px 4px 0 var(--q-ink); font-weight:700; letter-spacing:.08em; }
+.levelup canvas { width:40px; height:40px; background:transparent; }
+/* 6. lesson model */
+.model { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.model .mini li { margin:.15rem 0; } .model ul { margin:0; padding-left:1.1rem; } .tag { color:var(--q-muted); font-size:.72rem; }
+.ctlbar { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+select { font:inherit; color:var(--q-ink); background:var(--q-panel); border:2px solid var(--q-ink); padding:.2rem .4rem; }
+button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
 pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height:1.55; background:var(--q-paper); }
-@media (max-width:860px) { .gm,.lesson,.cards { grid-template-columns:1fr; } .gm .place { max-height:none; border-right:0; } .modalwrap { position:relative; inset:auto; width:auto; margin:1rem; } .dim{display:none} }
+@media (max-width:860px) { .gm,.lesson,.cards,.tabs3,.model { grid-template-columns:1fr; } .gm .place { max-height:none; border-right:0; } .modalwrap { position:relative; inset:auto; width:auto; margin:1rem; } .dim{display:none} }
 </style>
 </head>
 <body>
 <header class="top"><h1>QUEST MAP · MOCKUPS · pixel art, Google Maps layout</h1>
-<button id="theme">Toggle light / dark</button></header>
+<div class="ctlbar"><label>Flavor <select id="flavor"><option>sourdough</option><option>baguette</option><option>brioche</option></select></label>
+<span id="scheme"><button data-s="auto" aria-pressed="true">Auto</button> <button data-s="light" aria-pressed="false">Light</button> <button data-s="dark" aria-pressed="false">Dark</button></span></div></header>
 <main>
 
 <section>
@@ -236,34 +288,50 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 </section>
 
 <section>
-<h2>4 · Lesson mode: the note keeps its words, the sidebar becomes the book</h2>
+<h2>4 · Lesson mode: the note keeps its words, the sidebar becomes the quest book</h2>
 <div class="frame lesson">
   <div class="note">
+    <div class="toast">+25 XP · Rune learned: Design input</div>
     <div class="crumb">Model Mines · Quest 1 · Stop 2 of 4 · Rate limits are a design input</div>
     <h3>I Ran Out With Hours Left</h3>
     <p>It was a Tuesday afternoon and the usage meter said I had spent the week's allowance on day two. I had planned for tokens the way I plan for coffee: assume it will be there.</p>
-    <p><span class="hl">A limit you hit mid-task is not a billing problem. It is a design input, and the only question is whether you chose the layer that handles it or discovered it at the worst possible moment.</span> So I stopped asking which model is best and started asking which model is enough for this step.</p>
+    <p><canvas class="margin-rune" id="c-mrune" width="7" height="7"></canvas><span class="hl">A limit you hit mid-task is not a billing problem. It is a design input, and the only question is whether you chose the layer that handles it or discovered it at the worst possible moment.</span> So I stopped asking which model is best and started asking which model is enough for this step.</p>
     <p>That reframing is the whole note. The rest is how the routing works once you accept it.</p>
   </div>
   <div class="side">
-    <div class="tb"><span data-on>Book</span><span>Stops</span><span>Sources</span></div>
-    <div class="book" aria-label="Voice lesson, shown as an open book">
-      <div class="page"><h4>Chapter 2 · Voice</h4>
-        <p>So it was a Tuesday, and the meter said I was done for the week.</p>
-        <p class="now">Here is the thing. A limit is not a billing problem. It is a design input.</p>
-        <p>Choose the layer that handles it, or find out at the worst moment.</p></div>
-      <div class="page"><h4>In plain words</h4>
+    <div class="hud"><div class="top"><strong>Wren · Apprentice Lv 3</strong><span>1,240 / 4,800 XP</span></div><div class="xp"><i style="width:26%"></i></div></div>
+    <div class="tb"><span data-on>Book</span><span>Log 2/4</span><span>Codex 3/8</span><span>Pack 2</span></div>
+    <div class="tome" aria-label="Voice lesson, shown as an open quest book">
+      <div class="leaf"><h4>Chapter 2 · The Guide speaks</h4>
+        <div class="dlg"><canvas id="c-guide" width="24" height="24"></canvas><div><div class="plate">The Guide</div><div class="say">Here is the thing. A limit is not a billing problem. It is a design input.<span class="caret">▌</span></div></div><span class="adv">▼</span></div>
+        <div class="hist"><p class="fade">So it was a Tuesday, and the meter said I was done for the week.</p><p class="fade">I had planned for tokens like I plan for coffee.</p></div></div>
+      <div class="leaf"><h4>In plain words</h4>
         <ul><li>Limits are a constraint you design around.</li><li>Ask "enough for this step", not "best".</li><li>Route cheap work to the cheap model.</li></ul>
-        <p style="margin-top:.6rem"><em>Try it:</em> list your last five AI tasks and mark which needed the big model.</p></div>
+        <div class="rune-card"><canvas id="c-rune" width="7" height="7"></canvas><div><strong>Rune learned</strong><br>Design input<small>+25 XP · added to the Codex</small></div></div>
+        <div class="trial"><h4>Trial</h4><span>List your last five AI tasks and mark which needed the big model.</span><label><input type="checkbox"> Mark trial done · +100 XP</label></div></div>
     </div>
     <div class="controls">
       <div class="ribbonbar"><i></i><u></u></div>
-      <div class="row"><div><button aria-label="Previous chapter">⏮</button> <button aria-label="Play">▶</button> <button aria-label="Next chapter">⏭</button></div><div><button>1x</button> <button>Captions</button></div></div>
+      <div class="row"><div><button aria-label="Previous stop">⏮</button> <button aria-label="Play">▶</button> <button aria-label="Next stop">⏭</button></div><div><button>1x</button> <button>Captions</button> <button>Rest at campfire</button></div></div>
       <div class="stops"><span>Stops</span><i data-d></i><i data-now></i><i></i><i></i><span>· 3:12 / 9:40</span></div>
     </div>
   </div>
 </div>
-<p class="cap">The book is the voice player: transcript on the left page, a plain-words digest on the right, the ribbon is the progress bar, and turning a page is the next stop. Underneath it is an ordinary audio element with captions, so it works without the art.</p>
+<p class="cap">The book is the voice player, dressed as a quest book. The transcript plays as dialogue from a pixel Guide, typed in time with the audio (a reduced-motion reader gets each line at once). When a concept lights up in the note, a rune glows in the margin and joins the Codex. Each stop ends with a Trial. "Rest at campfire" is Save progress. Underneath is a plain audio element with captions, so every word is readable without the art, and XP and runes are cosmetic and self-reported.</p>
+<div class="tabs3" style="margin-top:1.2rem">
+  <div class="frame mini"><h3>Log · objectives</h3>
+    <div class="obj"><i data-d></i><div>Stop 1 · Why the meter ran out<small>done · +100 XP</small></div></div>
+    <div class="obj"><i></i><div>Stop 2 · Limits are a design input<small>in progress · trial open</small></div></div>
+    <div class="obj"><i></i><div>Stop 3 · What a model layer routes<small>locked until stop 2</small></div></div>
+    <div class="obj"><i></i><div>Stop 4 · Enough for this step<small>locked</small></div></div></div>
+  <div class="frame mini"><h3>Codex · runes</h3><div class="runes" id="runes"></div><small>3 of 8 learned in this quest. A rune is a concept id from the lesson file.</small></div>
+  <div class="frame mini"><h3>Pack · sources</h3>
+    <div class="pack"><canvas id="c-i1" width="9" height="9"></canvas><div>Claude Academy: models and context<small>external · opens in a new tab</small></div></div>
+    <div class="pack"><canvas id="c-i2" width="9" height="9"></canvas><div>Osmani, Loop Engineering<small>external · from the Reading shelf</small></div></div>
+    <div class="pack"><canvas id="c-i3" width="9" height="9"></canvas><div>Next: Plan on the Big Model<small>note · quest 2</small></div></div></div>
+</div>
+<div class="levelup"><canvas id="c-star" width="9" height="9"></canvas>LEVEL UP · Apprentice → Journeyman<canvas id="c-star2" width="9" height="9"></canvas></div>
+<p class="cap">Level-up banner: announced to screen readers through a polite live region, never by color alone, and skipped when the visitor prefers reduced motion.</p>
 </section>
 
 <section>
@@ -280,6 +348,20 @@ region watch (notes with no region yet, grouped by shared tags)
 
 no new region proposed. 2 more fitting notes and "Retrieval Marsh" is ready to propose.</pre></div>
 <p class="cap">The check proposes. A human approves the region name, landmark and position in the same change that publishes the note.</p>
+</section>
+<section>
+<h2>6 · Notes and lessons: many to many</h2>
+<div class="model">
+  <div class="frame mini"><h3>One note, several lessons</h3><div class="tag">build-the-floor, about 9,800 words</div>
+    <ul><li>Lesson A: Why the floor matters (headings 1 to 3)</li><li>Lesson B: Building it (headings 4 to 7)</li><li>Lesson C: Keeping it honest (headings 8 to 10)</li></ul><small>A note too long for one sitting is cut at its headings. Each lesson gets its own recording and stops.</small></div>
+  <div class="frame mini"><h3>One lesson, several notes</h3><div class="tag">Loop Forest · Lesson 2: the loop on three harnesses</div>
+    <ul><li>Segment 1: one-loop-three-harnesses, headings 2 and 3</li><li>Segment 2: loop-setup, headings 1 and 2</li><li>Segment 3: back to the first note, heading 5</li></ul><small>A lesson is an ordered list of segments. Each segment is a note plus a heading range, so paired notes teach as one.</small></div>
+  <div class="frame mini"><h3>Quest, lesson, segment, note</h3>
+    <pre style="padding:.5rem;font-size:.72rem">quest      a stop on the map
+ lesson    one recording, ordered
+  segment  note + heading range
+   stop    runes, trial, XP</pre><small>The sidecar file belongs to the lesson, not the note, so a note can appear in many lessons and stay untouched.</small></div>
+</div>
 </section>
 </main>
 
@@ -429,7 +511,7 @@ function hero(cv,seedStr){ const s=spr(); const R=rng(hash(seedStr));
 function badge(cv,hue){ const g=px(cv,16,16); g.clear(P.paper); g.tri(8,13,10,hue,1.4); g.rect(5,13,7,2,P.outline); g.dot(8,6,P.glow); }
 function layerTile(cv){ const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; for(let y=0;y<32;y++) for(let x=0;x<32;x++){ ctx.fillStyle=cols[(y*4+60)*WW+(x*4+70)]||P.water; ctx.fillRect(x,y,1,1);} }
 
-function drawAll(){
+let drawAll=function(){
   loadPalette(); buildWorld();
   const mapV={x:0,y:0,z:1}, mc=document.getElementById('c-map');
   render(mc,{...mapV,pins:[
@@ -446,7 +528,22 @@ function drawAll(){
   const b=document.getElementById('badges'); b.innerHTML='';
   [P.grass,P.forest,P.rock,P.roof,P.castle,P.snow].forEach((h,i)=>{ const c=document.createElement('canvas'); c.width=64;c.height=64; if(i>1) c.className='off'; b.appendChild(c); badge(c,h); });
 }
-document.getElementById('theme').onclick=()=>{ const r=document.documentElement; r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'; drawAll(); };
+const RUNES=['0110110|1001001|1000001|0100010|0010100|0001000|0001000','0001000|0011100|0101010|1001001|0001000|0001000|0001000','1111111|1000001|1011101|1010101|1011101|1000001|1111111','0100010|0100010|0111110|0000100|0001000|0010000|0100000','1001001|0101010|0011100|1111111|0011100|0101010|1001001','0011100|0100010|1000001|1000001|1000001|0100010|0011100','1110000|0010000|0011100|0000100|0000111|0000001|0000001','0001000|0001000|1111111|0001000|0001000|1111111|0001000'];
+function runeDraw(cv,i,col){ const g=px(cv,7,7); g.clear(P.paper); RUNES[i%8].split('|').forEach((row,y)=>[...row].forEach((c,x)=>{ if(c==='1') g.dot(x,y,col); })); }
+function guideDraw(cv){ const s=spr(); s.rect(-4,3,8,8,P.castle); s.rect(-4,3,2,8,P.castle2); s.rect(-3,-3,6,6,'#e8bf94'); s.rect(-3,2,6,3,'#d9d3c4'); s.rect(-3,-4,6,2,P.castle); s.rect(-2,-8,4,4,P.castle); s.set(0,-9,P.amber); s.set(-1,-6,P.glow);
+  s.set(-2,-1,'#2b1d12'); s.set(1,-1,'#2b1d12'); s.rect(-4,-2,1,4,P.outline); s.rect(3,-2,1,4,P.outline); s.rect(-4,-3,8,1,P.outline); s.rect(-3,11,2,1,P.outline); s.rect(1,11,2,1,P.outline); s.rect(6,-2,1,13,P.trunk); s.set(6,-3,P.glow); s.outline(P.outline);
+  const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.fillStyle=P.ground2; ctx.fillRect(0,0,cv.width,cv.height); const sc=cv.width/24; s.blit((x,y,c)=>{ ctx.fillStyle=c; ctx.fillRect(Math.round((x+11)*sc),Math.round((y+10)*sc),Math.ceil(sc),Math.ceil(sc)); },0,0); }
+function itemDraw(cv,kind){ const s=spr(); if(kind===0){ s.rect(-3,-3,7,6,P.wall); s.rect(-3,-3,7,1,P.roof); s.rect(-2,-1,5,1,P.rockd); s.rect(-2,1,3,1,P.rockd); } else if(kind===1){ s.rect(-3,-4,7,8,P.castle); s.rect(-3,-4,1,8,P.castle2); s.rect(-1,-2,4,1,P.wall); s.rect(-1,0,3,1,P.wall); } else { s.rect(-3,-3,7,6,P.wall); s.set(0,-4,P.pin); s.rect(-1,-2,3,1,P.rockd); }
+  s.outline(P.outline); const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.fillStyle=P.paper; ctx.fillRect(0,0,cv.width,cv.height); const sc=cv.width/9; s.blit((x,y,c)=>{ ctx.fillStyle=c; ctx.fillRect(Math.round((x+4)*sc),Math.round((y+4)*sc),Math.ceil(sc),Math.ceil(sc)); },0,0); }
+function starDraw(cv){ const g=px(cv,9,9); g.clear('rgba(0,0,0,0)'); const c=P.amber, o=P.outline; [[4,0],[4,1],[3,2],[4,2],[5,2],[0,3],[1,3],[2,3],[3,3],[4,3],[5,3],[6,3],[7,3],[8,3],[1,4],[2,4],[3,4],[4,4],[5,4],[6,4],[7,4],[2,5],[3,5],[4,5],[5,5],[6,5],[2,6],[3,6],[5,6],[6,6],[1,7],[2,7],[6,7],[7,7]].forEach(([x,y])=>g.dot(x,y,c)); g.dot(4,1,'#fff'); }
+function drawRpg(){ guideDraw(document.getElementById('c-guide')); runeDraw(document.getElementById('c-rune'),2,P.roof); runeDraw(document.getElementById('c-mrune'),2,P.roof);
+  const r=document.getElementById('runes'); r.innerHTML=''; for(let i=0;i<8;i++){ const c=document.createElement('canvas'); c.width=56;c.height=56; if(i>2) c.className='off'; r.appendChild(c); runeDraw(c,i,i>2?P.rockd:[P.roof,P.castle,P.forest][i]); }
+  itemDraw(document.getElementById('c-i1'),0); itemDraw(document.getElementById('c-i2'),1); itemDraw(document.getElementById('c-i3'),2); starDraw(document.getElementById('c-star')); starDraw(document.getElementById('c-star2')); }
+const _drawAll=drawAll; drawAll=function(){ _drawAll(); drawRpg(); };
+const root=document.documentElement;
+document.getElementById('flavor').onchange=e=>{ root.dataset.theme=e.target.value; drawAll(); };
+document.querySelectorAll('#scheme button').forEach(b=>b.onclick=()=>{ const v=b.dataset.s; if(v==='auto') root.removeAttribute('data-color-scheme'); else root.dataset.colorScheme=v; document.querySelectorAll('#scheme button').forEach(x=>x.setAttribute('aria-pressed',x===b)); drawAll(); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>drawAll());
 drawAll();
 </script>
 </body>
