@@ -3,7 +3,7 @@ id: quest-lessons
 status: todo
 track: learning
 depends: [quest-map]
-touches: [content/lessons, tools/quests.ts, content/notes]
+touches: [content/lessons, tools/quests.ts, content/notes, docs/mockups/quest-map]
 owner: human
 ---
 
@@ -107,6 +107,12 @@ They are different things, and the plan keeps them apart.
   certification lists skills. Collecting every rune in a region without doing the trials earns nothing
   but the Codex entries.
 - Cosmetic achievements, such as every Mines rune, may exist later. They are never badges.
+
+## Mockups this plan relies on
+
+The lesson book, the lesson card, runes versus badges, the notes and lessons model and the phone screens
+are in docs/mockups/quest-map/index.html, sections 4 and 6 to 9. The map the lessons hang from is
+fullscreen.html. The file list and what each backs is in the quest-map plan.
 
 ## What the mockups quote
 
