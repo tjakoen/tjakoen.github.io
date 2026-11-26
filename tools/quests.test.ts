@@ -49,6 +49,10 @@ describe("the real data", () => {
     const have = JSON.parse(readFileSync(INDEX_FILE, "utf8")) as { quests: unknown[] };
     expect(have.quests).toEqual(JSON.parse(JSON.stringify(quests)));
   });
+  test("the path is in difficulty order: the first three stages are intro only, the last two deep only", () => {
+    const { quests } = buildIndex(loadRegions(), loadNote);
+    for (const q of quests) expect(q.level, `${q.id} in stage ${q.region}`).toBe(q.region <= 4 ? "intro" : "deep");
+  });
   test("reading time and frontmatter parse", () => {
     expect(minutesOf("~12 min")).toBe(12);
     expect(readNote("x", '---\ntitle: "X"\nstatus: DRAFT\ntags: [a, b]\n---\nbody').tags).toEqual(["a", "b"]);
