@@ -59,6 +59,8 @@ note plus a heading range. So one long note can become several lessons, and a pa
 one lesson. The sidecar file (cues, runes, plain-words digest, trial) belongs to the lesson, never to the
 note, so notes stay untouched.
 
+Where a note is cut into stops, how big a stop is and which lessons exist are decided in [quest-lessons](quest-lessons.md).
+
 ## The map from what exists
 
 The notes already carry what a quest needs. Nothing new is typed per note.
