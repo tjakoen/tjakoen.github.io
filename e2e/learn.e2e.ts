@@ -123,3 +123,41 @@ test("the movers are built from the baked data, and match what the page draws", 
     }
   }
 });
+
+declare function selectRegion(n: number): void;
+declare function selectStop(id: string, i: number): void;
+
+// axe cannot judge text laid over the map, so this reads the labels the page actually painted: each one's resolved
+// text colour against the halo colours in its text-shadow, or against the panel colour for a boxed label, in every pair
+// and at the world, region and stop views, which show different sets of labels.
+for (const flavor of FLAVORS) {
+  for (const scheme of SCHEMES) {
+    test(`the painted map labels reach 4.5:1 against their halo (${flavor}, ${scheme})`, async ({ page }) => {
+      await page.goto("/learn");
+      const frame = await setShellTheme(page, flavor, scheme);
+      const views = [() => selectRegion(2), () => selectStop("one-loop-every-repo", 1), () => selectRegion(5)];
+      let checked = 0;
+      for (const view of views) {
+        await frame.evaluate(view as () => void);
+        await page.waitForTimeout(900);
+        const rows = await frame.evaluate(() => {
+          const lum = (c: number[]) => { const f = (x: number) => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(c[0]!) + 0.7152 * f(c[1]!) + 0.0722 * f(c[2]!); };
+          const nums = (v: string) => (v.match(/rgba?\([^)]*\)/g) ?? []).map((m) => m.match(/[\d.]+/g)!.map(Number));
+          const ratio = (a: number[], b: number[]) => { const [x, y] = [lum(a), lum(b)]; return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+          const out: { label: string; ratio: number }[] = [];
+          for (const el of document.querySelectorAll<HTMLElement>("#over .lbl")) {
+            if (el.classList.contains("off") || !el.textContent?.trim()) continue;
+            const cs = getComputedStyle(el), text = nums(cs.color)[0]!;
+            const backs = el.classList.contains("box") ? nums(cs.backgroundColor) : nums(cs.textShadow).filter((c) => (c[3] ?? 1) > 0.5);
+            if (!backs.length) { out.push({ label: el.textContent!.trim().slice(0, 30) + " (no halo)", ratio: 0 }); continue; }
+            for (const b of backs) out.push({ label: el.textContent!.trim().slice(0, 30), ratio: ratio(text, b) });
+          }
+          return out;
+        });
+        for (const r of rows) expect(r.ratio, r.label).toBeGreaterThanOrEqual(4.5);
+        checked += rows.length;
+      }
+      expect(checked, "no labels were painted, so nothing was checked").toBeGreaterThan(5);
+    });
+  }
+}
