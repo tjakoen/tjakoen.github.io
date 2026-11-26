@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("js")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learn AI with me: the map</title>
+<meta name="robots" content="noindex, nofollow">
+<script>
+/* Follow the site shell. This page is the inside of /learn, so a direct visit goes there instead. */
+(function(){
+  var P=null; try{ if(window.parent!==window) P=window.parent.document.documentElement; }catch(e){}
+  if(!P){ location.replace("/learn"+location.hash); return; }
+  var TOKENS=["--color-bg","--color-fg","--color-surface","--color-line","--color-muted","--color-accent","--color-accent-contrast","--color-accent-soft"], R=document.documentElement;
+  function pull(){
+    ["data-theme","data-color-scheme"].forEach(function(a){ var v=P.getAttribute(a); if(v===null) R.removeAttribute(a); else R.setAttribute(a,v); });
+    var cs=window.parent.getComputedStyle(P); TOKENS.forEach(function(t){ R.style.setProperty(t,cs.getPropertyValue(t)); });
+  }
+  pull();
+  new window.parent.MutationObserver(function(){ pull(); if(window.qmSync) window.qmSync(); }).observe(P,{attributes:true,attributeFilter:["data-theme","data-color-scheme"]});
+})();
+</script>
+<style>
+/* The flavor and the light or dark scheme come from the site shell. The script below copies the shell's data-theme, data-color-scheme and
+   token values into this document and follows every change, so the map keeps no token table of its own. The map's names for them: */
+:root { --paper:var(--color-bg); --panel:var(--color-surface); --paper-2:color-mix(in srgb,var(--color-bg) 50%,var(--color-surface)); --ink:var(--color-fg); --ink-muted:var(--color-muted); --line-soft:var(--color-line); }
+
+/* UI chrome reads GRAIN tokens only, so it follows every flavor in both schemes. */
+:root { --q-panel:var(--panel); --q-paper:var(--paper); --q-ink:var(--ink); --q-muted:var(--ink-muted); --q-line:color-mix(in srgb,var(--ink) 28%,transparent);
+  --q-ground:var(--paper-2); --q-ground2:color-mix(in srgb,var(--ink) 9%,var(--paper-2)); --q-halo:var(--paper); --q-label:var(--ink);
+  --q-accent:var(--color-accent); --q-accent-ink:var(--color-accent-contrast); }
+/* Art palette: quest-specific, decorative only, keyed on the colour scheme (never on the flavor). */
+:root { --q-water:#8cc4e0; --q-water2:#a6d6ea; --q-wave:#cfeaf5; --q-foam:#f3fbff; --q-sand:#f0dba5; --q-sand2:#e6cb8a;
+  --q-grass:#9ccc5f; --q-grass2:#8bbb4f; --q-forest:#4e9a52; --q-forest2:#3f8646; --q-rock:#a39a8c; --q-rock2:#948a7c; --q-rockd:#7e7566;
+  --q-field:#e8c65a; --q-field2:#d6b04a; --q-meadow:#b08fd0; --q-meadow2:#a07fc4; --q-snow:#f4f8ff; --q-snow2:#dde6f4;
+  --q-road:#fff6dc; --q-road-edge:#b99f6a; --q-main:#f5b83d; --q-main-edge:#a66a14; --q-fog:#d8cdb4; --q-fog2:#c9bd9f;
+  --q-outline:#3b2d1c; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#3b82f6; --q-trunk:#7a4a26;
+  --q-wall:#e9d9b8; --q-wall2:#cdb88f; --q-castle:#a483cf; --q-castle2:#8566b3; --q-roof:#d65a3e; --q-roof2:#b0432b; --q-flag:#e0463a;
+  --q-stone:#8a8f9c; --q-amber:#f5b83d; --q-glow:#f6c453; }
+@media (prefers-color-scheme: dark) { :root:not([data-color-scheme="light"]) { --q-water:#173347; --q-water2:#1f4560; --q-wave:#2d5f82; --q-foam:#4a86a8; --q-sand:#8c7a4c; --q-sand2:#7c6b40;
+  --q-grass:#4f7a2e; --q-grass2:#456d28; --q-forest:#2b5f38; --q-forest2:#234f2f; --q-rock:#5b5f6c; --q-rock2:#505460; --q-rockd:#444855;
+  --q-field:#a98a2e; --q-field2:#947628; --q-meadow:#6c4f9a; --q-meadow2:#5f448a; --q-snow:#cfd8ea; --q-snow2:#aeb9d0;
+  --q-road:#c9b98c; --q-road-edge:#4a3e26; --q-main:#f0b43c; --q-main-edge:#6e4410; --q-fog:#3a3426; --q-fog2:#2f2a1f;
+  --q-outline:#0f0c07; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#5b9bff; --q-trunk:#6a3f20;
+  --q-wall:#9a8a6a; --q-wall2:#7a6c52; --q-castle:#8f74c4; --q-castle2:#6f55a3; --q-roof:#c95a40; --q-roof2:#a0442e; --q-flag:#e0463a;
+  --q-stone:#6a7080; --q-amber:#f0b43c; --q-glow:#f0b43c; } }
+:root[data-color-scheme="dark"] { --q-water:#173347; --q-water2:#1f4560; --q-wave:#2d5f82; --q-foam:#4a86a8; --q-sand:#8c7a4c; --q-sand2:#7c6b40;
+  --q-grass:#4f7a2e; --q-grass2:#456d28; --q-forest:#2b5f38; --q-forest2:#234f2f; --q-rock:#5b5f6c; --q-rock2:#505460; --q-rockd:#444855;
+  --q-field:#a98a2e; --q-field2:#947628; --q-meadow:#6c4f9a; --q-meadow2:#5f448a; --q-snow:#cfd8ea; --q-snow2:#aeb9d0;
+  --q-road:#c9b98c; --q-road-edge:#4a3e26; --q-main:#f0b43c; --q-main-edge:#6e4410; --q-fog:#3a3426; --q-fog2:#2f2a1f;
+  --q-outline:#0f0c07; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#5b9bff; --q-trunk:#6a3f20;
+  --q-wall:#9a8a6a; --q-wall2:#7a6c52; --q-castle:#8f74c4; --q-castle2:#6f55a3; --q-roof:#c95a40; --q-roof2:#a0442e; --q-flag:#e0463a;
+  --q-stone:#6a7080; --q-amber:#f0b43c; --q-glow:#f0b43c; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--q-paper); color:var(--q-ink); font:15px/1.5 ui-monospace,"SF Mono",Menlo,Consolas,monospace; }
+header.top { display:flex; gap:1rem; align-items:center; justify-content:space-between; padding:.8rem 1.2rem; border-bottom:2px solid var(--q-line); position:sticky; top:0; background:var(--q-paper); z-index:20; }
+h1 { font-size:1rem; margin:0; letter-spacing:.04em; }
+button { font:inherit; color:var(--q-ink); background:var(--q-panel); border:2px solid var(--q-ink); padding:.25rem .7rem; cursor:pointer; box-shadow:3px 3px 0 var(--q-ink); }
+button:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--q-ink); }
+main { max-width:1140px; margin:0 auto; padding:1.2rem; display:grid; grid-template-columns:minmax(0,1fr); gap:2.4rem; }
+main > section { min-width:0; }
+header.top { flex-wrap:wrap; }
+h2 { font-size:.85rem; text-transform:uppercase; letter-spacing:.12em; color:var(--q-muted); margin:0 0 .5rem; }
+.cap { color:var(--q-muted); font-size:.82rem; margin:.5rem 0 0; }
+.frame { border:3px solid var(--q-ink); box-shadow:5px 5px 0 var(--q-ink); background:var(--q-panel); }
+canvas { display:block; image-rendering:pixelated; }
+.chip { background:var(--q-panel); border:2px solid var(--q-ink); padding:.05rem .5rem; font-size:.74rem; display:inline-block; }
+
+/* 1. Google-Maps layout: panel left, map right, controls floating on the map */
+.gm { display:grid; grid-template-columns:340px 1fr; overflow:hidden; }
+.gm .place { border-right:3px solid var(--q-ink); overflow:auto; background:var(--q-panel); }
+.gm { align-items:stretch; }
+.gm .place { position:relative; overflow:hidden; }
+.place .scroll { position:absolute; inset:0; overflow:auto; }
+.gm .place .hero canvas { width:100%; height:auto; border-bottom:3px solid var(--q-ink); }
+.gm .place { max-height:none; }
+.place .body { padding:.7rem .9rem .9rem; gap:.55rem; }
+.place h3 { font-size:1.15rem; }
+.place .body { padding:.9rem 1rem 1.2rem; display:grid; gap:.75rem; }
+.place h3 { margin:0; font-size:1.3rem; line-height:1.15; }
+.place .sub { color:var(--q-muted); font-size:.8rem; }
+.stars { color:var(--q-accent); letter-spacing:.1em; }
+.actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+.actions button { padding:.2rem .6rem; font-size:.8rem; }
+.actions .primary, .primary { background:var(--q-accent); color:var(--q-accent-ink); }
+.tabs { display:flex; border-bottom:2px solid var(--q-line); }
+.tabs span { padding:.3rem .8rem; font-size:.8rem; color:var(--q-muted); }
+.tabs span[data-on] { color:var(--q-ink); border-bottom:4px solid var(--q-accent); margin-bottom:-2px; font-weight:700; }
+.steps { list-style:none; margin:0; padding:0; display:grid; gap:0; }
+.steps li { display:grid; grid-template-columns:30px 1fr; gap:.55rem; padding:.45rem 0; position:relative; }
+.steps li::before { content:""; position:absolute; left:13px; top:2rem; bottom:-.5rem; border-left:3px dotted var(--q-main-edge); }
+.steps li:last-child::before { display:none; }
+.steps .n { width:26px; height:26px; background:var(--q-pin); color:#fff; display:grid; place-items:center; font-weight:700; border:2px solid var(--q-outline); clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px)); }
+.steps li[data-done] .n { background:#4e9a52; } .steps li[data-sel] strong { color:var(--q-roof); }
+.steps small { display:block; color:var(--q-muted); font-size:.74rem; }
+.src { font-size:.82rem; display:grid; gap:.25rem; }
+.src div::before { content:"◇ "; color:var(--q-you); }
+
+.mapside { position:relative; }
+.mapside canvas { width:100%; height:auto; }
+.search { position:absolute; left:12px; top:12px; width:min(330px,70%); background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); display:flex; align-items:center; gap:.6rem; padding:.35rem .7rem; font-size:.85rem; color:var(--q-muted); }
+.chips { position:absolute; left:12px; top:64px; display:flex; gap:.4rem; flex-wrap:wrap; max-width:75%; }
+.chips .chip { box-shadow:2px 2px 0 var(--q-ink); color:var(--q-ink); }
+.chips .chip[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.ctl { position:absolute; right:12px; bottom:14px; display:grid; gap:8px; justify-items:end; }
+.ctl .stack { display:grid; border:3px solid var(--q-ink); background:var(--q-panel); box-shadow:3px 3px 0 var(--q-ink); }
+.ctl .stack button { border:0; box-shadow:none; width:36px; height:34px; padding:0; font-weight:700; font-size:1.1rem; }
+.ctl .stack button + button { border-top:2px solid var(--q-line); }
+.ctl .single { width:42px; height:40px; padding:0; }
+.layers { position:absolute; left:12px; bottom:14px; display:flex; gap:.6rem; align-items:flex-end; }
+.layers .tile { width:64px; height:64px; border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); background:var(--q-panel); position:relative; }
+.layers .tile canvas { width:100%; height:100%; }
+.layers .tile span { position:absolute; left:0; right:0; bottom:0; font-size:.6rem; text-align:center; background:var(--q-panel); border-top:2px solid var(--q-ink); }
+.scale { font-size:.68rem; color:var(--q-label); text-shadow:-1px -1px 0 var(--q-halo),1px -1px 0 var(--q-halo),-1px 1px 0 var(--q-halo),1px 1px 0 var(--q-halo); }
+.scale i { display:block; width:56px; height:6px; border:2px solid var(--q-outline); border-top:0; }
+.attrib { position:absolute; right:6px; top:2px; font-size:.6rem; color:var(--q-label); background:color-mix(in srgb,var(--q-halo) 80%,transparent); padding:0 .3rem; }
+
+.lbl { position:absolute; transform:translate(-50%,0); font-weight:700; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--q-label); white-space:nowrap; text-align:center; pointer-events:none;
+  text-shadow:-2px 0 var(--q-halo),2px 0 var(--q-halo),0 -2px var(--q-halo),0 2px var(--q-halo),-1px -1px var(--q-halo),1px 1px var(--q-halo),-1px 1px var(--q-halo),1px -1px var(--q-halo); }
+.lbl small { display:block; font-size:.6rem; letter-spacing:.04em; text-transform:none; font-weight:400; }
+.lbl.box { background:var(--q-panel); border:2px dashed var(--q-muted); padding:0 .4rem; text-shadow:none; }
+
+/* 2. zoomed, with the RPG quest modal */
+.zoomframe { position:relative; overflow:hidden; }
+.zoomframe canvas { width:100%; height:auto; }
+.dim { position:absolute; inset:0; background:color-mix(in srgb,var(--q-outline) 45%,transparent); }
+.modalwrap { position:absolute; right:3%; top:5%; width:min(470px,48%); filter:drop-shadow(5px 5px 0 var(--q-outline)); }
+.modal { height:auto; overflow:hidden; background:var(--q-panel); border:4px solid var(--q-ink); padding:.9rem 1.1rem; display:grid; gap:.55rem; align-content:start;
+  clip-path:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px)); }
+.ribbon { display:inline-block; background:var(--q-roof2); color:#fff; padding:.05rem .6rem; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; justify-self:start; }
+.modal h3 { margin:0; font-size:1.1rem; }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:.45rem; }
+.stat { border:2px solid var(--q-ink); padding:.3rem .5rem; background:var(--q-paper); }
+.stat small { display:block; color:var(--q-muted); font-size:.62rem; text-transform:uppercase; letter-spacing:.08em; }
+.stat strong { font-size:.98rem; }
+.xp { height:14px; border:2px solid var(--q-ink); background:var(--q-paper); }
+.xp i { display:block; height:100%; width:42%; background:repeating-linear-gradient(90deg,var(--q-accent) 0 6px,color-mix(in srgb,var(--q-accent) 65%,var(--q-panel)) 6px 8px); }
+.modal ul { margin:0; padding:0; list-style:none; display:grid; gap:.2rem; font-size:.82rem; }
+.modal li::before { content:"◆ "; color:var(--q-accent); }
+.modal li[data-ext]::before { content:"◇ "; color:var(--q-you); }
+.row { display:flex; gap:.6rem; flex-wrap:wrap; }
+
+/* 3. guild card */
+.cards { display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; }
+.card { padding:1rem 1.1rem; display:grid; gap:.7rem; background:linear-gradient(180deg,var(--q-panel),var(--q-ground)); }
+.card .head { display:grid; grid-template-columns:96px 1fr; gap:.9rem; }
+.card .head canvas { width:96px; height:96px; border:3px solid var(--q-ink); background:var(--q-ground2); }
+.card h3 { margin:0; font-size:1.1rem; }
+.badges { display:grid; grid-template-columns:repeat(6,1fr); gap:.4rem; }
+.badges canvas { width:100%; aspect-ratio:1; height:auto; border:2px solid var(--q-ink); background:var(--q-paper); }
+.badges .off { opacity:.35; filter:grayscale(1); }
+.field { border:2px dashed var(--q-line); padding:.35rem .55rem; font-size:.8rem; background:var(--q-paper); }
+code { background:var(--q-paper); border:1px solid var(--q-line); padding:0 .3rem; }
+
+/* 4. lesson mode: the book is an in-world object, its pages read GRAIN tokens */
+.lesson { display:grid; grid-template-columns:1.25fr 1fr; min-height:640px; }
+.note { padding:1.2rem 1.6rem 1.2rem 3.2rem; border-right:3px solid var(--q-ink); font:15px/1.7 Georgia,serif; position:relative; }
+.note .crumb { font:.75rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; margin-left:-1.6rem; }
+.note h3 { font-size:1.5rem; line-height:1.2; margin:.4rem 0 1rem; }
+.note p { position:relative; }
+.hl { background:linear-gradient(transparent 55%, color-mix(in srgb,var(--q-accent) 32%,transparent) 55%); outline:2px solid var(--q-accent); outline-offset:2px; }
+.margin-rune { position:absolute; left:-2.1rem; top:.1rem; width:28px; height:28px; border:2px solid var(--q-ink); background:var(--q-panel); box-shadow:0 0 0 3px color-mix(in srgb,var(--q-accent) 45%,transparent); }
+.toast { position:absolute; right:1rem; bottom:1rem; background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); padding:.25rem .7rem; font:700 .74rem ui-monospace,monospace; }
+.side { padding:.9rem; background:var(--q-ground); display:grid; gap:.7rem; align-content:start; }
+.hud { display:grid; gap:.25rem; }
+.hud .top { display:flex; justify-content:space-between; font-size:.78rem; }
+.side .tb { display:flex; gap:.3rem; flex-wrap:wrap; }
+.side .tb span { border:2px solid var(--q-ink); padding:.05rem .55rem; font-size:.72rem; background:var(--q-panel); }
+.side .tb span[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.tome { display:grid; grid-template-columns:1fr 1fr; position:relative; border:3px solid var(--q-outline); background:#6b3f26; padding:8px; box-shadow:4px 4px 0 var(--q-ink); }
+.tome::before { content:""; position:absolute; inset:0 auto 0 50%; width:6px; margin-left:-3px; background:repeating-linear-gradient(180deg,#3d2214 0 4px,#6b3f26 4px 8px); z-index:2; }
+.tome::after { content:""; position:absolute; inset:3px; border:2px dashed #a8794e; pointer-events:none; }
+.leaf { background:var(--q-paper); padding:.65rem .7rem; font:.76rem/1.5 Georgia,serif; min-height:360px; display:grid; gap:.5rem; align-content:start; }
+.leaf h4 { margin:0; font:700 .62rem ui-monospace,monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--q-roof); }
+.dlg { display:grid; grid-template-columns:56px 1fr; gap:.5rem; border:3px solid var(--q-ink); background:var(--q-panel); padding:.4rem; position:relative; }
+.dlg canvas { width:56px; height:56px; border:2px solid var(--q-ink); background:var(--q-ground2); }
+.dlg .plate { font:700 .62rem ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--q-muted); }
+.dlg .say { font:.8rem/1.45 Georgia,serif; color:var(--q-ink); }
+.dlg .caret { animation:blink 1s steps(2) infinite; } @keyframes blink { 50% { opacity:0 } }
+.dlg .adv { position:absolute; right:.35rem; bottom:.1rem; font-size:.7rem; color:var(--q-roof); }
+.hist p { margin:0 0 .3rem; color:var(--q-muted); }
+.hist p.fade { opacity:.6; }
+.rune-card { display:grid; grid-template-columns:44px 1fr; gap:.5rem; border:2px solid var(--q-ink); padding:.35rem; background:color-mix(in srgb,var(--q-accent) 14%,var(--q-paper)); }
+.rune-card canvas { width:44px; height:44px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.rune-card strong { font:700 .72rem ui-monospace,monospace; } .rune-card small { color:var(--q-muted); font-size:.7rem; display:block; }
+.trial { border:2px dashed var(--q-muted); padding:.4rem .5rem; display:grid; gap:.25rem; }
+.trial label { font:.72rem ui-monospace,monospace; display:flex; gap:.4rem; align-items:center; }
+.leaf ul { margin:0; padding-left:1rem; }
+.controls { display:grid; gap:.45rem; }
+.ribbonbar { height:12px; border:2px solid var(--q-ink); background:var(--q-paper); position:relative; }
+.ribbonbar i { position:absolute; inset:0 auto 0 0; width:38%; background:var(--q-roof); }
+.ribbonbar u { position:absolute; left:38%; top:-5px; width:10px; height:20px; background:var(--q-roof); border:2px solid var(--q-ink); clip-path:polygon(0 0,100% 0,100% 100%,50% 70%,0 100%); }
+.controls .row { justify-content:space-between; align-items:center; }
+.controls .row button { padding:.1rem .5rem; }
+.stops { display:flex; gap:.35rem; align-items:center; font-size:.72rem; color:var(--q-muted); }
+.stops i { width:14px; height:14px; border:2px solid var(--q-ink); background:var(--q-paper); }
+.stops i[data-d] { background:#4e9a52; } .stops i[data-now] { background:var(--q-accent); }
+.tabs3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.mini { padding:.8rem .9rem; display:grid; gap:.5rem; align-content:start; font-size:.8rem; }
+.mini h3 { margin:0; font-size:.78rem; text-transform:uppercase; letter-spacing:.1em; }
+.obj { display:grid; grid-template-columns:20px 1fr; gap:.45rem; align-items:start; }
+.obj i { width:16px; height:16px; border:2px solid var(--q-ink); background:var(--q-paper); margin-top:2px; }
+.obj i[data-d] { background:#4e9a52; box-shadow:inset 0 0 0 3px var(--q-paper); }
+.obj small, .mini small { color:var(--q-muted); display:block; font-size:.7rem; }
+.runes { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+.runes .rn { display:grid; grid-template-columns:40px 1fr; gap:.4rem; align-items:center; font-size:.72rem; }
+.runes canvas { width:40px; height:40px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.runes .off { opacity:.4; }
+.pack { display:grid; grid-template-columns:36px 1fr; gap:.5rem; align-items:center; }
+.pack canvas { width:36px; height:36px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.levelup { margin-top:1.2rem; display:flex; gap:1rem; align-items:center; justify-content:center; padding:.8rem; background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:4px 4px 0 var(--q-ink); font-weight:700; letter-spacing:.08em; }
+.levelup canvas { width:40px; height:40px; background:transparent; }
+/* 6. lesson model */
+.model { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.model .mini li { margin:.15rem 0; } .model ul { margin:0; padding-left:1.1rem; } .tag { color:var(--q-muted); font-size:.72rem; }
+.ctlbar { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+select { font:inherit; color:var(--q-ink); background:var(--q-panel); border:2px solid var(--q-ink); padding:.2rem .4rem; }
+button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
+pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height:1.55; background:var(--q-paper); }
+@media (max-width:860px) { .mapside .chips, .mapside .scale, .mapside .lbl small { display:none; } .mapside .search { width:calc(100% - 24px); } .place .scroll { position:static; } .gm .place { position:static; } .gm,.lesson,.cards,.tabs3,.model { grid-template-columns:1fr; } .gm .place { max-height:none; border-right:0; } .modalwrap { position:relative; inset:auto; width:auto; margin:1rem; } .dim{display:none} }
+
+/* 7. lesson card on a note */
+.notepage { padding:1.1rem 1.4rem 1.4rem; display:grid; gap:.8rem; }
+.notepage .crumb { font:.72rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
+.notepage h3 { font:700 1.6rem/1.2 Georgia,serif; margin:0; }
+.notepage .by { font:.82rem ui-monospace,monospace; color:var(--q-muted); margin:0; }
+.lessoncard { display:grid; grid-template-columns:200px 1fr; background:var(--q-panel); }
+.lessoncard > canvas { width:200px; height:100%; min-height:190px; object-fit:cover; border-right:3px solid var(--q-ink); }
+.lc { padding:.8rem 1rem; display:grid; gap:.5rem; align-content:start; }
+.lc strong { font-size:1.05rem; } .lc p { margin:0; font:.88rem/1.55 Georgia,serif; }
+.lc .meta, .lc .chips2 { display:flex; gap:.4rem; flex-wrap:wrap; align-items:center; font-size:.75rem; }
+.rune-chip { display:inline-flex; gap:.3rem; align-items:center; border:2px solid var(--q-ink); padding:0 .4rem 0 0; background:var(--q-paper); font-size:.72rem; }
+.rune-chip canvas { width:22px; height:22px; border-right:2px solid var(--q-ink); }
+.lc small { color:var(--q-muted); font-size:.74rem; }
+.prog { height:10px; border:2px solid var(--q-ink); background:var(--q-paper); } .prog i { display:block; height:100%; width:50%; background:var(--q-accent); }
+.h2line { display:flex; gap:.6rem; align-items:baseline; font:700 1.15rem Georgia,serif; margin:.4rem 0 0; }
+.pip { font:700 .64rem ui-monospace,monospace; letter-spacing:.06em; background:var(--q-accent); color:var(--q-accent-ink); border:2px solid var(--q-ink); padding:0 .4rem; text-transform:uppercase; white-space:nowrap; }
+.pip[data-done] { background:#4e9a52; color:#fff; } .pip[data-off] { background:var(--q-paper); color:var(--q-muted); }
+.variants { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-top:1.2rem; }
+.variants .mini { gap:.4rem; } .variants .mini p { margin:0; font-size:.8rem; }
+/* 8. runes and badges */
+.ladder { display:grid; gap:.5rem; padding:1rem; }
+.rung { display:grid; grid-template-columns:44px 1fr; gap:.7rem; align-items:center; border:2px solid var(--q-ink); padding:.4rem .6rem; background:var(--q-paper); }
+.rung canvas { width:44px; height:44px; border:2px solid var(--q-ink); background:var(--q-panel); }
+.rung small { display:block; color:var(--q-muted); font-size:.72rem; }
+.arrow { text-align:center; color:var(--q-muted); line-height:1; }
+.badgepage { padding:1rem 1.2rem; display:grid; grid-template-columns:120px 1fr; gap:1rem; align-items:start; }
+.badgepage > canvas { width:120px; height:120px; border:3px solid var(--q-ink); background:var(--q-paper); }
+.badgepage h3 { margin:0 0 .2rem; font-size:1.1rem; } .badgepage p { margin:.2rem 0; font-size:.82rem; }
+.skills { display:flex; gap:.35rem; flex-wrap:wrap; margin:.3rem 0; }
+.two { display:grid; grid-template-columns:1fr 1.15fr; gap:1.4rem; }
+@media (max-width:860px) { .lessoncard,.badgepage,.two,.variants { grid-template-columns:1fr; } .lessoncard > canvas { width:100%; height:160px; border-right:0; border-bottom:3px solid var(--q-ink); } }
+
+/* 9. mobile: phone frames */
+.phones { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:2rem 1.5rem; justify-items:center; }
+.phones figure { margin:0; display:grid; gap:.6rem; justify-items:center; }
+.phones figcaption { font-size:.78rem; color:var(--q-muted); max-width:330px; text-align:center; }
+.phone { width:330px; height:660px; border:4px solid var(--q-ink); box-shadow:5px 5px 0 var(--q-ink); background:var(--q-panel); position:relative; display:flex; flex-direction:column; overflow:hidden; }
+.pstatus { height:22px; flex:none; display:flex; justify-content:space-between; padding:2px 10px; font-size:.64rem; background:var(--q-paper); border-bottom:2px solid var(--q-line); }
+.pbody { position:relative; flex:1; overflow:hidden; background:var(--q-paper); }
+.pmap { position:relative; } .pmap canvas { width:100%; height:auto; }
+.psearch { position:absolute; left:8px; right:8px; top:8px; background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:2px 2px 0 var(--q-ink); padding:.25rem .55rem; font-size:.74rem; color:var(--q-muted); display:flex; gap:.5rem; }
+.pchips { position:absolute; left:8px; right:8px; top:50px; display:flex; gap:.3rem; overflow:hidden; }
+.pchips .chip { box-shadow:2px 2px 0 var(--q-ink); font-size:.66rem; white-space:nowrap; }
+.pchips .chip[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.fab { position:absolute; right:8px; width:38px; height:38px; padding:0; }
+.sheet { position:absolute; left:0; right:0; bottom:0; background:var(--q-panel); border-top:3px solid var(--q-ink); padding:.35rem .8rem .8rem; display:grid; gap:.45rem; align-content:start; font-size:.78rem; }
+.sheet .grab { width:44px; height:6px; background:var(--q-ink); justify-self:center; }
+.sheet h3 { margin:0; font-size:1.05rem; }
+.sheet .actions button { padding:.25rem .55rem; font-size:.74rem; }
+.sheet .steps li { padding:.3rem 0; }
+.sheet .stats { gap:.3rem; } .sheet .stat { padding:.2rem .35rem; } .sheet .stat strong { font-size:.8rem; } .sheet .stat small { font-size:.56rem; }
+.sheet ul { margin:0; padding:0; list-style:none; display:grid; gap:.15rem; } .sheet li::before { content:"◆ "; color:var(--q-accent); }
+.pnote { padding:.7rem .9rem; display:grid; gap:.55rem; font:.86rem/1.6 Georgia,serif; }
+.pnote .bar { font:.7rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
+.pnote h3 { font:700 1.3rem/1.2 Georgia,serif; margin:0; }
+.plc { background:var(--q-panel); }
+.plc > canvas { width:100%; height:auto; border-bottom:3px solid var(--q-ink); }
+.plc .lc { padding:.6rem .7rem; } .plc .lc p { font-size:.78rem; line-height:1.45; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+.plc .lc button { width:100%; }
+.dock { position:absolute; left:0; right:0; bottom:0; background:var(--q-panel); border-top:3px solid var(--q-ink); padding:.5rem .7rem .7rem; display:grid; gap:.4rem; }
+.dock .line { display:grid; grid-template-columns:44px 1fr 38px; gap:.5rem; align-items:center; font-size:.75rem; }
+.dock canvas { width:44px; height:44px; border:2px solid var(--q-ink); background:var(--q-ground2); }
+.dock .open { justify-self:center; font-size:.68rem; color:var(--q-muted); }
+.pdim { position:absolute; inset:0; background:color-mix(in srgb,var(--q-outline) 40%,transparent); }
+.dots { display:flex; gap:.4rem; justify-content:center; align-items:center; font-size:.7rem; color:var(--q-muted); }
+.dots i { width:10px; height:10px; border:2px solid var(--q-ink); background:var(--q-paper); } .dots i[data-on] { background:var(--q-accent); }
+.phone .tb { display:flex; gap:.25rem; flex-wrap:wrap; } .phone .tb span { border:2px solid var(--q-ink); padding:0 .4rem; font-size:.66rem; background:var(--q-panel); } .phone .tb span[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.phone .dlg { grid-template-columns:48px 1fr; } .phone .dlg canvas { width:48px; height:48px; }
+
+
+html,body { height:100%; overflow:hidden; }
+body { margin:0; background:var(--q-water); }
+#stage { position:fixed; inset:0; cursor:grab; touch-action:none; background:var(--q-water); }
+#stage.drag { cursor:grabbing; }
+#map, #fx { position:absolute; left:0; top:0; image-rendering:pixelated; } #fx { pointer-events:none; }
+#over { position:absolute; inset:0; pointer-events:none; overflow:hidden; contain:layout style; }
+
+.hit { position:absolute; width:var(--ps,30px); height:var(--ps,30px); margin:0; padding:0; box-sizing:border-box; border:2px solid var(--q-outline); border-radius:50%; background:#c8382a; color:#fff; font:700 calc(var(--ps,30px) * .43)/1 ui-monospace,"SF Mono",Menlo,Consolas,monospace; display:grid; place-items:center; box-shadow:2px 2px 0 var(--q-outline); cursor:pointer; pointer-events:auto; transform:translate(-50%,calc(-100% - 7px)); transition:transform .12s ease, opacity .3s ease; image-rendering:pixelated; }
+.hit::before { content:""; position:absolute; inset:calc((44px - var(--ps,30px)) / -2); } /* a 44px target around a 30px marker */
+.hit::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--q-outline); border-bottom:0; }
+.hit:hover { transform:translate(-50%,calc(-100% - 7px)) scale(1.12); }
+.hit[data-state="done"] { background:#2f7d33; }
+.hit[data-state="locked"] { background:#6b6b6b; }
+.hit[data-off] { opacity:.28; }
+.lbl.off { opacity:.3; }
+.hit[data-state="ext"] { background:#2f7d5b; }
+.hit[data-state="stop"] { z-index:5; background:#f5b83d; color:#3b2d1c; width:calc(var(--ps,30px) * .87); height:calc(var(--ps,30px) * .87); }
+.hit[data-selected] { transform:translate(-50%,calc(-100% - 7px)) scale(1.25); z-index:2; box-shadow:0 0 0 3px #f5b83d, 2px 2px 0 3px var(--q-outline); }
+.hit.mark { pointer-events:none; }
+.hit[data-selected]:not([data-state="stop"]) { opacity:0; pointer-events:none; transform:translate(-50%,calc(-100% - 7px)) scale(.55); transition:opacity .28s ease, transform .28s ease; }
+.you { position:absolute; transform:translate(-50%,-100%); pointer-events:none; display:flex; flex-direction:column; align-items:center; z-index:3; }
+.you canvas { width:32px; height:40px; image-rendering:pixelated; animation:youbob 1.4s steps(2) infinite; }
+.you span { order:-1; margin-bottom:3px; font:700 10px/1.3 ui-monospace,"SF Mono",Menlo,Consolas,monospace; background:var(--q-accent); color:var(--q-accent-ink); border:2px solid var(--q-outline); padding:0 5px; box-shadow:2px 2px 0 var(--q-outline); }
+@keyframes youbob { 50% { transform:translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .you canvas { animation:none; } }
+.hit[data-far] { opacity:.5; }
+.hit .pn { pointer-events:none; }
+.hit .tagc { display:none; position:absolute; left:calc(100% + 8px); top:50%; transform:translateY(-50%); width:max-content; max-width:190px; padding:3px 8px; background:var(--q-panel); color:var(--q-ink); border:2px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font:700 11px/1.3 ui-monospace,"SF Mono",Menlo,Consolas,monospace; text-align:left; pointer-events:none; z-index:5; }
+.hit .tagc small { display:block; font:400 11px/1.35 Georgia,serif; color:var(--q-muted); }
+.hit:hover .tagc, .hit:focus-visible .tagc { display:block; }
+.hit[data-quiet] .tagc { display:none !important; } /* a click opens the panel, so the card steps out of the way until the pointer leaves */
+.hit[data-flip] .tagc { left:auto; right:calc(100% + 8px); }
+.hit:hover, .hit:focus-visible { z-index:7; }
+.hit:focus-visible { outline:3px solid var(--q-accent); outline-offset:3px; }
+#over .lbl { transform:translate(-50%,0); }
+#over .lbl.region { font-size:.82rem; letter-spacing:.2em; }
+#over .lbl.quest { font-size:.66rem; letter-spacing:.04em; max-width:130px; white-space:normal; line-height:1.15; }
+#over .lbl.quest[data-done] { opacity:.8; }
+#over .lbl.faint { opacity:.6; }
+.col { position:fixed; left:12px; top:12px; bottom:100px; width:360px; display:grid; grid-template-rows:auto minmax(0,1fr); gap:10px; pointer-events:none; z-index:5; }
+.col > * { pointer-events:auto; }
+.searchbar { background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); display:flex; gap:.5rem; align-items:center; padding:.3rem .5rem; }
+.searchbar input { flex:1; border:0; background:transparent; font:inherit; color:var(--q-ink); outline:none; min-width:0; }
+.searchbar button { box-shadow:none; border:2px solid var(--q-ink); padding:0 .4rem; }
+.panelcard { background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); overflow:auto; align-self:start; max-height:100%; }
+.panelcard[hidden] { display:none; }
+.pnav { position:sticky; top:0; z-index:3; display:flex; align-items:center; gap:.6rem; padding:.45rem .6rem; background:var(--q-panel); border-bottom:3px solid var(--q-ink); }
+.pnav .back { display:inline-flex; align-items:center; gap:.35rem; flex:none; padding:.3rem .65rem .3rem .45rem; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); font:inherit; font-weight:700; font-size:.8rem; line-height:1.1; cursor:pointer; box-shadow:2px 2px 0 var(--q-ink); max-width:60%; }
+.pnav .back span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pnav .back:hover { background:var(--q-accent); color:var(--q-accent-ink); }
+.pnav .back:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
+.pnav svg { width:16px; height:16px; flex:none; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.pnav .steps { display:flex; gap:.3rem; margin-left:auto; flex:none; }
+.pnav .step { width:30px; height:30px; display:grid; place-items:center; padding:0; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); box-shadow:2px 2px 0 var(--q-ink); cursor:pointer; }
+.pnav .step:hover:not([disabled]) { background:var(--q-accent); color:var(--q-accent-ink); }
+.pnav .step[disabled] { opacity:.35; cursor:default; box-shadow:none; }
+.pnav .step:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
+.pnav .crumb { color:var(--q-muted); font-size:.74rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.pc-head canvas { width:100%; height:auto; display:block; border-bottom:3px solid var(--q-ink); }
+.pc-body { padding:.7rem .9rem 1rem; display:grid; gap:.6rem; font-size:.84rem; }
+.pc-body h3 { margin:0; font-size:1.15rem; line-height:1.2; }
+.pc-body .sub { color:var(--q-muted); font-size:.78rem; }
+.rowbtn { display:grid; grid-template-columns:28px 1fr auto; gap:.5rem; align-items:center; text-align:left; width:100%; box-shadow:none; border:2px solid var(--q-ink); padding:.3rem .5rem; margin-bottom:.35rem; }
+.rowbtn .n { width:24px; height:24px; background:var(--q-pin); color:#fff; display:grid; place-items:center; font-weight:700; border:2px solid var(--q-outline); }
+.rowbtn[data-done] .n { background:#4e9a52; } .rowbtn small { display:block; color:var(--q-muted); font-size:.7rem; } .rowbtn:hover { background:var(--q-ground); }
+.rowbtn .go { color:var(--q-muted); }
+.stopbox { border:2px solid var(--q-ink); background:var(--q-paper); box-shadow:3px 3px 0 var(--q-ink); }
+.stopbox__h { display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; padding:.4rem .6rem; background:var(--q-panel); border-bottom:2px solid var(--q-ink); }
+.here { margin-left:auto; font:700 .6rem/1.5 ui-monospace,"SF Mono",Menlo,monospace; background:var(--q-accent); color:var(--q-accent-ink); border:2px solid var(--q-outline); padding:0 .35rem; white-space:nowrap; }
+.stopline[data-done] .sn { background:#2f7d33; color:#fff; }
+.hit[data-sk] { z-index:5; }
+.you.walk { transition:left .9s cubic-bezier(.33,1,.68,1), top .9s cubic-bezier(.33,1,.68,1); }
+.stopline { display:grid; grid-template-columns:24px 1fr auto; gap:.6rem; align-items:center; font-size:.8rem; line-height:1.35; padding:.5rem .6rem; cursor:pointer; border-bottom:1px solid var(--q-line); }
+.stopline:last-child { border-bottom:0; }
+.stopline:hover { background:color-mix(in srgb,var(--q-accent) 16%,transparent); }
+.stopline[data-sel] { background:var(--q-accent); color:var(--q-accent-ink); }
+.stopline[data-sel] .sn { background:var(--q-accent-ink); color:var(--q-accent); }
+.pfoot { position:sticky; bottom:0; z-index:3; display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.45rem .6rem; background:var(--q-panel); border-top:3px solid var(--q-ink); }
+.pcount { color:var(--q-muted); font-size:.72rem; }
+.pfoot .steps { display:flex; gap:.3rem; margin-left:auto; }
+.pfoot .step { width:34px; height:30px; display:grid; place-items:center; padding:0; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); box-shadow:2px 2px 0 var(--q-ink); cursor:pointer; }
+.pfoot .step:hover:not([disabled]) { background:var(--q-accent); color:var(--q-accent-ink); }
+.pfoot .step[disabled] { opacity:.35; cursor:default; box-shadow:none; }
+.pfoot .step:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
+.pfoot svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.stopline .sn { width:20px; height:20px; background:var(--q-accent); color:var(--q-accent-ink); display:grid; place-items:center; font-size:.7rem; font-weight:700; border:2px solid var(--q-ink); }
+.stopline[data-sel] strong { color:var(--q-roof); }
+.chipsbar { position:fixed; left:384px; top:12px; display:flex; gap:.4rem; z-index:5; flex-wrap:wrap; max-width:calc(100vw - 700px); }
+.chipsbar .chip { box-shadow:2px 2px 0 var(--q-ink); cursor:pointer; color:var(--q-ink); }
+.chipsbar .chip[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.topright { position:fixed; right:12px; top:12px; z-index:5; }
+.topright #settings { width:42px; height:42px; display:grid; place-items:center; padding:0; background:var(--q-panel); color:var(--q-ink); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); cursor:pointer; }
+.topright #settings[aria-expanded="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
+.topright svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.setpanel { position:absolute; top:50px; right:0; display:none; flex-direction:column; gap:6px; align-items:flex-end; }
+.topright[data-open] .setpanel { display:flex; }
+.sgrp { display:flex; gap:4px; padding:4px; background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); }
+.sgrp button { width:34px; height:34px; display:grid; place-items:center; padding:0; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); box-shadow:none; cursor:pointer; }
+.sgrp button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
+.sgrp button:focus-visible, .topright #settings:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
+.ctl { position:fixed; right:14px; bottom:30px; display:grid; gap:8px; justify-items:end; z-index:5; }
+.ctl .stack { display:grid; border:3px solid var(--q-ink); background:var(--q-panel); box-shadow:3px 3px 0 var(--q-ink); }
+.ctl .stack button { border:0; box-shadow:none; width:38px; height:36px; padding:0; font-weight:700; font-size:1.1rem; }
+.ctl .stack button + button { border-top:2px solid var(--q-line); }
+.ctl .single { width:44px; height:42px; padding:0; }
+.zbar { position:fixed; left:12px; bottom:14px; display:flex; gap:.6rem; align-items:flex-end; z-index:5; }
+.zbar .scale { font-size:.7rem; }
+.zbar button.tile { padding:0; cursor:pointer; }
+.zbar button.tile:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
+.layerpop { position:absolute; left:0; bottom:calc(100% + 8px); width:230px; display:grid; gap:.45rem; padding:.6rem .7rem .7rem; background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font-size:.76rem; z-index:6; }
+.layerpop[hidden] { display:none; }
+.lp-h { font:700 .62rem/1 ui-monospace,"SF Mono",Menlo,monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--q-muted); }
+.lp-types { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+.lp-types button { display:grid; gap:.25rem; padding:0; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); cursor:pointer; box-shadow:2px 2px 0 var(--q-ink); overflow:hidden; font-size:.7rem; }
+.lp-types button[aria-pressed="true"] { outline:3px solid var(--q-accent); outline-offset:1px; }
+.lp-types canvas { width:100%; height:auto; display:block; image-rendering:pixelated; }
+.lp-types span { padding:.15rem .3rem .25rem; font-weight:700; }
+.layerpop[data-view="path"] .lp-details { display:none; }
+.lp-details { display:grid; gap:.45rem; }
+.layerpop label { display:flex; gap:.45rem; align-items:center; cursor:pointer; }
+.layerpop input { accent-color:var(--q-accent); }
+.zbar .tile { width:64px; height:64px; border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); background:var(--q-panel); position:relative; overflow:hidden; }
+.zbar .tile canvas { width:100%; height:100%; } .zbar .tile span { position:absolute; left:0; right:0; bottom:0; font-size:.6rem; text-align:center; background:var(--q-panel); border-top:2px solid var(--q-ink); }
+.zlevels { display:flex; gap:3px; margin-top:2px; } .zlevels i { width:16px; height:6px; border:2px solid var(--q-ink); background:var(--q-paper); } .zlevels i[data-on] { background:var(--q-accent); }
+.attrib2 { position:fixed; right:70px; bottom:6px; font-size:.6rem; color:var(--q-label); background:color-mix(in srgb,var(--q-halo) 80%,transparent); padding:0 .3rem; z-index:5; }
+.toast2 { position:fixed; left:50%; bottom:28px; transform:translateX(-50%); background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); padding:.3rem .8rem; font-weight:700; z-index:9; }
+.toast2[hidden] { display:none; }
+.results { display:grid; gap:.3rem; }
+@media (max-width:799px) {
+  .col { right:8px; left:8px; width:auto; bottom:auto; top:8px; }
+  .panelcard { position:fixed; left:0; right:0; bottom:0; max-height:44vh; border-width:3px 0 0; box-shadow:none; }
+  .chipsbar { left:8px; top:64px; max-width:calc(100vw - 16px); }
+  .topright { top:auto; bottom:calc(44vh + 12px); right:8px; } .topright { left:8px; right:auto; } .setpanel { top:auto; bottom:50px; right:auto; left:0; align-items:flex-start; }
+  .ctl { bottom:calc(44vh + 64px); right:8px; }
+  .zbar { display:none; } .attrib2 { display:none; }
+}
+/* Without JavaScript the plain route list is the page; with it, the map is, and the list stays in the file for crawlers and the no-script case. */
+html.js .route { display:none; }
+html:not(.js) body > :not(.route):not(script) { display:none; }
+html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(--q-paper); }
+.route { max-width:46rem; margin:0 auto; padding:1.5rem 1rem 3rem; font:16px/1.6 Georgia,serif; color:var(--q-ink); }
+.route h1 { font-size:1.6rem; } .route h2 { font-size:1.25rem; margin:1.6rem 0 .2rem; } .route h3 { font-size:1.05rem; margin:.9rem 0 0; }
+.route p { margin:.2rem 0; color:var(--q-muted); } .route ol { padding-left:1.3rem; }
+</style>
+</head>
+<body>
+<!--qm-route-->
+<div id="route" class="route">
+<h1>Learn AI with me</h1>
+<p>This is the route through the notes, in order: six regions, the quests in each and the stops in each quest. The interactive map needs JavaScript.</p>
+<ol>
+<li><h2>Harbor</h2>
+<p>Start here: the basics, outside this site. No notes here on purpose. The first stop points out to Claude Academy for the basics, then the trail heads into the forest.</p>
+</li>
+<li><h2>Loop Forest</h2>
+<p>The loop: plan, run, check, repeat. How I run AI work as a loop instead of a clever prompt.</p>
+<ol>
+<li><h3>I Was Shipping Faster Than I Could Understand It</h3>
+<p>Deep · 10 min · 4 stops</p>
+<ol>
+<li>The week I couldn't explain my own work</li>
+<li>The first thing I fixed was where the plan lives</li>
+<li>One heartbeat, and it fires while I'm already working</li>
+<li>What I am honest about</li>
+</ol></li>
+<li><h3>The Loop Outlives the Model.</h3>
+<p>Deep · 11 min · 4 stops</p>
+<ol>
+<li>The day one of them ran out</li>
+<li>What the loop actually is</li>
+<li>The model is a routing decision</li>
+<li>A week with one to five projects</li>
+</ol></li>
+<li><h3>Set Up the Loop With One Prompt</h3>
+<p>Intro · 12 min · 3 stops</p>
+<ol>
+<li>Start with the prompt</li>
+<li>Your standards are the contract you write</li>
+<li>Step four: the guards, when they earn it</li>
+</ol></li>
+<li><h3>The Check Ran Once in 165 Sessions, and I Got the Reason Wrong</h3>
+<p>Deep · 7 min · 2 stops</p>
+<ol>
+<li>One run in a hundred and sixty-five sessions</li>
+<li>Then I ran it myself, from the wrong folder</li>
+</ol></li>
+</ol></li>
+<li><h2>Model Mines</h2>
+<p>Models, limits and cost. Which model for which job, and what happens when you run out.</p>
+<ol>
+<li><h3>I Ran Out With Hours Left</h3>
+<p>Intro · 10 min · 4 stops</p>
+<ol>
+<li>The night I went looking for a way out</li>
+<li>The old setup and the new one</li>
+<li>What a Model Intelligence Layer does</li>
+<li>What is built, and what is still ahead</li>
+</ol></li>
+<li><h3>Plan on the Big Model, Type on the Small One</h3>
+<p>Intro · 10 min · 4 stops</p>
+<ol>
+<li>The question that made me write this</li>
+<li>The biggest model is not the default</li>
+<li>Where the split is actually wired</li>
+<li>The lesson</li>
+</ol></li>
+<li><h3>How the Model Intelligence Layer Works</h3>
+<p>Deep · 25 min · 9 stops</p>
+<ol>
+<li>What a Model Intelligence Layer is</li>
+<li>The guard that restarts a session on the wrong model</li>
+<li>Hard work is delegated, never switched to</li>
+<li>The light chain, in order</li>
+<li>The paid route needs my typed approval</li>
+<li>Work is a different lane, enforced three ways</li>
+<li>What gets recorded, and why free and paid sit apart</li>
+<li>Build your own</li>
+<li>What is proven, and what is still being proven</li>
+</ol></li>
+</ol></li>
+<li><h2>Guild Hall</h2>
+<p>Leading and reviewing AI work. Getting a team to use AI well, and a reviewer that learned to be wrong.</p>
+<ol>
+<li><h3>I Showed My Team a Dashboard. Two Weeks Later They Showed Me Theirs.</h3>
+<p>Intro · 14 min · 4 stops</p>
+<ol>
+<li>I was building the wrong thing, carefully</li>
+<li>Crew Watch, attempt number four</li>
+<li>My whole AI policy is a demo</li>
+<li>The rule that comes with the token</li>
+</ol></li>
+<li><h3>Our CTO Said Move Bugs to the Left. My Tech Lead Built the Tool.</h3>
+<p>Intro · 7 min · 3 stops</p>
+<ol>
+<li>Matt's rule</li>
+<li>How the epic checker works</li>
+<li>What came back to me</li>
+</ol></li>
+<li><h3>Seven Hundred Commits to Teach a Reviewer It Was Wrong</h3>
+<p>Deep · 21 min · 8 stops</p>
+<ol>
+<li>Early Aug · Why not?</li>
+<li>Aug 14 · It started as a reviewer I had to babysit</li>
+<li>Sep 17 · The talk was the old version</li>
+<li>Oct 8 · Then it needed a second engine</li>
+<li>Oct 14 · Then it had to prove its repairs held</li>
+<li>Oct 26 · Then it had to decide what deserved a look</li>
+<li>Nov 9 · How it works now</li>
+<li>What the team felt, and what I got back</li>
+</ol></li>
+</ol></li>
+<li><h2>GRAIN Keep</h2>
+<p>Designing for AI. A design system an AI can operate, and why.</p>
+<ol>
+<li><h3>Watch Its Hands</h3>
+<p>Deep · 7 min · 2 stops</p>
+<ol>
+<li>Most AI is a recording</li>
+<li>What I have not earned</li>
+</ol></li>
+<li><h3>One Vocabulary, Two Operators</h3>
+<p>Deep · 28 min · 5 stops</p>
+<ol>
+<li>Abstract</li>
+<li>2. The approach (in brief)</li>
+<li>3. Related work and positioning</li>
+<li>4. Contribution</li>
+<li>6. Limitations and threats</li>
+</ol></li>
+</ol></li>
+<li><h2>Summit</h2>
+<p>The capstone. The two notes everything else leads to.</p>
+<ol>
+<li><h3>Ten Times Zero Is Still Zero</h3>
+<p>Intro · 25 min · 8 stops</p>
+<ol>
+<li>&quot;Vibe coder&quot; is used as an insult</li>
+<li>I was the zero, for years</li>
+<li>A decade of rehearsal, billed as management</li>
+<li>The receipts</li>
+<li>Now the &quot;vibe&quot; part, because I do go fast</li>
+<li>The part that actually makes it professional</li>
+<li>The best trick of all: the AI's mistakes are a measurement</li>
+<li>The tell is the ratio</li>
+</ol></li>
+<li><h3>Everybody Wants the Agent. Somebody Has to Build the Floor.</h3>
+<p>Intro · 39 min · 9 stops</p>
+<ol>
+<li>The part everybody skips</li>
+<li>The roadmap</li>
+<li>The floor has a shape, and it is worth naming</li>
+<li>Stage zero: instrument, and make one repository legible</li>
+<li>Stage one: extract the skills</li>
+<li>Stage two: get them used, and score what happens</li>
+<li>Stage four: the loop</li>
+<li>Six ways these systems fail without telling you</li>
+<li>Your scaffolding has an expiry date</li>
+</ol></li>
+</ol></li>
+</ol>
+</div>
+<!--/qm-route-->
+<div id="stage"><canvas id="map" aria-hidden="true"></canvas><canvas id="fx" aria-hidden="true"></canvas><div id="over"></div></div>
+<div class="col">
+  <div class="searchbar"><button id="fold" aria-label="Fold the panel">◀</button><input id="q" type="search" placeholder="Search quests, notes, topics" aria-label="Search quests"><span>🔍</span></div>
+  <div class="panelcard" id="panel" aria-live="polite"></div>
+</div>
+<div class="chipsbar"><span class="chip" data-on>All</span><span class="chip">Loop</span><span class="chip">Models</span><span class="chip">Leading</span><span class="chip">Design</span><span class="chip">Not started</span></div>
+<div class="topright">
+  <button id="settings" aria-expanded="false" aria-controls="setpanel" aria-label="Display settings" title="Display settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h8M18 6h2M4 12h2M12 12h8M4 18h10M20 18h0"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></button>
+  <div class="setpanel" id="setpanel">
+    <div class="sgrp"><button id="motion" aria-pressed="true" aria-label="Motion" title="Motion: water glints, torches, the summit flag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9c3-3 6 3 9 0s6 3 9 0M3 15c3-3 6 3 9 0s6 3 9 0"/></svg></button></div>
+  </div>
+</div>
+<div class="ctl"><button class="single" id="me" title="Find my adventurer" aria-label="Find my adventurer">◎</button><div class="stack"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button></div></div>
+<div class="zbar"><button class="tile" id="layers" aria-expanded="false" aria-controls="layerpop" title="Layers: map type and details"><canvas id="c-layer" width="32" height="32"></canvas><span>Layers</span></button>
+<div class="layerpop" id="layerpop" hidden>
+  <strong class="lp-h">Map type</strong>
+  <div class="lp-types">
+    <button data-view="explorer" aria-pressed="true"><canvas id="th-ex" width="44" height="36" aria-hidden="true"></canvas><span>Explorer</span></button>
+    <button data-view="path" aria-pressed="false"><canvas id="th-pa" width="44" height="36" aria-hidden="true"></canvas><span>Path only</span></button>
+  </div>
+  <div class="lp-details">
+    <strong class="lp-h">Details</strong>
+    <label><input type="checkbox" data-layer="routes" checked> Route dots</label>
+    <label><input type="checkbox" data-layer="people" checked> People at work</label>
+    <label><input type="checkbox" data-layer="sea" checked> Ships and sea life</label>
+    <label><input type="checkbox" data-layer="air" checked> Birds and smoke</label>
+    <label><input type="checkbox" data-layer="waves" checked> Waves and sparkle</label>
+  </div>
+</div><div class="scale"><strong id="zname">World</strong><div class="zlevels"><i data-on></i><i></i><i></i><i></i></div></div></div>
+<div class="attrib2">Map data ©2026 the notes</div>
+<div class="toast2" id="toast" hidden></div>
+<script type="application/json" id="qm-data">
+{
+"quests":[
+{"id":"one-loop-every-repo","region":2,"title":"I Was Shipping Faster Than I Could Understand It","short":"The one loop","level":"deep","aud":["build"],"min":10,"pos":[50,98],"stops":["The week I couldn't explain my own work","The first thing I fixed was where the plan lives","One heartbeat, and it fires while I'm already working","What I am honest about"],"learn":["The week I couldn't explain my own work","First, an honest look at what I was doing wrong","So I stopped building features and read"]},
+{"id":"one-loop-three-harnesses","region":2,"title":"The Loop Outlives the Model.","short":"Outlives the model","level":"deep","aud":["build"],"min":11,"pos":[60,84],"stops":["The day one of them ran out","What the loop actually is","The model is a routing decision","A week with one to five projects"],"learn":["The day one of them ran out","The loop was the thing I had not written down","What the loop actually is"]},
+{"id":"loop-setup","region":2,"title":"Set Up the Loop With One Prompt","short":"One-prompt setup","level":"intro","aud":["learn","build"],"min":12,"pos":[74,92],"stops":["Start with the prompt","Your standards are the contract you write","Step four: the guards, when they earn it"],"learn":["Start with the prompt","What the loop is","Your standards are the contract you write"]},
+{"id":"the-check-that-never-ran","region":2,"title":"The Check Ran Once in 165 Sessions, and I Got the Reason Wrong","short":"The check that never ran","level":"deep","aud":["build"],"min":7,"pos":[66,106],"stops":["One run in a hundred and sixty-five sessions","Then I ran it myself, from the wrong folder"],"learn":["One run in a hundred and sixty-five sessions","The story I told myself, and it was a good one","Then I ran it myself, from the wrong folder"]},
+{"id":"necessity-and-the-model-layer","region":3,"title":"I Ran Out With Hours Left","short":"I ran out","level":"intro","aud":["learn","build"],"min":10,"pos":[100,114],"stops":["The night I went looking for a way out","The old setup and the new one","What a Model Intelligence Layer does","What is built, and what is still ahead"],"learn":["The night I went looking for a way out","The old setup and the new one","What a Model Intelligence Layer does"]},
+{"id":"plan-big-type-small","region":3,"title":"Plan on the Big Model, Type on the Small One","short":"Plan big, type small","level":"intro","aud":["learn","build"],"min":10,"pos":[114,122],"stops":["The question that made me write this","The biggest model is not the default","Where the split is actually wired","The lesson"],"learn":["The question that made me write this","Thinking and typing are different jobs","The biggest model is not the default"]},
+{"id":"how-the-model-layer-works","region":3,"title":"How the Model Intelligence Layer Works","short":"How the layer works","level":"deep","aud":["build","learn"],"min":25,"pos":[90,127],"stops":["What a Model Intelligence Layer is","The guard that restarts a session on the wrong model","Hard work is delegated, never switched to","The light chain, in order","The paid route needs my typed approval","Work is a different lane, enforced three ways","What gets recorded, and why free and paid sit apart","Build your own","What is proven, and what is still being proven"],"learn":["What a Model Intelligence Layer is","The registry, and tiers instead of models","The guard that restarts a session on the wrong model"]},
+{"id":"show-them-the-board","region":4,"title":"I Showed My Team a Dashboard. Two Weeks Later They Showed Me Theirs.","short":"Show them the board","level":"intro","aud":["lead"],"min":14,"pos":[138,84],"stops":["I was building the wrong thing, carefully","Crew Watch, attempt number four","My whole AI policy is a demo","The rule that comes with the token"],"learn":["I was building the wrong thing, carefully","The review kit, now with a window","Crew Watch, attempt number four"]},
+{"id":"move-bugs-left","region":4,"title":"Our CTO Said Move Bugs to the Left. My Tech Lead Built the Tool.","short":"Move bugs left","level":"intro","aud":["lead"],"min":7,"pos":[154,86],"stops":["Matt's rule","How the epic checker works","What came back to me"],"learn":["Matt's rule","Who built it","How the epic checker works"]},
+{"id":"the-reviewer-that-learned-to-be-wrong","region":4,"title":"Seven Hundred Commits to Teach a Reviewer It Was Wrong","short":"A reviewer learns","level":"deep","aud":["lead","build"],"min":21,"pos":[146,102],"stops":["Early Aug · Why not?","Aug 14 · It started as a reviewer I had to babysit","Sep 17 · The talk was the old version","Oct 8 · Then it needed a second engine","Oct 14 · Then it had to prove its repairs held","Oct 26 · Then it had to decide what deserved a look","Nov 9 · How it works now","What the team felt, and what I got back"],"learn":["Early Aug · Why not?","Aug 14 · It started as a reviewer I had to babysit","Aug 18 · Then it had to keep score"]},
+{"id":"watch-its-hands","region":5,"title":"Watch Its Hands","short":"Watch its hands","level":"deep","aud":["build"],"min":7,"pos":[80,48],"stops":["Most AI is a recording","What I have not earned"],"learn":["Most AI is a recording","So I built the boring version","What I have not earned"]},
+{"id":"whitepaper-one-vocabulary","region":5,"title":"One Vocabulary, Two Operators","short":"One vocabulary","level":"deep","aud":["build"],"min":28,"pos":[106,50],"stops":["Abstract","2. The approach (in brief)","3. Related work and positioning","4. Contribution","6. Limitations and threats"],"learn":["Abstract","1. Introduction","2. The approach (in brief)"]},
+{"id":"ten-times-zero","region":6,"title":"Ten Times Zero Is Still Zero","short":"Ten times zero","level":"intro","aud":["learn","build"],"min":25,"pos":[138,38],"stops":["\"Vibe coder\" is used as an insult","I was the zero, for years","A decade of rehearsal, billed as management","The receipts","Now the \"vibe\" part, because I do go fast","The part that actually makes it professional","The best trick of all: the AI's mistakes are a measurement","The tell is the ratio"],"learn":["\"Vibe coder\" is used as an insult","AI is a multiplier, not an addend","I was the zero, for years"]},
+{"id":"build-the-floor","region":6,"title":"Everybody Wants the Agent. Somebody Has to Build the Floor.","short":"Build the floor","level":"intro","aud":["lead","build"],"min":39,"pos":[162,42],"stops":["The part everybody skips","The roadmap","The floor has a shape, and it is worth naming","Stage zero: instrument, and make one repository legible","Stage one: extract the skills","Stage two: get them used, and score what happens","Stage four: the loop","Six ways these systems fail without telling you","Your scaffolding has an expiry date"],"learn":["The part everybody skips","The floor is the variable, and it is measurable","The roadmap"]}
+],
+"regions":[
+{"n":1,"name":"Harbor","c":[28,126],"pin":[28,118],"lbl":[28,138],"scene":"harbor","sub":"Start here: the basics, outside this site","blurb":"No notes here on purpose. The first stop points out to Claude Academy for the basics, then the trail heads into the forest."},
+{"n":2,"name":"Loop Forest","c":[62,92],"pin":[62,78],"lbl":[62,100],"scene":"forest","sub":"The loop: plan, run, check, repeat","blurb":"How I run AI work as a loop instead of a clever prompt."},
+{"n":3,"name":"Model Mines","c":[104,124],"pin":[104,106],"lbl":[104,136],"scene":"mines","sub":"Models, limits and cost","blurb":"Which model for which job, and what happens when you run out."},
+{"n":4,"name":"Guild Hall","c":[146,92],"pin":[146,76],"lbl":[146,108],"scene":"hall","sub":"Leading and reviewing AI work","blurb":"Getting a team to use AI well, and a reviewer that learned to be wrong."},
+{"n":5,"name":"GRAIN Keep","c":[92,52],"pin":[92,34],"lbl":[92,64],"scene":"keep","sub":"Designing for AI","blurb":"A design system an AI can operate, and why."},
+{"n":6,"name":"Summit","c":[150,34],"pin":[150,12],"lbl":[150,46],"scene":"summit","sub":"The capstone","blurb":"The two notes everything else leads to."}
+],
+"done":["one-loop-every-repo","one-loop-three-harnesses"],
+"partial":{"loop-setup":[0]},
+"routes":{
+"2":[[[48,11],[54,12],[58,15],[61,19],[63,24],[65,26],[68,28],[74,29],[81,30],[87,34],[90,38]],[[90,38],[89,43],[85,46],[80,50],[76,52],[72,55],[68,57],[63,59],[58,60],[53,60],[48,59]],[[48,59],[43,59],[38,59],[32,60],[25,60],[19,58],[16,54],[16,49],[18,45],[21,41],[22,38]],[[22,38],[20,35],[18,31],[17,27],[18,22],[21,19],[26,16],[31,14],[36,13],[42,11],[48,11]]],
+"3":[[[65,66],[65,56],[65,46],[65,36]],[[65,44],[46,44],[26,44],[26,24]],[[65,66],[65,50],[65,36],[85,36],[105,36],[105,22],[90,18],[74,18],[60,18]]],
+"4":[[[98,38],[72,38],[54,38],[36,38],[24,42]],[[54,70],[54,52],[62,42]],[[16,24],[16,38],[32,38],[48,38],[54,32],[70,38],[90,38],[90,26]]],
+"5":[[[50,66],[50,48],[30,48],[24,34]],[[50,66],[50,46],[50,40],[50,28],[50,16]]],
+"6":[[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]],[[42,14],[50,22],[32,30],[56,38],[28,46],[58,54],[26,62]]]
+},
+"spec":{
+"1":{"cx":26,"cy":126,"W":88,"H":56,"q":[],"slots":[],"lights":[[16,17],[84,25],[37,41]],"fires":[2],"flags":[[51,6]]},
+"2":{"cx":62,"cy":92,"W":96,"H":76,"q":[[48,11],[90,38],[48,59],[22,38]],"slots":[[48,11],[62,21],[72,28],[90,38],[79,50],[65,59],[48,59],[30,60],[16,51],[22,38],[17,25],[29,15]],"lights":[[48,38],[48,11],[65,26],[90,38],[72,55],[48,59],[19,58],[22,38],[21,19]],"fires":[0],"flags":[]},
+"3":{"cx":104,"cy":126,"W":130,"H":70,"q":[[65,62],[26,24],[84,6]],"slots":[[65,58],[65,46],[45,44],[26,40],[26,24],[85,38],[105,32],[105,20],[65,20]],"lights":[[65,54],[26,36],[104,28],[66,18]],"flags":[]},
+"4":{"cx":146,"cy":92,"W":108,"H":76,"q":[[24,42],[62,42],[54,30]],"slots":[[54,30],[24,42],[62,42],[54,56],[16,26],[90,26],[16,60],[90,60],[36,62]],"lights":[[44,31],[64,31],[54,50],[24,36]],"flags":[[54,2]]},
+"5":{"cx":92,"cy":54,"W":100,"H":80,"q":[[26,38],[50,42]],"slots":[[50,66],[50,14],[50,40],[26,34],[74,34],[30,50],[13,13],[87,13],[87,63]],"lights":[[38,58],[62,58],[13,10],[87,10]],"fires":[0,1,2,3],"flags":[[53,2]]},
+"6":{"cx":150,"cy":36,"W":84,"H":70,"q":[[26,58],[42,10]],"slots":[[26,58],[52,56],[28,48],[54,40],[32,32],[48,24],[42,14],[60,30],[22,40]],"lights":[[20,52],[64,44],[24,26]],"fires":[0,1,2],"flags":[[46,3]]}
+},
+"walk":{
+"1":[{"k":"sailor","p":[[72,30],[84,30]],"v":2,"ph":0},{"k":"sailor","p":[[76,33],[62,36]],"v":1.6,"ph":6},{"k":"v1","p":[[26,46],[46,46]],"v":1.4,"ph":2}],
+"2":[{"k":"elf","p":[[48,11],[56,13],[61,18],[63,24],[65,27],[72,28],[81,30],[88,35],[89,41],[85,46],[79,50],[73,54],[68,57],[62,60],[55,60],[48,59],[42,59],[34,60],[25,60],[18,57],[16,51],[18,45],[21,40],[21,36],[18,31],[17,25],[20,20],[26,16],[33,14],[40,12],[48,11]],"v":3,"m":"loop","ph":0},{"k":"elf","p":[[48,11],[56,13],[61,18],[63,24],[65,27],[72,28],[81,30],[88,35],[89,41],[85,46],[79,50],[73,54],[68,57],[62,60],[55,60],[48,59],[42,59],[34,60],[25,60],[18,57],[16,51],[18,45],[21,40],[21,36],[18,31],[17,25],[20,20],[26,16],[33,14],[40,12],[48,11]],"v":3,"m":"loop","ph":63},{"k":"elf","p":[[48,11],[56,13],[61,18],[63,24],[65,27],[72,28],[81,30],[88,35],[89,41],[85,46],[79,50],[73,54],[68,57],[62,60],[55,60],[48,59],[42,59],[34,60],[25,60],[18,57],[16,51],[18,45],[21,40],[21,36],[18,31],[17,25],[20,20],[26,16],[33,14],[40,12],[48,11]],"v":3,"m":"loop","ph":127}],
+"3":[{"k":"dwarf","p":[[65,50]],"m":"stay","i":0},{"k":"dwarf","p":[[28,38]],"m":"stay","i":1},{"k":"dwarf","p":[[104,30]],"m":"stay","i":2},{"k":"dwarf","p":[[65,70],[65,36]],"v":3,"ph":0,"cart":1}],
+"4":[{"k":"v1","p":[[10,38],[98,38]],"v":3,"ph":0},{"k":"v2","p":[[98,40],[12,40]],"v":2.4,"ph":30},{"k":"v3","p":[[54,8],[54,68]],"v":2.6,"ph":10},{"k":"v1","p":[[60,38]],"m":"stay","i":1},{"k":"v2","p":[[46,41]],"m":"stay","i":2}],
+"5":[{"k":"guard","p":[[14,12],[86,12],[86,62],[14,62],[14,12]],"v":4,"m":"loop","ph":0},{"k":"guard","p":[[14,12],[86,12],[86,62],[14,62],[14,12]],"v":4,"m":"loop","ph":132},{"k":"guard","p":[[43,63]],"m":"stay","i":0},{"k":"guard","p":[[57,63]],"m":"stay","i":1},{"k":"guard","p":[[45,46]],"m":"stay","i":2},{"k":"guard","p":[[55,46]],"m":"stay","i":3},{"k":"guard","p":[[30,13]],"m":"stay","i":4},{"k":"guard","p":[[70,13]],"m":"stay","i":5},{"k":"guard","p":[[24,62]],"m":"stay","i":6},{"k":"guard","p":[[76,62]],"m":"stay","i":7}],
+"6":[{"k":"climber","p":[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]],"v":2.2,"ph":0},{"k":"climber","p":[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]],"v":2,"ph":90}]
+}
+}
+</script>
+<script>
+/* ---------- pixel engine: every shape is whole pixels, no smoothing ---------- */
+const WW=200, WH=160;
+const NAMES=['water','water2','wave','foam','sand','sand2','grass','grass2','forest','forest2','rock','rock2','rockd','field','field2','meadow','meadow2','snow','snow2','road','road-edge','main','main-edge','fog','fog2','outline','pin','pin-hi','you','trunk','wall','wall2','castle','castle2','roof','roof2','flag','amber','glow','ground','ground2','paper','ink','stone'];
+let P={};
+function loadPalette(){ const cs=getComputedStyle(document.documentElement); NAMES.forEach(n=>P[n.replace(/-(.)/g,(_,c)=>c.toUpperCase())]=cs.getPropertyValue('--q-'+n).trim()); }
+function shade(c,f){ if(!/^#[0-9a-f]{6}$/i.test(c)) return P.outline; const n=parseInt(c.slice(1),16); return '#'+[16,8,0].map(sh=>Math.round(((n>>sh)&255)*f).toString(16).padStart(2,'0')).join(''); }
+function hash2(x,y){ let h=(Math.imul(x|0,374761393)+Math.imul(y|0,668265263))>>>0; h=(h^(h>>>13))>>>0; h=Math.imul(h,1274126177)>>>0; return (h^(h>>>16))>>>0; }
+function vn(x,y,s){ const xi=Math.floor(x/s), yi=Math.floor(y/s), xf=x/s-xi, yf=y/s-yi, f=(a,b)=>hash2(a,b)/4294967296, sm=t=>t*t*(3-2*t);
+  const a=f(xi,yi), b=f(xi+1,yi), c=f(xi,yi+1), d=f(xi+1,yi+1); return a+(b-a)*sm(xf)+(c-a)*sm(yf)+(a-b-c+d)*sm(xf)*sm(yf); }
+function hash(str){ let h=2166136261; for(const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619);} return h>>>0; }
+function rng(seed){ let s=seed>>>0; return ()=> (s=(s*1664525+1013904223)>>>0)/4294967296; }
+
+/* sprite builder: set pixels in local coords, add a 1px outline, blit anywhere */
+const D4=[[1,0],[-1,0],[0,1],[0,-1]];
+function spr(){ const m=new Map(); const o={ m,
+  set(x,y,c){ m.set(x+','+y,c); return o; },
+  rect(x,y,w,h,c){ for(let j=0;j<h;j++) for(let i=0;i<w;i++) m.set((x+i)+','+(y+j),c); return o; },
+  outline(c){ const add=[]; for(const k of m.keys()){ const [x,y]=k.split(',').map(Number); for(const [dx,dy] of D4){ const kk=(x+dx)+','+(y+dy); if(!m.has(kk)) add.push(kk);} } add.forEach(k=>m.set(k,c)); return o; },
+  blit(put,ox,oy){ for(const [k,c] of m){ const [x,y]=k.split(',').map(Number); put(ox+x,oy+y,c);} } }; return o; }
+
+/* 3x5 pixel digits for pins */
+const FONT={0:'111101101101111',1:'010110010010111',2:'111001111100111',3:'111001111001111',4:'101101111001001',5:'111100111001111',6:'111100111101111','?':'111001010000010'};
+function glyph(s,ch,x,y,c){ const g=FONT[ch]; for(let i=0;i<15;i++) if(g[i]==='1') s.set(x+i%3,y+Math.floor(i/3),c); }
+/* landmarks */
+function mountainSpr(h,k){ const s=spr(), snow=Math.round(h*.36);
+  for(let j=0;j<h;j++){ const half=Math.round(j*k), y=-h+1+j; for(let i=-half;i<=half;i++){ let c=i<=0?P.rock:P.rock2; if(i>0&&(i+j)%5===0) c=P.rockd; if(i<0&&(i-j)%7===0) c=P.rock2;
+    if(j<snow+((Math.abs(i)%3)-1)) c=i<=0?P.snow:P.snow2; s.set(i,y,c);} } return s.outline(P.outline); }
+function pineSpr(){ const s=spr(); s.rect(0,-1,1,2,P.trunk); [[0,-2,3],[0,-4,2],[0,-6,1]].forEach(([_,y,hw])=>{ for(let i=-hw;i<=hw;i++) { s.set(i,y,i<=0?P.forest:P.forest2); s.set(i,y-1,i<=0?P.forest:P.forest2);} }); s.set(0,-8,P.forest); return s.outline(shade(P.forest2,.5)); }
+function bushSpr(){ const s=spr(); s.rect(-1,-1,3,2,P.forest); s.set(0,-2,P.forest); s.set(1,0,P.forest2); return s.outline(shade(P.forest2,.5)); }
+function castleSpr(){ const s=spr();
+  s.rect(-8,-10,17,10,P.wall); s.rect(1,-10,8,10,P.wall2);
+  for(let i=-8;i<=8;i+=4){ s.rect(i,-12,2,2,P.wall); }
+  [[-11,-17],[9,-17]].forEach(([x,y])=>{ s.rect(x,y,5,17,P.wall); s.rect(x+3,y,2,17,P.wall2); for(let i=0;i<5;i+=2) s.rect(x+i,y-2,1,2,P.wall); s.set(x+2,y+5,P.outline); s.set(x+2,y+6,P.outline);
+    for(let j=0;j<5;j++) for(let i=-j;i<=j+4;i++){ /* cone roof */ } });
+  [[-11,-19],[9,-19]].forEach(([x,y])=>{ for(let j=0;j<5;j++){ for(let i=j;i<5-j;i++) s.set(x+i,y-j,i<2?P.castle:P.castle2); } });
+  s.rect(0,-17,1,7,P.outline); s.rect(1,-17,4,3,P.flag); s.rect(-2,-6,5,6,P.outline); s.rect(-1,-7,3,1,P.outline);
+  s.set(-5,-6,P.glow); s.set(5,-6,P.glow); s.rect(-1,-12,3,2,P.castle2);
+  return s.outline(P.outline); }
+function hallSpr(){ const s=spr(); s.rect(-6,-6,13,6,P.wall); s.rect(1,-6,6,6,P.wall2);
+  for(let j=0;j<6;j++) for(let i=-8+j;i<=8-j;i++) s.set(i,-7-j,i<=0?P.roof:P.roof2);
+  s.rect(-1,-4,3,4,P.outline); s.set(-4,-4,P.glow); s.set(4,-4,P.glow); return s.outline(shade(P.wall2,.45)); }
+function lighthouseSpr(){ const s=spr(), lit=isNightNow(); for(let y=0;y>=-8;y--){ const hw=y>-3?2:1; for(let i=-hw;i<=hw;i++) s.set(i,y,(Math.floor(-y/2)%2===0)?'#f4f4f0':P.flag); } s.rect(-2,-9,5,1,P.wall2); s.rect(-1,-11,3,2,lit?P.glow:'#d8dde3'); s.rect(-1,-12,3,1,P.roof2); s.set(0,-13,P.roof2); return s.outline(shade(P.rock2,.45)); }
+function iglooSpr(){ const s=spr(), e=shade(P.snow2,.6); const rows=[[-4,4],[-4,4],[-3,3],[-2,2],[-1,1]]; rows.forEach(([a,b],j)=>{ for(let i=a;i<=b;i++) s.set(i,-j,i>0?P.snow2:P.snow); }); [[-2,-1],[1,-2],[-1,-3]].forEach(([x,y])=>s.set(x,y,P.snow2)); s.rect(-1,1-1,3,1,'#3b4a63'); s.set(0,-1,'#3b4a63'); return s.outline(e); }
+function houseSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.wall); for(let j=0;j<3;j++) for(let i=-4+j;i<=5-j;i++) s.set(i,-4-j,i<=0?P.roof:P.roof2); s.set(0,-1,P.outline); return s.outline(shade(P.wall2,.45)); }
+function peakSpr(){ const s=mountainSpr(26,.72); s.rect(0,-30,1,6,P.outline); s.rect(1,-30,4,3,P.flag); s.rect(1,-29,1,1,P.pinHi); return s.outline(P.outline); }
+function caveSpr(){ const s=spr(); s.rect(-2,-3,5,3,P.outline); s.rect(-1,-4,3,1,P.outline); s.set(-3,-1,P.rockd); s.set(3,-1,P.rockd); return s; }
+function signSpr(){ const s=spr(); s.rect(0,-4,1,5,P.trunk); s.rect(-4,-7,9,4,P.wall); s.rect(-3,-6,7,1,P.roof2); return s.outline(P.outline); }
+function torchSpr(){ const s=spr(); s.rect(0,-3,1,3,P.trunk); s.set(0,-4,P.glow); s.set(0,-5,P.amber); return s.outline(P.outline); }
+function cartSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.rockd); s.rect(-3,-3,7,1,P.rock); s.set(-2,0,P.outline); s.set(2,0,P.outline); s.set(0,-4,P.glow); return s.outline(P.outline); }
+
+/* ---------- the world: terrain, biomes, roads ---------- */
+const REGIONS=[ {n:1,cx:34,cy:122}, {n:2,cx:62,cy:92}, {n:3,cx:104,cy:124}, {n:4,cx:146,cy:92}, {n:5,cx:92,cy:52}, {n:6,cx:150,cy:34}, {n:7,cx:160,cy:128} ];
+const land=new Uint8Array(WW*WH), reg=new Uint8Array(WW*WH);
+const MAIN=[[34,122],[48,110],[62,92],[82,108],[104,124],[126,108],[146,92],[120,70],[92,52],[122,40],[150,34]];
+const MINOR=[[[62,92],[74,66],[92,52]],[[104,124],[132,134],[160,128]],[[146,92],[172,84],[176,64]]];
+let cols=[], sprites=[], roadMain=new Set(), roadMinor=new Set();
+(function buildMasks(){ for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x;
+  const e=1-(((x-100)/94)**2+((y-82)/72)**2)+(vn(x,y,20)-.5)*.55+(vn(x,y,7)-.5)*.16; const lake=(((x-46)/9)**2+((y-54)/5)**2)<1;
+  land[i]=(e>.1&&!lake)?1:0; let best=1e9,id=1; for(const r of REGIONS){ const d=Math.hypot(x-r.cx,(y-r.cy)*1.25)/(r.n===7?1.15:1); if(d<best){best=d;id=r.n;} } reg[i]=id;
+  /* Harbor is one island of its own off the south-west coast, with open water between it and the forest. */
+  const zx=(x-26)/17, zy=(y-127)/11, zz=Math.hypot(zx,zy);
+  if(zz<1.7){ const w=1+.12*Math.sin(3*Math.atan2(zy,zx)+5)+.08*Math.sin(5*Math.atan2(zy,zx)+10); land[i]=(zz/w+(vn(x+40,y+7,4)-.5)*.2<1)?1:0; if(land[i]) reg[i]=1; }
+  else if(id===1) reg[i]=2; } })();
+function distTo(x,y,type,r=3){ let best=9; for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){ const xx=x+dx,yy=y+dy; const t=(xx<0||yy<0||xx>=WW||yy>=WH)?0:land[yy*WW+xx]; if(t===type) best=Math.min(best,Math.max(Math.abs(dx),Math.abs(dy))); } return best; }
+function line(pts,fn){ for(let k=0;k<pts.length-1;k++){ let [x0,y0]=pts[k],[x1,y1]=pts[k+1]; const n=Math.max(Math.abs(x1-x0),Math.abs(y1-y0)); for(let t=0;t<=n;t++){ const x=Math.round(x0+(x1-x0)*t/n), y=Math.round(y0+(y1-y0)*t/n+Math.sin(t/n*6.28*1)*2*(k%2?1:-1)); fn(x,y,t); } } }
+function buildWorld(skipPixels){
+  layoutQuests(); if(skipPixels) return;
+  cols=new Array(WW*WH); roadMain=new Set(); roadMinor=new Set(); sprites=[];
+  for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; let c;
+    if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water; }
+    else { const d=distTo(x,y,0,2); const r=reg[i];
+      if(d<=2) c=(x+y)%2?P.sand:P.sand2;
+      else if(r===1){ c=vn(x,y,4)>.52?P.grass:P.grass2; if(hash2(x,y)%67===0) c='#ffffff'; if(hash2(x,y)%97===0) c=P.amber; }
+      else if(r===2){ c=vn(x,y,3)>.5?P.forest:P.forest2; }
+      else if(r===3){ c=vn(x,y,3)>.5?P.rock:P.rock2; if(hash2(x,y)%61===0) c=P.rockd; }
+      else if(r===4){ c=(vn(x,y,18)>.44)?(((y>>1)%2)?P.field:P.field2):(vn(x,y,4)>.5?P.grass:P.grass2); }
+      else if(r===5){ c=vn(x,y,4)>.5?P.meadow:P.meadow2; if(hash2(x,y)%41===0) c=P.snow; }
+      else if(r===6){ c=vn(x,y,4)>.5?P.snow:P.snow2; if(vn(x+7,y,11)>.66&&(y>>1)%2) c=P.snow2; const lk=((x-152)/10)**2+((y-57)/4.5)**2; if(lk<1) c=lk>.78?P.foam:(((x*3+y*7)%11===0)?P.foam:P.water2); }
+      else { c=vn(x,y,4)>.5?P.grass2:P.rock2; } }
+    cols[i]=c; }
+  // roads
+  const paint=(set)=>(x,y)=>{ for(const [a,b] of [[0,0],[1,0],[0,1],[1,1]]){ const xx=x+a,yy=y+b; if(xx>=0&&yy>=0&&xx<WW&&yy<WH&&land[yy*WW+xx]) set.add(yy*WW+xx);} };
+  MINOR.forEach(p=>line(p,paint(roadMinor))); line(MAIN,paint(roadMain));
+  const all=new Set([...roadMain,...roadMinor]);
+  const edge=i=>D4.some(([dx,dy])=>{ const x=i%WW+dx,y=Math.floor(i/WW)+dy; return !all.has(y*WW+x); });
+  roadMinor.forEach(i=>{ cols[i]=edge(i)?P.roadEdge:P.road; });
+  roadMain.forEach(i=>{ cols[i]=edge(i)?P.mainEdge:P.main; });
+  let k=0; line(MAIN,(x,y)=>{ k++; if(k%7<3){ const i=y*WW+x; if(roadMain.has(i)&&!edge(i)) cols[i]=P.road; } });
+  // fog over the unmapped region
+  for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; if(reg[i]===7&&land[i]){ const d=Math.hypot(x-166,(y-130)*1.2); if(d<24+(vn(x,y,5)-.5)*14) cols[i]=((x+y)%2)?P.fog:P.fog2; } }
+  // sprites
+  const add=(s,x,y)=>sprites.push({y,f:put=>s.blit(put,x,y)});
+  const nearRoad=(x,y,r)=>{ for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++) if(all.has((y+dy)*WW+x+dx)) return true; return false; };
+  const pine=pineSpr(), bush=bushSpr();
+  for(let gy=4;gy<WH-4;gy+=5) for(let gx=4;gx<WW-4;gx+=5){ const h=hash2(gx,gy), x=gx+(h%4), y=gy+((h>>3)%4), i=y*WW+x; if(!land[i]||nearRoad(x,y,2)) continue;
+    const d=distTo(x,y,0,3); if(d<=3) continue; const r=reg[i];
+    if(r===2&&(h>>6)%10<9) add(pine,x,y+2);
+    else if((r===1||r===4||r===5)&&(h>>6)%10<1) add(bush,x,y);
+    else if(r===3&&(h>>6)%10<1) add(bush,x,y); }
+  
+  add(signSpr(),46,112);
+  add(mountainSpr(20,.9),104,128); add(mountainSpr(15,.9),122,130); add(mountainSpr(13,.9),86,132);
+  add(hallSpr(),146,96); add(houseSpr(),134,100); add(houseSpr(),158,102); add(houseSpr(),156,84);
+  add(castleSpr(),92,56); add(peakSpr(),150,40); { const [lx,ly]=sceneM(1,16,38); add(lighthouseSpr(),Math.round(lx),Math.round(ly)); }
+  { const sp=()=>{ const q=spr(); q.rect(0,-1,1,2,P.trunk); [[-3,3],[-2,2],[-1,1]].forEach(([_,hw],j)=>{ for(let i=-hw;i<=hw;i++){ q.set(i,-2-2*j,P.forest); q.set(i,-3-2*j,i<=0?P.snow:P.snow2); } }); return q.outline(shade(P.forest2,.5)); };
+    [[132,50],[138,60],[166,50],[170,58],[174,66],[128,62],[144,48],[160,66]].forEach(([x,y])=>{ if(land[y*WW+x]&&reg[y*WW+x]===6) add(sp(),x,y); }); add(iglooSpr(),141,57); add(iglooSpr(),164,58); }
+  sprites.sort((a,b)=>a.y-b.y);
+  sprites.cave=caveSpr();
+}
+
+
+function scene(cv,kind){ const W=cv.width,H=cv.height, ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false;
+  const put=(x,y,c)=>{ if(x<0||y<0||x>=W||y>=H) return; ctx.fillStyle=c; ctx.fillRect(x,y,1,1); };
+  const gy=Math.round(H*.72); for(let y=0;y<H;y++) for(let x=0;x<W;x++){ put(x,y,y<H*.38?P.water2:y<H*.62?P.wave:P.foam); }
+  for(let dy=-3;dy<=3;dy++) for(let dx=-3;dx<=3;dx++) if(dx*dx+dy*dy<=9) put(W-10+dx,7+dy,P.amber);
+  [[8,6],[22,10],[34,5]].forEach(([x,y],i)=>{ for(let k=0;k<5+i;k++){ put(x+k,y,'#fff'); if(k>0&&k<4+i) put(x+k,y-1,'#fff'); } });
+  const ground={mines:[P.rock,P.rock2],forest:[P.forest,P.forest2],keep:[P.meadow,P.meadow2],hall:[P.field,P.field2],summit:[P.snow,P.snow2],harbor:[P.sand,P.sand2]}[kind];
+  for(let y=gy;y<H;y++) for(let x=0;x<W;x++){ put(x,y,((x>>1)+y)%2?ground[0]:ground[1]); }
+  for(let x=0;x<W;x++) put(x,gy,P.outline);
+  const B=(sp,x,y)=>sp.blit(put,x,y);
+  if(kind==='mines'){ B(mountainSpr(Math.round(H*.55),.9),Math.round(W*.36),gy+2); B(mountainSpr(Math.round(H*.4),.9),Math.round(W*.72),gy+2); B(mountainSpr(Math.round(H*.28),.9),Math.round(W*.12),gy+2); B(caveSpr(),Math.round(W*.36),gy+1); B(torchSpr(),Math.round(W*.36)-5,gy+4); B(torchSpr(),Math.round(W*.36)+5,gy+4); B(cartSpr(),Math.round(W*.58),gy+6); B(pineSpr(),W-6,gy+7); }
+  if(kind==='forest'){ for(let i=0;i<7;i++) B(pineSpr(),6+i*Math.round(W/7),gy+5+(i%2)*3); }
+  if(kind==='keep'){ B(castleSpr(),Math.round(W/2),gy+3); }
+  if(kind==='hall'){ B(hallSpr(),Math.round(W*.45),gy+4); B(houseSpr(),Math.round(W*.2),gy+6); B(houseSpr(),Math.round(W*.8),gy+7); }
+  if(kind==='summit'){ B(peakSpr(),Math.round(W/2),gy+3); }
+  if(kind==='harbor'){ B(lighthouseSpr(),Math.round(W*.3),gy+7); B(signSpr(),Math.round(W*.64),gy+7); }
+  const adv=spr(); adv.rect(0,-5,2,2,'#e8bf94'); adv.rect(0,-3,2,3,P.castle); adv.set(2,-5,P.trunk); adv.set(2,-4,P.trunk); adv.set(2,-6,P.glow); adv.outline(P.outline); adv.blit(put,Math.round(W*.52),gy+6); }
+
+
+/* ===== data (real notes; stops are the proposer's first headings until titles are written) ===== */
+/* Quests, regions, routes, scene specs and people paths live in the JSON block above, so the script holds code and nothing else. */
+const DATA=JSON.parse(document.getElementById('qm-data').textContent);
+const QUESTS=DATA.quests, REG=DATA.regions, ROUTES=DATA.routes, SPEC=DATA.spec, WALK=DATA.walk;
+const DONE=new Set(DATA.done);
+const YOU=[66,96];
+const LEVEL={intro:1,intermediate:2,deep:3}, CLASS={learn:'Learner',build:'Builder',lead:'Leader',teach:'Teacher'};
+QUESTS.forEach(q=>{ q.lv=LEVEL[q.level]||1; q.xp=25*q.min+100*q.stops.length; q.cls=q.aud.map(a=>CLASS[a]||a).join(', '); q.done=DONE.has(q.id); });
+/* Progress is per stop. The saved progress here is a sample: two quests finished and one stop of the third. In the real build it comes from the guild card's save. */
+const PARTIAL=DATA.partial, PROG={};
+QUESTS.forEach(q=>{ PROG[q.id]=new Set(DONE.has(q.id)?q.stops.map((_,i)=>i):(PARTIAL[q.id]||[])); });
+function refreshProgress(){ QUESTS.forEach(q=>{ q.done=PROG[q.id].size>=q.stops.length; }); }
+refreshProgress();
+const byReg=n=>QUESTS.filter(q=>q.region===n);
+
+/* ===== view: integer zoom levels, 2 css px per canvas px, centre in world coords ===== */
+/* S is how many screen pixels one art pixel covers. It stays a whole number so the pixels stay crisp, and it grows on very large screens
+   so the backing canvas never passes about 1280 by 800 art pixels, however big the window is. */
+const CAP_W=1280, CAP_H=800; let S=2; const scaleFor=(w,h)=>Math.max(2,Math.ceil(w/CAP_W),Math.ceil(h/CAP_H));
+const LV=[2,3,4,6], LNAME=['World','Regions','Landmark','Stops'];
+let V={cx:104,cy:84,z:2}, sel={t:'none'}, collapsed=false, filter='All', q='';
+const cv=document.getElementById('map'), ctx=cv.getContext('2d'), over=document.getElementById('over'), fx=document.getElementById('fx'), fctx=fx.getContext('2d');
+let CW=0,CH=0;
+const wide=()=>innerWidth>=800;
+function pads(){ if(collapsed) return {l:0,b:0}; return wide()?{l:384,b:0}:{l:0,b:Math.round(innerHeight*.44)}; }
+function origin(){ const p=pads(), z=V.z; let vx=V.cx-(CW/2+p.l/2/S)/z, vy=V.cy-(CH/2-p.b/2/S)/z; vx=Math.round(vx*z)/z; vy=Math.round(vy*z)/z; return {vx,vy,z}; }
+function resize(){ S=scaleFor(innerWidth,innerHeight); CW=Math.ceil(innerWidth/S); CH=Math.ceil(innerHeight/S); cv.width=CW; cv.height=CH; cv.style.width=CW*S+'px'; cv.style.height=CH*S+'px'; fx.width=CW; fx.height=CH; fx.style.width=CW*S+'px'; fx.style.height=CH*S+'px'; draw(); }
+
+const CHIPREG={Loop:2,Models:3,Leading:4,Design:5};
+function regionOk(n){ if(filter==='All') return true; if(CHIPREG[filter]) return CHIPREG[filter]===n; if(filter==='Not started') return byReg(n).some(x=>!x.done); return true; }
+function filterOk(q){ if(filter==='All') return true; if(filter==='Loop') return q.region===2; if(filter==='Models') return q.region===3; if(filter==='Leading') return q.region===4; if(filter==='Design') return q.region===5; if(filter==='Not started') return !q.done; return true; }
+
+/* ===== Landmark detail maps =====
+   Zoom to the Landmark level and each landmark turns into its own small map, drawn at twice the world's resolution:
+   the castle becomes a keep inside walls, the guild hall a village with streets, the mountain a mine with tunnels.
+   Quests sit at buildings and stops sit at rooms, so the place you zoom into is the place the lesson is about.
+   Scenes are baked once into offscreen canvases (one detail pixel is half a map pixel), then drawn with one drawImage each. */
+/* Shapes are never plain ovals: every ground patch and the forest's loop road are warped by a few sine lobes, so each place has its own outline. */
+const warp=(t,k,a=1)=>1+a*(.13*Math.sin(3*t+k)+.09*Math.sin(5*t+2*k)+.06*Math.sin(2*t+3*k));
+const ringPt=t=>{ const w=1+.16*Math.sin(3*t+1)+.1*Math.sin(5*t+2)+.06*Math.sin(2*t); return [Math.round(48+34*w*Math.cos(t)),Math.round(38+24*w*Math.sin(t))]; };
+/* Each quest has a route through its place, along things you can really walk: tunnels, streets, walkways, the trail. Stops sit at even steps along it. */
+const sceneM=(n,x,y)=>{ const s=SPEC[n]; return [Math.round(s.cx-s.W/4)+x/2, Math.round(s.cy-s.H/4)+y/2]; };
+/* Quest pins sit beside the routes, never on them: any pin within 13 steps of a route in its place is pushed out to 15 steps from it. */
+function nearOnRoute(rt,x,y){ let best=null; for(let i=0;i<rt.length-1;i++){ const [x0,y0]=rt[i],[x1,y1]=rt[i+1], dx=x1-x0, dy=y1-y0, L2=dx*dx+dy*dy||1, t=Math.max(0,Math.min(1,((x-x0)*dx+(y-y0)*dy)/L2)), px=x0+dx*t, py=y0+dy*t, d=Math.hypot(x-px,y-py); if(!best||d<best.d){ const L=Math.sqrt(L2); best={d,px,py,tx:dx/L,ty:dy/L}; } } return best; }
+function layoutQuests(){ for(const n in SPEC){ const routes=ROUTES[n]||[], sp=SPEC[n];
+    byReg(+n).forEach((qq,i)=>{ let p=sp.q[i]; if(!p) return; p=[p[0],p[1]];
+      for(let pass=0;pass<5;pass++){ let moved=false; for(const rt of routes){ const h=nearOnRoute(rt,p[0],p[1]); if(h&&h.d<13){ let dx=p[0]-h.px, dy=p[1]-h.py, m=Math.hypot(dx,dy); if(m<1){ dx=h.ty; dy=-h.tx; m=1; } p=[Math.max(5,Math.min(sp.W-5,h.px+dx/m*15)),Math.max(5,Math.min(sp.H-5,h.py+dy/m*15))]; moved=true; } } if(!moved) break; }
+      qq.pos=sceneM(+n,p[0],p[1]); }); }
+  placeYou(); }
+let YOUQ={id:'',i:0};
+/* You are here: the next unfinished stop of the next unfinished quest. Browsing and the next button never move it; only finishing a stop does. */
+function placeYou(){ const nx=QUESTS.find(q=>!q.done)||QUESTS[QUESTS.length-1]; let i=0; while(i<nx.stops.length-1&&PROG[nx.id].has(i)) i++; YOUQ={id:nx.id,i}; const p=stopPos(nx,Math.min(i,8)); YOU[0]=p[0]; YOU[1]=p[1]; }
+function where(){ selectStop(YOUQ.id,YOUQ.i); }
+function youWalk(){ const el=document.querySelector('.you'); if(el){ el.classList.add('walk'); setTimeout(()=>el.classList.remove('walk'),950); } }
+function markDone(){ if(sel.t!=='stop') return; const set=PROG[sel.id]; if(set.has(sel.i)) set.delete(sel.i); else set.add(sel.i); refreshProgress(); placeYou(); youWalk(); renderPanel(); draw(); toast(set.has(sel.i)?'Stop '+(sel.i+1)+' marked as done. You moved on.':'Stop '+(sel.i+1)+' is open again.'); }
+const routeOf=qq=>{ const r=ROUTES[qq.region]; return r&&r[byReg(qq.region).indexOf(qq)]; };
+function alongRoute(rt,f){ let L=0; const seg=[]; for(let i=0;i<rt.length-1;i++){ const d=Math.hypot(rt[i+1][0]-rt[i][0],rt[i+1][1]-rt[i][1]); seg.push(d); L+=d; } let s=L*f; for(let i=0;i<seg.length;i++){ if(s<=seg[i]||i===seg.length-1){ const k=seg[i]?Math.min(1,s/seg[i]):0; return [rt[i][0]+(rt[i+1][0]-rt[i][0])*k,rt[i][1]+(rt[i+1][1]-rt[i][1])*k]; } s-=seg[i]; } return rt[0]; }
+const stopPos=(qq,i)=>{ const rt=routeOf(qq); const n=Math.min(qq.stops.length,9); if(!rt) return qq.pos; const [x,y]=alongRoute(rt,n===1?.5:.04+.92*i/(n-1)); return sceneM(qq.region,x,y); };
+/* ===== Life: ferries, a kraken, gulls, forest birds and chimney smoke. Drawn in pixel steps, slowly. ===== */
+/* The cloud ring is the border of the map: a rounded outline far outside the island with open sea in between. The kraken keeps the spot in the top-left sea that it was given. */
+const RING_RX=185, RING_RY=145, RING_N=2.6, ringXY=(t,k=1)=>{ const c=Math.cos(t), s=Math.sin(t); return [Math.round(100+k*RING_RX*Math.sign(c)*Math.abs(c)**(2/RING_N)), Math.round(80+k*RING_RY*Math.sign(s)*Math.abs(s)**(2/RING_N))]; }, KRAKEN=[-41,26];
+const extras=()=>{ const a=sceneM(1,51,14), b=sceneM(1,84,26); return [{id:'academy',wx:a[0],wy:a[1],sym:'\u2197',label:'Claude Academy, the basics, outside this site',text:'Claude Academy',sub:'The basics, outside this site',act:()=>{ selectRegion(1); toast('Opens Claude Academy in a new tab (URL to confirm before launch)'); }},{id:'ferry',wx:b[0],wy:b[1],sym:'\u2192',label:'Ferry to the Guild Hall',text:'Ferry',sub:'Sails to the Guild Hall',act:()=>selectRegion(4)}]; };
+const SEA=[[48,128],[52,140],[62,147],[80,153],[100,156],[120,156],[140,151],[160,146],[172,138],[180,128],[184,116],[188,104],[188,95]];
+const SEG=[]; let SEA_LEN=0; for(let i=0;i<SEA.length-1;i++){ const d=Math.hypot(SEA[i+1][0]-SEA[i][0],SEA[i+1][1]-SEA[i][1]); SEG.push(d); SEA_LEN+=d; }
+function seaAt(s){ for(let i=0;i<SEG.length;i++){ if(s<=SEG[i]||i===SEG.length-1){ const k=Math.min(1,s/SEG[i]); return [SEA[i][0]+(SEA[i+1][0]-SEA[i][0])*k,SEA[i][1]+(SEA[i+1][1]-SEA[i][1])*k,Math.sign(SEA[i+1][0]-SEA[i][0])||1]; } s-=SEG[i]; } }
+const SPR={};
+function makeMoverSprites(){
+  const boat=(dir,sail)=>{ const o=spr(); o.rect(-3,-1,7,1,P.trunk).rect(-2,0,5,1,P.rockd).rect(0,-7,1,6,P.outline).rect(dir>0?1:-3,-6,3,4,sail); return o.outline(P.outline); };
+  SPR.boatR=['#f4f4f0',P.flag,P.amber].map(c=>boat(1,c)); SPR.boatL=['#f4f4f0',P.flag,P.amber].map(c=>boat(-1,c));
+  const k=spr(); for(let dy=-12;dy<=0;dy++) for(let dx=-9;dx<=9;dx++) if(dx*dx+(dy*.8)*(dy*.8)<=81) k.set(dx,dy,dx>2?P.castle2:P.castle);
+  k.rect(-6,-8,3,3,NIGHT?'#ffe27a':'#fff').rect(3,-8,3,3,NIGHT?'#ffe27a':'#fff').set(-5,-7,P.outline).set(4,-7,P.outline).rect(-6,-9,3,1,P.outline).rect(3,-9,3,1,P.outline).set(0,-11,P.pinHi).set(-3,-3,P.pinHi).set(3,-2,P.pinHi).set(-1,-12+0,P.pinHi);
+  SPR.kraken=k.outline(P.outline); }
+/* The movers are baked with the art: bake-art.ts writes each sprite as pixel lists grouped by colour into the manifest, so a baked pair builds
+   them from data instead of drawing them. Without the baked art, makeMoverSprites and makePeople draw them as before. */
+let ART_SPRITES=null;
+function fromData(d){ const o=spr(); for(const c in d) for(let i=0;i<d[c].length;i+=2) o.set(d[c][i],d[c][i+1],c); return o; }
+function loadMoverSprites(d){ SPR.boatR=d.boatR.map(fromData); SPR.boatL=d.boatL.map(fromData); SPR.kraken=fromData(d.kraken); for(const k in d.people) PEOPLE[k]=d.people[k].map(fromData); }
+function tentacle(put,bx,by,dir,ph,t,len){ for(let pass=0;pass<2;pass++) for(let k=0;k<=len;k++){ const cu=k>len*.65?(k-len*.65):0, x=Math.round(bx+dir*(k*.3+Math.sin(k*.5+ph+t/1500)*2.2)-dir*cu*1.1), y=Math.round(by-k*.95+cu*1.6+Math.cos(t/1900+ph)*1.2), w=k<len*.4?1:0, rr=w+(1-pass);
+    for(let j=-rr;j<=rr;j++) for(let i=-rr;i<=rr;i++) put(x+i,y+j,pass?P.castle:P.outline); if(pass&&k%4===2) put(x,y,P.pinHi); } }
+const PEOPLE={};
+function makePeople(){
+  const person=(o,f)=>{ const s=spr(); s.rect(-2,-9,5,2,o.hat||P.trunk); if(o.lamp) s.set(0,-10,P.glow); if(o.plume) s.set(0,-10,o.plume);
+    s.rect(-1,-7,3,2,'#e8b890'); if(o.beard) s.rect(-1,-6,3,2,o.beard);
+    s.rect(-2,-5,5,4,o.body); s.rect(-2,-2,5,1,o.belt||o.body);
+    if(f%2===0){ s.rect(-2,-1,2,2,o.legs); s.rect(1,-1,2,1,o.legs); } else { s.rect(-2,-1,2,1,o.legs); s.rect(1,-1,2,2,o.legs); }
+    if(o.tool==='pick'){ if(f<2){ s.rect(3,-9,1,6,'#8a5a2b'); s.rect(2,-10,4,1,'#9aa0a6'); } else { s.rect(3,-4,1,5,'#8a5a2b'); s.rect(3,1,4,1,'#9aa0a6'); } }
+    if(o.tool==='spear'){ s.rect(3,-13,1,13,'#8a5a2b'); s.set(3,-14,'#cfd6dd'); s.rect(-5,-5,2,4,P.flag); }
+    if(o.tool==='pack') s.rect(-4,-5,2,4,'#8a5a2b');
+    return s.outline(P.outline); };
+  const kinds={ dwarf:{hat:'#d4a72c',lamp:1,beard:'#a0522d',body:'#3b6ea8',belt:'#5a3d22',legs:'#4a3320',tool:'pick'},
+    guard:{hat:'#8a8f9c',plume:P.flag,body:'#c8382a',belt:'#3b3f4a',legs:'#3b3f4a',tool:'spear'},
+    v1:{hat:P.field,body:P.meadow,legs:'#5b3a1f'}, v2:{hat:P.roof,body:P.field2,legs:'#3b3f4a'}, v3:{hat:'#f4f4f0',body:P.grass2,legs:'#5b3a1f'},
+    elf:{hat:P.grass,plume:P.grass2,body:P.forest,legs:P.trunk}, climber:{hat:'#e86aa6',body:P.flag,legs:'#2a3a5a',tool:'pack'}, sailor:{hat:'#f4f4f0',body:'#4a78c8',legs:'#f4f4f0'} };
+  for(const k in kinds) PEOPLE[k]=[0,1,2,3].map(f=>person(kinds[k],f)); }
+function walkPos(w,T){ const A=w.p; if(A.length===1||w.m==='stay') return [A[0][0],A[0][1]];
+  if(!w._L){ w._seg=[]; w._L=0; for(let i=0;i<A.length-1;i++){ const d=Math.hypot(A[i+1][0]-A[i][0],A[i+1][1]-A[i][1]); w._seg.push(d); w._L+=d; } }
+  let s=T/1000*w.v+(w.ph||0); const L=w._L; if(w.m==='loop') s=((s%L)+L)%L; else { s=((s%(2*L))+2*L)%(2*L); if(s>L) s=2*L-s; }
+  for(let i=0;i<w._seg.length;i++){ if(s<=w._seg[i]||i===w._seg.length-1){ const k=w._seg[i]?Math.min(1,s/w._seg[i]):0; return [A[i][0]+(A[i+1][0]-A[i][0])*k,A[i][1]+(A[i+1][1]-A[i][1])*k]; } s-=w._seg[i]; } }
+function folk(dpf,T){ for(const n in WALK){ if((FADE[n]||0)<.6) continue; const dp=dpf(+n);
+  WALK[n].forEach((w,idx)=>{ const [x,y]=walkPos(w,T), moving=!(w.m==='stay'||w.p.length===1); let f;
+    if(w.k==='dwarf'&&!moving) f=(Math.floor(T/500)+(w.i||0))%2*2; else if(w.k==='guard'&&!moving) f=0; else f=Math.floor(T/320+idx)%2;
+    PEOPLE[w.k][f].blit(dp,Math.round(x),Math.round(y));
+    if(w.cart){ const [x2,y2]=walkPos(w,T+120), up=y2<y?-1:1, cy=Math.round(y)+up*-8*-1; const bx=(a,b,c,d,col)=>{ for(let j=0;j<d;j++) for(let i=0;i<c;i++) dp(Math.round(x)+a+i,cy+b+j,col); };
+      bx(-4,-3,9,4,P.outline); bx(-3,-2,7,2,P.rockd); bx(-2,-4,5,2,P.amber); bx(-3,1,2,2,P.outline); bx(2,1,2,2,P.outline); } }); } }
+function bird(put,x,y,f,col,under){ x=Math.round(x); y=Math.round(y); const up=f%2; if(under) put(x,y+1,under); put(x,y,col); put(x-1,y-(up?1:0),col); put(x+1,y-(up?1:0),col); }
+function movers(put,z,T,dpf){
+  const f=Math.floor(T/800), L=SEA_LEN;
+  if(LAYERS.sea) [0,.37,.71].forEach((ph,i)=>{ let s=((T/1000)*1.4+ph*2*L)%(2*L); const back=s>L; if(back) s=2*L-s; const [x,y,dx]=seaAt(s), d=back?-dx:dx; (d>0?SPR.boatR:SPR.boatL)[i].blit(put,Math.round(x),Math.round(y)+(f%2)); if(NIGHT) put(Math.round(x),Math.round(y)-8+(f%2),P.glow); put(Math.round(x-d*5),Math.round(y)+1,P.foam); put(Math.round(x-d*8),Math.round(y)+1,P.wave); });
+  // the kraken in the top-left corner: a head on the water and slow tentacles
+  if(LAYERS.sea){ const kx=KRAKEN[0], ky=KRAKEN[1]; [[-10,-1,-1,0,17],[-7,0,-1,2,13],[7,0,1,4,13],[10,-1,1,1,17]].forEach(([dx,dy,dir,ph,len])=>tentacle(put,kx+dx,ky+dy,dir,ph,T,len));
+    SPR.kraken.blit(put,kx,ky+(f%2?0:1)); for(let dx=-11;dx<=11;dx+=2) put(kx+dx,ky+1+((dx+f)%4?0:1),P.foam); }
+  if(LAYERS.sea&&NIGHT){ const [bx,by]=sceneM(1,16,14), an=T/2600; for(let r=3;r<=18;r+=2) put(Math.round(bx+Math.cos(an)*r),Math.round(by+Math.sin(an)*r*.6),P.glow); }
+  // gulls over the Harbor port, and birds over the forest
+  if(LAYERS.air) for(let g=0;g<3;g++){ const a=T/4200+g*2.1, r=11+g*5; bird(put,32+Math.cos(a)*r*1.4,122+Math.sin(a)*r*.6,f+g,'#f4f4f0',P.outline); }
+  if(LAYERS.air&&z>=3) for(let g=0;g<4;g++){ const a=-T/5200+g*1.6, r=12+g*4; bird(put,62+Math.cos(a)*r*1.5,92+Math.sin(a)*r*.8,f+g,P.outline); }
+  if(z>=4&&LAYERS.people) folk(dpf,T);
+  // fish jumping now and then, and fireflies over the forest after dark
+  if(LAYERS.sea) [[60,148,0],[110,157,3.1],[28,143,5.7],[150,150,8.3]].forEach(([fx,fy,o])=>{ const ph=(T/1000+o)%11; if(ph<1.1){ const k=ph/1.1; put(Math.round(fx+k*6),Math.round(fy-Math.sin(k*Math.PI)*5),'#cfe6f5'); put(Math.round(fx+k*6)-1,Math.round(fy-Math.sin(k*Math.PI)*5)+1,'#cfe6f5'); } else if(ph<1.5){ put(fx+6,fy,P.foam); put(fx+7,fy,P.foam); put(fx+5,fy,P.foam); } else if(ph<1.9&&false){} });
+  if(LAYERS.air&&z>=3&&(document.documentElement.dataset.colorScheme==='dark'||(!document.documentElement.dataset.colorScheme&&matchMedia('(prefers-color-scheme: dark)').matches))) for(let q=0;q<10;q++){ const h=hash2(q,41), fxp=48+(h%32)+Math.sin(T/2600+q)*3, fyp=78+((h>>8)%28)+Math.cos(T/3100+q*2)*2; if(Math.sin(T/1300+q*1.7)>.15) put(Math.round(fxp),Math.round(fyp),P.glow); }
+  if(LAYERS.air&&z>=4&&(FADE[4]||0)>.5){ const [sx,sy]=sceneM(4,66,0); for(let i=0;i<4;i++){ const k=((T/320)+i*4)%16; put(sx+Math.round(Math.sin(T/900+i)*1.5),Math.round(sy-k*.6),i%2?P.foam:P.snow2); } } }
+function drawYou(cv){ if(cv._pal===P.outline) return; cv._pal=P.outline; const g=cv.getContext('2d'); g.clearRect(0,0,16,20);
+  const o=spr(); o.rect(-3,-16,6,2,'#2f7d5b').rect(-4,-14,8,1,'#2f7d5b').rect(-3,-13,6,4,'#f2c9a0').set(-2,-12,'#1c1b17').set(1,-12,'#1c1b17').rect(-4,-9,8,6,'#3b82f6').rect(-4,-6,8,1,'#8a5a2b').rect(-5,-8,1,4,'#3b82f6').rect(4,-8,1,4,'#3b82f6').rect(-3,-3,2,3,'#5b3a1f').rect(1,-3,2,3,'#5b3a1f').rect(4,-9,2,5,'#8a5a2b');
+  o.outline(P.outline).blit((x,y,c)=>{ g.fillStyle=c; g.fillRect(x,y,1,1); },8,19); }
+let DET=[];
+function bakeScenes(){
+  DET=[]; const VE=shade(P.forest2,.5), HE=shade(P.wall2,.45), WIN=NIGHT?P.glow:'#6f8196';
+  for(const n in SPEC){ const sp=SPEC[n], W=sp.W, H=sp.H, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const g=cv.getContext('2d');
+    const R=(x,y,w,h,c)=>{ g.fillStyle=c; g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h)); };
+    const D=(x,y,r,c)=>{ g.fillStyle=c; for(let j=-r;j<=r;j++) for(let i=-r;i<=r;i++) if(i*i+j*j<=r*r+r*.6) g.fillRect(x+i,y+j,1,1); };
+    const L=(x0,y0,x1,y1,c,t=1)=>{ const m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0))||1; for(let k=0;k<=m;k++) R(x0+(x1-x0)*k/m-t/2,y0+(y1-y0)*k/m-t/2,t,t,c); };
+    const blob=(base,edge,th=.84,k=1)=>{ const m=new Uint8Array(W*H);
+      for(let y=0;y<H;y++) for(let x=0;x<W;x++){ const dx=(x+.5-W/2)/(W/2)*k, dy=(y+.5-H/2)/(H/2)*k, wr=warp(Math.atan2(dy,dx),+n), d=(dx*dx+dy*dy)/(wr*wr)+((hash2(x,y)%97)/97-.5)*.16; if(d<1){ m[y*W+x]=1; g.fillStyle=th>=.95?base:(d>th?edge:base); g.fillRect(x,y,1,1); } }
+      if(th>=.95){ const on=(x,y)=>x>=0&&y>=0&&x<W&&y<H&&m[y*W+x]; g.fillStyle=edge; for(let y=0;y<H;y++) for(let x=0;x<W;x++) if(m[y*W+x]&&!(on(x-1,y)&&on(x+1,y)&&on(x,y-1)&&on(x,y+1))) g.fillRect(x,y,1,1); } };
+    const hill=(rx,ry,base,edge)=>{ const cx=W/2, cy=H/2+1, m=new Uint8Array(W*H), lobe=t=>1+.2*Math.sin(2*t+1)+.15*Math.sin(4*t+.5)+.1*Math.sin(7*t);
+      for(let y=0;y<H;y++) for(let x=0;x<W;x++){ const dx=(x+.5-cx)/rx, dy=(y+.5-cy)/ry, lr=lobe(Math.atan2(dy,dx)), d=(dx*dx+dy*dy)/(lr*lr)+((hash2(x+9,y+3)%97)/97-.5)*.2; if(d<1){ m[y*W+x]=1; g.fillStyle=base; g.fillRect(x,y,1,1); } }
+      const on=(x,y)=>x>=0&&y>=0&&x<W&&y<H&&m[y*W+x];
+      g.fillStyle=edge; for(let y=0;y<H;y++) for(let x=0;x<W;x++) if(m[y*W+x]&&!(on(x-1,y)&&on(x+1,y)&&on(x,y-1)&&on(x,y+1))) g.fillRect(x,y,1,1); };
+    const speckle=(x,y,w,h,c,k)=>{ for(let i=0;i<k;i++){ const q=hash2(i*7+x,y*3+i); R(x+q%w,y+((q>>8)%h),1,1,c); } };
+    const pine=(x,y)=>{ R(x,y,2,3,P.trunk); R(x-3,y-3,8,3,P.forest); R(x-2,y-6,6,3,P.forest); R(x-1,y-9,4,3,P.forest2); };
+    const glow=(x,y,fire)=>{ if(!NIGHT&&!fire){ R(x,y,2,2,'#b9a36a'); return; } if(NIGHT){ R(x-1,y-1,1,1,P.amber); R(x+2,y-1,1,1,P.amber); R(x-1,y+2,1,1,P.amber); R(x+2,y+2,1,1,P.amber); } R(x-1,y,1,2,P.amber); R(x+2,y,1,2,P.amber); R(x,y-1,2,1,P.amber); R(x,y+2,2,1,P.amber); R(x,y,2,2,P.glow); };
+    const house=(x,y,w,h,ro,ro2)=>{ R(x-3,y-7,w+6,h+8,HE); R(x,y,w,h,P.wall); R(x+w/2,y,w/2,h,P.wall2); R(x-2,y-6,w+4,7,ro); R(x+w/2,y-6,w/2+2,7,ro2); R(x+w/2-2,y+h-5,4,5,P.outline); R(x+2,y+3,3,3,WIN); };
+    const tent=(x,y,c1,c2)=>{ for(let j=-1;j<9;j++) R(x-j-1,y+j,2*j+4,1,P.outline); for(let j=0;j<8;j++){ R(x-j,y+j,j+1,1,c1); R(x+1,y+j,j+1,1,c2); } R(x,y+8,2,1,P.outline); };
+    if(n==1){ /* A port island: a lighthouse, a boathouse, a pier where the ferries leave for the Guild Hall, and the start camp. */
+      blob(P.grass,P.sand,.7,1.28); speckle(12,8,66,42,P.sand2,70);
+      L(34,38,70,30,P.roadEdge,4); L(34,38,70,30,P.road,2);
+      for(let y=16;y<=38;y++){ const hw=Math.round(3+(y-16)*3/22); R(16-hw-1,y,hw*2+2,1,P.outline); R(16-hw,y,hw*2,1,(Math.floor((y-16)/6)%2===0)?'#f4f4f0':P.flag); R(16,y,hw,1,(Math.floor((y-16)/6)%2===0)?'#dfe3e8':'#c8382a'); }
+      R(10,10,12,7,P.outline); R(11,11,10,5,NIGHT?P.glow:'#d8dde3'); for(let y=3;y<=9;y++){ const hw=Math.round((y-3)*7/6); R(16-hw-1,y,hw*2+3,1,P.outline); R(16-hw,y,hw*2+1,1,P.roof2); } R(8,38,16,3,P.outline); R(9,38,14,2,P.wall2);
+      house(60,22,16,10,P.roof2,P.roof);
+      L(70,30,87,30,P.outline,8); L(70,30,87,30,P.trunk,6); for(let x=72;x<86;x+=3) R(x,27,1,6,P.wall2); [72,80,86].forEach(x=>{ R(x,24,2,2,P.outline); R(x,34,2,2,P.outline); }); R(84,22,2,5,P.trunk);
+      R(55,30,7,7,P.outline); R(56,31,5,5,P.trunk); R(56,33,5,1,P.wall2); D(66,38,3,P.outline); D(66,38,2,P.trunk);
+      R(73,38,15,6,P.outline); R(74,39,13,4,P.trunk); R(76,37,9,2,P.rockd); R(80,33,1,5,P.outline); R(81,33,4,3,P.snow);
+      tent(26,40,P.roof,P.roof2); tent(45,42,P.field,P.field2); D(37,43,2,P.outline); R(36,40,2,3,P.amber);
+      R(51,16,2,12,P.trunk); R(44,12,16,8,P.outline); R(45,13,14,6,P.wall); R(45,13,14,2,P.roof); R(51,6,1,7,P.outline); R(52,6,7,4,P.flag);
+      SPEC[1].lights.forEach(([x,y],k)=>glow(x,y,(SPEC[1].fires||[]).includes(k))); }
+    if(n==2){ /* An elf town in the canopy: great trees with houses built into their crowns, joined by plank walkways and rope bridges, lit by lanterns. */
+      blob(P.forest2,P.forest); speckle(0,0,W,H,P.forest,260); speckle(0,0,W,H,'#4a3320',60);
+      const st=[ringPt(-1.5708),ringPt(0),ringPt(1.5708),ringPt(3.1416)], loop=[]; for(let q=0;q<=96;q++) loop.push(ringPt(q/96*6.2832));
+      const crown=(x,y,r)=>{ D(x,y,r+1,VE); D(x,y,r,P.forest); D(x+Math.round(r/4),y+Math.round(r/4),Math.round(r*.7),P.forest2); D(x-Math.round(r/3),y-Math.round(r/3),Math.max(2,Math.round(r/3)),P.grass2); speckle(x-r,y-r,r*2,r*2,P.forest,Math.round(r*1.4)); };
+      const away=(x,y,r)=>loop.every(([px,py])=>Math.hypot(px-x,py-y)>r)&&[[48,38],...st].every(([cx,cy])=>Math.hypot(cx-x,cy-y)>r+10);
+      const small=[]; for(let gy=4;gy<H-2;gy+=11) for(let gx=4;gx<W-2;gx+=11){ const h=hash2(gx+5,gy+71), x=gx+(h%7)-3, y=gy+((h>>4)%7)-3, dx=(x-W/2)/(W/2), dy=(y-H/2)/(H/2); if(dx*dx+dy*dy>.95||!away(x,y,9)) continue; small.push([x,y,5+(h>>9)%3,h]); }
+      small.sort((u,v)=>u[1]-v[1]).forEach(([x,y,r])=>crown(x,y,r));
+      small.filter((_,i)=>i%4===1).forEach(([x,y])=>{ D(x,y,3,P.outline); D(x,y,2,P.trunk); R(x-1,y,1,1,'#f5f0dc'); R(x+1,y-1,1,1,'#f5f0dc'); R(x,y+1,1,1,'#f5f0dc'); R(x+3,y-4,5,4,P.outline); R(x+4,y-3,3,2,'#8a5a2b'); R(x+4,y-2,2,1,'#c8382a'); R(x+7,y-3,1,1,P.amber); });
+      crown(48,38,18); st.forEach(([x,y])=>crown(x,y,13));
+      const plank=(x0,y0,x1,y1)=>{ const m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0))||1; for(let k=0;k<=m;k++){ const x=Math.round(x0+(x1-x0)*k/m), y=Math.round(y0+(y1-y0)*k/m); R(x-2,y-2,5,5,P.outline); } for(let k=0;k<=m;k++){ const x=Math.round(x0+(x1-x0)*k/m), y=Math.round(y0+(y1-y0)*k/m); R(x-1,y-1,3,3,P.trunk); if(k%3===0) R(x-1,y,3,1,P.wall2); } };
+      for(let q=0;q<loop.length-1;q++) plank(loop[q][0],loop[q][1],loop[q+1][0],loop[q+1][1]);
+      st.forEach(([x,y])=>plank(48,38,x,y));
+      // the great tree: a round platform with a hearth and a banner pole
+      D(48,38,10,P.outline); D(48,38,9,P.trunk); D(48,38,7,P.wall2); for(let a=0;a<12;a++) L(48,38,Math.round(48+9*Math.cos(a/12*6.283)),Math.round(38+9*Math.sin(a/12*6.283)),P.trunk,1);
+      D(48,38,4,P.outline); D(48,38,3,P.rockd); D(48,38,1,P.trunk); R(47,34,2,3,P.amber); R(47,32,2,2,P.glow); R(48,24,1,9,P.outline); R(49,24,7,4,P.amber);
+      const elf=(x,y,wv,r1,r2)=>{ D(x,y+1,wv+4,HE); D(x,y+1,wv+3,P.wall2); R(x-wv-1,y-8,2*wv+2,16,HE); R(x-wv,y-3,2*wv,8,P.wall); R(x-wv,y-3,wv,8,P.wall2); R(x-wv-2,y-9,wv+2,7,r1); R(x,y-9,wv+2,7,r2); R(x-1,y-12,2,4,r2); R(x-2,y+1,4,4,P.outline); R(x-1,y+2,2,3,WIN); R(x+wv-3,y-1,2,2,WIN); };
+      { const [x,y]=st[0]; elf(x,y,8,P.grass,P.forest); R(x-4,y-7,2,3,'#f5f0dc'); R(x+2,y-7,2,3,'#f5f0dc'); }
+      { const [x,y]=st[1]; elf(x,y,8,P.grass,P.forest); D(x+9,y-9,3,P.outline); D(x+9,y-9,2,P.rock2); R(x+8,y-14,2,3,P.fog); R(x+8,y-17,2,2,P.fog2); }
+      { const [x,y]=st[2]; R(x-3,y-14,7,22,P.outline); R(x-2,y-13,5,20,P.wall); R(x-2,y-13,2,20,P.wall2); R(x-4,y-19,9,6,P.outline); R(x-3,y-18,7,5,P.grass); R(x,y-18,4,5,P.forest); R(x,y-24,1,6,P.outline); R(x-1,y-8,3,4,WIN); R(x-1,y,3,4,WIN); }
+      { const [x,y]=st[3]; elf(x,y,7,P.forest,P.grass); R(x-7,y-16,14,1,P.outline); R(x-6,y-15,12,4,P.wall); D(x,y-14,3,P.outline); D(x,y-14,2,WIN); }
+      small.filter((_,i)=>i%3===0).forEach(([x,y,r])=>{ R(x-5,y-6,11,10,HE); R(x-4,y-5,9,7,P.wall); R(x-6,y-8,13,5,P.grass2); R(x,y-8,7,5,P.forest); R(x-1,y,3,3,WIN); });
+      SPEC[2].lights.forEach(([x,y],k)=>glow(x,y,(SPEC[2].fires||[]).includes(k))); }
+    if(n==3){ blob(P.rock2,P.rock); hill(W/2-8,H/2-6,P.rock,P.outline); const DK='#2a2430';
+      const tun=(x0,y0,x1,y1,t)=>L(x0,y0,x1,y1,DK,t);
+      tun(65,68,65,24,6); tun(65,44,26,44,5); tun(26,44,26,24,5); tun(65,36,105,36,5); tun(105,36,105,22,5); tun(105,20,74,18,4);
+      R(50,10,32,16,DK); R(18,16,16,12,DK); R(98,12,16,12,DK);
+      R(56,15,3,3,P.amber); R(70,12,3,3,P.glow); R(66,21,2,3,'#a483cf');
+      for(let y=60;y>26;y-=16){ R(61,y,1,6,P.trunk); R(69,y,1,6,P.trunk); R(61,y-1,9,1,P.trunk); }
+      for(let y=24;y<=68;y+=2){ R(64,y,1,1,P.mainEdge); R(67,y,1,1,P.mainEdge); if(y%4===0) R(63,y,5,1,P.trunk); }
+      R(58,60,2,10,P.trunk); R(70,60,2,10,P.trunk); R(58,58,14,2,P.trunk);
+      R(77,60,14,10,DK); R(78,63,12,5,P.rockd); R(78,63,12,2,P.rock2); R(80,68,2,2,DK); R(86,68,2,2,DK); R(80,61,8,2,P.amber);
+      R(57,-1,18,13,DK); R(60,0,12,9,P.trunk); R(58,0,16,3,P.roof); R(64,-0,4,2,P.roof2); R(65,9,2,4,DK);
+      SPEC[3].lights.forEach(([x,y],k)=>glow(x,y,(SPEC[3].fires||[]).includes(k))); }
+    if(n==4){ blob(P.grass,P.grass2);
+      R(6,32,96,12,P.roadEdge); R(6,33,96,10,P.road); R(48,4,12,68,P.roadEdge); R(49,4,10,68,P.road);
+      R(40,28,28,20,P.roadEdge); R(41,29,26,18,P.sand); speckle(41,29,26,18,P.sand2,50);
+      R(33,-1,42,30,HE); R(38,6,32,22,P.wall); R(54,6,16,22,P.wall2); R(34,0,40,8,P.roof); R(54,0,20,8,P.roof2); R(50,18,8,10,P.outline); R(52,10,4,4,WIN); R(44,12,3,4,WIN); R(61,12,3,4,WIN); R(53,-2,1,3,P.outline); R(63,1,5,7,P.outline); R(64,2,3,6,P.rockd);
+      house(8,12,16,12,P.roof,P.roof2); house(84,12,16,12,P.roof2,P.roof); house(8,50,16,12,P.roof2,P.roof); house(30,52,14,10,P.roof,P.roof2); house(66,52,14,10,P.roof2,P.roof); house(86,50,16,12,P.roof,P.roof2);
+      R(42,34,8,6,P.field); R(42,32,8,3,P.flag); R(58,34,8,6,P.field2); R(58,32,8,3,P.amber); R(50,38,6,4,P.trunk);
+      R(20,38,10,7,P.trunk); R(21,39,8,5,P.wall); R(23,40,4,1,P.outline); R(23,42,3,1,P.outline);
+      D(54,58,3,P.rockd); D(54,58,1,P.water);
+      for(let x=10;x<30;x+=3) R(x,28,1,3,P.trunk); for(let x=78;x<100;x+=3) R(x,28,1,3,P.trunk);
+      pine(4,36); pine(100,36); pine(30,68); pine(76,68); pine(18,66);
+      SPEC[4].lights.forEach(([x,y],k)=>glow(x,y,(SPEC[4].fires||[]).includes(k))); }
+    if(n==5){ blob(P.grass,P.grass2);
+      R(9,9,82,58,P.outline); R(13,13,74,50,P.outline); R(14,14,72,52,P.sand); speckle(15,15,70,50,P.sand2,300);
+      R(10,10,80,5,P.wall2); R(10,10,5,56,P.wall2); R(85,10,5,56,P.wall2); R(10,61,32,5,P.wall2); R(58,61,32,5,P.wall2);
+      for(let x=10;x<90;x+=4) R(x,8,2,2,P.wall); for(let y=10;y<66;y+=4){ R(8,y,2,2,P.wall); R(90,y,2,2,P.wall); } for(let x=10;x<42;x+=4) R(x,66,2,2,P.wall); for(let x=58;x<90;x+=4) R(x,66,2,2,P.wall);
+      [[4,4],[82,4],[4,56],[82,56]].forEach(([x,y])=>{ R(x-1,y-1,18,18,P.outline); R(x,y,16,16,P.wall2); R(x+2,y+2,12,12,P.wall); R(x+4,y+4,8,8,P.roof); R(x+8,y+4,4,8,P.roof2); R(x+7,y+7,2,2,P.outline); });
+      R(37,55,26,16,P.outline); R(38,56,24,14,P.wall2); R(40,58,20,12,P.wall); R(45,60,10,10,P.outline); for(let x=46;x<55;x+=2) R(x,60,1,10,P.stone);
+      R(45,40,10,26,P.roadEdge); R(46,40,8,26,P.road);
+      R(31,15,38,30,P.outline); R(39,5,22,14,P.outline); R(32,16,36,28,P.wall); R(50,16,18,28,P.wall2); for(let x=32;x<68;x+=4) R(x,14,2,2,P.wall); R(40,6,20,12,P.castle); R(50,6,10,12,P.castle2);
+      R(49,0,1,8,P.outline); R(50,0,7,4,P.flag); R(46,36,8,8,P.outline); R(47,37,6,7,P.trunk); R(38,24,3,5,WIN); R(59,24,3,5,WIN); R(48,22,4,6,WIN);
+      R(13,15,22,20,P.outline); R(16,20,16,14,P.wall2); R(14,16,20,6,P.roof); R(24,16,10,6,P.roof2); R(22,28,4,6,P.outline); R(18,24,3,3,WIN); R(27,24,3,3,WIN);
+      R(63,15,22,20,P.outline); R(66,20,16,14,P.wall2); R(64,16,20,6,P.roof2); R(72,16,10,6,P.roof); R(72,28,4,6,P.outline); R(72,24,4,3,P.flag);
+      D(30,50,4,P.wall2); D(30,50,2,P.water); R(66,46,14,10,P.trunk); R(64,44,18,3,P.roof);
+      pine(2,40); pine(96,42); pine(4,72); pine(94,72);
+      SPEC[5].lights.forEach(([x,y],k)=>glow(x,y,(SPEC[5].fires||[]).includes(k))); }
+    if(n==6){ /* The summit: one peak with a switchback trail and a few tents along it, igloos below and a frozen lake. */
+      blob(P.snow,P.snow2);
+      const SE=shade(P.snow2,.6);
+      const igloo=(x,y,r)=>{ for(let j=-1;j<=r;j++){ const w=Math.round(Math.sqrt(r*r-Math.max(j,0)*Math.max(j,0)))+1; R(x-w,y-j-1,w*2+1,1,SE); } for(let j=0;j<=r;j++){ const w=Math.round(Math.sqrt(r*r-j*j)); R(x-w,y-j,w*2+1,1,P.snow); R(x+1,y-j,w,1,P.snow2); if(j%3===1){ R(x-w,y-j,w*2+1,1,P.snow2); } }
+        for(let j=2;j<r;j+=3) for(let i=-r+3;i<r;i+=4) R(x+i+(j%2?2:0),y-j-1,1,2,SE); R(x-3,y-4,7,5,SE); R(x-2,y-3,5,4,'#3b4a63'); R(x-2,y-4,5,1,P.snow2); };
+      for(let y=5;y<47;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw-1,y,hw*2+2,1,P.outline); }
+      for(let y=6;y<46;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw,y,hw*2,1,P.rock); R(42,y,hw,1,P.rock2); }
+      for(let y=6;y<18;y++){ const hw=Math.round((y-6)*.82+2); R(42-hw+2,y,hw*2-4,1,P.snow); R(42,y,hw-2,1,P.snow2); }
+      speckle(14,26,56,18,P.rockd,26);
+      const pts=[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]]; for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.roadEdge,4);
+      for(let k=0;k<pts.length-1;k++) L(pts[k][0],pts[k][1],pts[k+1][0],pts[k+1][1],P.road,2);
+      tent(12,48,P.roof,P.roof2); tent(66,40,P.field,P.field2); tent(18,22,P.roof2,P.roof);
+      R(42,0,1,10,P.outline); R(43,0,8,5,P.flag); R(43,1,3,2,P.pinHi);
+      for(let y=58;y<70;y++) for(let x=24;x<68;x++){ const dx=(x-46)/21, dy=(y-70)/10; if(dx*dx+dy*dy<1){ g.fillStyle=dx*dx+dy*dy>.8?P.foam:(((x*3+y*7)%11===0)?P.foam:P.water2); g.fillRect(x,y,1,1); } }
+      igloo(76,58,8); igloo(8,64,6);
+      const spine=(x,y)=>{ const ly=[[x-4,y-3,9,3],[x-3,y-6,7,3],[x-2,y-9,5,3]]; R(x-2,y-1,4,4,VE); ly.forEach(([a,b,w,h])=>R(a-1,b-1,w+2,h+2,VE)); R(x-1,y,2,2,P.trunk); ly.forEach(([a,b,w,h])=>{ R(a,b,w,h,P.forest); R(a,b,w,1,P.snow); }); };
+      spine(4,40); spine(78,40); spine(62,67); spine(20,66);
+      SPEC[6].lights.forEach(([x,y],k)=>glow(x,y,(SPEC[6].fires||[]).includes(k))); }
+    DET.push({n:+n,ox:Math.round(sp.cx-W/4),oy:Math.round(sp.cy-H/4),W,H,cv}); } }
+
+/* The terrain and every static sprite are drawn once into an offscreen canvas, one pixel per map pixel, with a margin of open
+   water. Each frame is then a single scaled drawImage plus the few things that depend on the view (camp, pins, you). */
+const M=200; let base=null, wavesCv=null, glints=[];
+function bake(){ NIGHT=isNightNow(); CL1=NIGHT?shade(P.snow,.55):P.snow; CL2=NIGHT?shade(P.snow2,.55):P.snow2; base=document.createElement('canvas'); base.width=WW+2*M; base.height=WH+2*M; const b=base.getContext('2d'); glints=[];
+  /* Waves live on their own transparent layer, so the Layers toggle only redraws and never rebakes the map. */
+  wavesCv=document.createElement('canvas'); wavesCv.width=base.width; wavesCv.height=base.height; const wv=wavesCv.getContext('2d'); wv.fillStyle=P.wave;
+  const isWater=c=>c===P.water||c===P.water2||c===P.wave||c===P.foam;
+  for(let y=-M;y<WH+M;y++) for(let x=-M;x<WW+M;x++){ const inW=!(x<0||y<0||x>=WW||y>=WH); let c; if(inW) c=cols[y*WW+x]; else { const u=(Math.abs(x-100)/RING_RX)**RING_N+(Math.abs(y-80)/RING_RY)**RING_N+(vn(x+3,y+5,5)-.5)*.4; c=u<1?P.water:((vn(x,y,6)+vn(x+50,y+20,16))/2>.5?CL1:CL2); } b.fillStyle=c; b.fillRect(x+M,y+M,1,1); if(c===P.water){ if(hash2(x,y)%31===0) wv.fillRect(x+M,y+M,1,1); } if(isWater(c)&&hash2(x,y)%53===0) glints.push([x,y,hash2(x,y)>>9]); }
+  const put=(wx,wy,c)=>{ b.fillStyle=c; b.fillRect(wx+M,wy+M,1,1); };
+  sprites.cave.blit(put,104,127); sprites.forEach(s=>s.f(put));
+  const isLand=(x,y)=>x>=0&&y>=0&&x<WW&&y<WH&&land[y*WW+x];
+  const disc=(x,y,r,c)=>{ for(let j=-r;j<=r;j++) for(let i=-r;i<=r;i++) if(i*i+j*j<=r*r+r*.5) put(x+i,y+j,c); };
+  const plank=(x0,y0,x1,y1)=>{ const m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0))||1; for(let k=0;k<=m;k++){ const x=Math.round(x0+(x1-x0)*k/m), y=Math.round(y0+(y1-y0)*k/m); for(let j=-1;j<=1;j++) for(let i=-1;i<=1;i++) put(x+i,y+j,P.outline); } for(let k=0;k<=m;k++){ const x=Math.round(x0+(x1-x0)*k/m), y=Math.round(y0+(y1-y0)*k/m); put(x,y,k%2?P.trunk:P.wall2); } };
+  /* Path only: the same island as flat paper, tinted by region, with the roads that join the regions. Everything decorative is left out. */
+  { const G=(getComputedStyle(document.documentElement).getPropertyValue('--paper-2')||'').trim(); const lum=/^#[0-9a-f]{6}$/i.test(G)?(parseInt(G.slice(1,3),16)*.3+parseInt(G.slice(3,5),16)*.59+parseInt(G.slice(5,7),16)*.11):200, K=lum<110?'#ffffff':'#000000'; baseP=document.createElement('canvas'); baseP.width=WW; baseP.height=WH; const pb=baseP.getContext('2d');
+    const isL=(x,y)=>x>=0&&y>=0&&x<WW&&y<WH&&land[y*WW+x];
+    for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; if(!land[i]){ pb.fillStyle=P.water; } else { const coast=!(isL(x-1,y)&&isL(x+1,y)&&isL(x,y-1)&&isL(x,y+1)); pb.fillStyle=coast?mixHex(G,K,.32):mixHex(G,PATHCOL[reg[i]]||'#888888',.2); } pb.fillRect(x,y,1,1); }
+    roadMinor.forEach(i=>{ pb.fillStyle=mixHex(G,K,.25); pb.fillRect(i%WW,(i/WW)|0,1,1); }); roadMain.forEach(i=>{ pb.fillStyle=mixHex(G,K,.55); pb.fillRect(i%WW,(i/WW)|0,1,1); }); }
+  /* the ferry route: a faint dotted line along the south coast from the Harbor pier to the Guild Hall harbour */
+  for(let i=0;i<SEA.length-1;i++){ const [x0,y0]=SEA[i],[x1,y1]=SEA[i+1], m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0)); for(let k=0;k<=m;k+=4) put(Math.round(x0+(x1-x0)*k/m),Math.round(y0+(y1-y0)*k/m),P.wave); }
+  plank(41,127,47,127);
+  plank(180,94,188,94); houseSpr().blit(put,176,92);
+  /* a bank of cloud around the edge of the map, so the world ends in weather rather than a line */
+  const puff=(x,y,r)=>{ if(isLand(x,y)) return; disc(x,y,r,CL2); disc(x-1,y-1,r-1,CL1); };
+  for(let q=0;q<240;q++){ const t=q/240*6.2832, h=hash2(q,31), [px,py]=ringXY(t); puff(px+(h%3)-1,py+((h>>3)%3)-1,4+(h>>6)%4); if(q%3===0){ const [ix,iy]=ringXY(t,.94); puff(ix,iy,3+(h>>9)%3); } }
+  if(ART_SPRITES) loadMoverSprites(ART_SPRITES); else { makeMoverSprites(); makePeople(); }
+  bakeScenes(); }
+let NIGHT=false, CL1='#f4f8ff', CL2='#dde6f4';
+const isNightNow=()=>document.documentElement.dataset.colorScheme==='dark'||(!document.documentElement.dataset.colorScheme&&matchMedia('(prefers-color-scheme: dark)').matches);
+let view='explorer'; const LAYERS={routes:true,people:true,sea:true,air:true,waves:true}; let baseP=null;
+const PATHCOL=['#888888','#2f7d5b','#e8503f','#3b82f6','#f5b83d','#a483cf','#2aa6b8','#888888'];
+function mixHex(a,b,t){ const ok=/^#[0-9a-f]{6}$/i; if(!ok.test(a)||!ok.test(b)) return a; const x=parseInt(a.slice(1),16), y=parseInt(b.slice(1),16); return '#'+[16,8,0].map(sh=>Math.round(((x>>sh)&255)*(1-t)+((y>>sh)&255)*t).toString(16).padStart(2,'0')).join(''); }
+let lastDraw=0, dq=0, focusN=0, fadeT=0; const FADE={}; // FADE[n] is how visible region n's detail map is, 0 to 1
+const drawSoon=()=>{ if(dq) return; dq=requestAnimationFrame(()=>{ dq=0; draw(); }); };
+/* paint() only draws to the canvases and works out what the overlay should hold; writeDom() is the one place that touches the page. */
+function draw(tick){ if(base) writeDom(paint(tick)); }
+function paint(tick){
+  const {vx,vy,z}=origin(); ctx.imageSmoothingEnabled=false; if(!tick) lastDraw=performance.now(); fctx.clearRect(0,0,fx.width,fx.height);
+  if(view==='path'){ ctx.fillStyle=P.water; ctx.fillRect(0,0,CW,CH); ctx.drawImage(baseP,0,0,WW,WH,Math.round(-vx*z),Math.round(-vy*z),WW*z,WH*z); }
+  else { ctx.fillStyle=CL2; ctx.fillRect(0,0,CW,CH); // beyond the sea there is only cloud
+  { const ix=Math.floor(vx), iy=Math.floor(vy), sw=Math.ceil(CW/z)+2, sh=Math.ceil(CH/z)+2; const args=[ix+M,iy+M,sw,sh,-Math.round((vx-ix)*z),-Math.round((vy-iy)*z),sw*z,sh*z]; ctx.drawImage(base,...args); if(LAYERS.waves) ctx.drawImage(wavesCv,...args); } }
+  const put=(wx,wy,c)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
+  // Landmark detail maps replace the low-resolution landmark once you are close, one region at a time. The landmark nearest the
+  // middle of the view fades in, every other one fades out, so dragging from region to region crossfades them.
+  let focus=0; if(z>=4&&view!=='path'){ let best=1e9; DET.forEach(sc=>{ const d=Math.hypot(V.cx-(sc.ox+sc.W/4),(V.cy-(sc.oy+sc.H/4))*1.2); if(d<best){ best=d; focus=sc.n; } }); if(best>34) focus=0; }
+  focusN=focus; { const now=performance.now(), dt=Math.min(100,fadeT?now-fadeT:16); fadeT=now; let moving=false;
+    DET.forEach(sc=>{ const t=sc.n===focus?1:0, a=FADE[sc.n]||0, na=a<t?Math.min(t,a+dt/340):Math.max(t,a-dt/340); FADE[sc.n]=na; if(na!==t) moving=true;
+      if(na<=0) return; const dx=Math.round((sc.ox-vx)*z), dy=Math.round((sc.oy-vy)*z), dw=sc.W*z/2, dh=sc.H*z/2; if(dx>=CW||dy>=CH||dx+dw<=0||dy+dh<=0) return;
+      ctx.globalAlpha=na*na*(3-2*na); ctx.drawImage(sc.cv,0,0,sc.W,sc.H,dx,dy,dw,dh); ctx.globalAlpha=1; });
+    if(moving) drawSoon(); else fadeT=0; }
+  if(view==='path'){ const rr=(x,y,c)=>{ put(x,y,c); if(z<=3){ put(x+1,y,c); } else { put(x+1,y,c); put(x,y+1,c); put(x+1,y+1,c); } };
+    const seg=(a,b,c)=>{ const m=Math.max(Math.abs(b[0]-a[0]),Math.abs(b[1]-a[1]))*(z>=4?2:1)||1; for(let t=0;t<=m;t++) rr(Math.round(a[0]+(b[0]-a[0])*t/m),Math.round(a[1]+(b[1]-a[1])*t/m),c); };
+    QUESTS.forEach(qq=>{ const rt=routeOf(qq); if(!rt) return; const c=PATHCOL[qq.region]; for(let i=0;i<rt.length-1;i++) seg(sceneM(qq.region,rt[i][0],rt[i][1]),sceneM(qq.region,rt[i+1][0],rt[i+1][1]),c);
+      qq.stops.slice(0,9).forEach((_,i)=>{ const q2=stopPos(qq,i), sx=Math.round(q2[0]), sy=Math.round(q2[1]), done=PROG[qq.id].has(i); put(sx,sy,done?'#2f7d33':'#ffffff'); put(sx+1,sy,done?'#2f7d33':'#ffffff'); put(sx,sy+1,done?'#2f7d33':'#ffffff'); put(sx+1,sy+1,done?'#2f7d33':'#ffffff'); put(sx-1,sy,P.outline); put(sx+2,sy+1,P.outline); put(sx,sy-1,P.outline); put(sx+1,sy+2,P.outline); }); }); }
+  const dpf=n=>{ const sc=DET.find(d=>d.n===n); return (dx,dy,c)=>{ const sz=z/2, sx=Math.round((sc.ox+dx/2-vx)*z), sy=Math.round((sc.oy+dy/2-vy)*z); if(sx<-sz||sy<-sz||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,sz,sz); }; };
+  // the selected quest's route: round dots that flow from the first stop to the last along the place's own paths
+  if(z>=4&&view!=='path'&&LAYERS.routes&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id), rt=qq&&routeOf(qq); if(rt&&(FADE[qq.region]||0)>.3){ const dp=dpf(qq.region), SP=9; let L=0; for(let i=0;i<rt.length-1;i++) L+=Math.hypot(rt[i+1][0]-rt[i][0],rt[i+1][1]-rt[i][1]); const flow=((motion?performance.now():0)/1000*8)%SP;
+    for(let sdist=flow;sdist<L;sdist+=SP){ const [x,y]=alongRoute(rt,sdist/L), cx=Math.round(x), cy=Math.round(y); for(let j=-2;j<=2;j++) for(let i=-2;i<=2;i++){ const d2=i*i+j*j; if(d2<=5) dp(cx+i,cy+j,d2>=4?P.outline:(d2===0?'#fff3b0':'#ffd34d')); } } } }
+  // people, boats and birds are drawn after the trail, so the trail never covers them
+  if(view!=='path') movers(put,z,motion?performance.now():0,dpf);
+  // pins
+  const zp=z>=4?3:2; const items=[];
+  // Pins are real markers, not pixel art: round, numbered, high contrast, and sized for a finger. The terrain stays pixel art.
+  const pinBuf=[];
+  const pinAt=(wx,wy,n,state,selected)=>{ if(n===0){ items.push({key:'pfog',wx,wy,kind:'mark',n:'?',state,selected:false}); return; } pinBuf.push({n,state,selected}); };
+  const add=(key,wx,wy,kind,o)=>{ if(kind==='lbl'&&o.cls&&o.cls.includes('tag')){ const last=items[items.length-1]; if(last&&last.kind==='hit') last.tag=o; return; } items.push({key,wx,wy,kind,...(kind==='hit'?pinBuf.pop():{}),...o}); };
+  if(z===2){
+    REG.forEach(r=>{ const st=byReg(r.n).length&&byReg(r.n).every(x=>x.done)?'done':(r.n===1?'done':'open'); const selR=sel.t==='region'&&sel.id===r.n; pinAt(r.pin[0],r.pin[1],r.n,st,selR); add('hr'+r.n,r.pin[0],r.pin[1],'hit',{label:r.name+', region '+r.n,act:()=>selectRegion(r.n),off:!regionOk(r.n)}); add('tr'+r.n,r.pin[0],r.pin[1],'lbl',{text:r.name,sub:byReg(r.n).length?(byReg(r.n).length+' quests \u00b7 '+byReg(r.n).filter(x=>x.done).length+' done'):'The basics, outside this site',cls:'quest tag'}); add('lr'+r.n,r.lbl[0],r.lbl[1],'lbl',{text:r.name,cls:'region'+(regionOk(r.n)?'':' off')}); });
+    pinAt(166,112,0,'locked',false); add('lfog',166,119,'lbl',{text:'Unmapped',sub:'2 more notes to chart',cls:'region box'});
+  } else {
+    if(z===3) REG.forEach(r=>add('lr'+r.n,r.lbl[0],r.lbl[1]+6,'lbl',{text:r.name,cls:'region faint'}));
+    if(z>=3) extras().forEach(e=>{ pinAt(e.wx,e.wy,e.sym,'ext',false); add('x'+e.id,e.wx,e.wy,'hit',{label:e.label,act:e.act,region:1}); add('tx'+e.id,e.wx,e.wy,'lbl',{text:e.text,sub:e.sub,cls:'quest tag'}); });
+    QUESTS.forEach((qq,i)=>{ const n=byReg(qq.region).indexOf(qq)+1, ok=filterOk(qq), selQ=sel.t==='quest'&&sel.id===qq.id||(sel.t==='stop'&&sel.id===qq.id); pinAt(qq.pos[0],qq.pos[1],n,qq.done?'done':'open',selQ);
+      add('hq'+qq.id,qq.pos[0],qq.pos[1],'hit',{label:qq.title+', quest '+n,act:()=>selectQuest(qq.id),region:qq.region,off:!ok}); add('lq'+qq.id,qq.pos[0],qq.pos[1],'lbl',{text:qq.short,sub:'Lv '+qq.lv+' '+qq.level+' \u00b7 '+qq.min+' min \u00b7 '+qq.stops.length+' stops',cls:'quest tag'}); });
+    if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id); qq.stops.slice(0,9).forEach((s,i)=>{ const p=stopPos(qq,i); pinAt(p[0],p[1],i+1,PROG[qq.id].has(i)?'done':'stop',sel.t==='stop'&&sel.i===i);
+      add('hs'+i,p[0],p[1],'hit',{label:'Stop '+(i+1)+': '+s,act:()=>selectStop(qq.id,i),region:qq.region,stop:1}); add('ls'+i,p[0],p[1],'lbl',{text:'Stop '+(i+1),sub:s.length>40?s.slice(0,38)+'...':s,cls:'quest tag',prio:(sel.t==='stop'&&sel.i===i)?2:1}); }); }
+  }
+  // you are here dot
+  items.push({key:'you',wx:YOU[0],wy:YOU[1],kind:'you'});
+  return {items,vx,vy,z,zp};
+}
+function writeDom(o){ const {items,vx,vy,z,zp}=o;
+  syncOverlay(items,vx,vy,z,zp);
+  document.getElementById('zname').textContent=LNAME[LV.indexOf(z)];
+  document.querySelectorAll('.zlevels i').forEach((e,i)=>e.toggleAttribute('data-on',i<=LV.indexOf(z)));
+}
+const els=new Map();
+function syncOverlay(items,vx,vy,z,zp){ const keep=new Set();
+  over.style.setProperty('--ps', z>=4?'30px':'22px'); // pins are smaller while zoomed out, full size once you are close
+  items.forEach(it=>{ keep.add(it.key); let e=els.get(it.key);
+    if(!e){ if(it.kind==='you'){ e=document.createElement('div'); e.className='you'; e.innerHTML='<canvas width="16" height="20" aria-hidden="true"></canvas><span>You</span>'; e.title='You are here: next up on the route'; }
+      else if(it.kind==='mark'||it.kind==='hit'){ e=document.createElement(it.kind==='hit'?'button':'div'); e.className=it.kind==='hit'?'hit':'hit mark'; e.innerHTML='<span class="pn"></span><span class="tagc" aria-hidden="true"></span>';
+        if(it.kind==='mark') e.setAttribute('aria-hidden','true'); else { e.setAttribute('aria-label',it.label); e.addEventListener('pointerdown',ev=>ev.stopPropagation()); e.addEventListener('click',ev=>{ ev.stopPropagation(); e.dataset.quiet=1; e._act(); }); e.addEventListener('pointerleave',()=>{ delete e.dataset.quiet; }); } }
+      else { e=document.createElement('div'); e.className='lbl '+(it.cls||''); e.innerHTML=it.text+(it.sub?'<small>'+it.sub+'</small>':''); if(it.done) e.dataset.done=1; }
+      over.appendChild(e); els.set(it.key,e); }
+    e._act=it.act; const sx=Math.round((it.wx-vx)*z)*S, sy=Math.round((it.wy-vy)*z)*S; if(e._x!==sx){ e._x=sx; e.style.left=sx+'px'; } if(e._y!==sy){ e._y=sy; e.style.top=sy+'px'; }
+    if(it.kind==='you'){ const yq=QUESTS.find(x=>x.id===YOUQ.id); e.title='You are here: stop '+(YOUQ.i+1)+' of '+(yq?yq.short:''); drawYou(e.firstChild); e.style.left=(sx-28)+'px'; }
+    if(it.kind==='hit'||it.kind==='mark'){ const t=it.state==='done'?'\u2713':String(it.n), pn=e.firstChild; if(pn.textContent!==t) pn.textContent=t; if(e.dataset.state!==it.state) e.dataset.state=it.state; if(it.selected){ if(!e.dataset.selected) e.dataset.selected=1; } else if(e.dataset.selected) delete e.dataset.selected; if(it.off){ if(!e.dataset.off) e.dataset.off=1; } else if(e.dataset.off) delete e.dataset.off; if(it.stop){ if(!e.dataset.sk) e.dataset.sk=1; } else if(e.dataset.sk) delete e.dataset.sk;
+      /* The name card shows only on hover or focus, or while the pin is selected. A click opens it in the panel. */
+      if(it.tag){ const h=it.tag.text+(it.tag.sub?'<small>'+it.tag.sub+'</small>':''); if(e._tg!==h){ e._tg=h; e.lastChild.innerHTML=h; } }
+      if(sx>innerWidth-240){ if(!e.dataset.flip) e.dataset.flip=1; } else if(e.dataset.flip) delete e.dataset.flip;
+      if(z>=4&&it.region&&focusN&&it.region!==focusN){ if(!e.dataset.far) e.dataset.far=1; } else if(e.dataset.far) delete e.dataset.far; } });
+  for(const [k,e] of els) if(!keep.has(k)){ e.remove(); els.delete(k); } }
+
+/* ===== motion: pan by drag, integer zoom steps, fly-to ===== */
+let anim=0;
+function setZ(newZ,ax,ay){ // keep the world point under (ax,ay) css px fixed
+  const o=origin(); const wx=o.vx+(ax/S)/o.z, wy=o.vy+(ay/S)/o.z; V.z=newZ; const p=pads();
+  V.cx=wx-((ax/S)-(CW/2+p.l/2/S))/V.z; V.cy=wy-((ay/S)-(CH/2-p.b/2/S))/V.z; clampV(); }
+/* The view stops at the cloud wall: its edge may reach the edge of the sea and no further, so there is no empty cloud beyond the ring. */
+function clampV(){ if(!CW){ V.cx=Math.max(-70,Math.min(WW+70,V.cx)); V.cy=Math.max(-55,Math.min(WH+55,V.cy)); return; }
+  const p=pads(), z=V.z, ox=(CW/2+p.l/2/S)/z, oy=(CH/2-p.b/2/S)/z, m=6;
+  const xl=100-RING_RX-m+ox, xh=100+RING_RX+m-CW/z+ox, yl=80-RING_RY-m+oy, yh=80+RING_RY+m-CH/z+oy;
+  V.cx=xl>xh?(xl+xh)/2:Math.max(xl,Math.min(xh,V.cx)); V.cy=yl>yh?(yl+yh)/2:Math.max(yl,Math.min(yh,V.cy)); }
+/* Zoom changes are a CSS scale on the whole stage (canvas and pins together), eased, with the camera panning in JS. Zooming in scales the old level up and swaps to the new crisp level at the end; zooming out swaps first and scales down. Only a transform animates, so the compositor does the work. */
+let zt=0;
+function tweenScale(from,to,ox,oy,dur){ if(matchMedia('(prefers-reduced-motion: reduce)').matches) dur=0; stage.style.willChange='transform'; stage.style.transition='none'; stage.style.transformOrigin=ox+'px '+oy+'px'; stage.style.transform=from===1?'none':'scale('+from+')'; void stage.offsetWidth; stage.style.transition='transform '+dur+'ms cubic-bezier(.33,1,.68,1)'; stage.style.transform=to===1?'none':'scale('+to+')'; clearTimeout(tweenScale._w); tweenScale._w=setTimeout(()=>{ if(stage.style.transform==='none') stage.style.willChange='auto'; },dur+80); }
+function endTween(){ clearTimeout(zt); stage.style.transition='none'; stage.style.transform='none'; stage.style.willChange='auto'; }
+function stepZoom(dir,ax,ay){ ax=ax??innerWidth/2; ay=ay??innerHeight/2; const i=LV.indexOf(V.z), j=Math.max(0,Math.min(LV.length-1,i+dir)); if(j===i) return; const z0=V.z, z1=LV[j]; cancelAnimationFrame(anim); endTween();
+  if(z1<z0){ setZ(z1,ax,ay); clampV(); draw(); tweenScale(z0/z1,1,ax,ay,260); } else { tweenScale(1,z1/z0,ax,ay,240); zt=setTimeout(()=>{ endTween(); setZ(z1,ax,ay); clampV(); draw(); },matchMedia('(prefers-reduced-motion: reduce)').matches?0:245); } }
+function flyTo(cx,cy,z){ cancelAnimationFrame(anim); endTween(); const f={...V}, t0=performance.now(), dur=z!==f.z?640:480, p=pads(), ox=innerWidth/2+p.l/2, oy=innerHeight/2-p.b/2, zin=z>f.z;
+  if(zin) tweenScale(1,z/f.z,ox,oy,dur); else if(z<f.z){ V.z=z; tweenScale(f.z/z,1,ox,oy,dur); }
+  (function step(now){ const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3); V.cx=f.cx+(cx-f.cx)*e; V.cy=f.cy+(cy-f.cy)*e; if(t>=1&&zin){ endTween(); V.z=z; } draw(); if(t<1) anim=requestAnimationFrame(step); })(t0); }
+const stage=document.getElementById('stage'); let drag=null;
+stage.addEventListener('pointerdown',e=>{ if(e.target.closest('.col,.ctl,.topright,.chipsbar,.zbar')) return; cancelAnimationFrame(anim); drag={x:e.clientX,y:e.clientY,moved:false}; stage.setPointerCapture(e.pointerId); stage.classList.add('drag'); });
+stage.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; if(Math.abs(dx)+Math.abs(dy)>2) drag.moved=true; drag.x=e.clientX; drag.y=e.clientY; V.cx-=dx/(V.z*S); V.cy-=dy/(V.z*S); clampV(); drawSoon(); });
+stage.addEventListener('pointerup',e=>{ drag=null; stage.classList.remove('drag'); });
+let wheelT=0; stage.addEventListener('wheel',e=>{ e.preventDefault(); const now=performance.now(); if(now-wheelT<160) return; wheelT=now; stepZoom(e.deltaY<0?1:-1,e.clientX,e.clientY); },{passive:false});
+stage.addEventListener('dblclick',e=>{ if(e.target.closest('.hit')) return; stepZoom(1,e.clientX,e.clientY); });
+addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return; const st=60/(V.z*S)*S; if(e.key==='ArrowLeft') V.cx-=st/ S/ 1; else if(e.key==='ArrowRight') V.cx+=st/S; else if(e.key==='ArrowUp') V.cy-=st/S; else if(e.key==='ArrowDown') V.cy+=st/S; else if(e.key==='+'||e.key==='=') stepZoom(1); else if(e.key==='-') stepZoom(-1); else if(e.key==='Escape') goBack(); else if(e.key==='[') stepBy(-1); else if(e.key===']') stepBy(1); else return; e.preventDefault(); clampV(); draw(); });
+
+/* ===== selection and the place panel ===== */
+const panel=document.getElementById('panel');
+function openPanel(){ if(collapsed){ collapsed=false; panel.hidden=false; document.getElementById('fold').textContent='\u25C0'; } }
+function home(){ sel={t:'none'}; openPanel(); renderPanel(); flyTo(104,84,2); }
+function selectRegion(n){ sel={t:'region',id:n}; const r=REG[n-1]; openPanel(); renderPanel(); flyTo(r.c[0],r.c[1],3); }
+function selectQuest(id){ sel={t:'quest',id}; const qq=QUESTS.find(x=>x.id===id); openPanel(); renderPanel(); flyTo(qq.pos[0],qq.pos[1]+6,4); }
+function selectStop(id,i){ sel={t:'stop',id,i}; const qq=QUESTS.find(x=>x.id===id), p=stopPos(qq,i); openPanel(); renderPanel(); flyTo(p[0],p[1],6); }
+const hours=Math.round(QUESTS.reduce((a,x)=>a+x.min,0)/6)/10;
+function sceneHead(kind,h=44){ return `<div class="pc-head"><canvas class="scene" data-kind="${kind}" width="110" height="${h}"></canvas></div>`; }
+const ORDER=()=>REG.flatMap(r=>byReg(r.n));
+/* Previous and next sit at the right of the pinned bar: regions in a region, quests along the whole route in a quest, stops in a stop. */
+function seq(){ if(sel.t==='region') return {kind:'regions',n:REG.length,i:sel.id-1,go:j=>selectRegion(j+1)};
+  if(sel.t==='quest'){ const o=ORDER(), i=o.findIndex(x=>x.id===sel.id); return {kind:'quests',n:o.length,i,go:j=>selectQuest(o[j].id)}; }
+  if(sel.t==='stop'){ const qq=QUESTS.find(x=>x.id===sel.id), n=Math.min(qq.stops.length,9); return {kind:'stops',n,i:sel.i,go:j=>selectStop(sel.id,j)}; } return null; }
+/* Panel controls, lower right: first, previous, next, last, at the level you are on (regions, quests or stops). */
+function footer(){ if(q.trim()) return ''; const sq=seq(); if(!sq) return ''; const ic={first:'M7 6v12M17 6l-6 6 6 6',prev:'M15 6l-6 6 6 6',next:'M9 6l6 6-6 6',last:'M17 6v12M7 6l6 6-6 6'}, lab={first:'First',prev:'Previous',next:'Next',last:'Last'}, atS=sq.i<=0, atE=sq.i>=sq.n-1;
+  const btn=k=>{ const dis=(k==='first'||k==='prev')?atS:atE; return `<button class="step" data-nav="${k}" ${dis?'disabled':''} aria-label="${lab[k]} ${sq.kind.slice(0,-1)}" title="${lab[k]} ${sq.kind.slice(0,-1)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ic[k]}"/></svg></button>`; };
+  return `<div class="pfoot" role="group" aria-label="Move between ${sq.kind}"><span class="pcount">${sq.i+1} of ${sq.n} ${sq.kind}</span><span class="steps">${btn('first')}${btn('prev')}${btn('next')}${btn('last')}</span></div>`; }
+const pnav=(label,attr,crumb,st)=>`<nav class="pnav" aria-label="Place navigation"><button class="back" ${attr}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>${label}</span></button><span class="crumb">${crumb}</span></nav>`;
+function neighbours(){ if(sel.t==='region'){ const a=REG[sel.id-2], b=REG[sel.id]; return {kind:'region',prev:a&&{t:a.name,a:`data-r="${a.n}"`},next:b&&{t:b.name,a:`data-r="${b.n}"`}}; }
+  if(sel.t==='quest'){ const o=ORDER(), i=o.findIndex(x=>x.id===sel.id), a=o[i-1], b=o[i+1]; return {kind:'quest',prev:a&&{t:a.short,a:`data-q="${a.id}"`},next:b&&{t:b.short,a:`data-q="${b.id}"`}}; }
+  if(sel.t==='stop'){ const qq=QUESTS.find(x=>x.id===sel.id), n=Math.min(qq.stops.length,9), j=sel.i; return {kind:'stop',prev:j>0&&{t:'Stop '+j,a:`data-s="${j-1}"`},next:j<n-1&&{t:'Stop '+(j+2),a:`data-s="${j+1}"`}}; }
+  return null; }
+function stepBy(d){ const nb=neighbours(); if(!nb) return; const o=d<0?nb.prev:nb.next; if(!o) return; const m=o.a.match(/data-(\w)="([^"]+)"/); if(m[1]==='r') selectRegion(+m[2]); else if(m[1]==='q') selectQuest(m[2]); else selectStop(sel.id,+m[2]); }
+function goBack(){ if(q.trim()){ q=''; document.getElementById('q').value=''; renderPanel(); } else if(sel.t==='stop') selectQuest(sel.id); else if(sel.t==='quest') selectRegion(QUESTS.find(x=>x.id===sel.id).region); else if(sel.t==='region') home(); }
+function renderPanel(){
+  const dn=QUESTS.filter(x=>x.done).length;
+  let h='';
+  if(q.trim()){ const m=QUESTS.filter(x=>(x.title+' '+x.short).toLowerCase().includes(q.trim().toLowerCase()));
+    h=pnav('Back','data-act="clear"','Search results')+`<div class="pc-body"><h3>Search</h3><div class="sub">${m.length} quest${m.length===1?'':'s'} match</div><div class="results">${m.map(x=>`<button class="rowbtn" data-q="${x.id}"><span class="n">${byReg(x.region).indexOf(x)+1}</span><span>${x.title}<small>${REG[x.region-1].name} · ${x.min} min</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Nothing yet. A note joins the map when it publishes and has a lesson.</div>'}</div></div>`; }
+  else if(sel.t==='none'){
+    h=sceneHead('harbor')+`<div class="pc-body"><h3>Learn AI with me</h3><div class="sub">${QUESTS.length} quests · 6 regions · about ${hours} hours of reading</div>
+      <p style="margin:0;font:.86rem/1.55 Georgia,serif">A guided path through what I have actually built and learned, in my own notes and the sources I used. Pick a region, or zoom in and wander.</p>
+      <div class="row"><button class="primary" data-act="start">&#9654; Start at the Harbor</button><button data-act="cont">Continue</button></div>
+      <div><strong>Regions</strong></div>${REG.slice(1).map(r=>{ const qs=byReg(r.n), d=qs.filter(x=>x.done).length; return `<button class="rowbtn" data-r="${r.n}"><span class="n">${r.n}</span><span>${r.name}<small>${r.sub} · ${d}/${qs.length} done</small></span><span class="go">&#9654;</span></button>`; }).join('')}
+      <div class="sub">${dn} of ${QUESTS.length} quests done. Drag to pan, scroll or +/- to zoom, Esc to return here.</div></div>`; }
+  else if(sel.t==='region'){ const r=REG[sel.id-1], qs=byReg(r.n);
+    h=pnav('All regions','data-act="home"',r.name,neighbours())+sceneHead(r.scene)+`<div class="pc-body"><h3>${r.name}</h3><div class="sub">${r.sub}</div><p style="margin:0;font:.86rem/1.55 Georgia,serif">${r.blurb}</p>
+      ${r.n===1?'<div class="row"><button class="primary" data-act="academy">Open Claude Academy \u2197</button><button data-act="ferry">Ferry to the Guild Hall</button></div>':''}<div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${i+1}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops${x.id===YOUQ.id?' \u00b7 <b class="here">You are here</b>':''}</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}</div>`; }
+  else { const qq=QUESTS.find(x=>x.id===sel.id), r=REG[qq.region-1], i=byReg(r.n).indexOf(qq)+1;
+    h=(sel.t==='stop'?pnav(qq.short,`data-q="${qq.id}"`,`${qq.short} › Stop ${sel.i+1}`,neighbours()):pnav(r.name,`data-r="${r.n}"`,`${r.name} › ${qq.short}`,neighbours()))+sceneHead(r.scene,40)+`<div class="pc-body"><span class="ribbon">${r.name} · Quest ${i} of ${byReg(r.n).length}</span><h3>${qq.title}</h3>
+      <div class="row"><span class="chip">Class: ${qq.cls}</span><span class="chip">Level: ${qq.level}</span></div>
+      <div class="stats"><div class="stat"><small>Quest level</small><strong>Lv ${qq.lv}</strong></div><div class="stat"><small>Experience</small><strong>+${qq.xp.toLocaleString()} XP</strong></div><div class="stat"><small>Reading</small><strong>~${qq.min} min</strong></div></div>
+      <div><strong>It covers</strong><ul style="margin:.2rem 0 0;padding-left:1rem">${qq.learn.map(l=>`<li>${l}</li>`).join('')}</ul></div>
+      <div class="stopbox"><div class="stopbox__h"><strong>${qq.stops.length} stops</strong><span class="sub">in lesson order, along the route</span></div>${qq.stops.map((st,j)=>`<div class="stopline" data-s="${j}" ${sel.t==='stop'&&sel.i===j?'data-sel':''} ${PROG[qq.id].has(j)?'data-done':''}><span class="sn">${PROG[qq.id].has(j)?'\u2713':j+1}</span><span>${st}</span>${(qq.id===YOUQ.id&&j===YOUQ.i)?'<b class="here">You are here</b>':''}</div>`).join('')}</div>
+      <div class="row">${sel.t==='stop'?`<button data-act="done">${PROG[qq.id].has(sel.i)?'Undo: open again':'Mark stop '+(sel.i+1)+' as done'}</button>`:''}${(qq.id===YOUQ.id&&(sel.t==='quest'||sel.i===YOUQ.i))?'':'<button data-act="where">\u25CE Where I am</button>'}</div>
+      <div class="row"><button class="primary" data-act="begin">Begin quest</button><button data-act="note">Read the note only</button></div></div>`; }
+  panel.innerHTML=h+footer(); panel.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind));
+}
+panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],[data-act],[data-s],[data-nav]'); if(!b) return; e.preventDefault();
+  if(b.dataset.nav){ const sq=seq(); if(!sq||b.disabled) return; const j={first:0,prev:sq.i-1,next:sq.i+1,last:sq.n-1}[b.dataset.nav]; if(j>=0&&j<sq.n&&j!==sq.i) sq.go(j); return; }
+  if(b.dataset.q){ q=''; document.getElementById('q').value=''; selectQuest(b.dataset.q); }
+  else if(b.dataset.r) selectRegion(+b.dataset.r);
+  else if(b.dataset.s!==undefined) selectStop(sel.id,+b.dataset.s);
+  else if(b.dataset.act==='home') home();
+  else if(b.dataset.act==='clear'){ q=''; document.getElementById('q').value=''; renderPanel(); }
+  else if(b.dataset.act==='start'){ selectRegion(1); }
+  else if(b.dataset.act==='academy'){ toast('Opens Claude Academy in a new tab (URL to confirm before launch)'); }
+  else if(b.dataset.act==='ferry'){ selectRegion(4); }
+  else if(b.dataset.act==='cont'||b.dataset.act==='where') where();
+  else if(b.dataset.act==='done') markDone();
+  else if(b.dataset.act==='begin'||b.dataset.act==='note'){ toast(b.dataset.act==='begin'?'Opens the note with the quest book (lesson mode)':'Opens the note on its own'); } });
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2400); }
+document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; renderPanel(); });
+document.getElementById('fold').addEventListener('click',()=>{ collapsed=!collapsed; panel.hidden=collapsed; document.getElementById('fold').textContent=collapsed?'▶':'◀'; draw(); });
+document.querySelectorAll('.chipsbar .chip').forEach(c=>c.addEventListener('click',()=>{ filter=c.textContent; document.querySelectorAll('.chipsbar .chip').forEach(x=>x.toggleAttribute('data-on',x===c)); if(CHIPREG[filter]) selectRegion(CHIPREG[filter]); else if(sel.t!=='none'||V.z!==2) home(); else draw(); drawSoon(); }));
+const lbtn=document.getElementById('layers'), lpop=document.getElementById('layerpop');
+lbtn.onclick=()=>{ const o=lpop.hidden; lpop.hidden=!o; lbtn.setAttribute('aria-expanded',String(o)); };
+document.addEventListener('pointerdown',e=>{ if(!lpop.hidden&&!e.target.closest('.zbar')){ lpop.hidden=true; lbtn.setAttribute('aria-expanded','false'); } });
+lpop.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; lpop.querySelectorAll('[data-view]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); document.body.dataset.view=view; lpop.dataset.view=view; if(view==='path') fctx.clearRect(0,0,fx.width,fx.height); draw(); drawSoon(); });
+lpop.querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{ LAYERS[c.dataset.layer]=c.checked; draw(); });
+document.getElementById('zin').onclick=()=>stepZoom(1); document.getElementById('zout').onclick=()=>stepZoom(-1);
+document.getElementById('me').onclick=()=>where();
+const root=document.documentElement;
+function syncSettings(){ /* flavor and scheme are the shell's, nothing to show here */ }
+window.qmSync=()=>{ syncSettings(); reskin(); };
+/* The settings are one icon until opened, and close on an outside press, so they stay out of the map's way. */
+const tr=document.querySelector('.topright'), tb=document.getElementById('settings');
+function setOpen(o){ tr.toggleAttribute('data-open',o); tb.setAttribute('aria-expanded',String(o)); }
+tb.onclick=()=>setOpen(!tr.hasAttribute('data-open'));
+document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.topright')) setOpen(false); });
+syncSettings();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>reskin());
+function thumbs(){ const a=document.getElementById('th-ex'), b=document.getElementById('th-pa'); if(!a||!b||!base||!baseP) return; [[a,base,M],[b,baseP,0]].forEach(([cv,src,o])=>{ const g=cv.getContext('2d'); g.imageSmoothingEnabled=false; g.drawImage(src,o,o,WW,WH,0,0,cv.width,cv.height); }); const g=b.getContext('2d'); QUESTS.forEach(qq=>{ const rt=routeOf(qq); if(!rt) return; g.strokeStyle=PATHCOL[qq.region]; g.lineWidth=2; g.beginPath(); rt.forEach((pt,i)=>{ const m=sceneM(qq.region,pt[0],pt[1]); const x=m[0]*b.width/WW, y=m[1]*b.height/WH; if(i) g.lineTo(x,y); else g.moveTo(x,y); }); g.stroke(); }); }
+/* Baked art. bake-art.ts draws the base map, the waves, the path-only map, the layer icon and the six landmark scenes once per flavor
+   and scheme pair into art/<flavor>-<scheme>/, so this page can fetch images instead of drawing thousands of pixels on load. Add ?procedural to the
+   address, or serve the page without the art folder, and it falls back to drawing everything itself, which is also how the art is made. */
+const FORCE_PROC=/[?&]procedural\b/.test(location.search), ART_DIR='art/';
+const artKey=()=>(root.dataset.theme||'sourdough')+'-'+(isNightNow()?'dark':'light');
+const loadImg=u=>new Promise((ok,no)=>{ const im=new Image(); im.onload=()=>{ const c=document.createElement('canvas'); c.width=im.naturalWidth; c.height=im.naturalHeight; c.getContext('2d').drawImage(im,0,0); ok(c); }; im.onerror=()=>no(new Error(u)); im.src=u; });
+async function loadArt(key){ if(FORCE_PROC) return null; try{ const dir=ART_DIR+key+'/', r=await fetch(dir+'manifest.json'); if(!r.ok) return null; const m=await r.json();
+    const [base,waves,path,layerCv,...det]=await Promise.all([loadImg(dir+'base.png'),loadImg(dir+'waves.png'),loadImg(dir+'path.png'),loadImg(dir+'layer.png'),...m.det.map(d=>loadImg(dir+'scene-'+d.n+'.png'))]);
+    return {base,waves,path,layerCv,glints:m.glints,sprites:m.sprites||null,det:m.det.map((d,i)=>({...d,cv:det[i]}))}; }catch(e){ return null; } }
+let layerCv=null;
+function applyArt(a){ NIGHT=isNightNow(); CL1=NIGHT?shade(P.snow,.55):P.snow; CL2=NIGHT?shade(P.snow2,.55):P.snow2; base=a.base; wavesCv=a.waves; baseP=a.path; layerCv=a.layerCv; glints=a.glints; DET=a.det; makeMoverSprites(); makePeople(); }
+let skin=0;
+async function reskin(){ const mine=++skin; loadPalette(); const art=await loadArt(artKey()); if(mine!==skin) return;
+  ART_SPRITES=art&&art.sprites||null;
+  if(art){ buildWorld(true); applyArt(art); } else { layerCv=null; buildWorld(); bake(); }
+  layer(); thumbs(); renderPanel(); draw(); }
+function layer(){ const c=document.getElementById('c-layer'),x=c.getContext('2d'); x.imageSmoothingEnabled=false; if(layerCv){ x.drawImage(layerCv,0,0); return; } for(let y=0;y<32;y++) for(let i=0;i<32;i++){ x.fillStyle=cols[(y*4+16)*WW+(i*4+16)]||P.water; x.fillRect(i,y,1,1);} }
+
+/* ---- Motion. A second canvas over the map, redrawn about seven times a second so it moves in pixel steps.
+   Water glints, torch flames, the summit flag and a pulse on the adventurer. It is decoration only: the pins, labels and route lists are unchanged.
+   It starts off when the system asks for reduced motion, and the Motion button turns it on or off either way. */
+const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+let motion=!reduce.matches, raf=0, lastT=0;
+const mbtn=document.getElementById('motion');
+function fxFrame(t){
+  if(view==='path'||t-lastDraw<260) return; // the view is moving: draw nothing extra, so pan, zoom and fly stay smooth
+  const {vx,vy,z}=origin(); fctx.clearRect(0,0,fx.width,fx.height);
+  const f=Math.floor(t/160);
+  const px=(wx,wy,c,a=1)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; fctx.globalAlpha=a; fctx.fillStyle=c; fctx.fillRect(sx,sy,z,z); };
+  const fg=Math.floor(t/520); if(LAYERS.waves) for(let i=0;i<glints.length;i++){ const g=glints[i], ph=(fg+g[2])%12; if(ph<2) px(g[0],g[1],P.foam); } // the water is the slowest thing on the map
+  if(z>=4) for(const n in SPEC) if((FADE[n]||0)>.6) SPEC[n].lights.forEach(([x,y],k)=>{ if(!(NIGHT||(SPEC[n].fires||[]).includes(k))) return; const [wx,wy]=sceneM(+n,x,y); px(wx,wy-1,(f+k)%2?P.glow:P.amber); px(wx,wy-2,((f+k)%3)?P.amber:P.pinHi); });
+  if(z<4) for(let i=0;i<5;i++){ const w=((f+i)%4<2)?0:1, o=w+(i>2?1:0); px(151+i,10+o,P.flag); if(i<4) px(151+i,11+o,P.pinHi); }
+  else for(const n in SPEC) if((FADE[n]||0)>.6) SPEC[n].flags.forEach(([x,y])=>{ const [wx,wy]=sceneM(+n,x,y); for(let i=0;i<5;i++){ const o=(((f+i)%4<2)?0:1)+(i>2?1:0); px(wx+i,wy+o,P.flag); } });
+  fctx.globalAlpha=1;
+}
+function fxLoop(now){ raf=0; if(!motion||document.hidden) return; if(now-lastT>=160){ lastT=now; draw(true); fxFrame(now); } raf=requestAnimationFrame(fxLoop); }
+function setMotion(on){ motion=on; mbtn.setAttribute('aria-pressed',String(on)); if(on){ if(!raf) raf=requestAnimationFrame(fxLoop); } else { cancelAnimationFrame(raf); raf=0; fctx.clearRect(0,0,fx.width,fx.height); } }
+mbtn.onclick=()=>setMotion(!motion);
+reduce.addEventListener('change',e=>setMotion(!e.matches));
+document.addEventListener('visibilitychange',()=>{ if(motion&&!raf) raf=requestAnimationFrame(fxLoop); });
+addEventListener('resize',resize);
+/* Deep links: #quest=<id> flies to a quest, #stop=<id>.<n> to stop n of it (counted from 1, as the panel counts).
+   An id the map does not know is ignored, so a stale link opens the map as it is. */
+function applyHash(){ const m=/^#(quest|stop)=([a-z0-9-]+)(?:\.([1-9][0-9]*))?$/.exec(location.hash); if(!m) return;
+  const qq=QUESTS.find(x=>x.id===m[2]); if(!qq) return;
+  if(m[1]==='stop'&&m[3]&&+m[3]<=qq.stops.length) selectStop(qq.id,+m[3]-1); else selectQuest(qq.id); }
+addEventListener('hashchange',applyHash);
+window.qmReady=reskin().then(()=>{ resize(); setMotion(motion); applyHash(); });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+---
+id: quest-map
+status: todo
+track: learning
+depends: []
+touches: [content/quests, standards/NOTE-STANDARD.md, tools/quests.ts, view/pages/journey, src/content.ts, docs/mockups/quest-map]
+owner: human
+---
+
+# Quest map: an AI learning path on the journey page
+
+A dot-matrix pixel map of the notes, grouped into regions you can walk in order. Someone who wants to
+learn AI gets a place to start and a guided route through my own writing and the outside sources I
+used. It is the colorful corner of a plain site, and the first draft of what an online course here
+could look like.
+
+Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](../docs/mockups/quest-map/index.html).
+
+## The look
+
+- **Real pixel art.** Solid pixels, one outline pixel around every sprite, two-tone shading, no smoothing.
+  The map is drawn from code: noise terrain, a biome per region, roads, and hand-built sprites for each
+  landmark (pines, mountains with a cave, the hall, the castle, the summit flag).
+- **You are here is progress, not a cursor.** A small pixel adventurer labelled You stands at the next
+  unfinished stop of the next unfinished quest, so it says how far you have got in the course. Browsing, the
+  next button and selecting things never move it. Finishing a stop does: the stop panel has a Mark stop as done
+  button, which turns that stop green, walks You to the next one and can be undone. The panel carries a You are
+  here badge on that quest and stop, and a Where I am button, shared with the find-me button and Continue, jumps
+  there from anywhere. In the real build progress comes from the saved guild card, and the mockup uses a sample
+  with two quests and one stop done.
+- **The map has life, slowly.** Ferries sail between the Harbor pier and the Guild Hall harbour along the
+  south coast. Gulls circle the port, birds circle the forest and nest in its trees, fish jump, and the Guild
+  Hall chimney smokes. Up close the places are lived in: a few dwarves swing picks in the mines and one
+  pushes an ore cart along the shaft, guards stand at the castle gate, the keep door and the walls and patrol the ramparts,
+  villagers walk the Guild Hall streets, sailors work the pier, elves cross the walkways in the canopy and
+  climbers work the switchback to the summit. The snowfield under the peak has a frozen lake, snowy pines and
+  cabins. After dark, fireflies drift over the forest. The sea has slow waves and sparkle, which the Layers panel can turn off.
+  Open sea runs a long way around the island, then ends at a rounded wall of cloud at the border of the map,
+  and past it there is only more cloud, never open water. You reach the cloud by panning out, and the view stops at the wall, so you never scroll into empty cloud. A kraken lives in
+  the sea at the top-left. Everything moves in pixel steps, holds still under reduced motion, and follows the
+  Motion button.
+- **Night makes sense for the assets.** The dark scheme is night. Windows are dim blue-grey by day and lit
+  yellow at night, lanterns and torches are dull dots by day and glow at night while campfires, hearths and
+  lamps in hands stay lit all day, ferries hang a lantern at the mast, the kraken's eyes glow, a beam sweeps
+  from the Harbor lighthouse, fireflies drift over the forest, and the cloud wall and the cloud beyond it
+  dim to a dusk colour instead of staying bright against a dark sea. Switching scheme rebuilds the map once.
+- **One style, two rules.** Art, meaning the terrain, landmarks, detail scenes and the moving layer, is solid
+  pixels with the dark outline color around every building and mountain, two-tone shading, no translucency, no
+  blur and no smoothing. Trees and plants take a darker green for their edge and houses a darker brown, never black. Ground patches blend
+  softly like terrain and carry no outline. Chrome, meaning the
+  panel, pins, hover cards, buttons and settings, uses 2 to 3 pixel borders in the ink color, hard offset
+  shadows with no blur, monospace for interface text and Georgia for prose. Pins take the art's outline color
+  for their border so they sit in the same world. Nothing mixes the two: no soft shadows on chrome and no
+  glows or fades in the art.
+- **Google Maps layout.** Search and filter chips float top left, and a place panel on the left carries the
+  selected region with a numbered route. Layers sit bottom left and zoom and find-me bottom right. A blue
+  dot marks the adventurer, and a main road in amber links the quests in order.
+- **Zoom adds detail.** Zooming in shows what the world view leaves out: tents, torches, a mine cart and
+  numbered stop pins. The quest opens in the place panel.
+- **The map moves, a little.** A second canvas over the map redraws about six times a second, in pixel steps:
+  torch flames, the summit flag and a pulse on the adventurer. Nothing else moves. It
+  draws nothing while the view is panning, zooming or flying, so interaction stays smooth. It is decoration
+  only. It starts off when the system asks for reduced motion, and a Motion button turns it on or off either way.
+- **Warm paper, amber accent.** It shares the ant colony's palette, so the site keeps one voice. Labels
+  carry a halo the way map labels do.
+- **Theming follows the site.** The chrome (panel, search, chips, guild card, book pages) reads
+  GRAIN tokens only, so it works in sourdough, baguette and brioche, in light and dark. The art palette
+  is quest-specific and keyed on data-color-scheme, never on the flavor. The page is a scoped exception to
+  the one-hue rule, art only, and nothing depends on color alone. Every flavor and scheme pair gets a
+  contrast check, and the mockup has the switcher.
+- **The lesson book is a quest book.** The transcript plays as dialogue from a pixel Guide, a rune lights in
+  the note's margin when a concept is taught, runes collect in a Codex, each stop ends with a Trial, sources
+  sit in a Pack, and Save progress is resting at a campfire. Plain text and captions stay underneath.
+- **Mobile.** The map is full screen with floating search and chips. The place panel becomes a bottom
+  sheet that peeks, then drags up into the route list. Zooming to a landmark opens the quest as a sheet.
+  In lesson mode the note stays full screen and the book collapses to a player dock with the Guide's
+  current line, which opens into a full sheet with the same tabs, rune card, trial and campfire save. The
+  two-page spread becomes one page you swipe between. Touch targets are at least 38 pixels.
+- **Per-region scenes.** Each region has a small pixel scene (hills, forest, mines, hall, keep, summit)
+  used on the place panel, the lesson card and the mobile card, so nothing is a stretched map crop.
+- **Numbers.** Quest level follows the note's level field: intro is Lv 1, intermediate Lv 2, deep Lv 3, shown as a label only.
+  XP is 25 per reading minute plus 100 per trial, a sample formula to tune after the pilot. Class comes
+  from the note's audience, and reading time from its readingTime.
+- Final build uses a self-hosted pixel font. The mockup falls back to monospace.
+
+## Decisions already made
+
+- No Harbor notes. The first stop points out to Claude Academy for the basics. The exact URL is
+  still to confirm before it ships. Harbor is one island of its own off the south-west coast, a port with a pier, because it points
+  outside the site. Ferries sail from that pier along the south coast to a harbour at the Guild Hall, on a
+  faint dotted route. The first region on the
+  mainland is Loop Forest.
+- Map mode is a screen of its own, the way the builder is. The explorer rail is collapsed, the assistant
+  sidebar is hidden and the terminal is hidden, so the map takes the whole window. The sidebar comes back as
+  the lesson book inside a quest note.
+- The journey page is new. view/pages/journey does not exist yet, and this plan creates it.
+- Path badges are not the course badges I issue at HAU. They are a different kind of badge: their own
+  collection under their own prefix, their own medallion and their own criteria page. Nothing is added to
+  /badges, and no code keyed on the /badges prefix is reused.
+- Quest tokens ship in light and dark, and the sidebar in lesson mode uses the same tokens.
+- The voice player is an open book. Underneath it is a plain audio element with captions.
+- Character comes from a seed or a chosen username, never from hardware. A browser cannot read a MAC
+  address, and fingerprinting is the wrong thing to build.
+- Progress is a save file or save code. The badge link carries the state after the hash, so it never
+  reaches a server. The badge page says plainly that it is self-reported.
+- Quest badges live in their own namespace. Classroom award pages carry student names and must never
+  share a collection, an index or a feed with them.
+
+## Notes and lessons are many to many
+
+A quest is a stop on the map. A lesson is one recording, made of ordered segments, and a segment is a
+note plus a heading range. So one long note can become several lessons, and a pair of notes can teach as
+one lesson. The sidecar file (cues, runes, plain-words digest, trial) belongs to the lesson, never to the
+note, so notes stay untouched.
+
+Where a note is cut into stops, how big a stop is and which lessons exist are decided in [quest-lessons](quest-lessons.md).
+
+## The map is the page (decided)
+
+The first mockups boxed the map beside a panel. That was a layout of convenience, not a design. The map
+fills the viewport and everything else floats on it, as in Google Maps.
+
+- **Layout.** Search and the place panel sit top left, filter chips beside them, display settings top right,
+  layers and the zoom level bottom left, zoom and find-me bottom right. The display settings are one icon,
+  closed by default, that opens icon buttons for motion, the three flavors as swatches and auto, light and
+  dark. On a phone the icon moves to the bottom left and the panel is a bottom
+  sheet. On the Learn page the left sidebar collapses on arrival and can still be expanded, the right assistant sidebar is hidden, and the terminal is hidden, so the map lives entirely under the tabs. The Learn item sits under About with a map icon and opens the page at /learn.
+- **The panel has a pinned back button.** A bar at the top of the panel stays in view while the panel
+  scrolls. It holds a real button at the top left that names where it goes (All regions from a region, the
+  region from a quest, the quest from a stop, and Back from a search) and a short breadcrumb beside it.
+  Escape does the same one step. The panel is the main way to navigate. Four controls at its lower right, first, previous, next and last,
+  move through regions in a region, through the quest route in a quest and through stops in a stop, with a
+  count beside them such as 3 of 9 stops. They are disabled at the ends, and the left and right square bracket
+  keys do the same. The stops sit in a bordered box of numbered rows that highlight the current one.
+- **Layers is a real control, like satellite against map.** The tile at the bottom left opens a small panel
+  with two map types and a few details. Explorer is the full pixel world. Path only is the same island as flat
+  paper tinted by region, with the roads that join the regions and every quest's route drawn in its region's
+  colour with a dot at each stop, green for finished ones. It leaves out the art, the people and the weather, and
+  it follows the light and dark schemes. The details are route dots, people at work, ships and sea life, birds
+  and smoke, and waves and sparkle, each a checkbox, and they appear only for Explorer, not for Path only. Switching is one redraw of the canvas, with no extra work while idle.
+- **The filter chips work.** Loop, Models, Leading and Design fly to that region, All returns to the world
+  view, and Not started dims every region and quest that is already done. Pins and labels that do not match
+  fade instead of disappearing.
+- **Harbor has things to click.** Zoomed in, the port island has a Claude Academy pin and a Ferry pin. Both
+  have hover cards. The Ferry pin flies to the Guild Hall, and the Harbor panel has the same two buttons.
+- **A chosen pin fades out.** When a quest or region pin is clicked its red marker fades away and the stops, or
+  the region, take over. The selected route is a line of round amber dots with a dark edge that flow slowly
+  from the first stop to the last along the path, so it stands out from the terrain without looking like a snake. It is drawn beneath the people, boats and birds, so a miner, guard or
+  climber on the route is never hidden by it.
+- **Zoom is smooth and cheap.** A zoom from the panel, the wheel or the buttons is a CSS scale of the whole
+  stage, eased, with only the camera pan done in script. Zooming in scales the old level up and swaps to the
+  crisp new one at the end, and zooming out swaps first and scales down. The canvas is drawn once per frame, the
+  overlay writes a style only when it changed, and the frames measured 16.7 milliseconds, steady at 60 a second.
+- **The panel replaces the modal.** Welcome, region, quest and stop are four states of one place panel,
+  the way a place card works. The RPG details (class, level, XP, what it covers, stops) live in the quest
+  state. Begin quest opens the note in lesson mode. The separate modal over the zoomed map is dropped.
+- **Zoom is four integer levels** so pixels stay square: World, Regions, Landmark and Stops, at 4, 6, 8 and
+  12 screen pixels per map pixel. Scroll or double-click steps one level around the cursor, drag pans, and
+  clicking a pin flies there, stepping through the levels on the way. Smooth fractional zoom is rejected
+  because it blurs pixel art.
+- **Semantic zoom.** World shows the six region pins and names. Regions shows every quest pin with its
+  short name. Landmark adds the detail sprites and, for the selected quest, amber stop pins. Stops names
+  each stop. Region labels fade as quest labels arrive.
+- **Landmark detail maps.** From the Landmark level each landmark turns into its own small map, drawn at twice
+  the world's resolution. The castle in GRAIN Keep becomes walls, corner towers, a gate, a keep, a library and an
+  armory. The Guild Hall becomes a village with streets, a plaza, a market and a notice board. The Model Mines
+  mountain becomes a lobed mine hill with shafts, timber, rails, an ore vault, lanterns and snow caps. Loop
+  Forest becomes an elf town in the canopy: great trees with houses built into their crowns, plank walkways
+  and rope bridges looping between them, a hearth on a round platform in the central tree, and lanterns. The
+  four stations are a scroll house, a workshop, a lantern tower and a gate house. No place is a plain oval: ground
+  patches, the forest loop and the mine hill are all warped, so each has its own outline. The Summit becomes a peak with a switchback trail, tents and climbers, igloos and a frozen lake. The
+  Harbor become a port island with a cone-shaped red and white lighthouse that is also drawn on the world map, so it shows at every zoom, a boathouse, a pier for the ferries and the start camp. Quests sit at buildings and stops sit at rooms, so the place you zoom into is
+  what the lesson is about. Only the landmark nearest the middle of the view shows its detail, and it eases in over about a
+  third of a second. Drag to another region and the old detail fades out while the next fades in, and the
+  pins of the other regions dim, so the map feels like one place rather than a switch. Each scene is baked
+  once into an offscreen canvas, and a selected quest draws a dashed trail along its route.
+- **Stops follow routes, not straight lines.** Each quest has a route through its place along things you can
+  really walk: the mine's tunnels, the village streets, the castle road to the keep, the forest walkways in the
+  canopy and the summit trail, up for one quest and down for the other. The stops sit at even steps along the
+  route in lesson order, so the numbers read as a walk from first to last. Selecting a quest or a stop draws a
+  line of round amber dots flowing along that route, and nothing cuts across walls or rock. Quest pins sit beside the routes, never on them: a pin that would
+  land close to a route is pushed out to a clear distance from it.
+- **Pins and labels are real elements over the canvas, and they are not pixel art.** The terrain and landmarks
+  are pixel art. A pin is a clean round marker with a number, a white edge and a pointer, so it reads against
+  busy terrain: red for open, green with a check for done, grey for filtered out, amber for a stop. It stays
+  the same size at every zoom level, has a target of at least 44 pixels with its padding, and grows and gains
+  a ring when selected. A pin shows no name by default. Hovering or focusing it shows a small card beside it with the name,
+  level, minutes and stop count, flipped to the left near the screen edge. Region pins at the world zoom get the same card, with the quest count and how many are done. A click on any
+  pin always opens the place panel, even if it was folded away, and hides the
+  card until the pointer leaves the pin, so a selected pin never leaves a card covering the map. Pins are smaller while zoomed out and full size from the
+  Landmark level. Stop pins are numbered one to nine and always sit above quest pins, so a stop that lands near its quest's
+  pin is still clickable. Pins are buttons with names and labels are text, so keyboard and screen reader users
+  get the same route lists and the canvas is decoration. Arrow keys
+  pan and plus and minus zoom. Escape goes up one level.
+- **Working prototype:** docs/mockups/quest-map/fullscreen.html, with the real quests, levels, reading
+  times and proposer stops. Drag, scroll, click and search all work.
+
+## Mockups (part of this plan)
+
+The mockups are the design reference for this plan and for quest-lessons. A build task is done when what
+it ships matches the mockup it cites, or the plan records why it differs. The files live in
+docs/mockups/quest-map, open in any browser, and have a flavor picker (sourdough, baguette, brioche) and
+an Auto, Light and Dark switch.
+
+| File | What it is | Backs |
+|---|---|---|
+| fullscreen.html | The working full-screen map: drag, zoom, fly-to, search, filter chips, the place panel in four states, a bottom sheet on a phone. Real quests, levels, reading times and proposer stops. | The map is the page, the zoom rules, the place panel |
+| in-site-map.html | The map inside the real portfolio shell, in map mode: the explorer rail collapsed, the assistant sidebar and the terminal hidden. Built from the live site's own markup and CSS, with the theme buttons wired to all six flavor and scheme pairs. | Map mode, how the page sits in the site |
+| in-site-note.html | A real note page with the lesson card under the byline, above the contents block, and the stop pips beside the section headings. Same method. | Lesson card, section pips |
+| index.html section 1 | Static layout study of the Google Maps arrangement. Superseded by fullscreen.html. | History only |
+| index.html section 2 | The zoomed landmark with a modal. Superseded: the place panel replaces the modal. | History only |
+| index.html section 3 | The guild card, save, and how the badge link rebuilds it. | Guild card, badge link |
+| index.html section 4 | Lesson mode as a quest book: Guide dialogue, margin runes, Log, Codex, Pack, Trial, campfire save, level-up. | The lesson book |
+| index.html section 5 | The compatibility check run on a new note. | Adding a note adds a quest |
+| index.html section 6 | Notes and lessons as a many to many model. | Notes and lessons |
+| index.html section 7 | The lesson card on a note, with section pips and variants. | Lesson card |
+| index.html section 8 | Runes versus badges, and a badge page. | Runes and badges |
+| index.html section 9 | Six phone screens. | Mobile |
+
+Where the mockups and the prose disagree, the prose wins and the mockup is a bug. Known gaps in the
+mockups: index.html still draws the older pixel pins in sections 1, 2 and 9, and fullscreen.html and the in-site pages show the decided markers; the pixel font is a monospace stand-in, the Guide's lines are placeholders, stop pin positions
+are formula placed, and the sheet heights on phone are sample proportions.
+
+## The map from what exists
+
+The notes already carry what a quest needs. Nothing new is typed per note.
+
+| Quest field | Comes from |
+|---|---|
+| Region | shared tags, plus a hand-approved region in content/quests/regions |
+| Quest level chip | the note's level: intro, intermediate, deep. A difficulty label only. It does not order regions or gate anything. Player level comes from XP alone, on a curve to set after the pilot. |
+| Class | the note's audience: build, lead, learn, teach |
+| XP | readingTime plus the number of stops |
+| You will learn | the note's summary and its headings |
+| Sources on the trail | the note's Sources section in the body, and the sources ids that point at the Reading shelf |
+| Order | depends on a plan-style prerequisite list in the region file |
+
+First six regions, from the published AI notes (order inside each is a guess to be corrected):
+
+| Region | Landmark | Notes |
+|---|---|---|
+| Harbor | an island with a lighthouse and a pier, off the coast | one external stop: Claude Academy |
+| Loop Forest | pines | one-loop-every-repo, one-loop-three-harnesses, loop-setup, the-check-that-never-ran |
+| Model Mines | mountain and cave | necessity-and-the-model-layer, plan-big-type-small, how-the-model-layer-works |
+| Guild Hall | hall | show-them-the-board, move-bugs-left, the-reviewer-that-learned-to-be-wrong |
+| GRAIN Keep | castle | watch-its-hands, whitepaper-one-vocabulary, grain drafts as they publish |
+| Summit | peak with flag | build-the-floor, ten-times-zero |
+
+Long notes (build-the-floor, how-the-model-layer-works, ten-times-zero, the whitepaper) become several
+stops, one per heading group. A stop is the unit a recording, a transcript cue and a concept highlight
+attach to.
+
+## Adding a note adds a quest
+
+This is the part that keeps the map alive without hand editing.
+
+1. NOTE-STANDARD gets a short section, "Does it fit the map". The note skill runs the check before a
+   note is called finished, the way it already checks the footer and the figure.
+2. tools/quests.ts check reads the note's frontmatter and body and prints one of three outcomes:
+   fits an existing region (and where), fits nothing yet, or cannot be placed (missing level, tags,
+   or sources).
+3. A fit is written to content/quests as one small file, so the map and the note list stay in step.
+   The quests index is generated, never hand kept, the same rule the plans board follows.
+4. Notes that fit no region are grouped by shared tags. When five or more notes share a tag set, the
+   tool proposes a new region with a name and a landmark. A person approves the name, landmark and
+   position in the same change that publishes the note. The map shows unmapped groups as fog with
+   a count, as in the mockup.
+5. Drafts never become quests. A quest appears when its note publishes, and a pin on the map that
+   points at a draft is a failing test.
+
+## What gets built, in order
+
+- [ ] Quest tokens, light and dark, in the theme. The canvas reads them so the map re-skins with the page.
+- [~] content/quests collection and generated index, plus tools/quests.ts check with tests. First slice done on 2026-11-27: content/quests/regions.json holds the hand approved regions, bun tools/quests.ts places a note, writes and verifies content/quests/index.json, and ten tests cover placement, drafts and a stale index. Still open: the new-region proposal at five notes with a shared tag set, running the check from the note skill, and the map reading the index instead of its own sample data. The questions are under Quest layer, first slice below.
+- [ ] NOTE-STANDARD section and a regenerated mounted skill, so the note skill runs the check.
+- [ ] Full-screen map page in map mode (rail collapsed, assistant sidebar and terminal hidden): pixel canvas, four integer zoom levels, semantic zoom, fly-to, pins as real buttons and the panel's route lists as the keyboard and screen reader path.
+- [ ] Place panel states (welcome, region, quest, stop): class, level, XP, what it covers, stops, sources and begin quest.
+- [ ] Guild card: seeded character, optional username, save file and save code, load.
+- [ ] Badge link that rebuilds the card from the hash, with the self-reported notice on the page.
+- [ ] Path badges as their own kind of badge, separate from the HAU course badges: a new collection under its own prefix, its own medallion in the quest palette and its own criteria page. Earned by finishing a region's trials, with the runes collected shown as its skills.
+- [ ] Lesson card on each note that has a lesson, linking the note to its lesson and back (see quest-lessons).
+- [ ] Lesson mode: the sidebar becomes the quest book. A sidecar file per lesson holds segments, cues, rune ids, the plain-words digest and the trial. The notes themselves are untouched.
+- [ ] Wire the quest UI to GRAIN tokens and verify every flavor and scheme pair for contrast.
+- [ ] Concept highlight in the note, driven through the GRAIN surface and verb registry, not a back channel.
+- [ ] Motion layer: waves, torches, flags, people and boats, paused during pan and zoom, off under reduced motion, with a Motion button and a Layers option for each kind.
+- [ ] Reduced motion, captions, keyboard path and contrast checked in both themes.
+- [ ] First recording for one quest, to prove the book end to end before recording the rest.
+- [ ] Extract the map, place panel, guild card and book into GRAIN once the pilot has run, leaving this site to supply the data and the theme.
+
+## Where the code lives
+
+The map, place panel, guild card and book are generic. They should end up in GRAIN, with this site
+supplying the data and the theme. Build them here first and extract them once the pilot lesson has run
+end to end. Design work belongs up in grain, so the extraction is a task on the list below and part of
+done, not a someday.
+
+## Tests and gates
+
+- Unit tests for tools/quests.ts: placement outcomes, the five-note region proposal, and a pin on a draft failing.
+- A keyboard-only walk of the map and the place panel, and a test that Motion starts off under reduced motion.
+- The WCAG gate over the map page and a note with a lesson card, in all six flavor and scheme pairs.
+- The playwright suite, including the visual baselines on macOS, plus the lint gate.
+- A run report under artifacts/runs and a memory note for the decisions made.
+
+## Audit follow-ups (2026-11-27)
+
+- [x] Bake the base map, scenes and sprites to a cached image at build time, so nothing is drawn procedurally on load. The base map, waves, path-only map, layer icon and six scenes are baked by bake-art.ts for all six pairs and fetched on load; the baked images hash identical to the drawn ones. The small mover sprites (people, boats, birds, the kraken) are still built on load, and a mockup that is served without the art folder falls back to drawing everything.
+- [x] Draw waves on their own layer so toggling them is cheap, and cap the canvas size on very large screens. The waves are a transparent layer over the base, so the toggle only redraws, and the art pixel scale grows in whole steps so the canvas stays within 1280 by 800.
+- [x] Render the region, quest and stop lists as plain HTML so the route works without JavaScript. route-list.ts writes them from the data block, and a test fails when they drift.
+- [x] Move quests, routes, scene specs and people paths into data, and separate drawing from DOM writes. They live in one JSON block, and paint draws while writeDom is the only place that touches the page.
+- [x] Check contrast in all six flavor and scheme pairs, and run the WCAG gate. The quest ribbon was 3.9 to 1 and is now above 5.7 to 1. The map passes axe in all six pairs across five panel states. The sitemap-wide gate in wcag.e2e.ts was not run, because the mockup is not a route of the site.
+- [x] Tests for the quest check, routes, progress and the panel controls. The routes, progress and panel controls are covered by 13 bun tests and nine browser tests. The quest check from the note skill is not covered, because tools/quests.ts does not exist yet; that stays open with the extraction work above.
+
+## Linking notes to the map (proposed)
+
+Each note that is a quest gets a Where this sits card above the lesson card: a crop of the baked map with the quest pins joined by the dotted route, the note's own pin ringed, the quests of the region as a numbered list and a Find it on the map link that opens the map already flown to the pin. Related notes get a row of cards, each tagged with its region color, its quest number and how it relates (next stop, same region, other region). The card is plain HTML with a background image, so it works without JavaScript. The mockup is [docs/mockups/quest-map/in-site-note-map-card.html](../docs/mockups/quest-map/in-site-note-map-card.html), built by build-note-map-card.py.
+
+## Quest layer, first slice (proposal, 2026-11-27)
+
+What exists: the fourteen published notes in the region table above are placed from content/quests/regions.json, and the index is generated from each note's own level, audience, tags, sources and reading time. A region that lists a draft, or a note that does not exist, fails the check, which is the draft pin this plan asks for.
+
+Decided on 2026-11-27:
+
+1. **The Claude Academy address** is https://academy.claude.com, the address Anthropic's own article gives for the platform. It is set in regions.json.
+2. **The path is the point, so the regions are stages in difficulty order**, and a note's topic does not decide its region. The first three regions hold only notes whose level is intro, and the last two only deep ones. Inside a stage the notes run from the way in to the practice.
+   - Loop Forest: ten-times-zero (the overview), loop-setup, plan-big-type-small.
+   - Model Mines: necessity-and-the-model-layer, build-the-floor.
+   - Guild Hall: show-them-the-board, move-bugs-left.
+   - GRAIN Keep: one-loop-every-repo, watch-its-hands, whitepaper-one-vocabulary.
+   - Summit: one-loop-three-harnesses, the-check-that-never-ran, how-the-model-layer-works, the-reviewer-that-learned-to-be-wrong.
+   The region names and landmarks still carry the old topics, so Loop Forest now teaches more than loops. Renaming them to match the path is a later call. The table under The map from what exists is the first guess and is superseded by this list.
+3. **The map reads the index** as soon as the content is decided, meaning the cuts in quest-lessons. Until then it keeps its sample data.
+
+Suggested for the fourth question, which waits for the owner's yes: every published note carries the tag ai, so it says nothing about a region. Group on the other tags. Today workflow and tooling mark Loop Forest, tokenomics marks Model Mines, leadership marks Guild Hall, design-systems marks GRAIN Keep and web-platform or stack marks Summit. A note that fits no region is grouped by its first tag after ai, and when five or more share one, the tool proposes a region with a name and a landmark for a person to approve in the change that publishes the note. A note with only the tag ai is reported as cannot be placed, because it says too little to place.
+
+## Honest limits
+
+- Where about four and a half hours of audio is hosted is not decided. A public repository is the wrong home for large files.
+- Progress is local to the browser until saved. Clearing storage without a save file loses it.
+- The badge shows what the holder says they finished. Nothing on a static site can prove it.
+- The region groupings are my first read of the notes, not a curriculum. Order and prerequisites need
+  a read-through by the author before launch.
+
+## Done when
+
+The map ships with six regions, one fully recorded quest, the check wired into the note skill, the
+extraction into GRAIN done, every gate in Tests and gates green with the totals recorded, and screenshots
+of the map, the place panel and the lesson book in light and dark shown in the session.

@@ -1,4 +1,5 @@
 import { nestDesktop } from "./nest-availability.js";
+import { learnTarget } from "./learn-command.js";
 
 // portfolio/scripts/desk-commands.js — the PORTFOLIO's own terminal commands (the persona lives
 // here, so grain/scripts/terminal.js stays persona-neutral). Registers through the GRAIN seam
@@ -84,6 +85,17 @@ import { nestDesktop } from "./nest-availability.js";
   t.register({ name: "drafts", args: "", help: "open the unlisted drafts", hidden: true, run(ctx) {
     ctx.print("→ opening the drafts. Unlisted, unfinished, and not for sharing yet.");
     location.assign("/drafts");
+  }});
+
+  // learn: the hidden learning map. It is reached only by typing this word. Nothing else on the site
+  // links to /learn, which is noindex and left out of the sitemap, the explorer tree and search.
+  // learnTarget (learn-command.js) is the tested parser; opening the address adds the tab.
+  t.register({ name: "learn", args: "[quest-id]", help: "open the learning map", hidden: true, run(ctx) {
+    const target = learnTarget(ctx.arg);
+    if (!target.ok) return ctx.printErr(target.error);
+    ctx.print(`→ ${target.note}`);
+    location.assign(target.href);
+    return undefined;
   }});
 
   // ── whoami: the short version ───────────────────────────────────────────────────────────────────
