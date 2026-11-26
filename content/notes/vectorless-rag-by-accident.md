@@ -289,17 +289,18 @@ that part of the story.
 
 Once I saw the root, every other layer was something I had built for a different reason.
 
-**The standards are the named sections.** Twenty-nine of them are mounted into each session as skills
-(a snapshot, since the number grows), among them [voice](/standards/voice), [figures](/standards/figures)
-and the [note standard](/standards/note-standard). Each opens with a field called *when*, which becomes
-the skill's description, and until the model opens a standard the description is all it sees. The
-standards' own rules say it is the only thing an agent reads when deciding whether to open the file at
-all. That is a node summary in a section tree. I wrote a whole contract for wording it (nearly all start with
-"Read this BEFORE") without knowing I was tuning a retrieval index.
+**The standards are the named sections.** Each session gets 29 of them as skills, among them
+[voice](/standards/voice), [figures](/standards/figures) and the [note standard](/standards/note-standard).
+(That is a snapshot, since the number grows.)
 
-It even has a scar from a classic tree failure. My loop standard shared a name with a built-in skill,
-and mine was shadowed without a sound. In a vector store a duplicate title is a non-event. In a tree it
-means one branch can never be picked.
+Every skill carries one line of description, and that line is all the model sees until it opens the
+file. So I wrote the lines to do one job: say when to read it. Nearly all of them start with "Read this
+BEFORE". That is a node summary in a section tree, and I was tuning it without knowing it was a
+retrieval index.
+
+The tree has taught me one classic lesson already. My loop standard shared a name with a built-in
+skill, and mine was shadowed without a sound. In a vector store a duplicate title is a non-event. In a
+tree it means one branch can never be picked.
 
 **PANTRY mounts them.** The standards live once, in this repo's standards folder. PANTRY mounts them as
 skills in the other repos, so a session in GRAIN reads the same sections as one here. The mount is a
