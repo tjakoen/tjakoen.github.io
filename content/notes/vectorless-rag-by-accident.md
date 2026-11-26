@@ -9,6 +9,8 @@ type: note
 date: 2026-11-26
 readingTime: "~14 min"
 tags: [ai, rag, retrieval, standards, tooling]
+people: [shivani-virdi]
+sources: [book-vectorless-rag-post]
 summary: >
   RAG gives a model the right pages before it answers. Most systems pick pages by similarity, using
   vectors, while vectorless RAG gives the model a tree of sections and lets it read down to the page it
@@ -22,8 +24,9 @@ social: |
   RAG means the AI looks things up before it answers. Most setups do it with vectors: chop the
   documents into chunks, turn each chunk into numbers, fetch whatever sits nearest the question. Mine
   does it with a table of contents. One file, CLAUDE.md, symlinked as AGENTS.md so Claude, Codex and
-  OpenCode all read the same one. One answer cost 2,848 characters of reading out of a library of
-  494,868.
+  OpenCode all read the same one. A question about my voice rules read 36 lines of a 677-line file.
+
+  The name came from Shivani Virdi's post on vectorless RAG. Thank you, @Shivani Virdi.
 
   It is easy to trace and it costs me nothing extra. It also costs more reads, and my notes are still
   a flat pile with no tree.
@@ -36,7 +39,7 @@ OpenCode, and every session has to find the one file that applies out of thirty-
 standing there pointing.
 
 For months I called whatever makes that work "keeping good docs." The AI world calls it vectorless
-RAG. This note explains RAG for anyone who has not met the word, what the vectorless kind does
+RAG, a name I met in a [LinkedIn post](https://www.linkedin.com/posts/shivanivirdi_everyone-thinks-rag-chunking-embeddings-share-7527002415418732544-54j2/) by [Shivani Virdi](/people#shivani-virdi). This note explains RAG for anyone who has not met the word, what the vectorless kind does
 differently, and what my version looks like with receipts, including the parts that do not work.
 
 ## What RAG is, if you have never met it
@@ -257,7 +260,9 @@ reads. An index has to be built, the code drifts out of sync with it, and it has
 
 So there are three answers to the ink box. Vectors pick by distance. PageIndex reasons over a tree built
 ahead of time. Claude Code searches live with no index. Mine is closest to the second, with the tree
-written by hand.
+written by hand. Shivani's post draws the same line, and it is fair to both sides: she says vectorless
+RAG breaks on flat text and on corpora too big for the context window, and that most production
+systems end up using both kinds.
 
 ## I thought I was just being tidy
 
@@ -662,7 +667,7 @@ What the claims above rest on, and what I did and did not check.
 - Boris Cherny on [Latent Space](https://www.latent.space/p/claude-code), 2025-05-07. The agentic search passage is about forty-five minutes into the transcript, and I checked the quoted words against it.
 - The [AGENTS.md](https://agents.md) convention. The symlinks are checked in this repo, the standards folder, PANTRY and GRAIN, and in the global links for Claude, Codex and OpenCode.
 - [graphify](https://github.com/safishamsi/graphify), [tokensave](https://github.com/aovestdipaperino/tokensave) and [PANTRY](/pantry). The figures are counted from my own repository, my own tokensave and my own running PANTRY on 2026-11-26, and the August figures are from my notes on measuring graphify. None of them comes from a vendor.
-- The name "vectorless RAG" reached me through a LinkedIn post by Shivani Virdi, and it is why I went looking. Nothing above rests on it.
+- [Shivani Virdi](/people#shivani-virdi), [a LinkedIn post](https://www.linkedin.com/posts/shivanivirdi_everyone-thinks-rag-chunking-embeddings-share-7527002415418732544-54j2/), November 2026. It is where I met the name "vectorless RAG", and it is why I went looking. I read the post, and the primary sources above are what the claims rest on. Her 98.7 percent figure is the same self-reported PageIndex number I flagged earlier.
 
 ---
 
