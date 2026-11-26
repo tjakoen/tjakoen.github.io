@@ -1,6 +1,7 @@
 // e2e/learn.e2e.ts: the hidden /learn page. Reached only from the terminal, noindex, absent from the sitemap and search,
 // with the shell panes tucked away, and the map inside it reads the #quest= and #stop= deep links.
 import { test, expect, type Page } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 type Quest = { id: string; stops: string[] };
 declare const QUESTS: Quest[];
@@ -62,3 +63,34 @@ test("#quest=<id> and #stop=<id>.<n> fly to the place on load", async ({ page })
   frame = await frameOf(page);
   expect(await frame.evaluate(() => sel.t)).not.toBe("quest");
 });
+
+const FLAVORS = ["sourdough", "baguette", "brioche"] as const;
+const SCHEMES = ["light", "dark"] as const;
+const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+declare function artKey(): string;
+
+async function setShellTheme(page: Page, flavor: string, scheme: string) {
+  await page.evaluate(([f, c]) => {
+    document.documentElement.setAttribute("data-theme", f!);
+    document.documentElement.setAttribute("data-color-scheme", c!);
+  }, [flavor, scheme]);
+  const frame = await frameOf(page);
+  await expect.poll(() => frame.evaluate(() => artKey())).toBe(`${flavor}-${scheme}`);
+  await page.waitForTimeout(300);
+  return frame;
+}
+
+for (const flavor of FLAVORS) {
+  for (const scheme of SCHEMES) {
+    test(`the map follows the shell: ${flavor} ${scheme}, and passes WCAG 2.2 AA`, async ({ page }) => {
+      await page.goto("/learn");
+      const frame = await setShellTheme(page, flavor, scheme);
+      const bg = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--color-bg").trim());
+      expect(await frame.evaluate(() => document.documentElement.style.getPropertyValue("--color-bg").trim())).toBe(bg);
+      expect(await frame.evaluate(() => [document.documentElement.dataset.theme, document.documentElement.dataset.colorScheme])).toEqual([flavor, scheme]);
+      const scan = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+      expect(scan.passes.length, "an empty scan proves nothing").toBeGreaterThan(0);
+      expect(scan.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).slice(0, 3).join(" | ")}`)).toEqual([]);
+    });
+  }
+}

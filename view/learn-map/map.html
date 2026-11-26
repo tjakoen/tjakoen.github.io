@@ -4,19 +4,26 @@
 <meta charset="utf-8">
 <script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quest map · full-screen prototype</title>
+<title>Learn AI with me: the map</title>
+<meta name="robots" content="noindex, nofollow">
+<script>
+/* Follow the site shell. This page is the inside of /learn, so a direct visit goes there instead. */
+(function(){
+  var P=null; try{ if(window.parent!==window) P=window.parent.document.documentElement; }catch(e){}
+  if(!P){ location.replace("/learn"+location.hash); return; }
+  var TOKENS=["--color-bg","--color-fg","--color-surface","--color-line","--color-muted","--color-accent","--color-accent-contrast","--color-accent-soft"], R=document.documentElement;
+  function pull(){
+    ["data-theme","data-color-scheme"].forEach(function(a){ var v=P.getAttribute(a); if(v===null) R.removeAttribute(a); else R.setAttribute(a,v); });
+    var cs=window.parent.getComputedStyle(P); TOKENS.forEach(function(t){ R.style.setProperty(t,cs.getPropertyValue(t)); });
+  }
+  pull();
+  new window.parent.MutationObserver(function(){ pull(); if(window.qmSync) window.qmSync(); }).observe(P,{attributes:true,attributeFilter:["data-theme","data-color-scheme"]});
+})();
+</script>
 <style>
-/* GRAIN tokens, mirrored from grain/styles (variables.css + themes). The real page imports grain; this copy only lets the mockup run standalone.
-   Two orthogonal axes: data-color-scheme = light|dark (follows the OS), data-theme = flavor (sourdough default, baguette, brioche). */
-:root { --paper:#E2E0D8; --paper-2:#E8E6DF; --panel:#E8E6DF; --ink:#1C1B17; --ink-muted:#5F5D55; --line-soft:rgba(28,27,23,.14); --color-accent:var(--ink); --color-accent-contrast:var(--paper); --color-accent-soft:var(--paper-2); }
-@media (prefers-color-scheme: dark) { :root:not([data-color-scheme="light"]) { --paper:#1B1A16; --paper-2:#232219; --panel:#232219; --ink:#E4E1D8; --ink-muted:#9A968B; --line-soft:rgba(228,225,216,.16); } }
-:root[data-color-scheme="dark"] { --paper:#1B1A16; --paper-2:#232219; --panel:#232219; --ink:#E4E1D8; --ink-muted:#9A968B; --line-soft:rgba(228,225,216,.16); }
-:root[data-theme="baguette"] { --paper:#FAFAF8; --paper-2:#F2F2F0; --panel:#FFFFFF; --ink:#232326; --ink-muted:#6B6B70; --line-soft:rgba(35,35,38,.11); --color-accent:#2C68D6; --color-accent-contrast:#FFFFFF; --color-accent-soft:#E7EEFB; }
-@media (prefers-color-scheme: dark) { :root[data-theme="baguette"]:not([data-color-scheme="light"]) { --paper:#17181A; --paper-2:#202126; --panel:#202126; --ink:#ECECEE; --ink-muted:#96969C; --line-soft:rgba(236,236,238,.15); --color-accent:#6FA0FF; --color-accent-contrast:#16181A; --color-accent-soft:rgba(111,160,255,.16); } }
-:root[data-theme="baguette"][data-color-scheme="dark"] { --paper:#17181A; --paper-2:#202126; --panel:#202126; --ink:#ECECEE; --ink-muted:#96969C; --line-soft:rgba(236,236,238,.15); --color-accent:#6FA0FF; --color-accent-contrast:#16181A; --color-accent-soft:rgba(111,160,255,.16); }
-:root[data-theme="brioche"] { --paper:#F5EEDD; --paper-2:#FBF5E7; --panel:#FFFDF6; --ink:#2C2416; --ink-muted:#6E6249; --line-soft:rgba(44,36,22,.14); --color-accent:#8A5E12; --color-accent-contrast:#FFFFFF; --color-accent-soft:#F3E7CC; }
-@media (prefers-color-scheme: dark) { :root[data-theme="brioche"]:not([data-color-scheme="light"]) { --paper:#1D180F; --paper-2:#262016; --panel:#262016; --ink:#EFE6D2; --ink-muted:#9C907A; --line-soft:rgba(239,230,210,.16); --color-accent:#E3B457; --color-accent-contrast:#1D180F; --color-accent-soft:rgba(227,180,87,.16); } }
-:root[data-theme="brioche"][data-color-scheme="dark"] { --paper:#1D180F; --paper-2:#262016; --panel:#262016; --ink:#EFE6D2; --ink-muted:#9C907A; --line-soft:rgba(239,230,210,.16); --color-accent:#E3B457; --color-accent-contrast:#1D180F; --color-accent-soft:rgba(227,180,87,.16); }
+/* The flavor and the light or dark scheme come from the site shell. The script below copies the shell's data-theme, data-color-scheme and
+   token values into this document and follows every change, so the map keeps no token table of its own. The map's names for them: */
+:root { --paper:var(--color-bg); --panel:var(--color-surface); --paper-2:color-mix(in srgb,var(--color-bg) 50%,var(--color-surface)); --ink:var(--color-fg); --ink-muted:var(--color-muted); --line-soft:var(--color-line); }
 
 /* UI chrome reads GRAIN tokens only, so it follows every flavor in both schemes. */
 :root { --q-panel:var(--panel); --q-paper:var(--paper); --q-ink:var(--ink); --q-muted:var(--ink-muted); --q-line:color-mix(in srgb,var(--ink) 28%,transparent);
@@ -595,16 +602,6 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
   <button id="settings" aria-expanded="false" aria-controls="setpanel" aria-label="Display settings" title="Display settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h8M18 6h2M4 12h2M12 12h8M4 18h10M20 18h0"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></button>
   <div class="setpanel" id="setpanel">
     <div class="sgrp"><button id="motion" aria-pressed="true" aria-label="Motion" title="Motion: water glints, torches, the summit flag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9c3-3 6 3 9 0s6 3 9 0M3 15c3-3 6 3 9 0s6 3 9 0"/></svg></button></div>
-    <div class="sgrp" id="flavors" role="group" aria-label="Flavor">
-      <button data-f="sourdough" aria-pressed="true" aria-label="Sourdough" title="Sourdough"><i class="sw" style="--l:#E2E0D8;--r:#1C1B17"></i></button>
-      <button data-f="baguette" aria-pressed="false" aria-label="Baguette" title="Baguette"><i class="sw" style="--l:#FAFAF8;--r:#2C68D6"></i></button>
-      <button data-f="brioche" aria-pressed="false" aria-label="Brioche" title="Brioche"><i class="sw" style="--l:#F5EEDD;--r:#8A5E12"></i></button>
-    </div>
-    <div class="sgrp" id="scheme" role="group" aria-label="Color scheme">
-      <button data-s="auto" aria-pressed="true" aria-label="Auto, follow the system" title="Auto"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>
-      <button data-s="light" aria-pressed="false" aria-label="Light" title="Light"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></svg></button>
-      <button data-s="dark" aria-pressed="false" aria-label="Dark" title="Dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
-    </div>
   </div>
 </div>
 <div class="ctl"><button class="single" id="me" title="Find my adventurer" aria-label="Find my adventurer">◎</button><div class="stack"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button></div></div>
@@ -1241,10 +1238,8 @@ lpop.querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{ LAYERS[c.datas
 document.getElementById('zin').onclick=()=>stepZoom(1); document.getElementById('zout').onclick=()=>stepZoom(-1);
 document.getElementById('me').onclick=()=>where();
 const root=document.documentElement;
-function syncSettings(){ const th=root.dataset.theme||'sourdough', cs=root.dataset.colorScheme||'auto'; document.querySelectorAll('#flavors button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===th))); document.querySelectorAll('#scheme button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.s===cs))); }
+function syncSettings(){ /* flavor and scheme are the shell's, nothing to show here */ }
 window.qmSync=()=>{ syncSettings(); reskin(); };
-document.querySelectorAll('#flavors button').forEach(b=>b.onclick=()=>{ root.dataset.theme=b.dataset.f; qmSync(); });
-document.querySelectorAll('#scheme button').forEach(b=>b.onclick=()=>{ const v=b.dataset.s; if(v==='auto') root.removeAttribute('data-color-scheme'); else root.dataset.colorScheme=v; qmSync(); });
 /* The settings are one icon until opened, and close on an outside press, so they stay out of the map's way. */
 const tr=document.querySelector('.topright'), tb=document.getElementById('settings');
 function setOpen(o){ tr.toggleAttribute('data-open',o); tb.setAttribute('aria-expanded',String(o)); }
