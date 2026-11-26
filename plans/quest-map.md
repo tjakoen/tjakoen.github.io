@@ -71,6 +71,30 @@ note, so notes stay untouched.
 
 Where a note is cut into stops, how big a stop is and which lessons exist are decided in [quest-lessons](quest-lessons.md).
 
+## The map is the page (decided)
+
+The first mockups boxed the map beside a panel. That was a layout of convenience, not a design. The map
+fills the viewport and everything else floats on it, as in Google Maps.
+
+- **Layout.** Search and the place panel sit top left, filter chips beside them, theme settings top right,
+  layers and the zoom level bottom left, zoom and find-me bottom right. On a phone the panel is a bottom
+  sheet. The site sidebar stays closed on this page.
+- **The panel replaces the modal.** Welcome, region, quest and stop are four states of one place panel,
+  the way a place card works. The RPG details (class, level, XP, what it covers, stops) live in the quest
+  state. Begin quest opens the note in lesson mode. The separate modal over the zoomed map is dropped.
+- **Zoom is four integer levels** so pixels stay square: World, Regions, Landmark and Stops, at 4, 6, 8 and
+  12 screen pixels per map pixel. Scroll or double-click steps one level around the cursor, drag pans, and
+  clicking a pin flies there, stepping through the levels on the way. Smooth fractional zoom is rejected
+  because it blurs pixel art.
+- **Semantic zoom.** World shows the six region pins and names. Regions shows every quest pin with its
+  short name. Landmark adds the detail sprites and, for the selected quest, amber stop pins. Stops names
+  each stop. Region labels fade as quest labels arrive.
+- **Pins and labels are real elements over the canvas.** Pins are buttons with names and labels are text,
+  so keyboard and screen reader users get the same route lists and the canvas is decoration. Arrow keys
+  pan, plus and minus zoom, and Escape returns to the welcome card.
+- **Working prototype:** docs/mockups/quest-map/fullscreen.html, with the real quests, levels, reading
+  times and proposer stops. Drag, scroll, click and search all work.
+
 ## The map from what exists
 
 The notes already carry what a quest needs. Nothing new is typed per note.
@@ -123,8 +147,8 @@ This is the part that keeps the map alive without hand editing.
 - [ ] Quest tokens, light and dark, in the theme. The canvas reads them so the map re-skins with the page.
 - [ ] content/quests collection and generated index, plus tools/quests.ts check with tests.
 - [ ] NOTE-STANDARD section and a regenerated mounted skill, so the note skill runs the check.
-- [ ] Map page with no sidebar: dot-matrix canvas, numbered pins as real buttons, zoom, and an ordered list view that carries the same content for keyboard and screen reader users.
-- [ ] Landmark zoom and quest modal: class, level, XP, what it covers, sources, begin quest.
+- [ ] Full-screen map page with no sidebar: pixel canvas, four integer zoom levels, semantic zoom, fly-to, pins as real buttons and the panel's route lists as the keyboard and screen reader path.
+- [ ] Place panel states (welcome, region, quest, stop): class, level, XP, what it covers, stops, sources and begin quest.
 - [ ] Guild card: seeded character, optional username, save file and save code, load.
 - [ ] Badge link that rebuilds the card from the hash, with the self-reported notice on the page.
 - [ ] Path badges as a new badge class reusing the medallion, in the quest palette, in their own namespace. Earned by finishing a region's trials, with the runes collected shown as its skills.
