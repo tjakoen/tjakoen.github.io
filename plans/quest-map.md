@@ -31,8 +31,9 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   villagers walk the Guild Hall streets, sailors work the pier, elves cross the walkways in the canopy and
   climbers work the switchback to the summit. The snowfield under the peak has a frozen lake, snowy pines and
   cabins. After dark, fireflies drift over the forest. The water glints at about a third of the earlier pace.
-  The sea ends at a rounded wall of cloud at the border of the map, far out from the island, and past it there
-  is only more cloud, never open water. A kraken lives on that edge in the top-left. Everything moves in pixel steps, holds still under reduced motion, and follows the
+  Open sea runs a long way around the island, then ends at a rounded wall of cloud at the border of the map,
+  and past it there is only more cloud, never open water. You reach the cloud by panning out. A kraken lives in
+  the sea at the top-left. Everything moves in pixel steps, holds still under reduced motion, and follows the
   Motion button.
 - **One style, two rules.** Art, meaning the terrain, landmarks, detail scenes and the moving layer, is solid
   pixels with the dark outline color around every building and mountain, two-tone shading, no translucency, no

@@ -599,8 +599,8 @@ function layoutQuests(){ for(const n in SPEC){ byReg(+n).forEach((qq,i)=>{ const
   const nx=QUESTS.find(q=>!q.done)||QUESTS[0]; YOU[0]=nx.pos[0]; YOU[1]=nx.pos[1]; } // you stand beside the next quest on your route
 const stopPos=(qq,i)=>{ const s=SPEC[qq.region], k=byReg(qq.region).indexOf(qq), sl=s.slots, p=sl[(k*3+i)%sl.length]; return sceneM(qq.region,p[0],p[1]); };
 /* ===== Life: ferries, a kraken, gulls, forest birds and chimney smoke. Drawn in pixel steps, slowly. ===== */
-/* The cloud ring is the border of the map: a rounded outline far outside the island, at the edge of what the world view shows, and the kraken sits on it. */
-const RING_RX=150, RING_RY=116, RING_N=2.5, ringXY=(t,k=1)=>{ const c=Math.cos(t), s=Math.sin(t); return [Math.round(100+k*RING_RX*Math.sign(c)*Math.abs(c)**(2/RING_N)), Math.round(80+k*RING_RY*Math.sign(s)*Math.abs(s)**(2/RING_N))]; }, KRAKEN=ringXY(-2.75);
+/* The cloud ring is the border of the map: a rounded outline far outside the island with open sea in between. The kraken keeps the spot in the top-left sea that it was given. */
+const RING_RX=185, RING_RY=145, RING_N=2.6, ringXY=(t,k=1)=>{ const c=Math.cos(t), s=Math.sin(t); return [Math.round(100+k*RING_RX*Math.sign(c)*Math.abs(c)**(2/RING_N)), Math.round(80+k*RING_RY*Math.sign(s)*Math.abs(s)**(2/RING_N))]; }, KRAKEN=[-41,26];
 const SEA=[[48,128],[52,140],[62,147],[80,153],[100,156],[120,156],[140,151],[160,146],[172,138],[180,128],[184,116],[188,104],[188,95]];
 const SEG=[]; let SEA_LEN=0; for(let i=0;i<SEA.length-1;i++){ const d=Math.hypot(SEA[i+1][0]-SEA[i][0],SEA[i+1][1]-SEA[i][1]); SEG.push(d); SEA_LEN+=d; }
 function seaAt(s){ for(let i=0;i<SEG.length;i++){ if(s<=SEG[i]||i===SEG.length-1){ const k=Math.min(1,s/SEG[i]); return [SEA[i][0]+(SEA[i+1][0]-SEA[i][0])*k,SEA[i][1]+(SEA[i+1][1]-SEA[i][1])*k,Math.sign(SEA[i+1][0]-SEA[i][0])||1]; } s-=SEG[i]; } }
@@ -795,7 +795,7 @@ function bake(){ base=document.createElement('canvas'); base.width=WW+2*M; base.
   plank(180,94,188,94); houseSpr().blit(put,176,92);
   /* a bank of cloud around the edge of the map, so the world ends in weather rather than a line */
   const puff=(x,y,r)=>{ if(isLand(x,y)) return; disc(x,y,r,P.snow2); disc(x-1,y-1,r-1,P.snow); };
-  for(let q=0;q<180;q++){ const t=q/180*6.2832, h=hash2(q,31), [px,py]=ringXY(t); puff(px+(h%3)-1,py+((h>>3)%3)-1,4+(h>>6)%4); if(q%3===0){ const [ix,iy]=ringXY(t,.94); puff(ix,iy,3+(h>>9)%3); } }
+  for(let q=0;q<240;q++){ const t=q/240*6.2832, h=hash2(q,31), [px,py]=ringXY(t); puff(px+(h%3)-1,py+((h>>3)%3)-1,4+(h>>6)%4); if(q%3===0){ const [ix,iy]=ringXY(t,.94); puff(ix,iy,3+(h>>9)%3); } }
   makeMoverSprites(); makePeople();
   bakeScenes(); }
 let lastDraw=0, dq=0, focusN=0, fadeT=0; const FADE={}; // FADE[n] is how visible region n's detail map is, 0 to 1
@@ -861,7 +861,7 @@ let anim=0;
 function setZ(newZ,ax,ay){ // keep the world point under (ax,ay) css px fixed
   const o=origin(); const wx=o.vx+(ax/S)/o.z, wy=o.vy+(ay/S)/o.z; V.z=newZ; const p=pads();
   V.cx=wx-((ax/S)-(CW/2+p.l/2/S))/V.z; V.cy=wy-((ay/S)-(CH/2-p.b/2/S))/V.z; clampV(); }
-function clampV(){ V.cx=Math.max(-40,Math.min(WW+40,V.cx)); V.cy=Math.max(-30,Math.min(WH+30,V.cy)); }
+function clampV(){ V.cx=Math.max(-70,Math.min(WW+70,V.cx)); V.cy=Math.max(-55,Math.min(WH+55,V.cy)); }
 function stepZoom(dir,ax,ay){ const i=LV.indexOf(V.z), j=Math.max(0,Math.min(LV.length-1,i+dir)); if(j===i) return; setZ(LV[j],ax??innerWidth/2,ay??innerHeight/2); draw(); }
 function flyTo(cx,cy,z){ cancelAnimationFrame(anim); const f={...V}, t0=performance.now(), dur=700; const i0=LV.indexOf(f.z), i1=LV.indexOf(z), n=Math.abs(i1-i0);
   (function step(now){ const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,3); V.cx=f.cx+(cx-f.cx)*e; V.cy=f.cy+(cy-f.cy)*e; const k=Math.min(n,Math.floor(t*(n+1))); V.z=LV[i0+Math.sign(i1-i0)*k]; draw(); if(t<1) anim=requestAnimationFrame(step); })(t0); }
