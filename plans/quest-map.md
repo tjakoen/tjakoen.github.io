@@ -25,10 +25,15 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
   unfinished quest on the route, so the marker says where you are in the path and not just where the map
   happens to be. The find-me button and Continue both go there.
 - **The map has life, slowly.** Ferries sail between the Foothills pier and the Guild Hall harbour along the
-  south coast. A kraken waves its tentacles in the top-left corner. Gulls circle the port, birds circle the
-  forest and nest in its trees, and the Guild Hall chimney smokes. The water glints at about a third of the
-  earlier pace. A bank of cloud runs around the edge of the map so the world ends in weather rather than a
-  line. Everything moves in pixel steps, holds still under reduced motion, and follows the Motion button.
+  south coast. Gulls circle the port, birds circle the forest and nest in its trees, fish jump, and the Guild
+  Hall chimney smokes. Up close the places are lived in: dwarves swing picks in the mines and push an ore
+  cart along the shaft, guards stand at the castle gate, the keep door and the walls and patrol the ramparts,
+  villagers walk the Guild Hall streets, sailors work the pier, elves cross the walkways in the canopy and
+  climbers work the switchback to the summit. The snowfield under the peak has a frozen lake, snowy pines and
+  cabins. After dark, fireflies drift over the forest. The water glints at about a third of the earlier pace.
+  A rounded ring of cloud sits at the border of the map, far out from the island, and a kraken lives on that
+  ring in the top-left. Everything moves in pixel steps, holds still under reduced motion, and follows the
+  Motion button.
 - **One style, two rules.** Art, meaning the terrain, landmarks, detail scenes and the moving layer, is solid
   pixels with the dark outline color around every building and mountain, two-tone shading, no translucency, no
   blur and no smoothing. Ground patches blend softly like terrain and carry no outline. Chrome, meaning the
