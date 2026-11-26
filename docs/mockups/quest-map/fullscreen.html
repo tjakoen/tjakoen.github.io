@@ -614,14 +614,17 @@ refreshProgress();
 const byReg=n=>QUESTS.filter(q=>q.region===n);
 
 /* ===== view: integer zoom levels, 2 css px per canvas px, centre in world coords ===== */
-const S=2, LV=[2,3,4,6], LNAME=['World','Regions','Landmark','Stops'];
+/* S is how many screen pixels one art pixel covers. It stays a whole number so the pixels stay crisp, and it grows on very large screens
+   so the backing canvas never passes about 1280 by 800 art pixels, however big the window is. */
+const CAP_W=1280, CAP_H=800; let S=2; const scaleFor=(w,h)=>Math.max(2,Math.ceil(w/CAP_W),Math.ceil(h/CAP_H));
+const LV=[2,3,4,6], LNAME=['World','Regions','Landmark','Stops'];
 let V={cx:104,cy:84,z:2}, sel={t:'none'}, collapsed=false, filter='All', q='';
 const cv=document.getElementById('map'), ctx=cv.getContext('2d'), over=document.getElementById('over'), fx=document.getElementById('fx'), fctx=fx.getContext('2d');
 let CW=0,CH=0;
 const wide=()=>innerWidth>=800;
 function pads(){ if(collapsed) return {l:0,b:0}; return wide()?{l:384,b:0}:{l:0,b:Math.round(innerHeight*.44)}; }
 function origin(){ const p=pads(), z=V.z; let vx=V.cx-(CW/2+p.l/2/S)/z, vy=V.cy-(CH/2-p.b/2/S)/z; vx=Math.round(vx*z)/z; vy=Math.round(vy*z)/z; return {vx,vy,z}; }
-function resize(){ CW=Math.ceil(innerWidth/S); CH=Math.ceil(innerHeight/S); cv.width=CW; cv.height=CH; cv.style.width=CW*S+'px'; cv.style.height=CH*S+'px'; fx.width=CW; fx.height=CH; fx.style.width=CW*S+'px'; fx.style.height=CH*S+'px'; draw(); }
+function resize(){ S=scaleFor(innerWidth,innerHeight); CW=Math.ceil(innerWidth/S); CH=Math.ceil(innerHeight/S); cv.width=CW; cv.height=CH; cv.style.width=CW*S+'px'; cv.style.height=CH*S+'px'; fx.width=CW; fx.height=CH; fx.style.width=CW*S+'px'; fx.style.height=CH*S+'px'; draw(); }
 
 const CHIPREG={Loop:2,Models:3,Leading:4,Design:5};
 function regionOk(n){ if(filter==='All') return true; if(CHIPREG[filter]) return CHIPREG[filter]===n; if(filter==='Not started') return byReg(n).some(x=>!x.done); return true; }
