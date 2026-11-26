@@ -287,8 +287,16 @@ body { margin:0; background:var(--q-water); }
 #stage.drag { cursor:grabbing; }
 #map, #fx { position:absolute; left:0; top:0; image-rendering:pixelated; } #fx { pointer-events:none; }
 #over { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-.hit { position:absolute; width:34px; height:46px; margin:0; padding:0; border:0; background:transparent; box-shadow:none; pointer-events:auto; cursor:pointer; }
-.hit:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
+.hit { position:absolute; width:30px; height:30px; margin:0; padding:0; box-sizing:border-box; border:3px solid #fff; border-radius:50%; background:#c8382a; color:#fff; font:700 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif; display:grid; place-items:center; box-shadow:0 2px 5px rgba(0,0,0,.45); cursor:pointer; pointer-events:auto; transform:translate(-50%,calc(-100% - 7px)); transition:transform .12s ease, box-shadow .12s ease; }
+.hit::before { content:""; position:absolute; inset:-7px; } /* a 44px target around a 30px marker */
+.hit::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:6px solid transparent; border-top-color:#fff; border-bottom:0; }
+.hit:hover { transform:translate(-50%,calc(-100% - 7px)) scale(1.12); }
+.hit[data-state="done"] { background:#2f7d33; }
+.hit[data-state="locked"] { background:#6b6b6b; }
+.hit[data-state="stop"] { background:#f5b83d; color:#3b2d1c; width:26px; height:26px; }
+.hit[data-selected] { transform:translate(-50%,calc(-100% - 7px)) scale(1.25); z-index:2; box-shadow:0 0 0 4px rgba(245,184,61,.6), 0 3px 8px rgba(0,0,0,.5); }
+.hit.mark { pointer-events:none; }
+.hit:focus-visible { outline:3px solid var(--q-accent); outline-offset:3px; }
 #over .lbl { transform:translate(-50%,0); }
 #over .lbl.region { font-size:.82rem; letter-spacing:.2em; }
 #over .lbl.quest { font-size:.66rem; letter-spacing:.04em; max-width:130px; white-space:normal; line-height:1.15; }
@@ -531,11 +539,10 @@ function draw(){
   if(z>=4){ tentSpr().blit(put,92,134); tentSpr().blit(put,96,136); torchSpr().blit(put,100,128); torchSpr().blit(put,108,128); cartSpr().blit(put,112,134); for(let x=100;x<122;x+=2) put(x,135,P.trunk); for(let x=100;x<124;x++) put(x,136,P.rockd); torchSpr().blit(put,72,138); }
   // pins
   const zp=z>=4?3:2; const items=[];
-  const pinAt=(wx,wy,n,state,selected)=>{ const bx=Math.round((wx-vx)*z), by=Math.round((wy-vy)*z); if(bx<-30||by<-30||bx>CW+30||by>CH+30) return;
-    const pp=dy=>(lx,ly,c)=>{ const sx=bx+lx*zp, sy=by+ly*zp-dy; if(sx<-zp||sy<-zp||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,zp,zp); };
-    if(selected) for(let i=-4;i<=4;i++) pp(0)(i,0,'rgba(0,0,0,.28)');
-    pinSpr(n,state).blit(pp(selected?3*zp:0),0,0); };
-  const add=(key,wx,wy,kind,o)=>items.push({key,wx,wy,kind,...o});
+  // Pins are real markers, not pixel art: round, numbered, high contrast, and sized for a finger. The terrain stays pixel art.
+  const pinBuf=[];
+  const pinAt=(wx,wy,n,state,selected)=>{ if(n===0){ items.push({key:'pfog',wx,wy,kind:'mark',n:'?',state,selected:false}); return; } pinBuf.push({n,state,selected}); };
+  const add=(key,wx,wy,kind,o)=>items.push({key,wx,wy,kind,...(kind==='hit'?pinBuf.pop():{}),...o});
   if(z===2){
     REG.forEach(r=>{ const st=byReg(r.n).length&&byReg(r.n).every(x=>x.done)?'done':(r.n===1?'done':'open'); const selR=sel.t==='region'&&sel.id===r.n; pinAt(r.pin[0],r.pin[1],r.n,st,selR); add('hr'+r.n,r.pin[0],r.pin[1],'hit',{label:r.name+', region '+r.n,act:()=>selectRegion(r.n)}); add('lr'+r.n,r.lbl[0],r.lbl[1],'lbl',{text:r.name,cls:'region'}); });
     pinAt(166,112,0,'locked',false); add('lfog',166,119,'lbl',{text:'Unmapped',sub:'2 more notes to chart',cls:'region box'});
@@ -554,11 +561,12 @@ function draw(){
 }
 const els=new Map();
 function syncOverlay(items,vx,vy,z,zp){ const keep=new Set();
-  items.forEach(it=>{ keep.add(it.key); let e=els.get(it.key); if(!e){ if(it.kind==='hit'){ e=document.createElement('button'); e.className='hit'; e.setAttribute('aria-label',it.label); e.addEventListener('pointerdown',ev=>ev.stopPropagation()); e.addEventListener('click',ev=>{ ev.stopPropagation(); e._act(); }); }
+  items.forEach(it=>{ keep.add(it.key); let e=els.get(it.key); if(!e){ if(it.kind==='mark'){ e=document.createElement('div'); e.className='hit mark'; e.setAttribute('aria-hidden','true'); }
+      else if(it.kind==='hit'){ e=document.createElement('button'); e.className='hit'; e.setAttribute('aria-label',it.label); e.addEventListener('pointerdown',ev=>ev.stopPropagation()); e.addEventListener('click',ev=>{ ev.stopPropagation(); e._act(); }); }
       else { e=document.createElement('div'); e.className='lbl '+(it.cls||''); e.innerHTML=it.text+(it.sub?'<small>'+it.sub+'</small>':''); if(it.done) e.dataset.done=1; }
       over.appendChild(e); els.set(it.key,e); }
     e._act=it.act; const sx=Math.round((it.wx-vx)*z)*S, sy=Math.round((it.wy-vy)*z)*S;
-    if(it.kind==='hit'){ e.style.left=(sx-17)+'px'; e.style.top=(sy-10*zp*S)+'px'; e.style.height=(10*zp*S)+'px'; } else { e.style.left=sx+'px'; e.style.top=sy+'px'; } });
+    if(it.kind==='hit'||it.kind==='mark'){ e.style.left=sx+'px'; e.style.top=sy+'px'; const t=it.state==='done'?'\u2713':String(it.n); if(e.textContent!==t) e.textContent=t; e.dataset.state=it.state; if(it.selected) e.dataset.selected=1; else delete e.dataset.selected; } else { e.style.left=sx+'px'; e.style.top=sy+'px'; } });
   for(const [k,e] of els) if(!keep.has(k)){ e.remove(); els.delete(k); } }
 
 /* ===== motion: pan by drag, integer zoom steps, fly-to ===== */

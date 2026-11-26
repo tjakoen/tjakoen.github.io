@@ -99,8 +99,12 @@ fills the viewport and everything else floats on it, as in Google Maps.
 - **Semantic zoom.** World shows the six region pins and names. Regions shows every quest pin with its
   short name. Landmark adds the detail sprites and, for the selected quest, amber stop pins. Stops names
   each stop. Region labels fade as quest labels arrive.
-- **Pins and labels are real elements over the canvas.** Pins are buttons with names and labels are text,
-  so keyboard and screen reader users get the same route lists and the canvas is decoration. Arrow keys
+- **Pins and labels are real elements over the canvas, and they are not pixel art.** The terrain and landmarks
+  are pixel art. A pin is a clean round marker with a number, a white edge and a pointer, so it reads against
+  busy terrain: red for open, green with a check for done, grey for filtered out, amber for a stop. It stays
+  the same size at every zoom level, has a target of at least 44 pixels with its padding, and grows and gains
+  a ring when selected. Pins are buttons with names and labels are text, so keyboard and screen reader users
+  get the same route lists and the canvas is decoration. Arrow keys
   pan, plus and minus zoom, and Escape returns to the welcome card.
 - **Working prototype:** docs/mockups/quest-map/fullscreen.html, with the real quests, levels, reading
   times and proposer stops. Drag, scroll, click and search all work.
@@ -128,7 +132,7 @@ an Auto, Light and Dark switch.
 | index.html section 9 | Six phone screens. | Mobile |
 
 Where the mockups and the prose disagree, the prose wins and the mockup is a bug. Known gaps in the
-mockups: the pixel font is a monospace stand-in, the Guide's lines are placeholders, stop pin positions
+mockups: index.html still draws the older pixel pins in sections 1, 2 and 9, and fullscreen.html and the in-site pages show the decided markers; the pixel font is a monospace stand-in, the Guide's lines are placeholders, stop pin positions
 are formula placed, and the sheet heights on phone are sample proportions.
 
 ## The map from what exists
