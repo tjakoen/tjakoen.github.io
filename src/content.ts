@@ -249,16 +249,13 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // A draft gets none: its own banner asks the reader not to pass it on.
     const shareDialog = kind === "entry" && collection.prefix === "/notes" && slug
       ? renderShareDialog(title, `${SITE.origin}/notes/${slug}`) : "";
-    // The "copy prompt for AI" button: a prompt naming the note, its address and its clean Markdown
-    // twin, so a reader can paste it into any assistant. It lives in the visible page and the reader's
-    // clipboard only; no hidden text addresses a crawler.
-    const aiPrompt = kind === "entry" && collection.prefix === "/notes" && slug
-      ? renderAiPrompt(title, `${SITE.origin}/notes/${slug}`) : "";
     // The facts JSON-LD needs that the rendered head does not carry (dates, tags, the reading time),
     // handed to seo.ts as x- metas the way a note's share image already is.
     const articleHead = kind === "entry" && collection.prefix === "/notes" && frontmatter
       ? renderArticleMeta(frontmatter) : "";
-    const aiHead = aiPrompt && slug
+    // The raw Markdown is the same note without the page chrome, so a reader or an assistant that
+    // wants only the words can find it from the head.
+    const markdownHead = kind === "entry" && collection.prefix === "/notes" && slug
       ? `<link rel="alternate" type="text/markdown" href="${escapeHtml(`/notes/${slug}.md`)}">` : "";
     const copyScript = shareBlock || shareDialog || body.includes(" data-copy-template") ? CONTENT_COPY_SCRIPT : "";
     // /badges entry pages: a badge-CLASS page (roster of recipients) or a per-recipient CERT page.
@@ -285,7 +282,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     const sourceToggle = kind === "entry" && slug
       ? `<nav class="content-source" aria-label="${isCalendarEntry ? "Event page navigation" : "View"}">
       <a class="tab" aria-current="page" href="${escapeHtml(`${collection.prefix}/${slug}`)}">Rendered</a>
-      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>${collection.prefix === "/notes" ? '\n      <button class="tab content-source__bionic" type="button" data-bionic-toggle aria-pressed="false" title="Bold the start of each word" hidden>Bionic</button>' : ""}${shareDialog ? '\n      <button class="tab content-source__share" type="button" data-note-share hidden>Share</button>' : ""}${aiPrompt ? `\n      <button class="tab content-source__ai" type="button" data-ai-prompt="${escapeHtml(aiPrompt)}" title="Copy a ready-made prompt that asks an AI to summarize this note" aria-live="polite" hidden>${COPY_ICON}<span class="content-source__label">AI Prompt</span></button>` : ""}${isCalendarEntry ? '\n      <a class="tab" href="/calendar">Calendar feed</a>' : ""}
+      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>${collection.prefix === "/notes" ? '\n      <button class="tab content-source__bionic" type="button" data-bionic-toggle aria-pressed="false" title="Bold the start of each word" hidden>Bionic</button>' : ""}${shareDialog ? '\n      <button class="tab content-source__share" type="button" data-note-share hidden>Share</button>' : ""}${isCalendarEntry ? '\n      <a class="tab" href="/calendar">Calendar feed</a>' : ""}
       </nav>`
       : "";
     // NOTE: the /notes index's "See what's new" AI trigger (data-ai-run demo.run) used to render
@@ -333,8 +330,8 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     if (kind === "entry" && collection.prefix === "/standards")
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
-      title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}${aiHead}${articleHead}`,
-      board: `${draftFlag}${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${changelog}${credits}${whereNext}${videoCard}${gallery}${shareBlock}${shareDialog}${aiPrompt ? AI_PROMPT_SCRIPT : ""}${copyScript}`,
+      title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}${markdownHead}${articleHead}`,
+      board: `${draftFlag}${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${changelog}${credits}${whereNext}${videoCard}${gallery}${shareBlock}${shareDialog}${copyScript}`,
     });
   };
 }
@@ -1533,23 +1530,6 @@ export function renderArticleMeta(fm: Record<string, unknown>): string {
     one("x-note-reading-time", typeof fm.readingTime === "string" ? fm.readingTime.trim() : ""),
   ].filter(Boolean).join("");
 }
-
-/** The prompt a reader pastes into an assistant. The Markdown twin is the same note without the page
- *  chrome, so the assistant reads the words and none of the layout. */
-export function renderAiPrompt(title: string, url: string): string {
-  return [
-    `Summarize this note: "${title}"`,
-    `Read it at ${url} (clean Markdown: ${url}.md).`,
-    "Give a summary of five sentences or fewer, then list the claims it makes and the limits it admits.",
-    "Keep its own caveats; do not turn a hedge into a promise. Quote nothing beyond a short phrase, and say if you could not open the link.",
-  ].join("\n");
-}
-
-/** Wires the Copy AI prompt button. Hidden until this runs, so a reader without JavaScript never
- *  sees a button that does nothing. */
-const COPY_ICON = `<svg class="content-source__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>`;
-const CHECK_ICON = `<svg class="content-source__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12l5 5L20 7"/></svg>`;
-const AI_PROMPT_SCRIPT = `<script>(function(){var b=document.querySelector('[data-ai-prompt]');if(!b)return;b.hidden=false;var icon=b.innerHTML,r;function show(i,t){b.innerHTML=i+'<span class="content-source__label">'+t+'</span>';}b.addEventListener('click',async function(){clearTimeout(r);var v=b.getAttribute('data-ai-prompt')||'';try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(v);}else{throw new Error('no clipboard');}show(${JSON.stringify(CHECK_ICON)},'Copied');}catch(_){show(${JSON.stringify(COPY_ICON)},'Copy failed');}r=setTimeout(function(){b.innerHTML=icon;},1600);});})();</script>`;
 
 function renderNoteCredits(frontmatter: Record<string, unknown>): string {
   const people = slugList(frontmatter.people);
