@@ -124,7 +124,7 @@ fills the viewport and everything else floats on it, as in Google Maps.
   layers and the zoom level bottom left, zoom and find-me bottom right. The display settings are one icon,
   closed by default, that opens icon buttons for motion, the three flavors as swatches and auto, light and
   dark. On a phone the icon moves to the bottom left and the panel is a bottom
-  sheet. The site sidebar stays closed on this page.
+  sheet. On the Learn page the left sidebar collapses on arrival and can still be expanded, the right assistant sidebar is hidden, and the terminal is hidden, so the map lives entirely under the tabs. The Learn item sits under About with a map icon and opens the page at /learn.
 - **The panel has a pinned back button.** A bar at the top of the panel stays in view while the panel
   scrolls. It holds a real button at the top left that names where it goes (All regions from a region, the
   region from a quest, the quest from a stop, and Back from a search) and a short breadcrumb beside it.
@@ -310,6 +310,10 @@ done, not a someday.
 - [x] Move quests, routes, scene specs and people paths into data, and separate drawing from DOM writes. They live in one JSON block, and paint draws while writeDom is the only place that touches the page.
 - [x] Check contrast in all six flavor and scheme pairs, and run the WCAG gate. The quest ribbon was 3.9 to 1 and is now above 5.7 to 1. The map passes axe in all six pairs across five panel states. The sitemap-wide gate in wcag.e2e.ts was not run, because the mockup is not a route of the site.
 - [x] Tests for the quest check, routes, progress and the panel controls. The routes, progress and panel controls are covered by 13 bun tests and nine browser tests. The quest check from the note skill is not covered, because tools/quests.ts does not exist yet; that stays open with the extraction work above.
+
+## Linking notes to the map (proposed)
+
+Each note that is a quest gets a Where this sits card above the lesson card: a crop of the baked map with the quest pins joined by the dotted route, the note's own pin ringed, the quests of the region as a numbered list and a Find it on the map link that opens the map already flown to the pin. Related notes get a row of cards, each tagged with its region color, its quest number and how it relates (next stop, same region, other region). The card is plain HTML with a background image, so it works without JavaScript. The mockup is [docs/mockups/quest-map/in-site-note-map-card.html](../docs/mockups/quest-map/in-site-note-map-card.html), built by build-note-map-card.py.
 
 ## Honest limits
 
