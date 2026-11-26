@@ -130,7 +130,8 @@ fills the viewport and everything else floats on it, as in Google Maps.
   have hover cards. The Ferry pin flies to the Guild Hall, and the Foothills panel has the same two buttons.
 - **A chosen pin fades out.** When a quest or region pin is clicked its red marker fades away and the stops, or
   the region, take over. The selected route is a bold amber dashed trail with a dark edge that slowly marches
-  along the path, so it stands out from the terrain.
+  along the path, so it stands out from the terrain. It is drawn beneath the people, boats and birds, so a miner, guard or
+  climber on the route is never hidden by it.
 - **Zoom is smooth and cheap.** A zoom from the panel, the wheel or the buttons is a CSS scale of the whole
   stage, eased, with only the camera pan done in script. Zooming in scales the old level up and swaps to the
   crisp new one at the end, and zooming out swaps first and scales down. The canvas is drawn once per frame, the
