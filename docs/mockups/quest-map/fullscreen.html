@@ -606,7 +606,12 @@ const SPEC={
   6:{cx:150,cy:36,W:84,H:70,q:[[26,58],[42,10]],slots:[[26,58],[52,56],[28,48],[54,40],[32,32],[48,24],[42,14],[60,30],[22,40]],lights:[[20,52],[64,44],[24,26]],flags:[[46,3]]}
 };
 const sceneM=(n,x,y)=>{ const s=SPEC[n]; return [Math.round(s.cx-s.W/4)+x/2, Math.round(s.cy-s.H/4)+y/2]; };
-function layoutQuests(){ for(const n in SPEC){ byReg(+n).forEach((qq,i)=>{ const p=SPEC[n].q[i]; if(p) qq.pos=sceneM(+n,p[0],p[1]); }); }
+/* Quest pins sit beside the routes, never on them: any pin within 13 steps of a route in its place is pushed out to 15 steps from it. */
+function nearOnRoute(rt,x,y){ let best=null; for(let i=0;i<rt.length-1;i++){ const [x0,y0]=rt[i],[x1,y1]=rt[i+1], dx=x1-x0, dy=y1-y0, L2=dx*dx+dy*dy||1, t=Math.max(0,Math.min(1,((x-x0)*dx+(y-y0)*dy)/L2)), px=x0+dx*t, py=y0+dy*t, d=Math.hypot(x-px,y-py); if(!best||d<best.d){ const L=Math.sqrt(L2); best={d,px,py,tx:dx/L,ty:dy/L}; } } return best; }
+function layoutQuests(){ for(const n in SPEC){ const routes=ROUTES[n]||[], sp=SPEC[n];
+    byReg(+n).forEach((qq,i)=>{ let p=sp.q[i]; if(!p) return; p=[p[0],p[1]];
+      for(let pass=0;pass<5;pass++){ let moved=false; for(const rt of routes){ const h=nearOnRoute(rt,p[0],p[1]); if(h&&h.d<13){ let dx=p[0]-h.px, dy=p[1]-h.py, m=Math.hypot(dx,dy); if(m<1){ dx=h.ty; dy=-h.tx; m=1; } p=[Math.max(5,Math.min(sp.W-5,h.px+dx/m*15)),Math.max(5,Math.min(sp.H-5,h.py+dy/m*15))]; moved=true; } } if(!moved) break; }
+      qq.pos=sceneM(+n,p[0],p[1]); }); }
   const nx=QUESTS.find(q=>!q.done)||QUESTS[0]; YOU[0]=nx.pos[0]; YOU[1]=nx.pos[1]; } // you stand beside the next quest on your route
 const routeOf=qq=>{ const r=ROUTES[qq.region]; return r&&r[byReg(qq.region).indexOf(qq)]; };
 function alongRoute(rt,f){ let L=0; const seg=[]; for(let i=0;i<rt.length-1;i++){ const d=Math.hypot(rt[i+1][0]-rt[i][0],rt[i+1][1]-rt[i][1]); seg.push(d); L+=d; } let s=L*f; for(let i=0;i<seg.length;i++){ if(s<=seg[i]||i===seg.length-1){ const k=seg[i]?Math.min(1,s/seg[i]):0; return [rt[i][0]+(rt[i+1][0]-rt[i][0])*k,rt[i][1]+(rt[i+1][1]-rt[i][1])*k]; } s-=seg[i]; } return rt[0]; }

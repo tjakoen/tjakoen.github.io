@@ -149,7 +149,8 @@ fills the viewport and everything else floats on it, as in Google Maps.
   really walk: the mine's tunnels, the village streets, the castle road to the keep, the forest walkways in the
   canopy and the summit trail, up for one quest and down for the other. The stops sit at even steps along the
   route in lesson order, so the numbers read as a walk from first to last. Selecting a quest or a stop draws a
-  dashed amber trail along that route, and nothing cuts across walls or rock.
+  dashed amber trail along that route, and nothing cuts across walls or rock. Quest pins sit beside the routes, never on them: a pin that would
+  land close to a route is pushed out to a clear distance from it.
 - **Pins and labels are real elements over the canvas, and they are not pixel art.** The terrain and landmarks
   are pixel art. A pin is a clean round marker with a number, a white edge and a pointer, so it reads against
   busy terrain: red for open, green with a check for done, grey for filtered out, amber for a stop. It stays
