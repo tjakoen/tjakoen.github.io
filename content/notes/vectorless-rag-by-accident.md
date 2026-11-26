@@ -22,13 +22,13 @@ social: |
   I have been running vectorless RAG for months. I called it keeping good docs.
 
   RAG means the AI looks things up before it answers. Most setups chop the documents into chunks, turn
-  them into numbers and fetch whatever sits nearest the question. Mine reads a table of contents
-  instead: one file, CLAUDE.md, linked as AGENTS.md so Claude, Codex and OpenCode all read the same one.
+  them into numbers and fetch whatever sits nearest the question. Vectorless RAG skips that. The model
+  reads a table of contents, picks a branch and opens only the section it needs.
 
-  A question about my voice rules read 36 lines of a 677-line file. And I no longer brief a session. I
-  steer and review.
+  Mine is one file, CLAUDE.md, linked as AGENTS.md so Claude, Codex and OpenCode all read the same one.
+  A question about my voice rules read 36 lines of a 677-line file.
 
-  It is easy to trace. It also costs more reads, and my notes are still a flat pile with no tree.
+  The real win is effort. I no longer brief a session or carry state between them. I steer and review.
 
   The name came from Shivani Virdi's post on vectorless RAG. Thank you, @Shivani Virdi.
 
