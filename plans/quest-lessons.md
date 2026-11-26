@@ -57,6 +57,7 @@ what a note cannot: the stop's title in my words, its cut, its runes, its trial 
 id: loop-setup
 quest: loop-forest-3
 title: Set up your own loop
+summary: In five short stops I walk you through setting up the loop on a repo of your own, from the first prompt to the first run.
 audio: /media/lessons/loop-setup.m4a
 stops:
   - title: Start with the prompt, then the idea
@@ -73,6 +74,39 @@ stops:
 
 Cues (start time, text, optional rune id) sit beside it as a captions file. The transcript is the caption
 track, so there is one source for the book and for the accessible fallback.
+
+## The lesson card on a note
+
+A note with a lesson links to it with a card, so the note and the lesson find each other from both sides.
+
+- **Where.** Under the byline, above the contents block. It appears only when the note is published and
+  a lesson cuts it.
+- **What it says.** A small pixel picture of the region, the label Lesson, the region and quest, and the
+  lesson's own summary: two or three sentences in my words about what the lesson adds. It explains the
+  lesson. It does not repeat the note's summary. The summary is a required field in the lesson file.
+- **What it shows.** Stop count, minutes of audio, level and XP, the runes the reader will collect, and a
+  progress bar read from the reader's saved state in their browser.
+- **What it does.** One button that reads Start lesson, Continue at stop 3 or Review, and one that opens
+  the quest on the map.
+- **Each section that belongs to a stop** gets a small pip beside its heading that opens the lesson at that
+  stop. It shows done and next states.
+- **Variants.** A lesson that spans notes says which stops are in this note and links to the others. A note
+  in several lessons shows one row per lesson, each with its own button and progress.
+- **Without the art.** It is plain text and links, so it works with the picture off and for a screen reader.
+  Notes without a lesson show nothing, and the note's own text is never changed.
+
+## Runes and badges
+
+They are different things, and the plan keeps them apart.
+
+- A **rune** is one concept taught in one stop. It lives in the Codex, is tied to a section id and a quote,
+  and is cosmetic and self-reported.
+- A **badge** is earned by finishing a region: every stop and its trial. It has criteria, a page, and a
+  medallion, and it reuses the existing badge-class machinery.
+- The two meet in one place: a badge page lists the runes collected on the way as its skills, the way a
+  certification lists skills. Collecting every rune in a region without doing the trials earns nothing
+  but the Codex entries.
+- Cosmetic achievements, such as every Mines rune, may exist later. They are never badges.
 
 ## The lessons
 
@@ -250,6 +284,8 @@ Foothills has no lesson. Its one stop points out to Claude Academy.
 
 ## Build tasks
 
+- [ ] Lesson card molecule and the hook in the note page, with the section pips, tested for the draft, no-lesson, spanning and several-lessons cases.
+- [ ] Badge page lists runes as skills, and region badges are awarded from trials only.
 - [ ] Section walker and proposer in tools/quests.ts, with tests over the real notes.
 - [ ] Lesson collection, schema and generated index. The index is never hand kept.
 - [ ] Test that every lesson id, section id and quote resolves in its note, and that no draft note is cut.
