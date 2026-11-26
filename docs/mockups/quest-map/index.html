@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest map mockups · pixel art, Google Maps layout</title>
+<style>
+/* Quest tokens, light and dark. The canvas reads these too, so the whole map re-skins with the page. */
+:root, [data-theme="light"] {
+  --q-water:#8cc4e0; --q-water2:#a6d6ea; --q-wave:#cfeaf5; --q-foam:#f3fbff; --q-sand:#f0dba5; --q-sand2:#e6cb8a;
+  --q-grass:#9ccc5f; --q-grass2:#8bbb4f; --q-forest:#4e9a52; --q-forest2:#3f8646; --q-rock:#a39a8c; --q-rock2:#948a7c; --q-rockd:#7e7566;
+  --q-field:#e8c65a; --q-field2:#d6b04a; --q-meadow:#b08fd0; --q-meadow2:#a07fc4; --q-snow:#f4f8ff; --q-snow2:#dde6f4;
+  --q-road:#fff6dc; --q-road-edge:#b99f6a; --q-main:#f5b83d; --q-main-edge:#a66a14; --q-fog:#d8cdb4; --q-fog2:#c9bd9f;
+  --q-outline:#3b2d1c; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#3b82f6; --q-trunk:#7a4a26;
+  --q-wall:#e9d9b8; --q-wall2:#cdb88f; --q-castle:#a483cf; --q-castle2:#8566b3; --q-roof:#d65a3e; --q-roof2:#b0432b; --q-flag:#e0463a;
+  --q-stone:#8a8f9c; --q-amber:#f5b83d; --q-glow:#f6c453;
+  --q-paper:#f6efe0; --q-panel:#fffaf0; --q-ground:#f3e6c8; --q-ground2:#e4d0a0; --q-ink:#3b2d1c; --q-line:#d9c59a; --q-muted:#7a6a4c;
+  --q-halo:#fffaf0; --q-label:#5b4a2e;
+}
+[data-theme="dark"] {
+  --q-water:#173347; --q-water2:#1f4560; --q-wave:#2d5f82; --q-foam:#4a86a8; --q-sand:#8c7a4c; --q-sand2:#7c6b40;
+  --q-grass:#4f7a2e; --q-grass2:#456d28; --q-forest:#2b5f38; --q-forest2:#234f2f; --q-rock:#5b5f6c; --q-rock2:#505460; --q-rockd:#444855;
+  --q-field:#a98a2e; --q-field2:#947628; --q-meadow:#6c4f9a; --q-meadow2:#5f448a; --q-snow:#cfd8ea; --q-snow2:#aeb9d0;
+  --q-road:#c9b98c; --q-road-edge:#4a3e26; --q-main:#f0b43c; --q-main-edge:#6e4410; --q-fog:#3a3426; --q-fog2:#2f2a1f;
+  --q-outline:#0f0c07; --q-pin:#e8503f; --q-pin-hi:#ff8a76; --q-you:#5b9bff; --q-trunk:#6a3f20;
+  --q-wall:#9a8a6a; --q-wall2:#7a6c52; --q-castle:#8f74c4; --q-castle2:#6f55a3; --q-roof:#c95a40; --q-roof2:#a0442e; --q-flag:#e0463a;
+  --q-stone:#6a7080; --q-amber:#f0b43c; --q-glow:#f0b43c;
+  --q-paper:#1b160d; --q-panel:#241e12; --q-ground:#2b2417; --q-ground2:#3a3120; --q-ink:#f3e6c8; --q-line:#4a3e26; --q-muted:#b3a47f;
+  --q-halo:#1b160d; --q-label:#e8dcc0;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--q-paper); color:var(--q-ink); font:15px/1.5 ui-monospace,"SF Mono",Menlo,Consolas,monospace; }
+header.top { display:flex; gap:1rem; align-items:center; justify-content:space-between; padding:.8rem 1.2rem; border-bottom:2px solid var(--q-line); position:sticky; top:0; background:var(--q-paper); z-index:20; }
+h1 { font-size:1rem; margin:0; letter-spacing:.04em; }
+button { font:inherit; color:var(--q-ink); background:var(--q-panel); border:2px solid var(--q-ink); padding:.25rem .7rem; cursor:pointer; box-shadow:3px 3px 0 var(--q-ink); }
+button:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--q-ink); }
+main { max-width:1140px; margin:0 auto; padding:1.2rem; display:grid; gap:2.4rem; }
+h2 { font-size:.85rem; text-transform:uppercase; letter-spacing:.12em; color:var(--q-muted); margin:0 0 .5rem; }
+.cap { color:var(--q-muted); font-size:.82rem; margin:.5rem 0 0; }
+.frame { border:3px solid var(--q-ink); box-shadow:5px 5px 0 var(--q-ink); background:var(--q-panel); }
+canvas { display:block; image-rendering:pixelated; }
+.chip { background:var(--q-panel); border:2px solid var(--q-ink); padding:.05rem .5rem; font-size:.74rem; display:inline-block; }
+
+/* 1. Google-Maps layout: panel left, map right, controls floating on the map */
+.gm { display:grid; grid-template-columns:340px 1fr; overflow:hidden; }
+.gm .place { border-right:3px solid var(--q-ink); overflow:auto; background:var(--q-panel); max-height:640px; }
+.gm .place .hero canvas { width:100%; height:auto; border-bottom:3px solid var(--q-ink); }
+.place .body { padding:.9rem 1rem 1.2rem; display:grid; gap:.75rem; }
+.place h3 { margin:0; font-size:1.3rem; line-height:1.15; }
+.place .sub { color:var(--q-muted); font-size:.8rem; }
+.stars { color:var(--q-amber); letter-spacing:.1em; }
+.actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+.actions button { padding:.2rem .6rem; font-size:.8rem; }
+.actions .primary, .primary { background:var(--q-amber); color:#2b2417; }
+.tabs { display:flex; border-bottom:2px solid var(--q-line); }
+.tabs span { padding:.3rem .8rem; font-size:.8rem; color:var(--q-muted); }
+.tabs span[data-on] { color:var(--q-ink); border-bottom:4px solid var(--q-amber); margin-bottom:-2px; font-weight:700; }
+.steps { list-style:none; margin:0; padding:0; display:grid; gap:0; }
+.steps li { display:grid; grid-template-columns:30px 1fr; gap:.55rem; padding:.45rem 0; position:relative; }
+.steps li::before { content:""; position:absolute; left:13px; top:2rem; bottom:-.5rem; border-left:3px dotted var(--q-main-edge); }
+.steps li:last-child::before { display:none; }
+.steps .n { width:26px; height:26px; background:var(--q-pin); color:#fff; display:grid; place-items:center; font-weight:700; border:2px solid var(--q-outline); clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px)); }
+.steps li[data-done] .n { background:#4e9a52; } .steps li[data-sel] strong { color:var(--q-roof); }
+.steps small { display:block; color:var(--q-muted); font-size:.74rem; }
+.src { font-size:.82rem; display:grid; gap:.25rem; }
+.src div::before { content:"◇ "; color:var(--q-you); }
+
+.mapside { position:relative; }
+.mapside canvas { width:100%; height:auto; }
+.search { position:absolute; left:12px; top:12px; width:min(330px,70%); background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); display:flex; align-items:center; gap:.6rem; padding:.35rem .7rem; font-size:.85rem; color:var(--q-muted); }
+.chips { position:absolute; left:12px; top:64px; display:flex; gap:.4rem; flex-wrap:wrap; max-width:75%; }
+.chips .chip { box-shadow:2px 2px 0 var(--q-ink); color:var(--q-ink); }
+.chips .chip[data-on] { background:var(--q-amber); color:#2b2417; }
+.ctl { position:absolute; right:12px; bottom:14px; display:grid; gap:8px; justify-items:end; }
+.ctl .stack { display:grid; border:3px solid var(--q-ink); background:var(--q-panel); box-shadow:3px 3px 0 var(--q-ink); }
+.ctl .stack button { border:0; box-shadow:none; width:36px; height:34px; padding:0; font-weight:700; font-size:1.1rem; }
+.ctl .stack button + button { border-top:2px solid var(--q-line); }
+.ctl .single { width:42px; height:40px; padding:0; }
+.layers { position:absolute; left:12px; bottom:14px; display:flex; gap:.6rem; align-items:flex-end; }
+.layers .tile { width:64px; height:64px; border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); background:var(--q-panel); position:relative; }
+.layers .tile canvas { width:100%; height:100%; }
+.layers .tile span { position:absolute; left:0; right:0; bottom:0; font-size:.6rem; text-align:center; background:var(--q-panel); border-top:2px solid var(--q-ink); }
+.scale { font-size:.68rem; color:var(--q-label); text-shadow:-1px -1px 0 var(--q-halo),1px -1px 0 var(--q-halo),-1px 1px 0 var(--q-halo),1px 1px 0 var(--q-halo); }
+.scale i { display:block; width:56px; height:6px; border:2px solid var(--q-outline); border-top:0; }
+.attrib { position:absolute; right:6px; top:2px; font-size:.6rem; color:var(--q-label); background:color-mix(in srgb,var(--q-halo) 80%,transparent); padding:0 .3rem; }
+
+.lbl { position:absolute; transform:translate(-50%,0); font-weight:700; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--q-label); white-space:nowrap; text-align:center; pointer-events:none;
+  text-shadow:-2px 0 var(--q-halo),2px 0 var(--q-halo),0 -2px var(--q-halo),0 2px var(--q-halo),-1px -1px var(--q-halo),1px 1px var(--q-halo),-1px 1px var(--q-halo),1px -1px var(--q-halo); }
+.lbl small { display:block; font-size:.6rem; letter-spacing:.04em; text-transform:none; font-weight:400; }
+.lbl.box { background:var(--q-panel); border:2px dashed var(--q-muted); padding:0 .4rem; text-shadow:none; }
+
+/* 2. zoomed, with the RPG quest modal */
+.zoomframe { position:relative; overflow:hidden; }
+.zoomframe canvas { width:100%; height:auto; }
+.dim { position:absolute; inset:0; background:color-mix(in srgb,var(--q-outline) 45%,transparent); }
+.modalwrap { position:absolute; right:3%; top:5%; width:min(470px,48%); filter:drop-shadow(5px 5px 0 var(--q-outline)); }
+.modal { height:auto; overflow:hidden; background:var(--q-panel); border:4px solid var(--q-ink); padding:.9rem 1.1rem; display:grid; gap:.55rem; align-content:start;
+  clip-path:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px)); }
+.ribbon { display:inline-block; background:var(--q-roof); color:#fff; padding:.05rem .6rem; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; justify-self:start; }
+.modal h3 { margin:0; font-size:1.1rem; }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:.45rem; }
+.stat { border:2px solid var(--q-ink); padding:.3rem .5rem; background:var(--q-paper); }
+.stat small { display:block; color:var(--q-muted); font-size:.62rem; text-transform:uppercase; letter-spacing:.08em; }
+.stat strong { font-size:.98rem; }
+.xp { height:14px; border:2px solid var(--q-ink); background:var(--q-paper); }
+.xp i { display:block; height:100%; width:42%; background:repeating-linear-gradient(90deg,var(--q-amber) 0 6px,var(--q-glow) 6px 8px); }
+.modal ul { margin:0; padding:0; list-style:none; display:grid; gap:.2rem; font-size:.82rem; }
+.modal li::before { content:"◆ "; color:var(--q-amber); }
+.modal li[data-ext]::before { content:"◇ "; color:var(--q-you); }
+.row { display:flex; gap:.6rem; flex-wrap:wrap; }
+
+/* 3. guild card */
+.cards { display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; }
+.card { padding:1rem 1.1rem; display:grid; gap:.7rem; background:linear-gradient(180deg,var(--q-panel),var(--q-ground)); }
+.card .head { display:grid; grid-template-columns:96px 1fr; gap:.9rem; }
+.card .head canvas { width:96px; height:96px; border:3px solid var(--q-ink); background:var(--q-ground2); }
+.card h3 { margin:0; font-size:1.1rem; }
+.badges { display:grid; grid-template-columns:repeat(6,1fr); gap:.4rem; }
+.badges canvas { width:100%; aspect-ratio:1; height:auto; border:2px solid var(--q-ink); background:var(--q-paper); }
+.badges .off { opacity:.35; filter:grayscale(1); }
+.field { border:2px dashed var(--q-line); padding:.35rem .55rem; font-size:.8rem; background:var(--q-paper); }
+code { background:var(--q-paper); border:1px solid var(--q-line); padding:0 .3rem; }
+
+/* 4. lesson mode */
+.lesson { display:grid; grid-template-columns:1.5fr 1fr; min-height:560px; }
+.note { padding:1.2rem 1.6rem; border-right:3px solid var(--q-ink); font:15px/1.7 Georgia,serif; }
+.note .crumb { font:.75rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
+.note h3 { font-size:1.5rem; line-height:1.2; margin:.4rem 0 1rem; }
+.hl { background:linear-gradient(transparent 55%, color-mix(in srgb,var(--q-glow) 55%,transparent) 55%); outline:2px solid var(--q-amber); outline-offset:2px; position:relative; }
+.hl::after { content:"◆ concept 3"; position:absolute; left:0; top:-1.35rem; font:.65rem ui-monospace,monospace; background:var(--q-amber); color:#2b2417; padding:0 .35rem; white-space:nowrap; }
+.side { padding:1rem; background:linear-gradient(180deg,var(--q-ground2),var(--q-ground)); display:grid; gap:.8rem; align-content:start; }
+.side .tb { display:flex; gap:.3rem; }
+.side .tb span { border:2px solid var(--q-ink); padding:.05rem .55rem; font-size:.72rem; background:var(--q-panel); }
+.side .tb span[data-on] { background:var(--q-amber); color:#2b2417; }
+.book { display:grid; grid-template-columns:1fr 1fr; position:relative; border:3px solid var(--q-ink); background:#6b3f26; padding:7px; box-shadow:4px 4px 0 var(--q-ink); }
+.book::before { content:""; position:absolute; inset:0 auto 0 50%; width:6px; margin-left:-3px; background:repeating-linear-gradient(180deg,#3d2214 0 4px,#6b3f26 4px 8px); z-index:2; }
+.page { background:var(--q-paper); padding:.7rem .75rem; font:.78rem/1.55 Georgia,serif; min-height:250px; background-image:repeating-linear-gradient(180deg,transparent 0 22px,color-mix(in srgb,var(--q-line) 55%,transparent) 22px 23px); }
+.page h4 { margin:0 0 .4rem; font:700 .64rem ui-monospace,monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--q-roof); }
+.page p { margin:0 0 .35rem; color:var(--q-muted); }
+.page p.now { color:var(--q-ink); background:color-mix(in srgb,var(--q-glow) 42%,transparent); box-shadow:0 0 0 2px color-mix(in srgb,var(--q-glow) 70%,transparent); }
+.page ul { margin:0; padding-left:1rem; }
+.controls { display:grid; gap:.45rem; }
+.ribbonbar { height:12px; border:2px solid var(--q-ink); background:var(--q-paper); position:relative; }
+.ribbonbar i { position:absolute; inset:0 auto 0 0; width:38%; background:var(--q-roof); }
+.ribbonbar u { position:absolute; left:38%; top:-5px; width:10px; height:20px; background:var(--q-roof); border:2px solid var(--q-ink); clip-path:polygon(0 0,100% 0,100% 100%,50% 70%,0 100%); }
+.controls .row { justify-content:space-between; align-items:center; }
+.controls .row button { padding:.1rem .5rem; }
+.stops { display:flex; gap:.35rem; align-items:center; font-size:.72rem; color:var(--q-muted); }
+.stops i { width:14px; height:14px; border:2px solid var(--q-ink); background:var(--q-paper); }
+.stops i[data-d] { background:#4e9a52; } .stops i[data-now] { background:var(--q-amber); }
+pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height:1.55; background:var(--q-paper); }
+@media (max-width:860px) { .gm,.lesson,.cards { grid-template-columns:1fr; } .gm .place { max-height:none; border-right:0; } .modalwrap { position:relative; inset:auto; width:auto; margin:1rem; } .dim{display:none} }
+</style>
+</head>
+<body>
+<header class="top"><h1>QUEST MAP · MOCKUPS · pixel art, Google Maps layout</h1>
+<button id="theme">Toggle light / dark</button></header>
+<main>
+
+<section>
+<h2>1 · The world map (no site sidebar on this page)</h2>
+<div class="frame gm">
+  <aside class="place" aria-label="Selected region">
+    <div class="hero"><canvas id="c-hero-img" width="110" height="60"></canvas></div>
+    <div class="body">
+      <div><h3>Model Mines</h3>
+        <div class="sub"><span class="stars">★★★★☆</span> 3 quests · about 1 h 10 min · region 3 of 6</div>
+        <div class="sub">Models, limits and cost</div></div>
+      <div class="actions"><button class="primary">▶ Start route</button><button>Save</button><button>Share</button></div>
+      <div class="tabs"><span data-on>Route</span><span>About</span><span>Sources</span></div>
+      <ol class="steps">
+        <li data-sel><span class="n">1</span><div><strong>I Ran Out With Hours Left</strong><small>Lv 2 intro · 22 min · +350 XP</small></div></li>
+        <li><span class="n">2</span><div><strong>Plan on the Big Model, Type on the Small One</strong><small>Lv 2 intro · 18 min · +300 XP</small></div></li>
+        <li><span class="n">3</span><div><strong>How the Model Intelligence Layer Works</strong><small>Lv 4 deep · 48 min · +900 XP</small></div></li>
+      </ol>
+      <div class="src"><strong>Outside sources on this route</strong>
+        <div>Claude Academy: how models and context work</div>
+        <div>Osmani, Loop Engineering</div></div>
+    </div>
+  </aside>
+  <div class="mapside" id="mapside">
+    <canvas id="c-map" width="200" height="160" aria-label="Pixel art map of six AI learning regions"></canvas>
+    <div class="search">☰ <span>Search quests, notes, topics</span> <span style="margin-left:auto">🔍</span></div>
+    <div class="chips"><span class="chip" data-on>All</span><span class="chip">Loop</span><span class="chip">Models</span><span class="chip">Leading</span><span class="chip">Design</span><span class="chip">Not started</span></div>
+    <div class="attrib">Map data ©2026 the notes</div>
+    <div class="layers"><div class="tile"><canvas id="c-layer" width="32" height="32"></canvas><span>Layers</span></div><div class="scale"><i></i>10 min read</div></div>
+    <div class="ctl"><button class="single" title="Find my adventurer" aria-label="Find my adventurer">◎</button><div class="stack"><button aria-label="Zoom in">+</button><button aria-label="Zoom out">−</button></div></div>
+  </div>
+</div>
+<p class="cap">Same bones as Google Maps: search and filter chips float top left, a place panel with a numbered route on the left, layers bottom left, zoom and find-me bottom right, and a blue dot for your adventurer. Pins and sprites are drawn pixel by pixel, so every shape is real pixel art. Real pins are named buttons, and the panel's route list is the keyboard and screen reader path through the same quests.</p>
+</section>
+
+<section>
+<h2>2 · Zoom in on a landmark, open the quest</h2>
+<div class="frame zoomframe" id="zoomframe">
+  <canvas id="c-zoom" width="200" height="120"></canvas>
+  <div class="dim"></div>
+  <div class="modalwrap"><div class="modal">
+    <span class="ribbon">Model Mines · Quest 1 of 3</span>
+    <h3>I Ran Out With Hours Left</h3>
+    <div class="row"><span class="chip">Class: Builder</span><span class="chip">Level: intro</span></div>
+    <div class="stats">
+      <div class="stat"><small>Adventurer level</small><strong>Lv 2 · Intro</strong></div>
+      <div class="stat"><small>Experience</small><strong>+350 XP</strong></div>
+      <div class="stat"><small>Time</small><strong>~22 min</strong></div>
+    </div>
+    <div class="xp" title="Region progress"><i></i></div>
+    <div><strong>You will learn</strong>
+      <ul><li>Why a usage limit is a design input</li><li>What a model layer routes, and why</li><li>How to choose a model that is enough for the step</li></ul></div>
+    <div><strong>Sources on the trail</strong>
+      <ul><li data-ext>Claude Academy: how models and context work</li><li data-ext>Osmani, Loop Engineering</li><li>Next stop: Plan on the Big Model</li></ul></div>
+    <div class="row"><button class="primary">Begin quest</button><button>Read the note only</button></div>
+  </div></div>
+</div>
+<p class="cap">Zooming reveals more detail, the way a map does: tents, torches, a mine cart and numbered stop pins appear that the world view leaves out. Class and level come from the note's own audience and level fields.</p>
+</section>
+
+<section>
+<h2>3 · The adventurer's guild card, and what the badge link rebuilds</h2>
+<div class="cards">
+  <div class="frame card">
+    <div class="head"><canvas id="c-hero" width="24" height="24"></canvas>
+      <div><h3>Wren of the Loop</h3><div>Apprentice · Lv 3</div><div style="color:var(--q-muted);font-size:.8rem">Member since Nov 2026 · seed 7K2F-Q9</div></div></div>
+    <div class="stat"><small>Experience</small><div class="xp"><i style="width:26%"></i></div><strong>1,240 / 4,800 XP</strong></div>
+    <div class="badges" id="badges"></div>
+    <div class="row"><button>Name my adventurer</button><button class="primary">Save progress</button><button>Load save</button></div>
+  </div>
+  <div class="frame card">
+    <strong>How it works with no server</strong>
+    <div class="field">Character: drawn from your seed or your chosen username. Same name, same adventurer, on any device.</div>
+    <div class="field">Save: a small file <code>grain-quest-wren.json</code> or a short save code. Load it to restore everything.</div>
+    <div class="field">Badge link: <code>/quest/badge#s=eyJ1Ijoid3JlbiIs…</code> The state sits after the # so it never reaches a server. The page redraws this card from it.</div>
+    <div class="field" style="border-style:solid">Honest limit: self-reported. This card shows what the holder says they finished. It is not a signed credential.</div>
+  </div>
+</div>
+</section>
+
+<section>
+<h2>4 · Lesson mode: the note keeps its words, the sidebar becomes the book</h2>
+<div class="frame lesson">
+  <div class="note">
+    <div class="crumb">Model Mines · Quest 1 · Stop 2 of 4 · Rate limits are a design input</div>
+    <h3>I Ran Out With Hours Left</h3>
+    <p>It was a Tuesday afternoon and the usage meter said I had spent the week's allowance on day two. I had planned for tokens the way I plan for coffee: assume it will be there.</p>
+    <p><span class="hl">A limit you hit mid-task is not a billing problem. It is a design input, and the only question is whether you chose the layer that handles it or discovered it at the worst possible moment.</span> So I stopped asking which model is best and started asking which model is enough for this step.</p>
+    <p>That reframing is the whole note. The rest is how the routing works once you accept it.</p>
+  </div>
+  <div class="side">
+    <div class="tb"><span data-on>Book</span><span>Stops</span><span>Sources</span></div>
+    <div class="book" aria-label="Voice lesson, shown as an open book">
+      <div class="page"><h4>Chapter 2 · Voice</h4>
+        <p>So it was a Tuesday, and the meter said I was done for the week.</p>
+        <p class="now">Here is the thing. A limit is not a billing problem. It is a design input.</p>
+        <p>Choose the layer that handles it, or find out at the worst moment.</p></div>
+      <div class="page"><h4>In plain words</h4>
+        <ul><li>Limits are a constraint you design around.</li><li>Ask "enough for this step", not "best".</li><li>Route cheap work to the cheap model.</li></ul>
+        <p style="margin-top:.6rem"><em>Try it:</em> list your last five AI tasks and mark which needed the big model.</p></div>
+    </div>
+    <div class="controls">
+      <div class="ribbonbar"><i></i><u></u></div>
+      <div class="row"><div><button aria-label="Previous chapter">⏮</button> <button aria-label="Play">▶</button> <button aria-label="Next chapter">⏭</button></div><div><button>1x</button> <button>Captions</button></div></div>
+      <div class="stops"><span>Stops</span><i data-d></i><i data-now></i><i></i><i></i><span>· 3:12 / 9:40</span></div>
+    </div>
+  </div>
+</div>
+<p class="cap">The book is the voice player: transcript on the left page, a plain-words digest on the right, the ribbon is the progress bar, and turning a page is the next stop. Underneath it is an ordinary audio element with captions, so it works without the art.</p>
+</section>
+
+<section>
+<h2>5 · When a new note lands: the compatibility check</h2>
+<div class="frame"><pre>$ bun tools/quests.ts check content/notes/new-note.md
+
+note        the-new-note            level: intro   audience: [learn, build]   ~11 min
+tags        ai, workflow, tooling   sources: 3 in body, 1 id in frontmatter
+fits        Loop Forest (3 of 4 tags match, depends on: loop-setup)  -> added as quest 5
+
+region watch (notes with no region yet, grouped by shared tags)
+  ai + retrieval + standards    4 notes   vectorless-rag-by-accident, ...   [need 5]
+  ai + code-review              3 notes   same-reviewer-twice, ...          [need 5]
+
+no new region proposed. 2 more fitting notes and "Retrieval Marsh" is ready to propose.</pre></div>
+<p class="cap">The check proposes. A human approves the region name, landmark and position in the same change that publishes the note.</p>
+</section>
+</main>
+
+<script>
+/* ---------- pixel engine: every shape is whole pixels, no smoothing ---------- */
+const WW=200, WH=160;
+const NAMES=['water','water2','wave','foam','sand','sand2','grass','grass2','forest','forest2','rock','rock2','rockd','field','field2','meadow','meadow2','snow','snow2','road','road-edge','main','main-edge','fog','fog2','outline','pin','pin-hi','you','trunk','wall','wall2','castle','castle2','roof','roof2','flag','amber','glow','ground','ground2','paper','ink','stone'];
+let P={};
+function loadPalette(){ const cs=getComputedStyle(document.documentElement); NAMES.forEach(n=>P[n.replace(/-(.)/g,(_,c)=>c.toUpperCase())]=cs.getPropertyValue('--q-'+n).trim()); }
+function hash2(x,y){ let h=(Math.imul(x|0,374761393)+Math.imul(y|0,668265263))>>>0; h=(h^(h>>>13))>>>0; h=Math.imul(h,1274126177)>>>0; return (h^(h>>>16))>>>0; }
+function vn(x,y,s){ const xi=Math.floor(x/s), yi=Math.floor(y/s), xf=x/s-xi, yf=y/s-yi, f=(a,b)=>hash2(a,b)/4294967296, sm=t=>t*t*(3-2*t);
+  const a=f(xi,yi), b=f(xi+1,yi), c=f(xi,yi+1), d=f(xi+1,yi+1); return a+(b-a)*sm(xf)+(c-a)*sm(yf)+(a-b-c+d)*sm(xf)*sm(yf); }
+function hash(str){ let h=2166136261; for(const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619);} return h>>>0; }
+function rng(seed){ let s=seed>>>0; return ()=> (s=(s*1664525+1013904223)>>>0)/4294967296; }
+
+/* sprite builder: set pixels in local coords, add a 1px outline, blit anywhere */
+const D4=[[1,0],[-1,0],[0,1],[0,-1]];
+function spr(){ const m=new Map(); const o={ m,
+  set(x,y,c){ m.set(x+','+y,c); return o; },
+  rect(x,y,w,h,c){ for(let j=0;j<h;j++) for(let i=0;i<w;i++) m.set((x+i)+','+(y+j),c); return o; },
+  outline(c){ const add=[]; for(const k of m.keys()){ const [x,y]=k.split(',').map(Number); for(const [dx,dy] of D4){ const kk=(x+dx)+','+(y+dy); if(!m.has(kk)) add.push(kk);} } add.forEach(k=>m.set(k,c)); return o; },
+  blit(put,ox,oy){ for(const [k,c] of m){ const [x,y]=k.split(',').map(Number); put(ox+x,oy+y,c);} } }; return o; }
+
+/* 3x5 pixel digits for pins */
+const FONT={0:'111101101101111',1:'010110010010111',2:'111001111100111',3:'111001111001111',4:'101101111001001',5:'111100111001111',6:'111100111101111','?':'111001010000010'};
+function glyph(s,ch,x,y,c){ const g=FONT[ch]; for(let i=0;i<15;i++) if(g[i]==='1') s.set(x+i%3,y+Math.floor(i/3),c); }
+function pinSpr(n,state){ const s=spr(); const body=state==='done'?'#4e9a52':state==='locked'?P.fog2:P.pin;
+  const rows=[3,5,7,7,7,5,3]; rows.forEach((w,j)=>{ for(let i=0;i<w;i++) s.set(i-(w>>1),-9+j,body); });
+  s.set(-1,-2,body); s.set(0,-2,body); s.set(1,-2,body); s.set(0,-1,body);
+  s.set(-2,-8,state==='locked'?P.fog:P.pinHi); s.set(-3,-7,state==='locked'?P.fog:P.pinHi);
+  if(state==='done'){ [[-2,-6],[-1,-5],[0,-4],[1,-5],[2,-6],[3,-7]].forEach(([x,y])=>s.set(x-0,y+0,'#fff')); s.set(-2,-6,'#fff'); s.set(-1,-5,'#fff'); s.set(0,-4,'#fff'); s.set(1,-5,'#fff'); s.set(2,-6,'#fff'); }
+  else glyph(s,state==='locked'?'?':n,-1,-7,'#fff');
+  return s.outline(P.outline); }
+function youSpr(){ const s=spr(); [[-2,0],[2,0],[0,-2],[0,2],[-2,-1],[2,1],[-1,-2],[1,2],[-2,1],[2,-1],[1,-2],[-1,2]].forEach(([x,y])=>s.set(x,y,'#cfe2ff')); s.rect(-1,-1,3,3,P.you); s.set(0,0,'#ffffff'); return s; }
+
+/* landmarks */
+function mountainSpr(h,k){ const s=spr(), snow=Math.round(h*.36);
+  for(let j=0;j<h;j++){ const half=Math.round(j*k), y=-h+1+j; for(let i=-half;i<=half;i++){ let c=i<=0?P.rock:P.rock2; if(i>0&&(i+j)%5===0) c=P.rockd; if(i<0&&(i-j)%7===0) c=P.rock2;
+    if(j<snow+((Math.abs(i)%3)-1)) c=i<=0?P.snow:P.snow2; s.set(i,y,c);} } return s.outline(P.outline); }
+function pineSpr(){ const s=spr(); s.rect(0,-1,1,2,P.trunk); [[0,-2,3],[0,-4,2],[0,-6,1]].forEach(([_,y,hw])=>{ for(let i=-hw;i<=hw;i++) { s.set(i,y,i<=0?P.forest:P.forest2); s.set(i,y-1,i<=0?P.forest:P.forest2);} }); s.set(0,-8,P.forest); return s.outline(P.outline); }
+function bushSpr(){ const s=spr(); s.rect(-1,-1,3,2,P.forest); s.set(0,-2,P.forest); s.set(1,0,P.forest2); return s.outline(P.outline); }
+function hillSpr(w,h){ const s=spr(); for(let j=0;j<h;j++){ const half=Math.round(w/2*Math.sqrt(1-((h-1-j)/h)**2*0+ (1-(j/h))**2*0 ))- Math.round((h-1-j)*0.0); const hw=Math.round((w/2)*Math.sqrt(1-((h-1-j)/h)**2)); for(let i=-hw;i<=hw;i++) s.set(i,-h+1+j,i<=0?P.grass:P.grass2); } return s.outline(P.outline); }
+function castleSpr(){ const s=spr();
+  s.rect(-8,-10,17,10,P.wall); s.rect(1,-10,8,10,P.wall2);
+  for(let i=-8;i<=8;i+=4){ s.rect(i,-12,2,2,P.wall); }
+  [[-11,-17],[9,-17]].forEach(([x,y])=>{ s.rect(x,y,5,17,P.wall); s.rect(x+3,y,2,17,P.wall2); for(let i=0;i<5;i+=2) s.rect(x+i,y-2,1,2,P.wall); s.set(x+2,y+5,P.outline); s.set(x+2,y+6,P.outline);
+    for(let j=0;j<5;j++) for(let i=-j;i<=j+4;i++){ /* cone roof */ } });
+  [[-11,-19],[9,-19]].forEach(([x,y])=>{ for(let j=0;j<5;j++){ for(let i=j;i<5-j;i++) s.set(x+i,y-j,i<2?P.castle:P.castle2); } });
+  s.rect(0,-17,1,7,P.outline); s.rect(1,-17,4,3,P.flag); s.rect(-2,-6,5,6,P.outline); s.rect(-1,-7,3,1,P.outline);
+  s.set(-5,-6,P.glow); s.set(5,-6,P.glow); s.rect(-1,-12,3,2,P.castle2);
+  return s.outline(P.outline); }
+function hallSpr(){ const s=spr(); s.rect(-6,-6,13,6,P.wall); s.rect(1,-6,6,6,P.wall2);
+  for(let j=0;j<6;j++) for(let i=-8+j;i<=8-j;i++) s.set(i,-7-j,i<=0?P.roof:P.roof2);
+  s.rect(-1,-4,3,4,P.outline); s.set(-4,-4,P.glow); s.set(4,-4,P.glow); return s.outline(P.outline); }
+function houseSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.wall); for(let j=0;j<3;j++) for(let i=-4+j;i<=5-j;i++) s.set(i,-4-j,i<=0?P.roof:P.roof2); s.set(0,-1,P.outline); return s.outline(P.outline); }
+function peakSpr(){ const s=mountainSpr(26,.72); s.rect(0,-30,1,6,P.outline); s.rect(1,-30,4,3,P.flag); s.rect(1,-29,1,1,P.pinHi); return s.outline(P.outline); }
+function caveSpr(){ const s=spr(); s.rect(-2,-3,5,3,P.outline); s.rect(-1,-4,3,1,P.outline); s.set(-3,-1,P.rockd); s.set(3,-1,P.rockd); return s; }
+function signSpr(){ const s=spr(); s.rect(0,-4,1,5,P.trunk); s.rect(-4,-7,9,4,P.wall); s.rect(-3,-6,7,1,P.roof2); return s.outline(P.outline); }
+function tentSpr(){ const s=spr(); for(let j=0;j<5;j++) for(let i=-j;i<=j;i++) s.set(i,-4+j,i<=0?P.roof:P.roof2); s.set(0,0,P.outline); return s.outline(P.outline); }
+function torchSpr(){ const s=spr(); s.rect(0,-3,1,3,P.trunk); s.set(0,-4,P.glow); s.set(0,-5,P.amber); return s.outline(P.outline); }
+function cartSpr(){ const s=spr(); s.rect(-3,-3,7,3,P.rockd); s.rect(-3,-3,7,1,P.rock); s.set(-2,0,P.outline); s.set(2,0,P.outline); s.set(0,-4,P.glow); return s.outline(P.outline); }
+
+/* ---------- the world: terrain, biomes, roads ---------- */
+const REGIONS=[ {n:1,cx:34,cy:122}, {n:2,cx:62,cy:92}, {n:3,cx:104,cy:124}, {n:4,cx:146,cy:92}, {n:5,cx:92,cy:52}, {n:6,cx:150,cy:34}, {n:7,cx:160,cy:128} ];
+const land=new Uint8Array(WW*WH), reg=new Uint8Array(WW*WH);
+const MAIN=[[34,122],[48,110],[62,92],[82,108],[104,124],[126,108],[146,92],[120,70],[92,52],[122,40],[150,34]];
+const MINOR=[[[62,92],[74,66],[92,52]],[[104,124],[132,134],[160,128]],[[146,92],[172,84],[176,64]]];
+let cols=[], sprites=[], roadMain=new Set(), roadMinor=new Set();
+(function buildMasks(){ for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x;
+  const e=1-(((x-100)/94)**2+((y-82)/72)**2)+(vn(x,y,20)-.5)*.55+(vn(x,y,7)-.5)*.16; const lake=(((x-46)/9)**2+((y-54)/5)**2)<1;
+  land[i]=(e>.1&&!lake)?1:0; let best=1e9,id=1; for(const r of REGIONS){ const d=Math.hypot(x-r.cx,(y-r.cy)*1.25)/(r.n===7?1.15:1); if(d<best){best=d;id=r.n;} } reg[i]=id; } })();
+function distTo(x,y,type,r=3){ let best=9; for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){ const xx=x+dx,yy=y+dy; const t=(xx<0||yy<0||xx>=WW||yy>=WH)?0:land[yy*WW+xx]; if(t===type) best=Math.min(best,Math.max(Math.abs(dx),Math.abs(dy))); } return best; }
+function line(pts,fn){ for(let k=0;k<pts.length-1;k++){ let [x0,y0]=pts[k],[x1,y1]=pts[k+1]; const n=Math.max(Math.abs(x1-x0),Math.abs(y1-y0)); for(let t=0;t<=n;t++){ const x=Math.round(x0+(x1-x0)*t/n), y=Math.round(y0+(y1-y0)*t/n+Math.sin(t/n*6.28*1)*2*(k%2?1:-1)); fn(x,y,t); } } }
+function buildWorld(){
+  cols=new Array(WW*WH); roadMain=new Set(); roadMinor=new Set(); sprites=[];
+  for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; let c;
+    if(!land[i]){ const d=distTo(x,y,1); c=d<=1?P.foam:d<=3?P.water2:P.water; if(d>3&&hash2(x,y)%31===0) c=P.wave; }
+    else { const d=distTo(x,y,0,2); const r=reg[i];
+      if(d<=2) c=(x+y)%2?P.sand:P.sand2;
+      else if(r===1){ c=vn(x,y,4)>.52?P.grass:P.grass2; if(hash2(x,y)%67===0) c='#ffffff'; if(hash2(x,y)%97===0) c=P.amber; }
+      else if(r===2){ c=vn(x,y,3)>.5?P.forest:P.forest2; }
+      else if(r===3){ c=vn(x,y,3)>.5?P.rock:P.rock2; if(hash2(x,y)%61===0) c=P.rockd; }
+      else if(r===4){ c=(vn(x,y,18)>.44)?(((y>>1)%2)?P.field:P.field2):(vn(x,y,4)>.5?P.grass:P.grass2); }
+      else if(r===5){ c=vn(x,y,4)>.5?P.meadow:P.meadow2; if(hash2(x,y)%41===0) c=P.snow; }
+      else if(r===6){ c=vn(x,y,4)>.5?P.snow:P.snow2; }
+      else { c=vn(x,y,4)>.5?P.grass2:P.rock2; } }
+    cols[i]=c; }
+  // roads
+  const paint=(set)=>(x,y)=>{ for(const [a,b] of [[0,0],[1,0],[0,1],[1,1]]){ const xx=x+a,yy=y+b; if(xx>=0&&yy>=0&&xx<WW&&yy<WH&&land[yy*WW+xx]) set.add(yy*WW+xx);} };
+  MINOR.forEach(p=>line(p,paint(roadMinor))); line(MAIN,paint(roadMain));
+  const all=new Set([...roadMain,...roadMinor]);
+  const edge=i=>D4.some(([dx,dy])=>{ const x=i%WW+dx,y=Math.floor(i/WW)+dy; return !all.has(y*WW+x); });
+  roadMinor.forEach(i=>{ cols[i]=edge(i)?P.roadEdge:P.road; });
+  roadMain.forEach(i=>{ cols[i]=edge(i)?P.mainEdge:P.main; });
+  let k=0; line(MAIN,(x,y)=>{ k++; if(k%7<3){ const i=y*WW+x; if(roadMain.has(i)&&!edge(i)) cols[i]=P.road; } });
+  // fog over the unmapped region
+  for(let y=0;y<WH;y++) for(let x=0;x<WW;x++){ const i=y*WW+x; if(reg[i]===7&&land[i]){ const d=Math.hypot(x-166,(y-130)*1.2); if(d<24+(vn(x,y,5)-.5)*14) cols[i]=((x+y)%2)?P.fog:P.fog2; } }
+  // sprites
+  const add=(s,x,y)=>sprites.push({y,f:put=>s.blit(put,x,y)});
+  const nearRoad=(x,y,r)=>{ for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++) if(all.has((y+dy)*WW+x+dx)) return true; return false; };
+  const pine=pineSpr(), bush=bushSpr();
+  for(let gy=4;gy<WH-4;gy+=5) for(let gx=4;gx<WW-4;gx+=5){ const h=hash2(gx,gy), x=gx+(h%4), y=gy+((h>>3)%4), i=y*WW+x; if(!land[i]||nearRoad(x,y,2)) continue;
+    const d=distTo(x,y,0,3); if(d<=3) continue; const r=reg[i];
+    if(r===2&&(h>>6)%10<9) add(pine,x,y+2);
+    else if((r===1||r===4||r===5)&&(h>>6)%10<1) add(bush,x,y);
+    else if(r===3&&(h>>6)%10<1) add(bush,x,y); }
+  [[24,126,16,7],[40,129,12,5],[16,132,10,4]].forEach(([x,y,w,h])=>add(hillSpr(w,h),x,y));
+  add(signSpr(),46,112);
+  add(mountainSpr(20,.9),104,128); add(mountainSpr(15,.9),122,130); add(mountainSpr(13,.9),86,132);
+  add(hallSpr(),146,96); add(houseSpr(),134,100); add(houseSpr(),158,102); add(houseSpr(),156,84);
+  add(castleSpr(),92,56); add(peakSpr(),150,40);
+  sprites.sort((a,b)=>a.y-b.y);
+  sprites.cave=caveSpr();
+}
+
+/* ---------- renderer: world window at integer zoom z, pins on top ---------- */
+function render(cv,V){
+  const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; const W=cv.width,H=cv.height,z=V.z;
+  ctx.fillStyle=P.water; ctx.fillRect(0,0,W,H);
+  const put=(wx,wy,c)=>{ const sx=Math.round((wx-V.x)*z), sy=Math.round((wy-V.y)*z); if(sx<-z||sy<-z||sx>=W||sy>=H) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
+  for(let y=Math.floor(V.y);y<Math.ceil(V.y+H/z);y++) for(let x=Math.floor(V.x);x<Math.ceil(V.x+W/z);x++){ if(x<0||y<0||x>=WW||y>=WH) continue; ctx.fillStyle=cols[y*WW+x]; ctx.fillRect(Math.round((x-V.x)*z),Math.round((y-V.y)*z),z,z); }
+  sprites.cave.blit(put,104,127);
+  sprites.forEach(s=>s.f(put));
+  if(V.detail){ tentSpr().blit(put,92,134); tentSpr().blit(put,96,136); torchSpr().blit(put,100,128); torchSpr().blit(put,108,128); cartSpr().blit(put,112,134);
+    for(let x=100;x<122;x+=2){ put(x,135,P.trunk); } for(let x=100;x<124;x++) put(x,136,P.rockd); torchSpr().blit(put,72,138); }
+  (V.pins||[]).forEach(p=>{ if(p.you){ youSpr().blit(put,p.x,p.y); return; }
+    if(p.sel){ for(let i=-4;i<=4;i++) put(p.x+i,p.y,'rgba(0,0,0,.28)'); }
+    pinSpr(p.n,p.state).blit(put,p.x,p.y-(p.sel?3:0)); });
+}
+function placeLabels(host,V,W,H,labels){ host.querySelectorAll('.lbl').forEach(e=>e.remove());
+  labels.forEach(l=>{ const e=document.createElement('div'); e.className='lbl'+(l.box?' box':''); e.style.left=((l.x-V.x)*V.z/W*100)+'%'; e.style.top=((l.y-V.y)*V.z/H*100)+'%'; e.innerHTML=l.t+(l.s?`<small>${l.s}</small>`:''); host.appendChild(e); }); }
+
+/* ---------- the guild card character, solid pixels ---------- */
+function px(cv,cols_,rows_){ const ctx=cv.getContext('2d'); const cw=cv.width/cols_, ch=cv.height/rows_;
+  return { clear(c){ ctx.fillStyle=c; ctx.fillRect(0,0,cv.width,cv.height); }, dot(x,y,c){ ctx.fillStyle=c; ctx.fillRect(Math.floor(x*cw),Math.floor(y*ch),Math.ceil(cw),Math.ceil(ch)); },
+    rect(x,y,w,h,c){ ctx.fillStyle=c; ctx.fillRect(Math.floor(x*cw),Math.floor(y*ch),Math.ceil(w*cw),Math.ceil(h*ch)); },
+    tri(cx,by,h,c,w){ for(let j=0;j<h;j++){ const half=Math.round(j*w*.5); this.rect(cx-half,by-h+1+j,half*2+1,1,c);} } }; }
+function hero(cv,seedStr){ const s=spr(); const R=rng(hash(seedStr));
+  const skins=['#f1c8a0','#d9a273','#a87048','#6f4a2f'], hairs=['#2b1d12','#7a4a1e','#d79a2b','#b8442f','#3a5aa5'], cloaks=[P.castle,P.roof,P.forest,'#2f6fa5'];
+  const skin=skins[Math.floor(R()*4)], hair=hairs[Math.floor(R()*5)], cloak=cloaks[Math.floor(R()*4)], hat=R()<.5;
+  s.rect(-4,2,8,9,cloak); s.rect(-3,-3,6,5,skin); s.rect(-3,-4,6,2,hair);
+  if(hat){ s.rect(-5,-5,10,1,cloak); s.rect(-3,-8,6,3,cloak); s.set(0,-9,P.amber); } else { s.rect(-4,-3,1,4,hair); s.rect(3,-3,1,4,hair); }
+  s.set(-2,-1,'#2b1d12'); s.set(1,-1,'#2b1d12'); s.rect(-1,1,2,1,'#a34a3a'); s.rect(-6,3,2,6,cloak); s.rect(4,3,2,6,cloak); s.rect(-3,11,2,2,P.outline); s.rect(1,11,2,2,P.outline);
+  s.rect(7,0,1,11,P.amber); s.set(7,-1,P.glow); s.outline(P.outline);
+  const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.fillStyle=P.ground2; ctx.fillRect(0,0,cv.width,cv.height);
+  const sc=cv.width/24; s.blit((x,y,c)=>{ ctx.fillStyle=c; ctx.fillRect(Math.round((x+12)*sc),Math.round((y+9)*sc),Math.ceil(sc),Math.ceil(sc)); },0,0); }
+function badge(cv,hue){ const g=px(cv,16,16); g.clear(P.paper); g.tri(8,13,10,hue,1.4); g.rect(5,13,7,2,P.outline); g.dot(8,6,P.glow); }
+function layerTile(cv){ const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; for(let y=0;y<32;y++) for(let x=0;x<32;x++){ ctx.fillStyle=cols[(y*4+60)*WW+(x*4+70)]||P.water; ctx.fillRect(x,y,1,1);} }
+
+function drawAll(){
+  loadPalette(); buildWorld();
+  const mapV={x:0,y:0,z:1}, mc=document.getElementById('c-map');
+  render(mc,{...mapV,pins:[
+    {n:1,state:'done',x:34,y:108},{n:2,state:'done',x:62,y:78},{n:3,sel:1,state:'open',x:104,y:108},{n:4,state:'open',x:146,y:78},{n:5,state:'open',x:92,y:36},{n:6,state:'open',x:150,y:18},
+    {you:1,x:66,y:96}, {n:0,state:'locked',x:166,y:112} ]});
+  placeLabels(document.getElementById('mapside'),mapV,WW,WH,[
+    {x:34,y:126,t:'Foothills',s:'Claude Academy'},{x:62,y:98,t:'Loop Forest'},{x:104,y:132,t:'Model Mines'},{x:146,y:106,t:'Guild Hall'},{x:92,y:62,t:'GRAIN Keep'},{x:150,y:44,t:'Summit'},{x:166,y:118,t:'Unmapped',s:'2 more notes to chart',box:1},{x:46,y:62,t:'Lake of Tokens'} ]);
+  render(document.getElementById('c-hero-img'),{x:78,y:104,z:2});
+  layerTile(document.getElementById('c-layer'));
+  const zc=document.getElementById('c-zoom'), zv={x:84,y:100,z:3,detail:1};
+  render(zc,{...zv,pins:[{n:1,sel:1,state:'open',x:100,y:114},{n:2,state:'open',x:112,y:122},{n:3,state:'open',x:92,y:127}]});
+  placeLabels(document.getElementById('zoomframe'),zv,zc.width,zc.height,[{x:100,y:116,t:'Limits',s:'quest 1'},{x:112,y:124,t:'Plan big',s:'quest 2'},{x:92,y:129,t:'Model layer',s:'quest 3'}]);
+  hero(document.getElementById('c-hero'),'wren');
+  const b=document.getElementById('badges'); b.innerHTML='';
+  [P.grass,P.forest,P.rock,P.roof,P.castle,P.snow].forEach((h,i)=>{ const c=document.createElement('canvas'); c.width=64;c.height=64; if(i>1) c.className='off'; b.appendChild(c); badge(c,h); });
+}
+document.getElementById('theme').onclick=()=>{ const r=document.documentElement; r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'; drawAll(); };
+drawAll();
+</script>
+</body>
+</html>
