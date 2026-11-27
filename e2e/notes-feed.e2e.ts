@@ -285,10 +285,14 @@ test.describe("the AI roadmap tab on /notes", () => {
     // every link names its stage and its level, and points at a real stage
     for (let i = 0; i < n; i++) {
       await expect(links.nth(i)).toContainText(/Stage \d+/);
-      await expect(links.nth(i)).toContainText(/Intro|Deep dive|Mixed/);
+      await expect(links.nth(i)).toContainText(/Intro|Deep|Mixed/);
       const target = (await links.nth(i).getAttribute("href"))!;
       await expect(page.locator(target)).toHaveCount(1);
     }
+    // the links are one size, so the bar reads as a grid whatever a stage is called
+    const sizes = await links.evaluateAll((els) => els.map((e) => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }));
+    expect(new Set(sizes.map(([w]) => w)).size).toBe(1);
+    expect(new Set(sizes.map(([, h]) => h)).size).toBe(1);
     // choosing the last stage brings it into view without changing the address
     const last = links.nth(n - 1);
     const target = (await last.getAttribute("href"))!;

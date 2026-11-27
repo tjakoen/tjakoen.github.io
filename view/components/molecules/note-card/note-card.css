@@ -229,11 +229,15 @@
 .learn-stage__sub { color: var(--color-muted); font-size: var(--text-xs); font-weight: 400; }
 
 /* The jump bar: one link per stage, so a reader can go straight to their level. */
-.learn-jump { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--space-2); margin: 0 0 var(--space-5); }
-.learn-jump__label { align-self: center; color: var(--color-muted); font-size: var(--text-xs); }
-.learn-jump__link { display: grid; gap: 1px; padding: var(--space-1) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm, 4px); color: var(--color-fg); text-decoration: none; font-size: var(--text-sm); }
+.learn-jump { margin: 0 0 var(--space-5); }
+.learn-jump__label { margin: 0 0 var(--space-2); color: var(--color-muted); font-size: var(--text-xs); }
+/* Equal columns and identical three-line cards, so every link is the same size whatever the stage is called. */
+.learn-jump__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: var(--space-2); }
+.learn-jump__link { display: grid; align-content: start; gap: 2px; min-height: 4.5rem; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-sm, 4px); color: var(--color-fg); text-decoration: none; }
+.learn-jump__link strong { font-size: var(--text-sm); font-weight: 600; line-height: 1.25; }
 .learn-jump__link small { color: var(--color-muted); font-size: var(--text-xs); }
 .learn-jump__link:hover, .learn-jump__link:focus-visible { border-color: var(--color-accent); color: var(--color-accent); }
+@media (max-width: 40rem) { .learn-jump__grid { grid-template-columns: repeat(2, 1fr); } .learn-jump__link:last-child:nth-child(odd) { grid-column: 1 / -1; } }
 .learn-stage { scroll-margin-top: var(--space-4); }
 .learn-stage:focus { outline: none; }
 

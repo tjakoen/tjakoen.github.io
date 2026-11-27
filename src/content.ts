@@ -928,7 +928,7 @@ export function learnPathSection(entries: NoteFeedEntry[]): { html: string; coun
     count += here.length;
     const minutes = here.reduce((t, o) => t + (bySlug.get(o.q.id)!.score || 0), 0);
     const stageLevel = here.every(({ q }) => q.level === "intro") ? "Intro" : here.every(({ q }) => q.level === "deep") ? "Deep dive" : "Mixed";
-    jumps.push(`<a class="learn-jump__link" href="#learn-stage-${r.n}" data-learn-jump><span>Stage ${r.n} · ${escapeHtml(r.name)}</span><small>${stageLevel} · ${here.length}</small></a>`);
+    jumps.push(`<a class="learn-jump__link" href="#learn-stage-${r.n}" data-learn-jump aria-label="Stage ${r.n}, ${escapeHtml(r.name)}, ${stageLevel}, ${here.length} note${here.length === 1 ? "" : "s"}"><small>Stage ${r.n}</small><strong>${escapeHtml(r.name)}</strong><small>${stageLevel === "Deep dive" ? "Deep" : stageLevel} · ${here.length} note${here.length === 1 ? "" : "s"}</small></a>`);
     const cards = here.map(({ q, no }) => {
       const e = bySlug.get(q.id)!, slug = escapeHtml(e.slug);
       const level = q.level === "intro" ? "Intro" : q.level === "deep" ? "Deep dive" : q.level ? "Intermediate" : "";
@@ -958,7 +958,7 @@ ${cards}
       <span class="learn-quest__go" aria-hidden="true">&#9654;</span>
     </a>
     <p class="learn-path__lede">The notes in reading order, grouped into stages from the way in to the deep ones. The number on each note is its place on the learning path. Pick the stage that fits where you are.</p>
-    <nav class="learn-jump" aria-label="Jump to a stage"><span class="learn-jump__label">Jump to</span>${jumps.join("")}</nav>
+    <nav class="learn-jump" aria-label="Jump to a stage"><p class="learn-jump__label">Jump to a stage</p><div class="learn-jump__grid">${jumps.join("")}</div></nav>
     ${stages.join("\n")}
     </div>`,
   };
