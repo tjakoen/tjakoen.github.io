@@ -1,66 +1,68 @@
 id: harbor
 note: start-here
 title: The Harbor, part one
-summary: I tell you what I am not, who this path is for and how it works, then hand you the first idea everything else hangs on, which is that your AI is the teammate who never asks questions.
+summary: I tell you what I am not, who this path is for and how it works, then hand you the first idea everything else hangs on, which is that your AI is the teammate who never asks questions. It is my journey and an invitation, not a tutorial.
 audio: /media/lessons/harbor.m4a
 external: https://academy.claude.com
 stops:
-  - title: Before you set off
-    note: start-here
-    from: intro
-    to: builders-not-coders
-    runes:
-      - id: builders-not-coders
-        section: builders-not-coders
-        quote: You can hand the bricklaying to an AI.
-    trial: Write one sentence on whether you see yourself as a builder or a coder right now, and why.
-    digest:
-      - I am six months in and not an expert. I built most of this path in about two days by talking to an AI.
-      - This path assumes you can program a little. It does not teach that.
-      - You can hand the bricklaying to the AI. You cannot hand it the drawing.
-  - title: How the path works
-    note: start-here
-    from: what-youll-find-here
-    to: where-to-start
-    runes:
-      - id: build-your-own
-        section: build-your-own-dont-copy-mine
-        quote: copy what's useful, change the rest
-    trial: Do the Claude Academy basics if you have not, then decide whether to add to a portfolio you have or start from the skeleton.
-    digest:
-      - Start at the Harbor, then cross to the mainland. Each stop ends with one small thing to try.
-      - You build your own portfolio along the way, with an AI roadmap page and a home for your badges.
-      - Progress is self-reported, so the only person you can fool is you.
-      - What I do works for me. Copy what is useful, change the rest, and show me what you make.
-  - title: The teammate who never asks questions
-    note: ai-teammate-never-asks-questions
-    from: intro
-    to: it-cant-think-for-you
-    runes:
-      - id: it-says-yes
-        section: it-says-yes-to-everything
-        quote: Each of those was a choice
-      - id: you-keep-the-narrative
-        section: it-cant-think-for-you
-        quote: the thinking about what to build
-    trial: Ask your AI for something vague, like a portfolio site, and list every choice it made that you did not.
-    digest:
-      - An AI agent behaves like the group project teammate who says got it and asks nothing.
-      - It fills every gap with a guess, and then sounds sure.
-      - It cannot think for you, so you keep the narrative.
-  - title: Brief it, then check it
-    note: ai-teammate-never-asks-questions
-    from: say-what-done-looks-like
-    to: try-this
-    runes:
-      - id: say-what-done-looks-like
-        section: say-what-done-looks-like
-        quote: What done looks like.
-      - id: it-forgets
-        section: it-forgets-everything
-        quote: A human teammate remembers yesterday.
-    trial: Write the three-part brief for your portfolio, or its roadmap section, give it to your AI, and compare what you get with what you wrote.
-    digest:
-      - A brief has three parts. The goal, what done looks like, and what not to touch.
-      - The AI forgets between sessions, so the brief has to live in a file.
-      - If you cannot explain why it works, you adopted it. You did not build it.
+- title: Before you set off
+  note: start-here
+  from: intro
+  to: builders-not-coders
+  runes:
+  - id: builders-not-coders
+    section: builders-not-coders
+    quote: You can hand the bricklaying to an AI.
+  trial: Write one sentence on whether you see yourself as a builder or a coder right now, and why. Or write down what you hope to get out of this path.
+  digest:
+  - I am six months in and not an expert, and this is a journey, not a tutorial.
+  - This path assumes you can program a little. It does not teach that.
+  - You can hand the bricklaying to the AI, but not the drawing. Aim to be the orchestrator, not the blind vibe coder.
+- title: How the path works
+  note: start-here
+  from: what-youll-find-here
+  to: where-to-start
+  runes:
+  - id: build-your-own
+    section: build-your-own-dont-copy-mine
+    quote: copy what's useful, change the rest
+  trial: Do the Claude Academy basics if you have not, then decide whether to add to a portfolio you have or start from the skeleton.
+  digest:
+  - Start at the Harbor, then cross to the mainland. You build your own portfolio along the way.
+  - Progress is self-reported, so the only person you can fool is you.
+  - What I do works for me. Copy what is useful, change the rest, and show me what you make.
+- title: The teammate who never asks questions
+  note: ai-teammate-never-asks-questions
+  from: intro
+  to: it-cant-think-for-you
+  runes:
+  - id: it-says-yes
+    section: it-says-yes-to-everything
+    quote: Each of those was a choice
+  - id: you-keep-the-intent
+    section: it-cant-think-for-you
+    quote: the scarce thing stops being code and becomes intent
+  trial: Ask your AI for something vague, like a portfolio site, and list every choice it made that you did not.
+  digest:
+  - An AI agent behaves like the group project teammate who says got it and asks nothing.
+  - It fills every gap with a guess, and then sounds sure.
+  - It cannot think for you, so you keep the intent. Being lazy on purpose means doing the careful part once, up front.
+- title: Brief it, and stay the orchestrator
+  note: ai-teammate-never-asks-questions
+  from: say-what-done-looks-like
+  to: your-turn
+  runes:
+  - id: say-what-done-looks-like
+    section: say-what-done-looks-like
+    quote: What done looks like.
+  - id: explain-and-fix
+    section: orchestrate-it-dont-just-vibe-it
+    quote: could I explain this, and could I fix it if the AI weren't here
+  - id: it-forgets
+    section: it-forgets-everything
+    quote: A human teammate remembers yesterday.
+  trial: Write the three-part brief for your portfolio, or its roadmap section, give it to your AI, and compare what you get with what you wrote.
+  digest:
+  - A brief has three parts. The goal, what done looks like, and what not to touch.
+  - If you cannot explain it and fix it without the AI, you adopted it. You did not build it.
+  - The AI forgets between sessions, so the brief has to live in a file.

@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~4 min"
+readingTime: "~5 min"
 tags: [ai, workflow, teaching]
 summary: >
   A skill is a prompt you've earned by typing it by hand a few times. Wait until you've repeated one, ask
@@ -23,28 +23,30 @@ social: |
   And once a skill is boring and checkable, a routine can run it for you. Here's how I decide:
 ---
 
-You've now typed some version of the same two prompts a few times. "Break this into small steps, each with
-what done looks like." And "go through the plan and show me the evidence for each done line." You know
-them by heart, and you're a little tired of them.
+I noticed some time this autumn that I had a catchphrase, and I was saying it to a machine. "Are we clean
+on main? If yes, remove the worktrees and branches, local and remote." I typed it at the end of a lot of
+sessions. A few days later it was "I'm out of storage again, clean something up." None of that was the
+model's fault. It did exactly what I asked every time. I was just the only part of the system that
+remembered, and I'm supposed to be doing something else.
 
-That tiredness is useful. It's telling you what to save.
+That tiredness is useful. It tells me what to save.
 
 ## A skill is a prompt you've earned
 
 A skill is a saved set of instructions your agent can run on request, like a recipe it can pull off the
-shelf. The Claude Academy lessons cover the mechanics, and your agent can explain how yours works if
-you ask. What I want to give you is the rule for when.
+shelf. The Claude Academy lessons cover the mechanics, and your agent can explain how yours works if you
+ask. What I can give you is my rule for when.
 
-**Don't write a skill until you've typed the thing three times by hand.** Before that, you're guessing
-what it should say. After that, you know, because you've seen what you kept correcting. The first
-candidates are probably already in front of you: the plan prompt, the check prompt, and adding a roadmap
-entry to your portfolio. Every correction you give twice is a line waiting to go into the skill.
+**I don't write a skill until I've typed the thing three times by hand.** Before that I'm guessing what it
+should say. After that I know, because I've seen what I kept correcting. The first candidates for you are
+probably already in front of you: the plan prompt, the check prompt, and adding a roadmap entry to your
+portfolio. Every correction I give twice is a line waiting to go into the skill.
 
 ## Let your agent write it, then you edit it
 
-Don't start from a blank page. Right after a session where the prompt worked, say: "Turn what we just did
-into a skill." Then read what it wrote the way you'd read a plan. Does it say when to use it? Are the
-steps what you'd do? Is something in there you never asked for?
+I don't start from a blank page. Right after a session where the prompt worked, I say: "Turn what we just
+did into a skill." Then I read what it wrote the way I'd read a plan. Does it say when to use it? Are the
+steps what I'd do? Is something in there I never asked for?
 
 Here's the shape, in plain words. Your harness will format it differently.
 
@@ -60,27 +62,27 @@ A good one for your portfolio is adding a roadmap entry. The skill asks you what
 words, adds the entry with a date and an evidence link, and checks the link opens. It doesn't write your
 words for you.
 
-Keep a skill to one job. Save it in the project, next to your brief and plan, so every session finds it.
-And as you catch new misses, add a line. That's how it gets better, and how it starts to sound like how
-you work.
+I keep a skill to one job, save it in the project next to the brief and plan so every session finds it,
+and add a line each time I catch a new miss. That's how it gets better, and how it starts to sound like how
+I work.
 
 Later in this path you'll meet the loop, my whole setup for working with AI. One thing it does is notice
-when I repeat a request and ask whether I want a skill from it. For now, you're the one noticing. The
-note is [I Kept Telling My AI the Same Thing](the-loop-that-learned-how-i-work.md), if you're curious.
+when I repeat a request and ask whether I want a skill from it. For now, you're the one noticing. The note
+is [I Kept Telling My AI the Same Thing](the-loop-that-learned-how-i-work.md), if you're curious.
 
 ## Keep judgment manual
 
 Not every skill should run by itself. I run my audits by hand. My loop tells me when one is due and I
-decide to go. That's a preference, not a rule, but there's a reason: an audit is a judgment, and I want
-to be in the room for it.
+decide to go. That's a preference, not a rule, and the reason is that an audit is a judgment, and I want to
+be in the room for it.
 
 ## When a skill earns a routine
 
 A routine runs a skill on a timer or when something happens, with you nowhere in sight. Skills are called
 skills everywhere, but routines go by different names: a scheduled task in some harnesses, a cron job you
-set up yourself in others. It's the same idea, so ask your agent how yours does it. The test for whether one is worth building is
-the same as for a skill, with one more clause. It has to be repeated, boring, and **checkable**, so you can
-tell it worked without reading its mind.
+set up yourself in others. It's the same idea, so ask your agent how yours does it. The test for whether
+one is worth building is the same as for a skill, with one more clause. It has to be repeated, boring, and
+**checkable**, so you can tell it worked without reading its mind.
 
 Mine are things like these. One checks whether my classes have been graded. One moves tickets that are due
 for code review into the code reviewer's queue. One updates my team's metrics calculations. Nobody is
@@ -90,21 +92,20 @@ Look at what's missing from that list. No audits. Nothing that edits code and sh
 routine that does something you'd have to think about doesn't save time, it files a mess for you to sort
 out later.
 
-And check that a routine actually ran. I once trusted a check for three weeks before I counted and found
-it had run once in a hundred and sixty-five sessions, which is the story in
-[The Check Ran Once in 165 Sessions](the-check-that-never-ran.md). Anything that runs while you're not
-looking needs something that tells you when it didn't.
+And check that a routine actually ran. Anything that runs while you're not looking needs something that
+tells you when it didn't, which is the whole lesson of [The Check Ran Once in 165
+Sessions](the-check-that-never-ran.md).
 
-## Try this
+## Your turn
 
-Pick the prompt you've typed most, or the roadmap entry one. Ask your agent to turn it into a skill, then
-edit it and save it in your project. Run it to add your next entry. Then write down one chore that's
-boring and checkable, such as checking that the links on your roadmap still open. Don't build the routine
-yet. Just notice that it's there.
+Pick the prompt you've typed most, or the roadmap entry one. Ask your agent to turn it into a skill, edit it,
+save it in your project, and use it to add your next entry. Then write down one chore that's boring and
+checkable, such as checking that the links on your roadmap still open. Don't build the routine yet. Just
+notice that it's there. Or turn something entirely different into a skill, and tell me what.
 
-Your skills will look nothing like mine, and that's the point. Mine came from my repetition, and yours will
-come from yours. [Set Up the Loop With One Prompt](loop-setup.md) shows how I tie mine together once there
-are enough of them.
+**Where I might be wrong.** Three is my number, not a law. Some prompts earn a skill on the second use and
+some never do. And a skill is one more thing to maintain, so a pile of them can cost more than it saves.
+Your skills will look nothing like mine, and that's the point.
 
 ---
 

@@ -17,10 +17,7 @@ stops:
     quote: A shared, documented understanding is the goal
   trial: Think of the last time you said that is not what I meant. Write down what you had not decided yet.
   digest:
-  - The AI builds what you described, and what you described had holes.
-  - When you do not type the code, you miss the walk through it.
-  - A drawing is that walk. You do not have to draw it, because the AI will.
-  - What matters is a shared, written-down picture of the plan.
+  - The AI builds what you described, and what you described had holes. A drawing is the walk you skipped, and the AI can draw it for you. What matters is a shared, written-down picture of the plan.
 - title: Six drawings, one question each
   note: draw-it-before-the-ai-builds-it
   from: six-drawings-one-question-each
@@ -37,7 +34,7 @@ stops:
 - title: Let the AI hold the pen
   note: draw-it-before-the-ai-builds-it
   from: let-the-ai-hold-the-pen
-  to: try-this
+  to: your-turn
   runes:
   - id: save-it
     section: let-the-ai-hold-the-pen
@@ -45,8 +42,8 @@ stops:
   - id: make-it-ask
     section: make-the-teammate-ask-questions
     quote: Ask me five questions before you build anything.
-  trial: Give your AI your portfolio brief and ask for a use case diagram as Mermaid, then a gray-box wireframe of the roadmap page. Read them, fix one thing, ask what is missing, then save both next to the brief.
+  trial: Give your AI your portfolio brief and ask for a use case diagram as Mermaid, then a gray-box wireframe of the roadmap page. Read them, fix one thing, ask what is missing, then save both next to the brief. Or draw it by hand, or draw something stranger.
   digest:
-  - Describe it and let the AI draw it, ideally in text it can update.
-  - Read it and correct it. That is your part.
+  - Describe it and let the AI draw it, ideally in text it can update. Read it and correct it. That is your part.
   - Save the agreed drawing in the project, so every session works from the same plan.
+  - A drawing is only worth keeping while it matches the code.

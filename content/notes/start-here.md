@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~6 min"
+readingTime: "~7 min"
 tags: [ai, workflow, teaching]
 summary: >
   A short welcome to the Learn path, and who I am if we have not met. I am about six months into working
@@ -33,28 +33,27 @@ lessons, the notes in order, I built in about two days. I did it by talking to a
 down, and reading what came back before I let any of it ship. The polish took longer. I want you to be
 able to do that too. That's the whole reason this exists.
 
+This isn't a tutorial or a step-by-step guide. It's my journey so far, the ideas I picked up, and an
+invitation to make your own version. Where you disagree with me, good. Tell me what you did instead.
+
 ## Who I am, in case we haven't met
 
-If you found this from a link and have no idea who I am, here's the short version. I'm Tjakoen. I'm an
-engineering manager at Career Team, where I lead a group of engineers and product specialists, and I
-teach software engineering part-time at a university, a couple hundred students a term. Most of my
-nine years in software went into growing engineers and shipping products from nothing. In practice
-that's a lot of reading other people's code and finding the problems politely.
+If you found this from a link, here's the short version. I'm Tjakoen. I'm an engineering manager at
+Career Team, where I lead a group of engineers and product specialists, and I teach software engineering
+part-time at a university, a couple hundred students a term. Most of my nine years in software went into
+growing engineers and shipping products from nothing, which in practice is a lot of reading other
+people's code and finding the problems politely. I'm also Filipino and Dutch, which explains nothing
+here, but people ask.
 
-I'm also Filipino and Dutch, which explains nothing here, but people ask.
-
-The AI part is newer. Six months, daily. I care about it because I've spent years trying to make two
-jobs fit into one life, and this is the first thing that really helped. My [About page](/about) has the
-rest, including the résumé and a plainer statement of how I use AI. If you'd rather check who's talking before you trust
-me, I'd encourage that.
+The AI part is newer: six months, daily. I care about it because I've spent years trying to make two jobs
+fit into one life, and this is the first thing that really helped. My [About page](/about) has the rest,
+and I'd encourage you to check who's talking before you trust me.
 
 ## Why I started over
 
 My notes were written for people who already know the vocabulary. I'd say harness or loop or session
-as if everybody had been in the room when I learned them. I wasn't trying to shut anyone out, but if you
-were new, the first note on this site was a wall. I mentor for a living, so I know what a wall looks like
-on someone's face. So here's a short ramp in front of it: the basics, in plain words, before the deeper
-notes start.
+as if everybody had been in the room when I learned them. If you were new, the first note on this site was
+a wall. So here's a short ramp in front of it: the basics, in plain words, before the deeper notes start.
 
 > *Figure: the path as a line of islands. The Harbor first (short notes, basics, and Claude Academy),
 > then the mainland in order of difficulty, ending at the deep technical notes. To be drawn to the
@@ -65,10 +64,10 @@ notes start.
 You're probably a student in your third or fourth year, or a junior just starting out. You use ChatGPT
 or something like it, you've never set up your own AI workflow, and you're not sure where you'd begin.
 
-I'm assuming you know some programming: front end, back end, the usual web stack, JavaScript, React,
-Next. I won't teach those here. They belong to your classes and to practice, and you should keep learning
-them while you read this. AI is a reason to learn them harder, not a way to skip them. If you can't read
-the code it hands you, you can't tell when it's wrong, and telling when it's wrong is most of the job.
+I'm assuming you know some programming (front end, back end, the usual web stack, JavaScript, React,
+Next) and can use git and GitHub. I won't teach those here. Keep learning them while you read this. AI is
+a reason to learn them harder, not a way to skip them. If you can't read the code it hands you, you can't
+tell when it's wrong, and telling when it's wrong is most of the job.
 
 ## Builders, not coders
 
@@ -79,15 +78,19 @@ So I'd like you to see yourself as a builder. Think of an architect and a brickl
 The architect decides what the building is, where the weight goes and what would make it fall over.
 You can hand the bricklaying to an AI. You can't hand it the drawing, because it can't think for you.
 
+There's a second line I care about. Plenty of people ship what they don't understand and can't fix. I call
+that blind vibe coding. I'm after the orchestrator, who decides what gets built, checks each step, and can
+explain and repair the result. [Ten Times Zero Is Still Zero](ten-times-zero.md) is where I claim the
+word vibe coder anyway, with one word in front: professional.
+
 I won't promise this makes you employable, or fast, or finished. It's a way of looking at the work.
-The rest is practice.
 
 ## What you'll find here
 
 The path starts at the Harbor, an island of its own, with short notes on the basics. After that you
 cross to the mainland, where the notes run from easy to deep. Each note is cut into short stops. Each
-stop is a short recording and ends with a small thing to try in about five minutes. Do the thing. That's
-where it sticks.
+stop is a short recording and ends with a small thing to try, about five minutes, which I call your turn.
+Do it, or do something different. Either way, that's where it sticks.
 
 Your progress saves to a file you keep. It's self-reported, which means nothing here can check that
 you did the work, so the only person you can fool is yourself.
@@ -109,8 +112,9 @@ working with AI. It's also a home for your certificates and badges, including th
 earned, and a badge can point at the evidence on your roadmap.
 
 The design and the words are yours. I won't design it or write it for you. I'll guide, you fill in the
-blanks, and later we'll get into design systems so it can look like you. My starter and my stack are
-suggestions. Use anything you like.
+blanks, and later we'll get into design systems so it can look like you. Make it a timeline, a zine, a
+game, whatever fits. My starter and my stack are suggestions. And because it's public, keep your keys,
+passwords and personal details out of it, and claim only what you really learned.
 
 ## Build your own, don't copy mine
 
@@ -120,26 +124,21 @@ what fits, and now I'm sharing what I landed on.
 
 I showed my team what I was doing. Most of the juniors now have their own Claude-built dashboard for
 managing their work, and no two look alike. It's a bit messy and it isn't standard. That's fine. Team
-standards are a later job. Right now, the useful thing is that each of them built something that fits
-how they think, which is why they keep using it. [Show Them the Board](show-them-the-board.md) tells
-that story.
+standards are a later job, and each of them built something that fits how they think. [Show Them the
+Board](show-them-the-board.md) tells that story.
 
-I think everyone ends up with a personal relationship with agentic coding, and it has to be yours. So
-copy what's useful, change the rest, and ask your AI to explain anything you don't follow. That's the
-cheap trick here: it's very good at teaching you what other people built. If you make something, tell
-me. I'd like to see it.
+So copy what's useful, change the rest, and ask your AI to explain anything you don't follow. It's very
+good at teaching you what other people built. If you make something, tell me. I'd like to see it.
 
 ## It's moving fast, and that's the good part
 
 Six months in, this moves absurdly fast, and that can be scary. It's also what makes it exciting. A student
-with an idea and an afternoon can build something real now.
+with an idea and an afternoon can build something real now. It might also help your job search: when
+someone asks in an interview how you work with AI, you can go deep. I can't promise that gets anyone
+hired. I can say it's the direction I see the industry going.
 
-It might also help your job search. When someone asks in an interview how you work with AI, you can go
-deep: what it did to your process, how it made you more accountable, what it did for quality. I can't
-promise that gets anyone hired. I can say it's the direction I see the industry going.
-
-Keep your phone close. When an idea shows up, write it down right away, then hand it to your AI to
-plan. I'll show you how I do that later in this path.
+Keep your phone close. When an idea shows up, write it down, then hand it to your AI to plan. I'll show
+you how I do that later in the path.
 
 ## Where to start
 

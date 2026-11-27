@@ -2,9 +2,9 @@
 
 Status: DRAFT script for Tjakoen to read aloud and edit. Not yet read or checked by him.
 
-How this script works. The note stays open on the page while the recording plays. The script is not the note read aloud. Each beat is a short spoken line about one idea, and it names the phrase in the note that lights up while it plays. The line should add something the page does not say: why the idea matters, what it looks like in practice, or what to watch for. A reader who only listens should get the concepts. A reader who only reads should lose nothing.
+How this script works. The note stays open on the page while the recording plays. The script is not the note read aloud. Each beat is a short spoken line about one idea, and it names the phrase in the note that lights up while it plays. The line adds something the page does not say: the story behind it, why the idea matters, or what to watch for. A reader who only listens should get the concepts and the journey. A reader who only reads loses nothing. This is a journey and an invitation, not a tutorial.
 
-Format of a beat: a highlight line (section id, then a quote that must appear in that section of the note), then the spoken words. Aim for about 20 to 45 seconds a beat and about a minute and a half to two minutes a stop.
+Format of a beat: a highlight line (section id, then a quote that must appear in that section of the note), then the spoken words. About 20 to 45 seconds a beat.
 
 ## Stop 1: Before you set off
 
@@ -14,28 +14,33 @@ highlight: intro | I'm not an AI expert.
 Hi, I'm Tjakoen. Let me start with what I'm not. I'm not an expert. Six months of using this every day is my whole credential. So take everything here as one person's notes, not as rules.
 
 **Beat 2**
-highlight: intro | in about two days
+highlight: intro | This isn't a tutorial or a step-by-step guide.
 
-I mention the two days because it's the point, not a flex. If I can go from an idea to a working thing that fast, so can you. The rest of this path is how.
+And this isn't a tutorial. It's my journey so far, and what I picked up on the way. If you disagree with me, good. Tell me what you did instead.
 
 **Beat 3**
+highlight: intro | in about two days
+
+I mention the two days because it's the point, not a flex. If I can go from an idea to a working thing that fast, so can you.
+
+**Beat 4**
 highlight: who-i-am-in-case-we-havent-met | here's the short version
 
 In case we haven't met. I manage engineers at Career Team, and I teach software engineering part-time at a university. Nine years in. Mostly that means reading other people's code and finding the problems politely. The AI part is the last six months. If you'd rather check who's talking before you trust them, my About page has the rest. I'd encourage that.
 
-**Beat 4**
+**Beat 5**
 highlight: who-this-is-for | AI is a reason to learn them harder
 
-You'll hear me assume you can code a little. That's on purpose. The AI doesn't replace that skill. It raises the stakes on it, because you're the one who has to notice when it's wrong.
+You'll hear me assume you can code a little. That's on purpose. The AI doesn't replace that skill, it raises the stakes on it, because you're the one who has to notice when it's wrong.
 
-**Beat 5**
+**Beat 6**
 highlight: builders-not-coders | You can hand the bricklaying to an AI.
 
-Here's the idea I keep coming back to. Architect and bricklayer. The AI lays bricks, fast. You decide what the building is. If you remember one line from this stop, make it that one.
+Here's the idea I keep coming back to. Architect and bricklayer. The AI lays bricks, fast. You decide what the building is. And there's a second line I care about. Plenty of people ship what they don't understand and can't fix. That's blind vibe coding. I'm after the orchestrator, who can explain and repair what gets built.
 
-**Digest:** I'm six months in and not an expert. The path assumes you can program a little. You can hand the AI the bricklaying, but not the drawing.
+**Digest:** I'm six months in and not an expert, and this is a journey, not a tutorial. The path assumes you can program a little. You can hand the AI the bricklaying, but not the drawing, and the goal is to be the orchestrator, not the blind vibe coder.
 
-**Trial:** Write one sentence on whether you see yourself as a builder or a coder right now, and why.
+**Trial:** Write one sentence on whether you see yourself as a builder or a coder right now, and why. Or write down what you hope to get out of this path.
 
 **Runes:**
 builders-not-coders | You can hand the bricklaying to an AI.
@@ -43,9 +48,9 @@ builders-not-coders | You can hand the bricklaying to an AI.
 ## Stop 2: How the path works
 
 **Beat 1**
-highlight: what-youll-find-here | That's where it sticks.
+highlight: what-youll-find-here | that's where it sticks
 
-Every stop ends with a small thing to try, about five minutes. Skipping it is the most common way to learn nothing. Do the thing.
+Every stop ends with a small thing to try, your turn. Do it, or do something different. Either way, that's where it sticks.
 
 **Beat 2**
 highlight: what-youll-find-here | It's self-reported
@@ -60,12 +65,12 @@ One thing before you cross. The free lessons at Claude Academy, academy dot clau
 **Beat 4**
 highlight: what-youll-build-along-the-way | your portfolio
 
-There's a project running through the Harbor. Your portfolio. Got one, add to it. Don't, I'll give you a small starting skeleton on GitHub Pages. Its centerpiece is an AI roadmap page, one entry per lesson, in your own words. It's also a home for your certificates and badges, including your Claude Academy ones. The design and the words are yours. I guide, you fill in the blanks.
+There's a project running through the Harbor. Your portfolio. Got one, add to it. Don't, I'll give you a small starting skeleton on GitHub Pages. Its centerpiece is an AI roadmap page, one entry per lesson, in your own words. It's also a home for your certificates and badges, including your Claude Academy ones. The design and the words are yours. Make it a timeline, a zine, a game. And because it's public, keep your keys and personal details out of it.
 
 **Beat 5**
 highlight: build-your-own-dont-copy-mine | copy what's useful, change the rest
 
-This is your permission slip. Take what's useful, change the rest, and show me what you made. My team did exactly that, and no two of their setups match. Yours will fit you better than mine ever could.
+This is your permission slip. I tried every organizing app there is, and each one wanted me to adapt to its system. I couldn't, so I built one that adapted to me. My team did the same thing, and no two of their setups match. Take what's useful, change the rest, and show me what you made.
 
 **Digest:** Start at the Harbor, then cross to the mainland. You build your own portfolio along the way. Progress is self-reported. What I do works for me, so copy what's useful, change the rest, and show me what you make.
 
@@ -84,7 +89,7 @@ Picture the group project teammate who says "got it" and asks nothing. They aren
 **Beat 2**
 highlight: im-terrible-at-multitasking-and-im-lazy-on-purpose | I strive to be lazy
 
-Here's the honest reason I do any of this. I'm terrible at multitasking, and I strive to be lazy. There's a saying that a lazy programmer is an effective one, because they put their effort into making their own life easier. I want to do the most while doing the least, and spend what's left on the part I enjoy, which is building. That's why I made an agentic workflow, and why I've kept working on my loop for six months.
+Here's the honest reason I do any of this. I'm terrible at multitasking, and I strive to be lazy. A lazy programmer is an effective one, because they put their effort into making life easier. But lazy doesn't mean skipping the careful part. It means doing it once, up front. I built the rails before I opened the throttle.
 
 **Beat 3**
 highlight: it-says-yes-to-everything | Each of those was a choice
@@ -94,47 +99,48 @@ Ask for "a portfolio site" and count what comes back. A hero banner, a color sch
 **Beat 4**
 highlight: it-cant-think-for-you | capable junior developer
 
-Working with AI is a lot like mentoring, and I found I already knew how. It's like a capable junior, or a student rushing through an activity to finish. Fast and willing, and it knows only what you told it. It doesn't know what you're building, or what you'd call finished, or which part of the project is fragile.
+Working with AI is a lot like mentoring, and I found I already knew how. It's a capable junior, or a student rushing through an activity to finish. Fast and willing, and it knows only what you told it.
 
 **Beat 5**
-highlight: it-cant-think-for-you | the thinking about what to build
+highlight: it-cant-think-for-you | the scarce thing stops being code and becomes intent
 
-This is what you keep. What it is, what it's for, what the end looks like. Everything else is typing, and typing is the part you can hand over.
+And here's why it matters. When the AI types, the scarce thing is no longer code. It's intent. In my own repos, the documentation is the work and the code is the cheap part.
 
-**Digest:** An AI agent behaves like the group project teammate who says got it and asks nothing. It fills every gap with a guess. It can't think for you, so you keep the narrative.
+**Digest:** An AI agent behaves like the group project teammate who says got it and asks nothing. It fills every gap with a guess. It can't think for you, so you keep the intent, and being lazy on purpose means doing the careful part once, up front.
 
 **Trial:** Ask your AI for something vague, like "a portfolio site," and list every choice it made that you didn't.
 
 **Runes:**
 it-says-yes | Each of those was a choice
-you-keep-the-narrative | the thinking about what to build
+you-keep-the-intent | the scarce thing stops being code and becomes intent
 
-## Stop 4: Brief it, then check it
+## Stop 4: Brief it, and stay the orchestrator
 
 **Beat 1**
 highlight: say-what-done-looks-like | What done looks like.
 
-Three lines before you ask for anything: the goal, what done looks like, what to leave alone. The middle one is where people get stuck. If you can't say what done looks like, you've found something you haven't decided yet. Better to find that now.
+Before I ask for anything, three lines: the goal, what done looks like, what to leave alone. The middle one is where people get stuck. If I can't say what done looks like, I've found something I haven't decided yet. Better to find that now.
 
 **Beat 2**
+highlight: orchestrate-it-dont-just-vibe-it | couldn't explain half of it
+
+There was a week I looked at what had shipped across my repos and couldn't explain half of it. All worked, tests green. Output going up while understanding stays flat is debt with a nice green dashboard on top. That's the week I stopped, and it's why I ask one question about anything the AI builds: could I explain this, and fix it if the AI weren't here tomorrow?
+
+**Beat 3**
 highlight: it-forgets-everything | A human teammate remembers yesterday.
 
 The AI doesn't. Close the session and it starts blank. So the brief goes in a file, where it can read it every time. Writing it down isn't paperwork. It's how you give a forgetful teammate a memory.
 
-**Beat 3**
-highlight: check-it-like-a-teammates-work | Can you explain why it works?
-
-Then check the work. If you can't explain it, you adopted it, you didn't build it. Adopting is fine for a day. Just know which one you did.
-
 **Beat 4**
-highlight: try-this | write the three-part brief
+highlight: your-turn | Write the three-part brief
 
-Your trial is the brief. Write it first, then run it, then compare. The gap between what you wrote and what you got is the lesson.
+Your turn. Brief your portfolio, or ask for it with no brief and list the guesses, or brief something else. Then compare what you get with what you wrote. The gap shows you what you hadn't decided yet. I might be overselling the brief, so try both and see which fits you.
 
-**Digest:** A brief has three parts: the goal, what done looks like, and what not to touch. The AI forgets between sessions, so the brief has to live in a file. If you can't explain it, you adopted it, you didn't build it.
+**Digest:** A brief has three parts. The goal, what done looks like, and what not to touch. If I can't explain it and fix it without the AI, I adopted it and didn't build it. The AI forgets between sessions, so the brief lives in a file.
 
 **Trial:** Write the three-part brief for your portfolio, or its roadmap section, give it to your AI, and compare what you get with what you wrote.
 
 **Runes:**
 say-what-done-looks-like | What done looks like.
+explain-and-fix | could I explain this, and could I fix it if the AI weren't here
 it-forgets | A human teammate remembers yesterday.
