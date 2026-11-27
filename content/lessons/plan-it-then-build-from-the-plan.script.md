@@ -28,7 +28,37 @@ Goal, a list of small steps, and what done looks like for each one. And no code 
 **Runes:**
 small-steps | A list of small steps, in order
 
-## Stop 2: Draft it, edit it, one step at a time
+## Stop 2: Talk about the stack first
+
+**Beat 1**
+highlight: talk-about-the-stack-first | What would you pick, and why?
+
+Before the plan has any steps, talk to your AI about what you'll build it with. Say what you want to make and ask what the usual options are, and what it would pick and why. A mobile app could be Flutter or React Native. A website could be plain HTML and JavaScript, or a framework, or even PHP. Most of them work.
+
+**Beat 2**
+highlight: talk-about-the-stack-first | stick with what you're familiar with
+
+My advice hasn't changed. Stick with what you're familiar with, and when you do pick something new, pick something popular. More has been written about it, and the AI tends to be steadier on it.
+
+**Beat 3**
+highlight: talk-about-the-stack-first | you risk not knowing what you're building
+
+Here's the one I'd really warn you about. Don't do agentic coding in a language or framework you've never touched. The AI makes anything feel easy, and that's the danger. If you can't read what it wrote, you risk not knowing what you're building. Want to learn a new stack? Learn it slowly first, in a throwaway project, with the AI as your teacher.
+
+**Beat 4**
+highlight: talk-about-the-stack-first | as a line at the top, with the reason
+
+And write the choice into the plan, with the reason. If the stack is new to you, add a step to learn the basics before the first feature. A good plan is honest about what you know.
+
+**Digest:** Talk through the stack with your AI before the plan has steps. Stick with what you know and with popular tools. Never do agentic coding in a stack you have no experience with. Write the choice, and the reason, at the top of the plan.
+
+**Trial:** Describe something you want to build to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan.
+
+**Runes:**
+stack-familiar | stick with what you're familiar with
+no-blind-stack | you risk not knowing what you're building
+
+## Stop 3: Draft it, edit it, one step at a time
 
 **Beat 1**
 highlight: let-the-ai-draft-it-then-you-edit-it | Don't write any code yet.
@@ -52,7 +82,7 @@ Then the habit that makes the whole thing work. Left alone, it'll run through ev
 **Runes:**
 one-step-at-a-time | Do step 1 only. Stop and show me when it's done.
 
-## Stop 3: Keep it where it survives
+## Stop 4: Keep it where it survives
 
 **Beat 1**
 highlight: keep-it-where-it-survives | If the plan lives only in a chat, it dies when the session does.

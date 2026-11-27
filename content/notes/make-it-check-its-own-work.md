@@ -7,13 +7,14 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~4 min"
+readingTime: "~6 min"
 tags: [ai, workflow, teaching]
 summary: >
   When an AI says it's finished, that's a claim and not a result. Check it by hand against the brief, the
   drawing and the plan you wrote: ask for evidence for each done line, run it yourself, and have a fresh
-  session review the work, because the session that built it tends to agree with itself. Write down what
-  it keeps missing. My loop does this automatically, but doing it by hand first is how you learn what's
+  session review the work, because the session that built it tends to agree with itself. Better still,
+  have the AI write unit and end-to-end tests as it builds, so its own definition of done is checked every
+  time. Write down what it keeps missing. My loop does this automatically, but doing it by hand first is how you learn what's
   worth automating.
 social: |
   "Done! All tests passing."
@@ -55,6 +56,38 @@ back in the pile.
 
 This one habit catches a surprising amount, partly because the AI sometimes notices, halfway through
 writing the evidence, that it doesn't have any.
+
+## Let tests do the checking
+
+Asking for evidence works, but you can do better. A test is a check written as code. It runs in seconds
+and says pass or fail, and it can run again tomorrow without anyone remembering what to look at. There
+are two kinds worth knowing by name.
+
+A **unit test** checks one small piece on its own. Say you have a function that marks a task done. A unit
+test calls it with a task and checks the task comes back marked done. They run in a blink, so you can have
+hundreds.
+
+An **end-to-end test**, often called an e2e test, drives the whole app the way a user would. It opens the
+page, adds a task, ticks it off, refreshes, and checks it's still crossed out. It's slower and there are
+fewer of them, but it's the closest thing to asking "does this really work?" The usual advice is lots of
+small tests and a few big ones, which people draw as a pyramid. Martin Fowler's site has a good article,
+[The Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html), and
+[freeCodeCamp](https://www.freecodecamp.org/news/end-to-end-testing-tutorial/) has an e2e tutorial. For
+websites, [Playwright](https://playwright.dev) is one popular tool for e2e tests.
+
+I'm not going to teach you either one here, and you don't have to learn the tools first. Every language
+and framework has a standard way to test. If you're not sure of yours, ask your agent: "What's the usual
+way to test a project built with this stack?"
+
+Here's the habit I'd wire in from the start, and put right in your brief: **the AI writes the tests as it
+builds.** Each done line in your plan gets a test, and a step isn't finished until its tests pass. That
+way the AI keeps itself accountable to its own definition of done, because it can't say "done" while a
+test is red. And it helps whoever comes next. The next session, which is another forgetful AI, can change
+the code and run the tests to find out whether it broke something. The tests are a memory that runs.
+
+Two honest limits. A test can be wrong, or so weak it can't fail, so read the names at least, and ask the
+AI what each one proves. And tests are only as good as your done lines, which is another reason to write
+them well.
 
 ## Run it yourself
 
@@ -101,7 +134,7 @@ what ships, so you still have to understand it. If you can't say why it works, g
 ## Try this
 
 Take the last thing your AI told you was finished. Ask it to go through the plan and show evidence for
-each done line. Run it yourself. Then open a new session, hand over the brief, the plan and the changes,
+each done line, and to add a test for one of them. Run it yourself. Then open a new session, hand over the brief, the plan and the changes,
 and ask for a review. Write down anything the review found that the first session didn't.
 
 If it found something, you've just seen why this matters. If it found nothing, you've got a little more

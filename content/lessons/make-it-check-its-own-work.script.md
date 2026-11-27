@@ -28,7 +28,42 @@ Don't ask "is it done?" Ask for evidence for every done line. Something you can 
 **Runes:**
 done-is-a-claim | They're what you check against.
 
-## Stop 2: Run it, then ask fresh eyes
+## Stop 2: Let tests do the checking
+
+**Beat 1**
+highlight: let-tests-do-the-checking | A test is a check written as code.
+
+Asking for evidence works, but a test is better. It's a check written as code. It runs in seconds, says pass or fail, and can run again tomorrow without anyone remembering what to look at.
+
+**Beat 2**
+highlight: let-tests-do-the-checking | checks one small piece on its own
+
+Two kinds to know by name. A unit test checks one small piece on its own. Does the function that marks a task done actually mark it done. They're fast, so you have a lot of them.
+
+**Beat 3**
+highlight: let-tests-do-the-checking | drives the whole app the way a user would
+
+An end-to-end test drives the whole app the way a user would. Open the page, add a task, tick it, refresh, check it's still crossed out. Slower, fewer of them, and the closest thing to asking whether it really works. Both are linked in the note. I'm not teaching them. Every language has a standard way to test, so ask your agent what yours is.
+
+**Beat 4**
+highlight: let-tests-do-the-checking | the AI writes the tests as it builds
+
+Here's the habit I'd wire in from day one. The AI writes the tests as it builds. Every done line in your plan gets a test, and a step isn't finished until the tests pass. Now the AI is accountable to its own definition of done, because it can't say "done" while a test is red.
+
+**Beat 5**
+highlight: let-tests-do-the-checking | The tests are a memory that runs.
+
+And it helps whoever comes next. Tomorrow's session is another forgetful AI. It can change the code, run the tests, and find out whether it broke something. The tests are a memory that runs. One caution: a test can be wrong, or too weak to ever fail. Ask the AI what each one proves.
+
+**Digest:** A unit test checks one small piece, an end-to-end test drives the whole app like a user. Every stack has a standard way to test. Tell the AI to write tests as it builds, one for each done line, so it can't call a step done while a test fails.
+
+**Trial:** Ask your AI to add a test for one done line in your plan, and to explain what the test proves.
+
+**Runes:**
+ai-writes-the-tests | the AI writes the tests as it builds
+tests-are-memory | The tests are a memory that runs.
+
+## Stop 3: Run it, then ask fresh eyes
 
 **Beat 1**
 highlight: run-it-yourself | Open the thing and use it the way a user would.
@@ -52,7 +87,7 @@ And be honest about that. It's my experience, not a measurement. Test it yoursel
 **Runes:**
 fresh-eyes | the session that built something is the worst judge of it
 
-## Stop 3: Write down what it keeps missing
+## Stop 4: Write down what it keeps missing
 
 **Beat 1**
 highlight: write-down-what-it-keeps-missing | Write it down
