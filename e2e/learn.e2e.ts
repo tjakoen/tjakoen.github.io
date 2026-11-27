@@ -687,6 +687,22 @@ test("close in, a card names the region under the view, and it is gone when zoom
 test.describe("on a phone, close in", () => {
   test.use({ viewport: { width: 375, height: 812 }, hasTouch: true });
 
+  test("what stacks under the search bar keeps a gap from it, at the home view and close in", async ({ page }) => {
+    await page.goto("/learn");
+    const frame = await frameOf(page);
+    const box = (q: string) => frame.evaluate((sel) => { const e = document.querySelector(sel); if (!e || getComputedStyle(e).display === "none") return null; const r = e.getBoundingClientRect(); return { top: r.top, bottom: r.bottom }; }, q);
+    const home = { bar: (await box(".searchbar"))!, chips: (await box(".chipsbar"))!, ctl: (await box(".ctl"))! };
+    expect(home.chips.top - home.bar.bottom).toBeGreaterThanOrEqual(6);
+    expect(home.ctl.top - home.chips.bottom).toBeGreaterThanOrEqual(6);
+    await frame.evaluate(() => { selectQuest("ten-times-zero"); document.body.removeAttribute("data-pm"); });
+    await page.waitForTimeout(1300);
+    const near = { bar: (await box(".searchbar"))!, ctl: (await box(".ctl"))!, where: (await box("#wherelbl"))! };
+    expect(near.ctl.top - near.bar.bottom).toBeGreaterThanOrEqual(6);
+    expect(near.where.top - near.bar.bottom).toBeGreaterThanOrEqual(6);
+    // the folded search is its icon with its border, not a wide padded box
+    expect(near.bar.bottom - near.bar.top).toBeLessThanOrEqual(52);
+  });
+
   test("no pin is drawn under a control, the chips fold away, and the search is its icon until it is tapped", async ({ page }) => {
     await page.goto("/learn");
     const frame = await frameOf(page);

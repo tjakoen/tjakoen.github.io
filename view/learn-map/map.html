@@ -504,9 +504,9 @@ body { margin:0; background:var(--q-water); }
 @media (max-width:799px) {
   .col { right:8px; left:8px; width:auto; bottom:auto; top:8px; display:block; }
   #fold { display:none; }
-  .chipsbar { left:8px; right:8px; top:62px; max-width:none; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; padding:0 2px 6px; }
+  .chipsbar { left:8px; right:8px; top:72px; max-width:none; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; padding:0 2px 6px; }
   .chipsbar .chip { flex:0 0 auto; }
-  .ctl { top:112px; bottom:auto; right:8px; }
+  .ctl { top:130px; bottom:auto; right:8px; }
   .topright { top:auto; bottom:72px; left:8px; right:auto; } .setpanel { top:auto; bottom:50px; right:auto; left:0; align-items:flex-start; }
   .gh .xpbar { display:none; } .gh .gh__t { min-width:0; }
   .zbar { display:none; } .attrib2 { display:none; }
@@ -539,11 +539,12 @@ body { margin:0; background:var(--q-water); }
   /* the chip row scrolls sideways, so its right edge fades to say there is more */
   /* Close in, the map needs the room: the filter chips go, the search shrinks to its icon until it is tapped, and the zoom buttons move up. */
   body:is([data-zoom="4"],[data-zoom="6"]) .chipsbar { display:none; }
-  body:is([data-zoom="4"],[data-zoom="6"]):not([data-sopen]) .searchbar { width:fit-content; }
+  body:is([data-zoom="4"],[data-zoom="6"]):not([data-sopen]) .searchbar { width:fit-content; padding:0; }
   body:is([data-zoom="4"],[data-zoom="6"]):not([data-sopen]) .searchbar input { display:none; }
-  body:is([data-zoom="4"],[data-zoom="6"]) .ctl { top:64px; }
-  .wherelbl { top:64px; bottom:auto; left:8px; transform:none; }
-  body:is([data-zoom="4"],[data-zoom="6"]):not([data-sopen]) .wherelbl { top:64px; }
+  /* Everything stacked under the search bar keeps an 8 px gap from it, whether the bar is full width (56 px tall) or only its icon (50 px). */
+  body:is([data-zoom="4"],[data-zoom="6"]) .ctl, body:is([data-zoom="4"],[data-zoom="6"]) .wherelbl { top:72px; }
+  body:is([data-zoom="4"],[data-zoom="6"]):not([data-sopen]) .ctl, body:is([data-zoom="4"],[data-zoom="6"]):not([data-sopen]) .wherelbl { top:66px; }
+  .wherelbl { bottom:auto; left:8px; transform:none; }
   .chipsbar { -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent); mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent); }
 }
 /* Without JavaScript the plain route list is the page; with it, the map is, and the list stays in the file for crawlers and the no-script case. */
