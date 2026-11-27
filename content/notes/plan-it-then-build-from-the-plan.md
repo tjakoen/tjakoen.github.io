@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~5 min"
+readingTime: "~6 min"
 tags: [ai, workflow, teaching]
 summary: >
   A plan is a short checklist in a file, with a goal, small steps and what done looks like for each. Have
@@ -67,12 +67,33 @@ your problem on them, and in my experience the AI is steadier on them too.
 My advice is the same as it's always been: stick with what you're familiar with. And avoid agentic coding
 in a language or framework you have no experience with at all. That sounds backwards, because the AI makes
 anything feel easy. But if you can't read what it wrote, you can't tell whether it's right, and you risk
-not knowing what you're building. If you want to learn a new stack, learn it the slow way first, with the
-AI as your teacher and a small throwaway project, and build the real thing once you can follow along.
+not knowing what you're building.
+
+You can use a project to learn a new stack, with the AI as your teacher. The catch is that you have to make
+it a learning project on purpose, or it quietly turns into blind vibe coding. Ask it to explain each file
+before you move on. Make it say why it chose this way and not another. Break something deliberately and
+fix it with its help. And hold yourself to one rule: don't start the next step until you can explain this
+one in your own words. Keep it small and throwaway at first, and build the real thing once you can follow
+along.
 
 Then write the choice into the plan, as a line at the top, with the reason. If the stack is new to you,
 that goes in too: add a step to learn the basics before the first feature. The plan should be honest
 about what you know.
+
+## Orchestrate it, don't just vibe it
+
+There's a pitfall here, and it's the common one. You can ship something you don't understand and can't
+easily fix. It works on Tuesday. On Friday it breaks, and you're staring at code that's nobody's. You
+didn't write it, you didn't read it, and the AI that did has forgotten it.
+
+That's the difference I care about between two people using the same tools. One vibe codes blind: prompt,
+accept, ship, and hope. The other orchestrates. They decide what gets built, cut it into steps, check each
+step, and understand enough to fix it when it breaks. [Ten Times Zero Is Still Zero](ten-times-zero.md) is
+where I argue this at length. I call myself a vibe coder there too, with one word in front: professional.
+This is what that word means in practice. It isn't speed. It's being able to explain your work.
+
+Here's a test for anything the AI builds. Could I explain this to someone else, and could I fix it if the
+AI weren't here tomorrow? If not, you adopted it and you didn't build it. Slow down until you can.
 
 ## Let the AI draft it, then you edit it
 
