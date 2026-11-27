@@ -130,9 +130,9 @@
   function build() {
     root = h('div', 'bk'); root.hidden = true; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Quest book');
     root.innerHTML = `<div class="bk__shade"></div><div class="bk__sheet tome">
-      <div class="bk__bar"><div class="bk__crumb"></div><div class="tb bk__tabs" role="tablist"><span data-tab="book" data-on role="tab" tabindex="0">Book</span><span data-tab="log" role="tab" tabindex="0">Log</span><span data-tab="codex" role="tab" tabindex="0">Codex</span><span data-tab="pack" role="tab" tabindex="0">Pack</span></div><div class="bk__pg"><button data-page="note">Note</button><button data-page="guide">Guide</button></div><button class="bk__x" aria-label="Close the book">\u00d7</button></div>
+      <div class="bk__bar"><div class="bk__crumb"></div><div class="bk__pg"><button data-page="note">Note</button><button data-page="guide">Guide</button></div><button class="bk__x" aria-label="Close the book">\u00d7</button></div>
       <div class="leaf bk__leafnote"><div class="bk__note"></div></div>
-      <div class="leaf bk__leafguide"><div class="bk__guide"></div><div class="bk__alt" hidden></div>
+      <div class="leaf bk__leafguide"><div class="tb bk__tabs" role="tablist"><span data-tab="book" data-on role="tab" tabindex="0">Book</span><span data-tab="log" role="tab" tabindex="0">Log</span><span data-tab="codex" role="tab" tabindex="0">Codex</span><span data-tab="pack" role="tab" tabindex="0">Pack</span></div><div class="bk__guide"></div><div class="bk__alt" hidden></div>
         <div class="controls bk__ctl"><div class="bk__prog"><div class="ribbonbar" aria-hidden="true"><i></i><u></u></div><div class="stops"><span class="bk__dots"></span><span class="bk__time"></span></div></div>
           <div class="row"><div><button data-do="prevstop" aria-label="Previous stop">\u23ee</button> <button data-do="prev" aria-label="Previous line">\u25c0</button> <button data-do="play" class="primary" aria-label="Play">\u25b6 Play</button> <button data-do="next" aria-label="Next line">\u25b6\u25b6</button> <button data-do="nextstop" aria-label="Next stop">\u23ed</button></div>
             <div><button data-do="speed">1x</button> <button data-do="captions" aria-pressed="true">Captions</button> <button data-do="rest">Rest at campfire</button></div></div>
@@ -157,7 +157,7 @@
 
   function setTab(t) {
     S.tab = t; root.querySelectorAll('[data-tab]').forEach((x) => x.toggleAttribute('data-on', x.dataset.tab === t));
-    const book = t === 'book'; ui.guide.hidden = !book; ui.alt.hidden = book; ui.ctl.hidden = S.solo; if (!book) renderAlt(t);
+    const book = t === 'book'; root.classList.toggle('bk--alt', !book); ui.alt.hidden = book; ui.ctl.hidden = S.solo; if (!book) renderAlt(t);
   }
   function renderAlt(t) {
     const L = S.lesson; if (!L) { ui.alt.innerHTML = ''; return; }

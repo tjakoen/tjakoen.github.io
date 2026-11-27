@@ -230,8 +230,16 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 .bk__sheet::before { top:2.7rem; }
 .bk__bar { grid-column:1 / -1; display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; padding:.1rem .15rem .5rem; position:relative; z-index:3; }
 .bk__crumb { flex:1 1 320px; font:700 .68rem ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; color:#f1e3c8; min-width:0; }
-.bk .tb { display:flex; gap:.3rem; flex-wrap:wrap; } .bk .tb span { border:2px solid var(--q-ink); padding:.05rem .6rem; font:.72rem ui-monospace,monospace; background:var(--q-paper); color:var(--q-ink); cursor:pointer; user-select:none; }
-.bk .tb span[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+/* page tabs: they sit on the top edge of the right page; the open tab is the page's own colour and flares out into it */
+.bk .tb.bk__tabs { flex:0 0 auto; display:flex; gap:6px; padding:8px 12px 0; background:color-mix(in srgb,var(--q-paper) 80%,var(--q-ink)); border-bottom:2px solid var(--q-ink); }
+.bk .tb span { flex:1 1 0; position:relative; text-align:center; padding:.32rem .4rem .28rem; margin-top:4px; border:2px solid var(--q-ink); border-bottom:0; border-radius:8px 8px 0 0; font:.72rem ui-monospace,monospace; background:color-mix(in srgb,var(--q-paper) 62%,var(--q-ink)); color:var(--q-ink); cursor:pointer; user-select:none; }
+.bk .tb span:hover { background:color-mix(in srgb,var(--q-paper) 78%,var(--q-ink)); }
+.bk .tb span[data-on] { background:var(--q-paper); margin-top:0; margin-bottom:-2px; padding-top:.5rem; padding-bottom:calc(.28rem + 2px); font-weight:700; z-index:2; cursor:default; }
+.bk .tb span[data-on]::before, .bk .tb span[data-on]::after { content:""; position:absolute; bottom:0; width:8px; height:8px; }
+.bk .tb span[data-on]::before { left:-10px; background:radial-gradient(circle at 0 0, transparent 6px, var(--q-ink) 6px 8px, var(--q-paper) 8px); }
+.bk .tb span[data-on]::after { right:-10px; background:radial-gradient(circle at 100% 0, transparent 6px, var(--q-ink) 6px 8px, var(--q-paper) 8px); }
+.bk .tb span:first-child[data-on]::before, .bk .tb span:last-child[data-on]::after { display:none; }
+.bk--alt .bk__guide { flex:0 0 auto; } .bk--alt .bk__after { display:none; } .bk--alt .bk__alt { flex:1 1 auto; }
 .bk__tabs span:focus-visible, .bk button:focus-visible { outline:2px dashed var(--q-accent); outline-offset:2px; }
 .bk__x { font:700 1.1rem/1 ui-monospace,monospace; padding:.05rem .5rem; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); cursor:pointer; }
 .bk__pg { display:none; gap:.25rem; } .bk__pg button { padding:.05rem .5rem; font:.72rem ui-monospace,monospace; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); }
@@ -252,7 +260,7 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 .bk__guide .dlg .say { font-size:.95rem; line-height:1.55; min-height:5.8em; } .bk__guide .dlg .plate small { text-transform:none; letter-spacing:0; font-weight:400; }
 .bk__guide .hist p { font-size:.78rem; }
 .bk--nocap .say, .bk--nocap .hist { visibility:hidden; }
-.bk__alt .mini { border:2px solid var(--q-ink); background:var(--q-paper); }
+.bk__alt .mini { border:0; background:transparent; }
 /* the controls are pinned to the foot of the right page, like a ribbon marker */
 .bk__ctl { flex:0 0 auto; display:grid; gap:.4rem; padding:.5rem .8rem .55rem; border-top:3px double var(--q-line); background:var(--q-paper); }
 .bk__ctl button { font:.68rem/1.2 ui-monospace,monospace; padding:.15rem .4rem; border:2px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
