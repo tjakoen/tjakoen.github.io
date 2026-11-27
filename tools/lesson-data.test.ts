@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { OUT_DIR, beatsOf, lessonIds, loadLesson, problemsOf, sectionsOf, slugOf } from "./lesson-data.ts";
+import { OUT_DIR, beatsOf, figureNamesOf, lessonIds, loadLesson, problemsOf, sectionsOf, slugOf } from "./lesson-data.ts";
 
 describe("slugOf and sectionsOf", () => {
   test("a heading becomes the id MILL stamps on it", () => {
@@ -18,6 +18,31 @@ describe("beatsOf", () => {
   test("reads each stop's beats, the section, the quote and the spoken words", () => {
     const script = "# T\n\n## Stop 1: A\n\n**Beat 1**\nhighlight: intro | a quote here\n\nSpoken one.\n\n**Beat 2**\nhighlight: why | other\n\nSpoken two.\n\n**Digest:** d\n\n## Stop 2: B\n\n**Beat 1**\nhighlight: x | q\n\nSpoken three.\n\n**Digest:** d\n";
     expect(beatsOf(script)).toEqual([[{ section: "intro", quote: "a quote here", text: "Spoken one." }, { section: "why", quote: "other", text: "Spoken two." }], [{ section: "x", quote: "q", text: "Spoken three." }]]);
+  });
+});
+
+describe("figure beats", () => {
+  const note = 'intro\n\n## One\n\nText.\n\n<svg viewBox="0 0 620 100" role="img"\n     aria-label="The brief has three parts: the goal, what done looks like, and what to leave alone.">\n</svg>\n\n## Two\n\n```mermaid label="A generated flow of plan, build, tick"\nflowchart LR\n```\n';
+  test("a figure target is read from the highlight line, and a quote beat is unchanged", () => {
+    const script = "## Stop 1: A\n\n**Beat 1**\nhighlight: one | figure: the brief has three parts\n\nSpoken.\n\n**Beat 2**\nhighlight: one | Text.\n\nMore.\n";
+    expect(beatsOf(script)).toEqual([[{ section: "one", figure: "the brief has three parts", text: "Spoken." }, { section: "one", quote: "Text.", text: "More." }]]);
+  });
+  test("figureNamesOf reads svg labels across lines and mermaid fence labels", () => {
+    expect(figureNamesOf(note)).toEqual(["The brief has three parts: the goal, what done looks like, and what to leave alone.", "A generated flow of plan, build, tick"]);
+  });
+  const lesson = (figure: string, section = "one") => ({ id: "t", title: "T", summary: "", audio: "", stops: [{ title: "S", note: "n", from: "intro", to: "two", beats: [{ section, figure, text: "x" }], runes: [], trial: "", digest: [] }] });
+  test("a figure that is in its section passes, whatever the case", () => {
+    expect(problemsOf(lesson("The Brief has THREE parts"), () => note)).toEqual([]);
+    expect(problemsOf(lesson("generated flow", "two"), () => note)).toEqual([]);
+  });
+  test("a figure that is gone, one in the wrong section and an empty name each fail the build", () => {
+    expect(problemsOf(lesson("the test pyramid"), () => note).join()).toContain('the figure "the test pyramid" is not in one');
+    expect(problemsOf(lesson("generated flow"), () => note).join()).toContain("is not in one");
+    expect(problemsOf(lesson(""), () => note).join()).toContain("is not in one");
+  });
+  test("a name that fits two figures in the section is refused as ambiguous", () => {
+    const two = note.replace("## Two", '<svg role="img" aria-label="The brief again."></svg>\n\n## Two');
+    expect(problemsOf(lesson("the brief"), () => two).join()).toContain("names 2 figures");
   });
 });
 
