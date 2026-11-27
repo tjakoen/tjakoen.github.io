@@ -1236,12 +1236,11 @@ function paint(tick){
   const pinBuf=[];
   const pinAt=(wx,wy,n,state,selected)=>{ if(n===0){ items.push({key:'pfog',wx,wy,kind:'mark',n:'?',state,selected:false}); return; } pinBuf.push({n,state,selected}); };
   const add=(key,wx,wy,kind,o)=>{ if(kind==='lbl'&&o.cls&&o.cls.includes('tag')){ const last=items[items.length-1]; if(last&&last.kind==='hit') last.tag=o; return; } items.push({key,wx,wy,kind,...(kind==='hit'?pinBuf.pop():{}),...o}); };
-  if(z===2){
+  if(z<=3){ // the region pins stay until the detailed landmark maps arrive; quest and stop pins wait for them
     REG.forEach(r=>{ const st=byReg(r.n).length&&byReg(r.n).every(x=>x.done)?'done':(r.n===1?'done':'open'); const selR=sel.t==='region'&&sel.id===r.n; pinAt(r.pin[0],r.pin[1],r.n,st,selR); add('hr'+r.n,r.pin[0],r.pin[1],'hit',{label:r.name+', region '+r.n,act:()=>selectRegion(r.n),off:!regionOk(r.n)}); add('tr'+r.n,r.pin[0],r.pin[1],'lbl',{text:r.name,sub:byReg(r.n).length?(byReg(r.n).length+' quests \u00b7 '+byReg(r.n).filter(x=>x.done).length+' done'):'The basics, outside this site',cls:'quest tag'}); add('lr'+r.n,r.lbl[0],r.lbl[1],'lbl',{text:r.name,cls:'region'+(regionOk(r.n)?'':' off')}); });
     pinAt(166,112,0,'locked',false); add('lfog',166,119,'lbl',{text:'Unmapped',sub:'2 more notes to chart',cls:'region box'});
   } else {
-    if(z===3) REG.forEach(r=>add('lr'+r.n,r.lbl[0],r.lbl[1]+6,'lbl',{text:r.name,cls:'region faint'}));
-    if(z>=3) extras().forEach(e=>{ pinAt(e.wx,e.wy,e.sym,'ext',false); add('x'+e.id,e.wx,e.wy,'hit',{label:e.label,act:e.act,region:1}); add('tx'+e.id,e.wx,e.wy,'lbl',{text:e.text,sub:e.sub,cls:'quest tag'}); });
+    extras().forEach(e=>{ pinAt(e.wx,e.wy,e.sym,'ext',false); add('x'+e.id,e.wx,e.wy,'hit',{label:e.label,act:e.act,region:1}); add('tx'+e.id,e.wx,e.wy,'lbl',{text:e.text,sub:e.sub,cls:'quest tag'}); });
     QUESTS.forEach((qq,i)=>{ const n=qq.order, ok=filterOk(qq), selQ=sel.t==='quest'&&sel.id===qq.id||(sel.t==='stop'&&sel.id===qq.id); pinAt(qq.pos[0],qq.pos[1],n,qq.done?'done':'open',selQ);
       add('hq'+qq.id,qq.pos[0],qq.pos[1],'hit',{label:qq.title+', quest '+n,act:()=>selectQuest(qq.id),region:qq.region,off:!ok}); add('lq'+qq.id,qq.pos[0],qq.pos[1],'lbl',{text:qq.short,sub:'Lv '+qq.lv+' '+qq.level+' \u00b7 '+qq.min+' min \u00b7 '+qq.stops.length+' stops',cls:'quest tag'}); });
     if(z>=4&&(sel.t==='quest'||sel.t==='stop')){ const qq=QUESTS.find(x=>x.id===sel.id); qq.stops.slice(0,9).forEach((s,i)=>{ const p=stopPos(qq,i); pinAt(p[0],p[1],i+1,PROG[qq.id].has(i)?'done':'stop',sel.t==='stop'&&sel.i===i);
