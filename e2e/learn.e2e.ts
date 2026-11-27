@@ -41,13 +41,15 @@ test("learn opens the map from the terminal and is not advertised", async ({ pag
   await expect(page.locator('.tab-bar a[href="/learn"]')).toBeVisible();
 });
 
-test("the shell steps aside on arrival, and the sidebar can come back", async ({ page }) => {
+test("the shell steps aside on arrival, the top bar has no sidebar toggles, and the rail can still bring navigation back", async ({ page }) => {
   await page.goto("/learn");
   const shell = page.locator(".app-shell");
   await expect(shell).toHaveAttribute("data-rail-collapsed", "true");
   await expect(shell).toHaveAttribute("data-aside-hidden", "true");
   await expect(shell).toHaveAttribute("data-console-hidden", "true");
   await expect(page.locator(".app-shell__aside")).toBeHidden();
+  await expect(page.locator('.app-shell__topbar [data-shell="rail-toggle"]')).toBeHidden();
+  await expect(page.locator('.app-shell__topbar [data-shell="aside-toggle"]')).toBeHidden();
   await page.locator('[data-shell="rail-toggle"]').first().click();
   await expect(shell).toHaveAttribute("data-rail-collapsed", "false");
   await expect(page.locator('.tab-bar a.tab[href="/learn"]')).toContainText("Learn AI with me");
@@ -328,5 +330,62 @@ test.describe("on a phone", () => {
       fire("pointerup", 2, 220, 300); fire("pointerup", 1, 160, 300);
     });
     await expect.poll(z).toBe(1);
+  });
+});
+
+test.describe("the ant game never runs on /learn", () => {
+  test("the control: the home page still has the status-bar ant and it opens the Nest", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".nest-switch")).toBeVisible();
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+  });
+
+  test("no status-bar ant, no Nest by launcher or by address, and no stray ant even when forced", async ({ page }) => {
+    await page.goto("/learn?nest=play");
+    await frameOf(page);
+    await expect(page.locator(".nest-switch")).toBeHidden();
+    await expect(page.locator("#nest-mock")).toHaveCount(0);
+    await expect(page.locator("html")).not.toHaveAttribute("data-nest-open", /.*/);
+    // the launcher and the stray hook exist as placeholders, and both refuse
+    await page.evaluate(() => { (window as unknown as { __nestLauncher?: { open(): void } }).__nestLauncher?.open(); });
+    await page.evaluate(async () => { await (window as unknown as { __nestStray?: { spawn(force?: boolean): Promise<void> } }).__nestStray?.spawn(true); });
+    await page.waitForTimeout(800);
+    await expect(page.locator("#nest-mock")).toHaveCount(0);
+    await expect(page.locator(".nest-stray, .nest-ant, .nest-hill-live")).toHaveCount(0);
+    await expect(page.locator("html")).not.toHaveAttribute("data-nest-open", /.*/);
+  });
+});
+
+test("searching opens the panel on Enter or on the search icon, and typing alone does not", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.locator("#fold").click();
+  await expect(frame.locator("#panel")).toBeHidden();
+  await frame.locator("#q").fill("loop");
+  await expect(frame.locator("#panel")).toBeHidden();
+  await frame.locator("#q").press("Enter");
+  await expect(frame.locator("#panel")).toBeVisible();
+  await expect(frame.locator("#panel h3")).toHaveText("Search");
+  await frame.locator("#fold").click();
+  await expect(frame.locator("#panel")).toBeHidden();
+  await frame.locator("#qgo").click();
+  await expect(frame.locator("#panel")).toBeVisible();
+});
+
+test.describe("search on a phone", () => {
+  test.use({ viewport: { width: 375, height: 812 }, hasTouch: true });
+  test("typing shows nothing over the map, and Enter or the icon opens the modal", async ({ page }) => {
+    await page.goto("/learn");
+    const frame = await frameOf(page);
+    await frame.locator("#q").fill("loop");
+    await expect(frame.locator("#panel")).toBeHidden();
+    await frame.locator("#q").press("Enter");
+    await expect(frame.locator("#panel")).toBeVisible();
+    await expect(frame.locator("#panel .results .rowbtn")).not.toHaveCount(0);
+    await frame.locator("#pclose").click();
+    await expect(frame.locator("#panel")).toBeHidden();
+    await frame.locator("#qgo").click();
+    await expect(frame.locator("#panel")).toBeVisible();
   });
 });
