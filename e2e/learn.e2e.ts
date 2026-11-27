@@ -477,4 +477,19 @@ test("a note whose lesson is cut in two parts opens at the first part and counts
   await book.locator('[data-do="nextstop"]').click();
   await book.locator(".trial input").check();
   expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toContain('"build-the-floor":[1]');
+
+test("the panel's Begin quest and Where I am sit in a centered bar pinned above the footer, and a quest with no lesson says Read the note", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.evaluate(() => { selectQuest("ten-times-zero"); });
+  const bar = frame.locator("#panel .pcta");
+  await expect(bar).toBeVisible();
+  await expect(bar.locator("button.primary")).toHaveText("Read the note");
+  await expect(bar.locator('[data-act="where"]')).toBeVisible();
+  // it stays in view while the panel scrolls, directly above the previous and next footer
+  await frame.locator("#panel").evaluate((el) => { el.scrollTop = el.scrollHeight; });
+  const box = await bar.boundingBox(), foot = await frame.locator("#panel .pfoot").boundingBox();
+  expect(Math.abs(box!.y + box!.height - foot!.y)).toBeLessThanOrEqual(2);
+  await frame.evaluate(() => { selectQuest("start-here"); });
+  await expect(frame.locator("#panel .pcta button.primary")).toHaveText("Begin quest");
 });
