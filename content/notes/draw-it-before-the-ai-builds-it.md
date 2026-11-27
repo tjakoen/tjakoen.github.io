@@ -23,9 +23,10 @@ social: |
   both agree on, saved in the project, before anything gets built:
 ---
 
-Here's a sentence I've said more times than I like to admit. "That's not what I meant." I say it to an
-AI after it has built something fast, confident and four hundred lines long. It built what I described.
-The trouble was that I'd only thought through part of the idea.
+When the AI does the typing, the scarce thing is intent, and a sentence is a thin way to carry it. So you
+get the line everybody eventually says: "That's not what I meant." Usually after four hundred lines, built
+fast and confident, exactly to the description you gave. The trouble is that the description only covered
+the part of the idea you'd thought through.
 
 A drawing finds the missing part before the building starts. It costs a few minutes and nothing has to
 be undone.
@@ -34,8 +35,8 @@ be undone.
 
 When you type the code yourself, you pick up the shape of the thing as you go. You know where the data
 lives and which screen leads to which, because your fingers were there. When the AI types it, you get the
-result without the walk. You know the system less than you think you do. A drawing is the walk you
-skipped. It's a map you hold, so you can tell whether what came back matches what you meant.
+result without the walk. A drawing is the walk you skipped. It's a map you hold, so you can tell whether
+what came back matches what you meant. You know the system less than you think you do.
 
 And here's the main point of this note. You don't have to draw it. The AI is very good at drawing these.
 Describe what you want in plain words and it'll produce the diagram in seconds. What matters isn't who
@@ -43,10 +44,11 @@ held the pen. It's that you and the AI end up with the same picture of the plan,
 you can read it. A shared, documented understanding is the goal, and a drawing is the cheapest way to
 get one.
 
-I'm not going to teach these properly. Others have written excellent explanations, and I link to some.
-They're the basics of software engineering, and you may have met a few in class. You don't need to be good
-at drawing them. You need to know they exist, so you can ask for the right one and tell whether what
-comes back is right.
+On my own projects I keep these in a design folder, and the AI generates whatever the code can produce,
+like the ERD from the database schema. [My design standard](/standards/design-standard) says which drawing
+is owed when. That's a heavier setup than you need. The point is only that these are old, useful
+drawings, and you need to know they exist so you can ask for the right one and tell whether what comes
+back is right. They're the basics of software engineering, and you may have met a few in class.
 
 > *Figure: the six drawings in a line, each with the one question it answers. Use case: who does what.
 > Data flow: where does information go. ERD: what does it remember. Wireframe: what is on each screen.
@@ -59,15 +61,14 @@ comes back is right.
 lines between them. The figures are people (or other systems) and the ovals are things they can do. For your
 portfolio: a visitor, maybe a recruiter, reads your roadmap and opens the evidence links. You, the owner,
 add entries. Now you know there are two kinds of user, and that "owner adds entries" is a feature of its
-own. Better to learn that on paper. [Lucidchart](https://www.lucidchart.com/pages/tutorial/uml-use-case-diagram) and
+own. [Lucidchart](https://www.lucidchart.com/pages/tutorial/uml-use-case-diagram) and
 [TU Delft](https://cese.ewi.tudelft.nl/software-systems/part-2/tutorials/uml/use-case.html) have clear
 walkthroughs.
 
 **Data flow diagram: where does information go?** Boxes for the outside world, circles for what your
 system does, open boxes for where data rests, and arrows for data in motion. It asks who sends what to
 whom, and AI-built systems can quietly send data somewhere you didn't plan. A static portfolio can skip
-this one. It earns its keep when data moves between systems.
-[IBM's guide](https://www.ibm.com/think/topics/data-flow-diagram) is a good place to start.
+this one. [IBM's guide](https://www.ibm.com/think/topics/data-flow-diagram) is a good place to start.
 
 **ERD, the entity relationship diagram: what does it remember?** The boxes are the things your system
 keeps, like roadmap entries and badges, and the lines say how they relate. An entry has a date, a title,
@@ -93,8 +94,8 @@ gets its own note. The idea underneath it is Brad Frost's
 [atomic design](https://atomicdesign.bradfrost.com): small parts that combine into bigger ones.
 
 You won't need all six. For your portfolio, a use case diagram and a wireframe are plenty, and an ERD is
-nice once the roadmap grows. A bigger app would need more. Reach for the one that answers the question
-you can't currently answer, and ask your AI to draw it.
+nice once the roadmap grows. Reach for the one that answers the question you can't currently answer, and
+ask your AI to draw it.
 
 ## Let the AI hold the pen
 
@@ -105,39 +106,35 @@ HTML page of gray boxes you can open in a browser. For an ERD, ask for the table
 you'd rather sketch on paper, go ahead and send a photo, since it can read it. Either way, the AI draws and
 you decide.
 
-Then read it, and correct it. That's the job. "No, a visitor can't add entries, only I can."
-"There's no admin, remove it." Corrections are cheap because nothing's been built yet, and each one is a
-gap between what you meant and what it assumed. If you can't tell whether a box is right, ask it to explain
-that box. A plausible drawing can still be wrong.
+Then read it, and correct it. That's the job. "No, a visitor can't add entries, only I can." "There's no
+admin, remove it." Corrections are cheap because nothing's been built yet, and each one is a gap between
+what you meant and what it assumed. If you can't tell whether a box is right, ask it to explain that box.
+A plausible drawing can still be wrong.
 
 When you both agree, save it in the project, in a file next to your brief. That's the step that matters.
 The AI forgets everything between sessions, so a drawing in the chat disappears. A drawing in the project
 is a plan every future session reads, and you read, and anyone who joins reads. A common, written-down
 understanding is what stops "that's not what I meant."
 
-One honest limit. A drawing is only worth keeping while it matches the code. A diagram made once and never
-touched is wrong by the third change, and a wrong diagram is worse than none because people trust it. Keep
-them small, and ask the AI to update them when the plan changes.
-
 ## Make the teammate ask questions
 
 Your AI never asks questions on its own, but you can make it. Once you have a drawing, ask: "Here's the
 diagram. What's missing? What would a user need that I haven't shown? Ask me five questions before you
-build anything."
+build anything." That turns a teammate who guesses into one who checks. You're borrowing its patience for
+the dull questions you'd skip.
 
-That turns a teammate who guesses into one who checks. You're borrowing its patience for the dull
-questions you'd skip.
-
-## Try this
+## Your turn
 
 Take the brief for your portfolio. Ask your AI for a use case diagram as Mermaid, with one visitor, you as
 the owner, and a few things each can do. Read it, fix one thing you disagree with, then ask it what's
 missing. Then ask for a wireframe of the roadmap page as a plain HTML page of gray boxes. Save both next to
-the brief. If the answer to "what's missing" is something you hadn't thought of, the
-exercise worked. Tell me what it found.
+the brief. If you'd rather, draw it by hand, or draw something stranger, a timeline or a map. If the answer
+to "what's missing" is something you hadn't thought of, the exercise worked. Tell me what it found.
 
-The AI will build whatever you describe. The drawing is how the two of you find out what you were
-describing.
+**Where I might be wrong.** A drawing is only worth keeping while it matches the code. One made once and
+never touched is wrong by the third change, and a wrong diagram is worse than none because people trust it.
+For something tiny, you may skip all of this and I won't argue. Keep them small, and ask the AI to update
+them when the plan changes.
 
 ---
 

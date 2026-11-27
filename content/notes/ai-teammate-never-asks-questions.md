@@ -7,11 +7,11 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~6 min"
+readingTime: "~7 min"
 tags: [ai, workflow, teaching]
 summary: >
   An AI agent works like the group project teammate who never asks questions: it says yes, guesses at
-  what you meant, and hands back something confident. It can't think for you, so you set the direction.
+  what you meant, and hands back something confident. I'm lazy on purpose, which is why I brief it first. It can't think for you, so you set the direction.
   The fix is a short brief with three parts (the goal, what done looks like, what not to touch), and a
   habit of checking what comes back. This is the first idea the rest of the path hangs on.
 social: |
@@ -24,23 +24,27 @@ social: |
 ---
 
 You know the teammate. In every group project there's one. You explain the task, they nod, they say
-"got it", and they ask nothing. Three days later they hand in something that's polished, confident and
-slightly about a different assignment.
+"got it", and they ask nothing. Three days later they hand in something polished, confident and slightly
+about a different assignment.
 
-That teammate isn't lazy. They just didn't want to look lost, so they guessed. And you didn't find out
-until it was too late to guess again.
-
-I work with that teammate every day now, and it's the AI. It's very fast, very capable, and it will almost
-never tell you it doesn't understand. Once I saw it that way, my early frustration made sense. I'd been
-treating it like a search box. It behaves a lot more like a teammate.
+That teammate isn't lazy. They just didn't want to look lost, so they guessed. I work with that teammate
+every day now, and it's the AI. It's very fast, very capable, and it will almost never tell you it doesn't
+understand. Once I saw it that way, my early frustration made sense. I'd been treating it like a search
+box. It behaves a lot more like a teammate.
 
 ## I'm terrible at multitasking, and I'm lazy on purpose
 
 I'm terrible at multitasking, and I strive to be lazy. There's an old saying that a lazy programmer is an
-effective one, because they put their energy into making their own life easier. That's me. I want to do
-the most while doing the least, and spend what's left on the part I enjoy, which is building. That's why
-I made an agentic workflow, and why I've kept working on my AI loop for six months. Most of what's in
-this path is me trying to be lazier, more carefully.
+effective one, because they put their energy into making their own life easier. That's me. I'm
+disorganized in a way that has outlasted every app built to fix it, and every one of them wanted me to
+adapt to its system. I couldn't, so I built a stack that adapts to me, which is the story in [I Built a
+Whole Stack Because No To-Do App Would Have Me](origin-story.md). Then I built an AI workflow around it,
+because I want to do the most while doing the least and spend what's left on the part I enjoy, which is
+building. I've kept working on that loop for six months.
+
+Lazy doesn't mean skipping the careful part. It means doing it once, up front, so you're not redoing it at
+two in the morning. I built the rails before I opened the throttle. That's the shape of this whole path: a
+little effort early, so the machine can do the rest.
 
 ## It says yes to everything
 
@@ -65,70 +69,74 @@ just to finish: fast, willing, and in need of direction. They don't know what yo
 you'd consider finished, or which parts of the project are fragile. They know what you told them. I wrote
 the longer version in [Ten Times Zero](ten-times-zero.md#a-decade-of-rehearsal-billed-as-management).
 
-So the thing you can't hand over is the thinking about what to build. That's the part I'd call the
-narrative: what this is, what it's for, and what the end looks like. If you don't control the
-narrative, the AI writes one, and it's usually a generic one. You'll recognize it from the shape of
-the result. It works, and it could belong to anyone.
+When the AI does the typing, the scarce thing stops being code and becomes intent. It can't know what you
+meant, what the rules are or what done looks like unless you wrote it down. So I do, and in my own repos
+the documentation is the work and the code is the cheap part. The thing you can't hand over is the
+thinking about what to build. If you don't control that narrative, the AI writes one, and it's usually a
+generic one. It works, and it could belong to anyone.
 
 That's not bad news. The typing goes to the AI, and you keep the fun part, deciding what the thing should
 be.
 
 ## Say what done looks like
 
-Here's the habit. Before you ask for anything, write a brief with three parts. It's short enough to
-write on a phone.
+Before I ask for anything, I write a brief with three parts. It's short enough to write on a phone.
 
 **The goal.** What this is and why it exists, in a sentence or two. Not a spec.
 
-**What done looks like.** What you'll see when it works. A page that loads, a command that prints a
-number, a test that passes. If you can't say it, the task isn't ready. That's useful to find out
-before you've spent an hour.
+**What done looks like.** What I'll see when it works: a page that loads, a command that prints a number,
+a test that passes. If I can't say it, the task isn't ready, and that's useful to find out before I've
+spent an hour.
 
-**What not to touch.** The files, the packages or the behavior that must stay exactly as they are.
-This one feels optional until the first time an agent helpfully rewrites something that worked.
+**What not to touch.** The files, packages or behavior that must stay exactly as they are. This one feels
+optional until the first time an agent helpfully rewrites something that worked.
 
-Take the portfolio again. A brief might say: a one-page portfolio with a section that lists what I've
+Here's an example, not a template. For a portfolio: a one-page site with a section that lists what I've
 learned about working with AI. Done is the page loads at my own address, the bio is in my words, and the
 roadmap shows one entry with a link to evidence. Don't write my bio, don't invent projects or skills, and
 don't add trackers or packages I didn't ask for.
 
-You'll notice nothing in the brief is code. It's the thinking, written down, and it's the part you can
-do at any level. A first-year with a clear brief will often get a better result than an expert with a
-vague one.
+Nothing in a brief is code. It's the thinking, written down, and it's the part you can do at any level.
+A first-year with a clear brief will often get a better result than an expert with a vague one.
+
+## Orchestrate it, don't just vibe it
+
+There was a week I looked at what had shipped across my repositories and couldn't explain half of it. It
+all worked and the tests were green, but I could feel a gap opening between the code that existed and the
+code I understood. Output going up while understanding stays flat is debt with a nice green dashboard on
+top. I wrote that story in [I Was Shipping Faster Than I Could Understand It](one-loop-every-repo.md).
+
+That's the pitfall: you can ship something you don't understand and can't easily fix. Two people can use
+the same tools. One vibe codes blind: prompt, accept, ship, hope. The other orchestrates. They decide what
+gets built, cut it into steps, check each one, and understand enough to fix it. [Ten Times Zero Is Still
+Zero](ten-times-zero.md) is where I claim the word vibe coder anyway, with one word in front: professional.
+It isn't speed. It's being able to explain your work.
+
+The test I use on anything the AI builds: could I explain this, and could I fix it if the AI weren't here
+tomorrow? If not, I adopted it and didn't build it, and I slow down until I can.
 
 ## It forgets everything
 
-One more thing about this teammate, and it's the one that makes the metaphor break down. A human
-teammate remembers yesterday. The AI doesn't. Close the session and the next one starts blank. It
-doesn't know the project, your preferences, or what you decided last Tuesday.
+One more thing about this teammate, and it's where the metaphor breaks. A human teammate remembers
+yesterday. The AI doesn't. Close the session and the next one starts blank. So the brief can't live in
+your head or in a chat you'll never scroll back to. It has to live in a file the agent can read every
+time. I'll show you how later. For now, hold the idea that writing things down isn't paperwork. It's how
+you give a forgetful teammate a memory.
 
-So the brief can't live in your head, or in a chat you'll never scroll back to. It has to live
-somewhere the agent can read it every time: a file in the project. I'll show you how that works in a
-later note. For now, just hold the idea that writing things down isn't paperwork. It's how you give a
-forgetful teammate a memory.
+## Your turn
 
-## Check it like a teammate's work
+This is the first step of the project that runs through the Harbor, your portfolio. Pick whichever fits:
 
-Reading the result is part of the job. With a teammate you'd ask to see it running, and glance at what
-they changed. Same here. Does it do what "done" said it would do? Did it touch anything on the list of things to leave alone? Can you explain why it works?
+- Write the three-part brief for your portfolio, or for adding an AI roadmap section to one you have.
+- Or ask your AI for "a portfolio site" with no brief at all, list every choice it made that you didn't,
+  then write the brief and compare.
+- Or brief something else small. A script, a page, a fix.
 
-That last one matters more than it sounds. If you can't explain it, you didn't build it, you adopted
-it. [Ten Times Zero Is Still Zero](ten-times-zero.md) is the long version of why that matters to me.
-For now, the short version: the AI multiplies what you already bring.
+Give the brief to your AI and compare what you get with what you wrote. The gap shows you exactly what you
+hadn't decided yet. Or do something different and tell me how it went.
 
-## Try this
-
-This is the first step of the project that runs through the Harbor, your portfolio. If you have one, brief
-the AI on adding an AI roadmap section to it. If not, brief it on a small starter page. Before you open any
-tool, write the three-part brief in a notes app: the goal, what done looks like, and what not to touch.
-Then give it to your AI and compare what you get with what you wrote.
-
-Don't worry about getting it right the first time. The brief is a draft, and when the result surprises
-you, the gap between what you wrote and what you got shows you exactly what you hadn't decided yet. That
-gap is the lesson.
-
-Next time you're handed a group project, you'll know what the quiet teammate needed. A clearer brief,
-and someone willing to check the work.
+**Where I might be wrong.** I may be overselling the brief. Some days a short back-and-forth beats
+writing it down, especially for something tiny. Try both and see which fits you.
 
 ---
 

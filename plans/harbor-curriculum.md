@@ -300,3 +300,37 @@ in and check against each harness's docs before anything is published:
 - A concept-by-harness table is optional. With exact names not mattering, a sentence may do.
 - Note 5 now says routines go by different names (a scheduled task in some, a cron job in others) and drops
   the phrase scheduled loop.
+
+## Alignment pass, 2026-11-27: a journey and an invitation, not a tutorial
+
+**What the notes sell (confirmed by the author):** an introduction to agentic coding that shows his journey
+and encourages the reader's own agency and innovation. Not a tutorial or a step-by-step guide.
+
+**Done in this pass (all 15 suggestions):**
+1. Start Here says outright it is not a tutorial, and invites disagreement.
+2. Each note now runs story, idea, what I do now, your turn, where I might be wrong.
+3. Real stories mined from published notes: the app-switching saga and building a stack that adapts to him
+   (origin-story); the week he could not explain his own work (one-loop-every-repo); the plan moved into a
+   markdown file (same note); intent is the scarce thing and you do not mark your own exam (ten-times-zero);
+   the seatbelt of tests (ten-times-zero); I built infrastructure when I ran out (necessity note, linked); the
+   are-we-clean-on-main catchphrase (the-loop-that-learned-how-i-work); the check that ran once in 165 sessions.
+4. Commands became first person ("I don't write a skill until I've typed it three times").
+5. Trials became Your turn with choices and "or do something different and tell me".
+6. Every note ends with Where I might be wrong.
+7. The portfolio stays open-ended (timeline, zine, game).
+8. Examples are labeled as examples, not templates.
+9. Show-me-yours is an ask only. Open: a real channel for sharing (not decided).
+10. Lazy versus rigorous bridged in note 1: lazy means doing the careful part once, up front.
+11. The orchestrator versus blind vibe coder idea moved up to Start Here and note 1.
+12. Overloaded notes split. Testing is now its own short note, A Test Is a Check That Runs Itself.
+13. Assumed ground stated: programming, git and GitHub, and Claude Academy first.
+14. Safety added: keep keys, passwords and personal details out of a public portfolio and out of the plan file.
+15. Usage limits pointed to Plan on the Big Model, Type on the Small One and I Ran Out With Hours Left.
+
+**Current order of the Harbor drafts:** 0 Start Here, 1 teammate, 2 drawing, 3 plan, 4 check its work,
+5 tests (new), 6 skills. Next: chat window to first loop, catch the idea, design systems, build your own.
+
+**Real stories still wanted (asked of the author, not invented):** a time the AI guessed wrong on a vague
+request; a drawing that caught a gap before building; a plan or a missing plan that cost a session; a test
+or evidence that caught a wrong done; the first skill made beyond clean on main; a student or junior who
+shipped what they did not understand.

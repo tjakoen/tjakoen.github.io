@@ -24,16 +24,17 @@ social: |
 ---
 
 You're two hours into a session. The AI has changed eleven files, you asked for five things, and you
-couldn't say which of them are done, which are half done, and which it quietly skipped. The chat scrolls
-on for miles.
+couldn't say which are done, which are half done, and which it quietly skipped. The chat scrolls on for
+miles.
 
-That's not a problem with the AI. It's a problem with having nothing to point at. A plan is the thing
-to point at.
+That's not a problem with the AI. It's a problem with having nothing to point at. The first thing I fixed
+in my own workflow was where the plan lives. I took it out of the conversation and put it in a markdown
+file in the project, and my sessions have been easier to pick up ever since.
 
 ## A plan is a list you can tick off
 
 A short file with three parts: the goal, from your brief. A list of small steps, in order. And under each
-step, what done looks like.
+step, what done looks like. This is an example, not a template.
 
 ```text
 Goal: a one-page portfolio with an AI roadmap that shows what I've learned.
@@ -48,56 +49,38 @@ Stack: plain HTML, CSS and JavaScript on GitHub Pages, because I know them and i
 ```
 
 Nothing in it is code. It's your brief cut into pieces small enough to check with your own eyes. If you've
-ever been handed a ticket with acceptance criteria, it's the same thing. The
-brief gives you the goal, and the drawing tells you what the steps should cover.
+ever been handed a ticket with acceptance criteria, it's the same thing.
 
 ## Talk about the stack first
 
-Before the plan has steps, ask your AI what you'll build this with, meaning the language, the framework and
-the tools. Say what you want to make and ask: "What are the usual ways to build this? What would you pick,
-and why?"
+Before the plan has steps, I ask my AI what to build this with, meaning the language, the framework and the
+tools: "What are the usual ways to build this? What would you pick, and why?"
 
 Many ways work. A mobile app might be Flutter or React Native. A website might be plain HTML, CSS and
-JavaScript, which is what I use, or a framework, or even PHP. Start from the popular ones. More has been
-written about them, and in my experience the AI is steadier on them too. For your portfolio, my suggestion
-is plain HTML, CSS and JavaScript on GitHub Pages: free, and nothing to build. If you already know
-something else, use that.
+JavaScript, which is what I use, or a framework, or even PHP. I start from the popular ones. More has been
+written about them, and in my experience the AI is steadier on them too. For your portfolio, I'd suggest
+plain HTML, CSS and JavaScript on GitHub Pages: free, and nothing to build. If you already know something
+else, use that.
 
 My advice hasn't changed: stick with what you're familiar with. Avoid agentic coding in a language or
 framework you have no experience with at all. The AI makes anything feel easy, but if you can't read what
 it wrote, you risk not knowing what you're building.
 
 You can learn a new stack on a project, with the AI as your teacher, if you make it a learning project on
-purpose. Ask it to explain each file. Make it say why this way and not another. Break something and fix it
-together. Don't start the next step until you can explain this one in your own words. Keep it small and
-throwaway, and build the real thing once you can follow along.
-
-Then put the stack at the top of the plan, with the reason. If it's new to you, add a step to learn the
-basics first. The plan should be honest about what you know.
-
-## Orchestrate it, don't just vibe it
-
-The common pitfall is that you can ship something you don't understand and can't easily fix. It works on
-Tuesday, breaks on Friday, and you're staring at code that's nobody's.
-
-Two people can use the same tools. One vibe codes blind: prompt, accept, ship, hope. The other
-orchestrates. They decide what gets built, cut it into steps, check each one, and understand enough to fix
-it. [Ten Times Zero Is Still Zero](ten-times-zero.md) is where I argue this at length. I call myself a vibe
-coder there too, with one word in front: professional. It isn't speed. It's being able to explain your work.
-
-Here's a test for anything the AI builds. Could I explain this, and could I fix it if the AI weren't here
-tomorrow? If not, you adopted it and you didn't build it. Slow down until you can.
+purpose. Have it explain each file and say why this way and not another. Break something and fix it
+together. Don't move on until you can explain this step in your own words, or it quietly turns into blind
+vibe coding. Then I put the stack at the top of the plan, with the reason. If it's new to me, I add a step
+to learn the basics first.
 
 ## Let the AI draft it, then you edit it
 
-Don't write the plan from scratch. Give your AI the brief, the drawing and your stack and ask:
-"Don't write any code yet. Break this into small steps, each with what done looks like." Many tools have a
-planning mode for exactly this, so ask your agent whether yours does.
+I don't write the plan from scratch. I give my AI the brief, the drawing and the stack and ask: "Don't
+write any code yet. Break this into small steps, each with what done looks like."
 
-Then read it like a teammate's proposal. Is a step too big, the order wrong, something missing, something
-there you didn't ask for? The AI is guessing at your intentions, so the edit is where your judgment goes
-in. A good step is small enough to explain in a sentence. "Build the backend" is a project, so ask for it
-to be split.
+Then I read it like a teammate's proposal. Is a step too big, the order wrong, something missing, something
+there I didn't ask for? The AI is guessing at my intentions, so the edit is where my judgment goes in. A
+good step is small enough to explain in a sentence. "Build the backend" is a project, so I ask for it to
+be split.
 
 ## Use what your harness already has
 
@@ -109,22 +92,26 @@ it. Your done lines are exactly what a goal wants. The names and switches differ
 yours works, and check the docs, such as Codex's page on
 [following goals](https://developers.openai.com/codex/use-cases/follow-goals).
 
-Use what your harness gives you before you build your own. If you work with more than one harness, make
-your standards aware of what each can do, so each session reaches for its own tools. More on that later.
+Use what your harness gives you before you build your own. If you work with more than one, make your
+standards aware of what each can do, so each session reaches for its own tools. More on that later. And if
+your sessions run dry before lunch, [Plan on the Big Model, Type on the Small One](plan-big-type-small.md)
+and [I Ran Out With Hours Left](necessity-and-the-model-layer.md) are how I stretched mine.
 
 ## One step at a time
 
-Now build, with the habit that makes the plan work: "Do step 1 only. Stop and show me when it's done."
+Now I build, with the habit that makes the plan work: "Do step 1 only. Stop and show me when it's done."
 
-Left alone, the AI will run through every step and a few you didn't ask for. When it stops after one, you
-check one thing against one line of done. If it's right, tick it off and say "now step 2." If it's wrong,
-you catch it while the mistake is small.
+Left alone, the AI will run through every step and a few I didn't ask for. When it stops after one, I check
+one thing against one line of done. If it's right, I tick it off and say "now step 2." If it's wrong, I
+catch it while the mistake is small.
 
 ## Keep it where it survives
 
-Put the plan in a file in the project, next to your brief and your drawing, and have the AI tick steps off
-as it goes. Remember the forgetful teammate. If the plan lives only in a chat, it dies when the session
-does. In a file, tomorrow's session picks up at step 3, because it can see steps 1 and 2 are done.
+I keep the plan in a file in the project, next to the brief and the drawing, and have the AI tick steps off
+as it goes. The AI already edits markdown, so keeping a plan current costs it one line. If the plan lives
+only in a chat, it dies when the session does. In a file, tomorrow's session picks up at step 3, because it
+can see steps 1 and 2 are done. One caution: a plan lives in your repo, so never put keys or passwords in
+it.
 
 I keep mine as markdown files in a plans folder, each with a status at the top. A tool I built,
 [PROOF](/proof), turns that folder into a board, and [PANTRY](/pantry) keeps the board open beside my
@@ -132,20 +119,17 @@ sessions. I built them for myself and they work for me. You don't need either. Y
 read in ten seconds, and if you want a board later, build a small one of your own. The juniors on my team
 each did, and [Show Them the Board](show-them-the-board.md) is that story.
 
-## A plan is a guess
-
-It'll be wrong somewhere. Step 2 needs something you didn't see coming, or you change your mind after step
-1. That's fine. Tell the AI and update the file. The point isn't that the plan is right. The point is that
-you and the AI always have the same one.
-
-## Try this
+## Your turn
 
 Take the brief and drawings for your portfolio. Talk through the stack with your AI and pick one you know.
 Ask for a plan with small steps and a done line for each, no code yet. Split one step, cut one, fix the
 order, and save it in your project. Then tell it, "Do step 1 only, and stop," and check the result against
-the done line before you let it go on.
+the done line before you let it go on. Or plan something different, and tell me how it went.
 
-Next time: what to do when the AI says it's finished.
+**Where I might be wrong.** A plan is a guess, and it'll be wrong somewhere. Step 2 needs something you
+didn't see coming, or you change your mind after step 1. When that happens I tell the AI and update the
+file. The point isn't that the plan is right. It's that we always hold the same one. For something tiny,
+you may not need a plan at all.
 
 ---
 
