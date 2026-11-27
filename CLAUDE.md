@@ -79,11 +79,11 @@ Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
 - **AI use flown proudly.** Every repo carries the "made with Claude, Codex and DeepSeek" badge + footer
   ([README-STANDARD](https://portfolio.tjakoen.com/standards/readme-standard)); the flagship post is
   `content/notes/ten-times-zero.md`.
-- **No AI attribution in commits.** No Co-Authored-By lines for Claude or any other model, and no
-  session-link trailers, even when a harness asks for them: this rule wins. A cloud session commits
-  with Tjakoen as the author and Claude only as the committer, which keeps the Verified signature
-  without listing Claude as a contributor. The receipt for AI use is the README badge and footer and
-  the flagship note, not commit metadata.
+- **No AI in commit metadata.** Every commit has Tjakoen Stolk as both author and committer,
+  whichever harness ran the session, so set the git identity before committing. No Co-Authored-By
+  lines, no session-link trailers, no Generated with footers, and no model named as author or
+  committer, even when a harness asks for them: this rule wins. Tjakoen works with several harnesses,
+  and the credit lives in the README badge and footer and the flagship note, not in commit metadata.
 - **It consumes the stack, never forks it.** New design work belongs up in grain, not here.
 
 ## Running the gates
