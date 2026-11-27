@@ -1,0 +1,258 @@
+{
+ "id": "show-them-the-board",
+ "title": "Show them the board",
+ "summary": "I spent a month on the wrong thing, got to a dashboard in an afternoon by asking what I wanted to see, and learned that a demo spreads better than a mandate. Then the epic checker my tech lead built, what came back to my own reviewer, and what the numbers do not yet say.",
+ "audio": "/media/lessons/show-them-the-board.m4a",
+ "stops": [
+  {
+   "title": "A month on the wrong thing",
+   "note": "show-them-the-board",
+   "from": "i-was-building-the-wrong-thing-carefully",
+   "to": "the-review-kit-now-with-a-window",
+   "beats": [
+    {
+     "section": "i-was-building-the-wrong-thing-carefully",
+     "quote": "I was thinking like a developer, not like an AI orchestrator.",
+     "text": "I was thinking like a developer, not like an AI orchestrator. Meanwhile the tokens that could have built it were being eaten by the other thing I had made, the robot that reviews my team's pull requests. So I was spending the machine on the work and spending myself on the typing. That is exactly backwards. I kept asking how to build it. The better question was what I wanted to see."
+    },
+    {
+     "section": "i-was-building-the-wrong-thing-carefully",
+     "quote": "asked Claude for a dashboard instead",
+     "text": "So one afternoon I asked the better question. I asked Claude for a dashboard instead of an app. I pointed it at the data and handed it People Manager as a reference for what I wanted. It was done before I had finished being skeptical about it. Then Anthropic shipped Claude Dashboards on October 8, and what I had been doing by hand got easier. A dashboard became a thing you ask for, pin and keep, instead of a page you coax into existence. That launch is what got me to try the lazy version of People Manager at all. Every screen in this note runs on mock data. The dashboards are the real ones, but every person, ticket, pull request and number in them is invented."
+    },
+    {
+     "section": "the-review-kit-now-with-a-window",
+     "quote": "It never approves or merges; approval stays mine.",
+     "text": "That is the set of Claude skills that reviews my team's pull requests and posts under my name. It never approves or merges; approval stays mine. What changed most is that I stopped managing it from a terminal. Every pull request the kit has touched has a card on the board, in the column of whoever owes the next move. I can queue one by pasting a link. I can correct a finding, see which lens has been wrong lately, and watch whether precision and cost are moving the right way. The kit goes round in a loop. Review, verdict, follow up, re-review. The one step it cannot take, approval, sits outside the circle with me."
+    }
+   ],
+   "runes": [
+    {
+     "id": "i-was-building-the-wrong-thing-carefully",
+     "section": "i-was-building-the-wrong-thing-carefully",
+     "quote": "I was thinking like a developer, not like an AI orchestrator."
+    },
+    {
+     "id": "i-was-building-the-wrong-thing-carefully-2",
+     "section": "i-was-building-the-wrong-thing-carefully",
+     "quote": "I was spending the machine on the work"
+    },
+    {
+     "id": "the-review-kit-now-with-a-window",
+     "section": "the-review-kit-now-with-a-window",
+     "quote": "It never approves or merges; approval stays mine."
+    }
+   ],
+   "trial": "Pick one view you keep meaning to build as an app. Write down, in three sentences, what you want to see on it, and ask Claude for a dashboard instead.",
+   "digest": [
+    "I spent a month building an app the way a developer would.",
+    "An afternoon with a Claude dashboard replaced it.",
+    "The review kit got a window, and approval stayed with me."
+   ]
+  },
+  {
+   "title": "Four tries at one view",
+   "note": "show-them-the-board",
+   "from": "crew-watch-attempt-number-four",
+   "to": "crew-watch-attempt-number-four",
+   "beats": [
+    {
+     "section": "crew-watch-attempt-number-four",
+     "quote": "DevLake measured the pipeline. My questions were about the people in it.",
+     "text": "It took me four tries to get there, and the first three were all reasonable at the time. The first was a spreadsheet pulling GitHub data. The second was Apache DevLake, and DevLake deserves more credit than one box in a diagram. Before it, I had opinions about how the team was doing. After it, I had real data and a set of queries that defined each metric precisely. That part carried forward. DevLake answered the questions it was built for. It just was not built for mine. DevLake measured the pipeline. My questions were about the people in it."
+    },
+    {
+     "section": "crew-watch-attempt-number-four",
+     "quote": "The app did not ship. The thinking inside it did.",
+     "text": "Crew Watch was fast because People Manager already existed. A month of deciding what the view should show, which numbers I trusted, and which questions I actually ask in a one-on-one was sitting in a plan folder. The dashboard got to read all of it. The app did not ship. The thinking inside it did. The expensive work was never the code. It was deciding what matters, and no model did that for me. A month of my judgment, written down, is what let an afternoon of Claude's typing land."
+    },
+    {
+     "section": "crew-watch-attempt-number-four",
+     "quote": "compared, anonymously, to the rest of the team",
+     "text": "Before, we looked at the usual numbers. Commits, lines changed, pull requests opened. I think those are unproductive stats. They count activity, and nobody walks out of a one-on-one knowing what to do differently because their commit count was average. So I built Crew Watch to be about people. Each person is compared, anonymously, to the rest of the team, so the comparison points at where to focus instead of at who is ahead. If someone moves really fast, maybe we look harder at code quality, so the speed is not borrowing from later. If someone has a lot of kickbacks, the question is why. Maybe the tickets are not written well, maybe they are not being read closely, and those get fixed in different places."
+    },
+    {
+     "section": "crew-watch-attempt-number-four",
+     "quote": "grade, and they are read over a quarter",
+     "text": "The numbers are a diagnostic, not a grade, and they are read over a quarter rather than one sprint. That framing is what lets someone hear \"your kickbacks are high\" as a puzzle we solve together. As a snapshot, over five weeks of one-on-ones, the dashboard came up in most of them and nobody pushed back. One developer said seeing their numbers next to the team's finally gave them a clear direction. Several left with one concrete thing to work on. That is a handful of people saying so out loud, not a survey, and I would rather say that plainly than round it up."
+    }
+   ],
+   "runes": [
+    {
+     "id": "crew-watch-attempt-number-four",
+     "section": "crew-watch-attempt-number-four",
+     "quote": "DevLake measured the pipeline. My questions were about the people in it."
+    },
+    {
+     "id": "crew-watch-attempt-number-four-2",
+     "section": "crew-watch-attempt-number-four",
+     "quote": "The app did not ship. The thinking inside it did."
+    },
+    {
+     "id": "crew-watch-attempt-number-four-2-2",
+     "section": "crew-watch-attempt-number-four",
+     "quote": "The expensive work was never the code."
+    }
+   ],
+   "trial": "Write down the three questions you actually ask in a one-on-one. For each, name the one number that would help you ask it better.",
+   "digest": [
+    "Crew Watch took four tries.",
+    "It was fast only because a month of written-down judgment already existed.",
+    "It compares people to the team to point at where to focus, not to grade."
+   ]
+  },
+  {
+   "title": "The demo is the policy",
+   "note": "show-them-the-board",
+   "from": "my-whole-ai-policy-is-a-demo",
+   "to": "what-i-have-not-earned-yet",
+   "beats": [
+    {
+     "section": "my-whole-ai-policy-is-a-demo",
+     "quote": "Nobody gets inspired by a mandate.",
+     "text": "I do not hand my team an AI policy and hope. I show them what I built, rough edges included, and let them decide it looks easy enough to try. Nobody gets inspired by a mandate. A couple of weeks ago I demoed the review board and Crew Watch. In that couple of weeks, three of them built their own. I did not assign any of them. The best thing a demo can do is make someone else open their own session."
+    },
+    {
+     "section": "my-whole-ai-policy-is-a-demo",
+     "quote": "board, he built an epic checker.",
+     "text": "The tech lead on my team built an epic checker. It reads every ticket and open pull request against the epic's architecture plan in Confluence, and puts each new decision or conflict in front of the person who owns it. I started sending it commits, and one of them lets my review kit fold the epic check's decided deviations into its verdict. His tool now makes my reviews smarter. A junior on my team showed me, in our one-on-one, a board he had built in Obsidian to run his own work. His tickets, his pull requests, what is waiting on him and what is waiting on someone else. Nobody asked him to, and it is not for me. It is for him."
+    },
+    {
+     "section": "the-rule-that-comes-with-the-tokens",
+     "quote": "It is not allowed to think for you.",
+     "text": "But the push always comes with the same rule, and it is the one I give my students. You own what you ship. If Claude wrote it, you still have to explain it, defend it in a review, and say why it is right. Do not post a comment, open a pull request or send a message you could not have written yourself. The tool is allowed to type. It is not allowed to think for you. None of my team's tools decide anything either. The machine drafts, and someone with their name on it signs."
+    },
+    {
+     "section": "what-i-have-not-earned-yet",
+     "quote": "Two weeks and three tools is a good story, not a trend.",
+     "text": "Two weeks and three tools is a good story, not a trend. I do not know yet whether this sticks, or whether the epic checker still gets opened in three months. Crew Watch replacing People Manager is my judgment after a short run, and the app is parked rather than deleted in case I am wrong. And a dashboard is only as honest as the data under it. If you lead people and you have built something, show them. The worst case is they nod."
+    }
+   ],
+   "runes": [
+    {
+     "id": "my-whole-ai-policy-is-a-demo",
+     "section": "my-whole-ai-policy-is-a-demo",
+     "quote": "Nobody gets inspired by a mandate."
+    },
+    {
+     "id": "the-rule-that-comes-with-the-tokens",
+     "section": "the-rule-that-comes-with-the-tokens",
+     "quote": "It is not allowed to think for you."
+    },
+    {
+     "id": "what-i-have-not-earned-yet",
+     "section": "what-i-have-not-earned-yet",
+     "quote": "Two weeks and three tools is a good story, not a trend."
+    }
+   ],
+   "trial": "Pick one thing you built that helps you. Book ten minutes to show it to one colleague, rough edges included.",
+   "digest": [
+    "I lead with demos, not mandates.",
+    "Three people built their own tools without being asked, and one of them made my reviews better.",
+    "The rule stays the same: own what you ship."
+   ]
+  },
+  {
+   "title": "Move bugs left",
+   "note": "move-bugs-left",
+   "from": "intro",
+   "to": "how-the-epic-checker-works",
+   "beats": [
+    {
+     "section": "matts-rule",
+     "quote": "Move bugs as far to the left in the process as possible.",
+     "text": "An epic at Career Team has a lot of hands on it. The plan owner, product, leads from maybe more than one team, and the developers doing the work. Decisions change while the work is moving, and the code written last sprint can quietly drift from the decision made this sprint. It comes from our CTO, and it is his standing rule, at least as I remember it from a knowledge-sharing session. Move bugs as far to the left in the process as possible. Those are my words for it, not his exact ones. A wrong assumption caught on a ticket is cheaper than one caught in review, which is cheaper than one caught in production. Every step right costs more than the one before it. The epic checker is that rule turned into a tool."
+    },
+    {
+     "section": "who-built-it",
+     "quote": "Same tool, opposite direction, and both of them right.",
+     "text": "Full credit for it goes to my tech lead. He went from developer to tech lead in about a year, which is fast for anyone. I pushed him into the role because I saw something in him before he did, and that is a feeling I know from the other side. Before he built anything, he showed the team how he makes Claude talk to him. Tables, diagrams, specific wording, a format his brain reads fast. Every rule I have written is about how the AI should sound when it writes as me. His is about how it should sound when it writes to him. Same tool, opposite direction, and both of them right."
+    },
+    {
+     "section": "how-the-epic-checker-works",
+     "quote": "architecture plan in Confluence is the source of truth.",
+     "text": "Here is how it works. The architecture plan lives in Confluence, and it is the source of truth. A ticket, before any code exists, or a pull request, while it is still open, goes into the epic check. The check reads it against the plan and against every other open pull request. What comes out is new decisions, conflicts between pull requests, and ticket problems, each one a row someone owns. Those land on a decision board. The plan owner ticks decisions, drafts tickets and moves conflicts, and every decision goes back into the plan."
+    },
+    {
+     "section": "how-the-epic-checker-works",
+     "quote": "The checker does not decide anything.",
+     "text": "The checker does not decide anything. It puts the decision in front of the person who owns it, with a recommendation and three buttons, and a person picks one. That is the rule I hold the whole team to. The tool is allowed to type, and someone with their name on it signs."
+    }
+   ],
+   "runes": [
+    {
+     "id": "matts-rule",
+     "section": "matts-rule",
+     "quote": "Move bugs as far to the left in the process as possible."
+    },
+    {
+     "id": "how-the-epic-checker-works",
+     "section": "how-the-epic-checker-works",
+     "quote": "The checker does not decide anything."
+    },
+    {
+     "id": "who-built-it",
+     "section": "who-built-it",
+     "quote": "Same tool, opposite direction, and both of them right."
+    }
+   ],
+   "trial": "Take one open ticket and its plan or spec. Spend five minutes listing anything in the ticket the plan does not already decide.",
+   "digest": [
+    "A wrong assumption is cheaper the earlier you catch it.",
+    "The epic checker reads tickets and pull requests against the plan and puts each drift in front of its owner.",
+    "It recommends; a person decides."
+   ]
+  },
+  {
+   "title": "What came back, and what the board says",
+   "note": "move-bugs-left",
+   "from": "what-came-back-to-me",
+   "to": "what-i-have-not-earned-yet",
+   "beats": [
+    {
+     "section": "what-came-back-to-me",
+     "quote": "I did not plan that, and I like it a lot.",
+     "text": "I helped him plan the epic checker, and then I did the most flattering thing a manager can do to a teammate's project. I started using it and sending commits. That last one is the part I would point at first. A tool built for one tech lead's epics ended up improving a reviewer that runs on every pull request the team opens. My reviews now know which deviations from an epic were decided on purpose, so a deliberate change no longer gets flagged like a mistake. I did not plan that, and I like it a lot."
+    },
+    {
+     "section": "what-my-reviewer-already-learned-the-hard-way",
+     "quote": "graded by what happened next",
+     "text": "The first is to keep score. My reviewer only got good once every comment it left was graded by what happened next. Fixed, answered, closed without a change, or ignored. A decision that got accepted, changed or rejected is a result. A flag nobody ever touched is a result too, just a less flattering one. The second is to read the scores per topic, never as one average. My reviewer can be sharp on database changes and noisy on frontend speed, and the mean of those two looks fine. The third is that a miss is worth more than a hit. When my reviewer lets something through, the fix to its lens is replayed on the exact commit it missed before the fix counts."
+    },
+    {
+     "section": "what-the-board-says-so-far",
+     "quote": "These numbers do not say whether a flag was right.",
+     "text": "As a snapshot on November 10, about ten days after the space was set up, it was reading against 16 architecture plans. It had opened about 19 conflict pages and 7 were already closed. It had drafted 48 follow-up tickets, and 28 of those were done. Those numbers do not say whether a flag was right. A closed conflict can mean two pull requests merged cleanly, or that someone decided it was not a conflict at all, and the board does not grade that yet. That is the first lesson, waiting to be applied."
+    },
+    {
+     "section": "what-i-have-not-earned-yet",
+     "quote": "It is a few weeks old.",
+     "text": "It is a few weeks old. I do not know yet whether it still gets opened in three months, or whether leads on other teams will trust its flags enough to act without double-checking. The cheaper-to-the-left curve is a well-worn rule, but I have no number of my own yet for bugs it caught early. What I can say is smaller. When the checker flags a drift, it flags it on the ticket or the open pull request, in front of the person who owns the decision, which is exactly where our CTO said it belongs. That is the end of this lesson. Next, take a look at your own review loop and ask what it is keeping score of."
+    }
+   ],
+   "runes": [
+    {
+     "id": "what-came-back-to-me",
+     "section": "what-came-back-to-me",
+     "quote": "I did not plan that, and I like it a lot."
+    },
+    {
+     "id": "what-the-board-says-so-far",
+     "section": "what-the-board-says-so-far",
+     "quote": "These numbers do not say whether a flag was right."
+    },
+    {
+     "id": "what-i-have-not-earned-yet",
+     "section": "what-i-have-not-earned-yet",
+     "quote": "It is a few weeks old."
+    }
+   ],
+   "trial": "Look at the last five flags or review comments your team left. Mark each as fixed, answered, closed without change, or ignored.",
+   "digest": [
+    "Helping on a teammate's tool made my own reviewer smarter.",
+    "Three lessons carry over: keep score, split by topic, and treat a miss as a test.",
+    "The early counts are real, but they do not yet say whether a flag was right."
+   ]
+  }
+ ]
+}

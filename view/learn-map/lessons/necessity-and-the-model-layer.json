@@ -1,0 +1,161 @@
+{
+ "id": "necessity-and-the-model-layer",
+ "title": "I Ran Out With Hours Left",
+ "summary": "I ran out of usage with four hours left, would not pay my way out, and built a layer that decides which model does which job. This lesson says what it decides, what I have and have not seen it do, and the one line I will not bend.",
+ "audio": "/media/lessons/necessity-and-the-model-layer.m4a",
+ "stops": [
+  {
+   "title": "I ran out, and I would not pay my way out",
+   "note": "necessity-and-the-model-layer",
+   "from": "intro",
+   "to": "the-old-setup-and-the-new-one",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "So I did what I usually do when something annoys me enough.",
+     "text": "I spent my Codex usage and still had four hours to go before its five-hour window refreshed. I was in the zone. I did not want to stop. The obvious fix was the next tier up. I didn't want it. Paying that much turns every idle evening into a small failure to use what I bought, and I did not want my evenings grading me. So I did what I usually do when something annoys me enough. I built infrastructure."
+    },
+    {
+     "section": "the-night-i-went-looking-for-a-way-out",
+     "quote": "is not a saving, it is a hobby",
+     "text": "I have an RTX 3050 with 8 gigabytes of memory. It runs small models fine, and it runs the ones I would actually want for coding badly. A coding model that is worse than the one I'm paying for is not a saving, it is a hobby. I put that idea back on the shelf for a year or two."
+    },
+    {
+     "section": "the-night-i-went-looking-for-a-way-out",
+     "quote": "free endpoint may keep whatever you send",
+     "text": "They exist, they're better than I expected, and the catch is printed on the label. A free endpoint may keep whatever you send it. I decided I could accept that trade for my own projects, where the code is public anyway, and for nothing else. That decision is the most important one in this whole lesson, and most of what I built exists to enforce it."
+    },
+    {
+     "section": "the-old-setup-and-the-new-one",
+     "quote": "Fewer apps is a feature.",
+     "text": "Before, Claude Code was my main tool. The Codex app was the backup, and the way I ran a second project in parallel. And DeepSeek Harness, which I call DSH, was the last fallback for when both plans were out. Fewer apps is a feature. So the new shape has fewer programs, and one decision-maker where I used to be. I'm calling that decision-maker a Model Intelligence Layer. It is the part of my setup that decides which model does which job, and what happens when one runs out."
+    }
+   ],
+   "runes": [
+    {
+     "id": "intro",
+     "section": "intro",
+     "quote": "So I did what I usually do when something annoys me enough."
+    },
+    {
+     "id": "the-night-i-went-looking-for-a-way-out",
+     "section": "the-night-i-went-looking-for-a-way-out",
+     "quote": "is not a saving, it is a hobby"
+    },
+    {
+     "id": "the-old-setup-and-the-new-one",
+     "section": "the-old-setup-and-the-new-one",
+     "quote": "Fewer apps is a feature."
+    }
+   ],
+   "trial": "Write down every AI tool and plan you use, and next to each, the role it plays and what you do by hand when it runs out.",
+   "digest": [
+    "I ran out of Claude and Codex mid-task and refused to buy the next tier.",
+    "A local model was too weak and free models may keep what you send, so I allowed them only on my own public code.",
+    "My setup shrank to fewer apps, with one layer choosing the model."
+   ]
+  },
+  {
+   "title": "Four decisions I did not want to make tired",
+   "note": "necessity-and-the-model-layer",
+   "from": "what-a-model-intelligence-layer-does",
+   "to": "what-a-model-intelligence-layer-does",
+   "beats": [
+    {
+     "section": "what-a-model-intelligence-layer-does",
+     "quote": "I did not want to make those four decisions tired",
+     "text": "The layer owns four decisions. Which model plays which role. Whether that choice was actually obeyed. What happens when a model runs out. And what each run cost, and where the prompt went. I did not want to make those four decisions tired, in the middle of something. So I wrote them down once and let hooks enforce them."
+    },
+    {
+     "section": "what-a-model-intelligence-layer-does",
+     "quote": "Judgment goes up, typing goes down.",
+     "text": "The first rule is that judgment goes up and typing goes down. Planning and review stay on the strong models. When the main session reaches a piece of work that needs judgment, it hands that piece to a strong subagent and gets one answer back. A search, a read or a small edit goes the other way, to a light subagent. Anything else stays in the main session. Either way the main session keeps its own conversation, and its place."
+    },
+    {
+     "section": "what-a-model-intelligence-layer-does",
+     "quote": "it stops and asks me rather than reaching for money",
+     "text": "The second rule is that light work falls down a fixed order. First one free model, DeepSeek Flash Free. Then the same model on a small monthly plan, OpenCode Go. Then the Codex models on the plan I already pay for, Luna and then Sol at low effort. When a model says no anyway, the layer cools it down and moves on to the next one. And if every model is out, it stops and asks me rather than reaching for money. The paid DeepSeek API sits outside the order on purpose. It is an escalation, not a step."
+    },
+    {
+     "section": "what-a-model-intelligence-layer-does",
+     "quote": "Free, the one free model, since the free",
+     "text": "Three requests show where each rule bites. Say the free model is out for the day. The route check skips it and OpenCode Go takes the work. Nothing stalls. Say the request is in a private repository. The free model and Go both get skipped, because both may keep prompts. Luna takes it instead. Nothing leaks. Say the work genuinely needs the paid model. Then it waits for my typed yes. Nothing overspends. If a session starts on the wrong model, it stops before doing any work and offers me a restart."
+    }
+   ],
+   "runes": [
+    {
+     "id": "what-a-model-intelligence-layer-does",
+     "section": "what-a-model-intelligence-layer-does",
+     "quote": "I did not want to make those four decisions tired"
+    },
+    {
+     "id": "what-a-model-intelligence-layer-does-2",
+     "section": "what-a-model-intelligence-layer-does",
+     "quote": "it stops and asks me rather than reaching for money"
+    },
+    {
+     "id": "what-a-model-intelligence-layer-does-2-2",
+     "section": "what-a-model-intelligence-layer-does",
+     "quote": "Judgment goes up, typing goes down."
+    }
+   ],
+   "trial": "Take one task you did today and sort its pieces into judgment and typing, then name the cheapest model you would trust with each typing piece.",
+   "digest": [
+    "The layer decides the model per role, checks it was obeyed, handles running out, and records cost.",
+    "Judgment goes to strong models and light work falls down a free, then flat-rate, then paid-plan order.",
+    "The pay-per-token API sits outside that order and needs a typed yes."
+   ]
+  },
+  {
+   "title": "What I have seen, and the line I hold",
+   "note": "necessity-and-the-model-layer",
+   "from": "what-is-built-and-what-is-still-ahead",
+   "to": "the-turn",
+   "beats": [
+    {
+     "section": "what-is-built-and-what-is-still-ahead",
+     "quote": "reads only what is written down.",
+     "text": "It is built, I use it every day, and parts of it are still unproven. Both of those are true at once, so I'll take them in order. And a plan that changes the setup itself, anything touching my hooks, settings or standards, cannot start until a fresh reviewer has read it. I call that reviewer the goldfish. It has seen nothing of the conversation that produced the plan, so it reads only what is written down."
+    },
+    {
+     "section": "what-is-built-and-what-is-still-ahead",
+     "quote": "Those are tested, not yet seen.",
+     "text": "Now the honest part. I have seen Go take light work after its allowance was checked, live on my Mac. I have not yet seen the free model run out in the middle of a task and Go take over by itself. I have not seen a main session move on when it runs out, or the Codex side of the checks, or Sol take light work on OpenCode. Those are tested, not yet seen. Continuing a cut-off session is still half by hand, because I click to archive the old one. And on the thirtieth of November I'm going to look at a week of records and decide whether free should still go first."
+    },
+    {
+     "section": "the-rule-i-will-not-bend",
+     "quote": "a mistake has to get past all three",
+     "text": "Then there's the rule I will not bend. On my work computer, only the company's Claude and Codex. The free model, Go and DeepSeek are for my own projects, on my own computer. Those three may keep what they are sent, so they never see work code. And I did not leave that to my memory, which is exactly the thing I would not leave it to. Three guards hold the line, and a mistake has to get past all three. A computer the setup can't identify is treated as a work computer. In work context, every prompt checks the signed-in account and is blocked unless it's a company one. And the wrapper that starts OpenCode, which runs the light chain, refuses to start it in work context, whatever I've said about the repository. I would not let a tired evening be the reason one of them saw something that wasn't mine."
+    },
+    {
+     "section": "what-it-changed",
+     "quote": "the next model is a lookup and not a decision",
+     "text": "It never stalls, it never overspends, and it never leaks private code. Each of those has a mechanism behind it rather than a promise. So far, I haven't run out in the middle of something. The free model and the small plan take the light work, so the strong plans last longer, and when one does empty, the next model is a lookup and not a decision. I ran out at the wrong moment, with four hours left on a clock I couldn't argue with. Now the next model is a lookup, and the lookup knows what it's allowed to touch."
+    }
+   ],
+   "runes": [
+    {
+     "id": "what-is-built-and-what-is-still-ahead",
+     "section": "what-is-built-and-what-is-still-ahead",
+     "quote": "Those are tested, not yet seen."
+    },
+    {
+     "id": "the-rule-i-will-not-bend",
+     "section": "the-rule-i-will-not-bend",
+     "quote": "a mistake has to get past all three"
+    },
+    {
+     "id": "what-it-changed",
+     "section": "what-it-changed",
+     "quote": "the next model is a lookup and not a decision"
+    }
+   ],
+   "trial": "List the repositories you work in and mark each one as fine or not fine for a model that may keep your prompts, then write down what would stop you from getting it wrong on a tired evening.",
+   "digest": [
+    "The layer is built and used daily, but several fallbacks are tested and not yet seen live.",
+    "Work code never reaches a model that may keep prompts, and three guards enforce that.",
+    "The gains so far are no mid-task stalls, lower effort settings and fewer apps, as experience rather than a measured comparison."
+   ]
+  }
+ ]
+}

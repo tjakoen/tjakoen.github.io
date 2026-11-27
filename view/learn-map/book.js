@@ -128,7 +128,9 @@
   const S = { ended: false, lesson: null, stop: 0, beat: 0, playing: false, speed: 1, tab: 'book', solo: false, quest: null };
   const ui = {};
   const stopOf = () => S.lesson.stops[S.stop], beatOf = () => stopOf().beats[S.beat];
-  const questOf = (i) => { const s = S.lesson.stops[i]; return { id: s.note, local: S.lesson.stops.slice(0, i).filter((x) => x.note === s.note).length }; };
+  /* A quest's stop j is its j-th stop. A lesson cut in two parts lists each stop's lesson and place on the quest (ls), so the second part counts on from the first. */
+  const questOf = (i) => { const s = S.lesson.stops[i], qq = QUESTS.find((x) => x.id === s.note), k = qq && qq.ls ? qq.ls.findIndex((x) => x[0] === S.lesson.id && x[1] === i) : -1;
+    return { id: s.note, local: k >= 0 ? k : S.lesson.stops.slice(0, i).filter((x) => x.note === s.note).length }; };
   const doneStop = (i) => { const q = questOf(i); return !!PROG[q.id]?.has(q.local); };
 
   function build() {

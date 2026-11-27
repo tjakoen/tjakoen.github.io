@@ -28,7 +28,7 @@ highlight: who-i-am-in-case-we-havent-met | here's the short version
 
 In case we haven't met. I manage engineers at Career Team, and I teach software engineering part-time at a university. Nine years in. Mostly that means reading other people's code and finding the problems politely. The AI part is the last six months. If you'd rather check who's talking before you trust them, my About page has the rest. I'd encourage that.
 
-**Beat X**
+**Beat 5**
 highlight: why-i-started-over | figure: learning path as a line of six places
 
 Here's the shape of the whole path. The Harbor comes first, and it's the short on-ramp: the basics in plain words, plus Claude Academy outside this site. Then the mainland, in order of difficulty, ending at the deep technical notes. You don't have to walk all of it. The order is on purpose, so you meet the ideas before the deeper notes lean on them.
@@ -101,7 +101,7 @@ highlight: it-says-yes-to-everything | Each of those was a choice
 
 Ask for "a portfolio site" and count what comes back. A hero banner, a color scheme, a bio in a stranger's voice, projects you never built. Choices you never made, delivered in a confident voice. That confidence is the risk.
 
-**Beat X**
+**Beat 4**
 highlight: it-says-yes-to-everything | figure: two paths from the same request
 
 Look at the two paths side by side. The same request goes in on both. On the left, nobody says where the gaps are, so the agent guesses, and you find the wrong result late. On the right, a short brief goes first, and what comes back is something you can check against what you wrote. The only thing that changed is what you handed over before it started.
@@ -131,7 +131,7 @@ highlight: say-what-done-looks-like | What done looks like.
 
 Before I ask for anything, three lines: the goal, what done looks like, what to leave alone. The middle one is where people get stuck. If I can't say what done looks like, I've found something I haven't decided yet. Better to find that now.
 
-**Beat X**
+**Beat 2**
 highlight: say-what-done-looks-like | figure: the brief has three parts
 
 Here are the three lines side by side. Nothing in them is code. The middle one is shaded because it's the one people get stuck on, and it tells you whether the task is ready to hand over at all. A first-year with a clear brief will often get a better result than an expert with a vague one.

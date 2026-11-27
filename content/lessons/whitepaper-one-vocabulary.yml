@@ -1,47 +1,101 @@
 id: whitepaper-one-vocabulary
 note: whitepaper-one-vocabulary
-title: 
-summary: 
+title: "One Vocabulary, Two Operators"
+summary: "The whitepaper in plain words: one closed list of actions that a human and an AI operate identically through one door, with the AI's hand shown in the surface. This lesson covers the idea, how it is built, who holds which piece, the claim I make and do not make, and what I have not earned."
 audio: /media/lessons/whitepaper-one-vocabulary.m4a
-stops:
-  - title: ""
+stops: 
+  - title: The AI that pretends to be a person
     note: whitepaper-one-vocabulary
     from: intro
     to: 1-introduction
-    words: 1232
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: abstract
+        section: abstract
+        quote: the AI has no affordance a person lacks
+      - id: 1-introduction
+        section: 1-introduction
+        quote: A crowded road is evidence of a real destination.
+      - id: 1-introduction-2
+        section: 1-introduction
+        quote: the operator holds no direct-write shortcut either
+    trial: "Pick one AI tool you use that acts on a page or an app. Write down, in two sentences, whether it imitates your clicks or calls actions the app defines, and how it tells you what it did."
+    digest: 
+      - Most AI agents imitate a person clicking.
+      - GRAIN gives a human and an AI one closed list of actions and one door.
+      - "The AI's hand shows in the surface, and the limits are stated up front."
+  - title: "One door, one writer"
     note: whitepaper-one-vocabulary
     from: 2-the-approach-in-brief
     to: 2-the-approach-in-brief
-    words: 545
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: 2-the-approach-in-brief
+        section: 2-the-approach-in-brief
+        quote: it cannot drift from the UI because
+      - id: 2-the-approach-in-brief-2
+        section: 2-the-approach-in-brief
+        quote: "provenance is permanent, not a loading state"
+      - id: 2-the-approach-in-brief-2-2
+        section: 2-the-approach-in-brief
+        quote: A stream of pixel-clicks cannot be narrated meaningfully
+    trial: Take one screen of an app you know. List three surfaces on it by a plain name and three actions a person can take there. You have just drafted a tiny vocabulary.
+    digest: 
+      - "Two lists define what can be operated, and the manifest of them is harvested from the UI itself."
+      - A human and an AI both send Intents through one door to one writer.
+      - "The AI's mark stays after the action commits."
+  - title: Who already holds which piece
     note: whitepaper-one-vocabulary
     from: 3-related-work-and-positioning
     to: 3-related-work-and-positioning
-    words: 2201
-    reference: true
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: 3-related-work-and-positioning
+        section: 3-related-work-and-positioning
+        quote: "an agent's completed work is visually indistinguishable from a human's"
+      - id: 3-related-work-and-positioning-2
+        section: 3-related-work-and-positioning
+        quote: It is the concept; ours is the contract.
+      - id: 3-related-work-and-positioning-2-2
+        section: 3-related-work-and-positioning
+        quote: so the bare concept of in-surface disclosure is not ours either
+    trial: "Draw the three columns from this stop on paper: shared vocabulary, one door, AI signal. Place two AI tools you know in it and mark which columns each fills."
+    digest: 
+      - Every neighbor holds some of the three properties.
+      - Agent-Native holds two and has no provenance surface.
+      - "The claim is the conjunction, and the bare ideas are named as borrowed."
+  - title: A synthesis and an existence proof
     note: whitepaper-one-vocabulary
     from: 4-contribution
     to: 5-evaluation
-    words: 1081
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: 4-contribution
+        section: 4-contribution
+        quote: We do not claim a new capability
+      - id: 4-contribution-2
+        section: 4-contribution
+        quote: a position converged upon from independent directions is a real position
+      - id: 5-evaluation
+        section: 5-evaluation
+        quote: "we state them as hypotheses, not results"
+    trial: "Write one of the three hypotheses as a test you could run with two friends in ten minutes: what they do, and what you would measure."
+    digest: 
+      - "The claim is three properties together, not a new capability."
+      - A small live model now drives a narrow slice through the door.
+      - Every benefit is still a hypothesis waiting on a user study.
+  - title: What I have not earned yet
     note: whitepaper-one-vocabulary
     from: 6-limitations-and-threats
     to: 8-open-questions-next-research-pass
-    words: 829
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: 6-limitations-and-threats
+        section: 6-limitations-and-threats
+        quote: "Positioning must be dated, not absolute."
+      - id: 7-conclusion
+        section: 7-conclusion
+        quote: "That is the contribution, and it is enough."
+      - id: 8-open-questions-next-research-pass
+        section: 8-open-questions-next-research-pass
+        quote: Re-vet every provenance-HCI source for retraction before it goes in.
+    trial: "Take any claim you have published or posted about a tool you built. Write one honest limit next to it, with a date on it."
+    digest: 
+      - "The door, registry and grade are built and tested, and the live model covers a narrow slice."
+      - "The claim is dated, scoped and not proven to help anyone yet."
+      - Retracted sources get checked before they go in.

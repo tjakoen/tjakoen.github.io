@@ -1,38 +1,82 @@
 id: build-the-floor-2
 note: build-the-floor
-title: 
-summary: 
+title: "Build the Floor, part two: from scored runs to the loop"
+summary: "The second half of the roadmap for building the floor under an AI agent: scoring the skills, taking the human out of the trigger, the loop and what it needs around it, six ways these systems fail quietly, and what to start with."
 audio: /media/lessons/build-the-floor-2.m4a
-stops:
-  - title: ""
+stops: 
+  - title: "Score it, then take the human out of the trigger"
     note: build-the-floor
     from: stage-two-get-them-used-and-score-what-happens
     to: stage-three-the-same-skills-fired-by-triggers
-    words: 1315
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: stage-two-get-them-used-and-score-what-happens
+        section: stage-two-get-them-used-and-score-what-happens
+        quote: A skill nobody runs is a document
+      - id: stage-two-get-them-used-and-score-what-happens-2
+        section: stage-two-get-them-used-and-score-what-happens
+        quote: a skill that is not good enough yet
+      - id: stage-three-the-same-skills-fired-by-triggers
+        section: stage-three-the-same-skills-fired-by-triggers
+        quote: A lifecycle hook is enforcement
+    trial: "Pick one rule your team has written down, and check whether anything actually enforces it or whether it only asks."
+    digest: 
+      - "Log every run, score a sample by hand, and set the promotion bar by what a wrong run costs."
+      - "Don't mandate usage, because a mandate hides whether a skill is wanted."
+      - "Then fire the same skill from a trigger, enforce anything serious with a hook, and judge tickets on the substrate rather than the model's opinion."
+  - title: "The loop, and which parts are allowed to cost tokens"
     note: build-the-floor
     from: stage-four-the-loop
     to: stage-four-the-loop
-    words: 835
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: stage-four-the-loop
+        section: stage-four-the-loop
+        quote: Two boxes cost model tokens.
+      - id: stage-four-the-loop-2
+        section: stage-four-the-loop
+        quote: "A kill switch that stops every loop, tested before you need it"
+      - id: stage-four-the-loop-2-2
+        section: stage-four-the-loop
+        quote: That is the wrong unit of decision
+    trial: "Take one workflow you would like to automate and mark each step as needing judgement or not, then count how many really need a model."
+    digest: 
+      - "Nothing runs unattended without visibility, verifiability, legibility and containment."
+      - "In the loop only the implement and fix steps call a model, and everything else is plain code."
+      - "Cap retries, sandbox it, scope the credentials, test the kill switch, and push work into plain code before shopping for a cheaper model."
+  - title: Six ways it fails quietly
     note: build-the-floor
     from: six-ways-these-systems-fail-without-telling-you
     to: six-ways-these-systems-fail-without-telling-you
-    words: 748
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: six-ways-these-systems-fail-without-telling-you
+        section: six-ways-these-systems-fail-without-telling-you
+        quote: A silent pass is not a pass
+      - id: six-ways-these-systems-fail-without-telling-you-2
+        section: six-ways-these-systems-fail-without-telling-you
+        quote: "Every number accurate, every sentence built on them false"
+      - id: six-ways-these-systems-fail-without-telling-you-2-2
+        section: six-ways-these-systems-fail-without-telling-you
+        quote: I was careful.
+    trial: Pick one automated check you rely on and find out how you would know if it had stopped running.
+    digest: 
+      - "Six failures that all look like a good week: silent checks, unverified foundations, measurements read as facts, impossible rules, documented features that do not exist, and drifting docs."
+      - Every check must report what ran and what was skipped.
+      - Let tools establish the structure and let prose explain it.
+  - title: "Scaffolding expires, the floor does not"
     note: build-the-floor
     from: your-scaffolding-has-an-expiry-date
     to: what-i-would-want-to-build
-    words: 1326
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: your-scaffolding-has-an-expiry-date
+        section: your-scaffolding-has-an-expiry-date
+        quote: "The scaffolding was real, it was load-bearing"
+      - id: where-to-start-concretely
+        section: where-to-start-concretely
+        quote: "If you can only do one thing this week, do the marker"
+      - id: what-i-would-want-to-build
+        section: what-i-would-want-to-build
+        quote: I would rather be the one who builds the floor
+    trial: "Write the exact label, branch prefix or trailer your team would use to mark agent-authored changes, and the one query that would list them."
+    digest: 
+      - "Most scaffolding is a bet on a current model weakness, so remove one piece each model generation and see if anything breaks."
+      - "Verification, legible docs, containment and the change marker do not expire."
+      - "Start with five unglamorous steps, and if you only do one this week, mark every agent-authored change."
