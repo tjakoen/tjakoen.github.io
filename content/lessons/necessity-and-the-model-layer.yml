@@ -1,30 +1,63 @@
 id: necessity-and-the-model-layer
 note: necessity-and-the-model-layer
-title: 
-summary: 
+title: I Ran Out With Hours Left
+summary: "I ran out of usage with four hours left, would not pay my way out, and built a layer that decides which model does which job. This lesson says what it decides, what I have and have not seen it do, and the one line I will not bend."
 audio: /media/lessons/necessity-and-the-model-layer.m4a
-stops:
-  - title: ""
+stops: 
+  - title: "I ran out, and I would not pay my way out"
     note: necessity-and-the-model-layer
     from: intro
     to: the-old-setup-and-the-new-one
-    words: 839
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: intro
+        section: intro
+        quote: So I did what I usually do when something annoys me enough.
+      - id: the-night-i-went-looking-for-a-way-out
+        section: the-night-i-went-looking-for-a-way-out
+        quote: "is not a saving, it is a hobby"
+      - id: the-old-setup-and-the-new-one
+        section: the-old-setup-and-the-new-one
+        quote: Fewer apps is a feature.
+    trial: "Write down every AI tool and plan you use, and next to each, the role it plays and what you do by hand when it runs out."
+    digest: 
+      - I ran out of Claude and Codex mid-task and refused to buy the next tier.
+      - "A local model was too weak and free models may keep what you send, so I allowed them only on my own public code."
+      - "My setup shrank to fewer apps, with one layer choosing the model."
+  - title: Four decisions I did not want to make tired
     note: necessity-and-the-model-layer
     from: what-a-model-intelligence-layer-does
     to: what-a-model-intelligence-layer-does
-    words: 824
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: what-a-model-intelligence-layer-does
+        section: what-a-model-intelligence-layer-does
+        quote: I did not want to make those four decisions tired
+      - id: what-a-model-intelligence-layer-does-2
+        section: what-a-model-intelligence-layer-does
+        quote: it stops and asks me rather than reaching for money
+      - id: what-a-model-intelligence-layer-does-2-2
+        section: what-a-model-intelligence-layer-does
+        quote: "Judgment goes up, typing goes down."
+    trial: "Take one task you did today and sort its pieces into judgment and typing, then name the cheapest model you would trust with each typing piece."
+    digest: 
+      - "The layer decides the model per role, checks it was obeyed, handles running out, and records cost."
+      - "Judgment goes to strong models and light work falls down a free, then flat-rate, then paid-plan order."
+      - The pay-per-token API sits outside that order and needs a typed yes.
+  - title: "What I have seen, and the line I hold"
     note: necessity-and-the-model-layer
     from: what-is-built-and-what-is-still-ahead
     to: the-turn
-    words: 907
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: what-is-built-and-what-is-still-ahead
+        section: what-is-built-and-what-is-still-ahead
+        quote: "Those are tested, not yet seen."
+      - id: the-rule-i-will-not-bend
+        section: the-rule-i-will-not-bend
+        quote: a mistake has to get past all three
+      - id: what-it-changed
+        section: what-it-changed
+        quote: the next model is a lookup and not a decision
+    trial: "List the repositories you work in and mark each one as fine or not fine for a model that may keep your prompts, then write down what would stop you from getting it wrong on a tired evening."
+    digest: 
+      - "The layer is built and used daily, but several fallbacks are tested and not yet seen live."
+      - "Work code never reaches a model that may keep prompts, and three guards enforce that."
+      - "The gains so far are no mid-task stalls, lower effort settings and fewer apps, as experience rather than a measured comparison."

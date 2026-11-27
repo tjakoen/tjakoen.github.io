@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { OUT_DIR, beatsOf, figureNamesOf, lessonIds, loadLesson, problemsOf, sectionsOf, slugOf } from "./lesson-data.ts";
+import { OUT_DIR, beatsOf, figureNamesOf, unreadBeats, lessonIds, loadLesson, problemsOf, sectionsOf, slugOf } from "./lesson-data.ts";
 
 describe("slugOf and sectionsOf", () => {
   test("a heading becomes the id MILL stamps on it", () => {
@@ -46,6 +46,14 @@ describe("figure beats", () => {
   });
 });
 
+describe("unreadBeats", () => {
+  test("a beat heading that is not numbered is reported, not skipped", () => {
+    const ok = "## Stop 1: A\n\n**Beat 1**\nhighlight: a | q\n\nSpoken.\n";
+    expect(unreadBeats(ok)).toEqual([]);
+    expect(unreadBeats(ok + "\n**Beat X**\nhighlight: a | figure: f\n\nMore.\n").join()).toContain("2 beat headings but 1 readable");
+  });
+});
+
 describe("problemsOf", () => {
   const lesson = { id: "t", title: "T", summary: "", audio: "", stops: [{ title: "S", note: "n", from: "intro", to: "one", beats: [{ section: "one", quote: "the thing", text: "x" }], runes: [{ id: "r", section: "one", quote: "gone" }], trial: "", digest: [] }] };
   test("a quote that is in its section, with whitespace squashed, is fine", () => {
@@ -68,5 +76,35 @@ describe("the real lessons", () => {
   });
   test("the lesson files the book fetches are the ones the tool generates", () => {
     for (const id of lessonIds()) expect(readFileSync(join(OUT_DIR, `${id}.json`), "utf8"), id).toBe(JSON.stringify(loadLesson(id)!, null, 1) + "\n");
+  });
+});
+
+describe("the quests are wired to their lessons", () => {
+  const quests = readFileSync(join(import.meta.dir, "..", "view", "learn-map", "map.html"), "utf8").split("\n")
+    .filter((l) => /^\{"id":".*"region"/.test(l)).map((l) => JSON.parse(l.replace(/,$/, "")) as { id: string; stops: string[]; lesson?: string; li?: number[]; ls?: [string, number][] });
+  const at = (q: (typeof quests)[number]): [string, number][] => q.ls ?? (q.li ?? []).map((i): [string, number] => [q.lesson!, i]);
+  test("every quest has a lesson, so Begin quest opens the book for it", () => {
+    expect(quests.length).toBeGreaterThan(0);
+    for (const q of quests) expect(q.lesson, q.id).toBeTruthy();
+  });
+  test("each quest stop points at a stop of that lesson that belongs to the same note, under the same title", () => {
+    for (const q of quests) {
+      const places = at(q);
+      expect(places.length, `${q.id} stops`).toBe(q.stops.length);
+      places.forEach(([id, i], k) => {
+        const stop = loadLesson(id)?.stops[i];
+        expect(stop, `${q.id} stop ${k + 1} -> ${id}[${i}]`).toBeTruthy();
+        expect(stop!.note, `${q.id} stop ${k + 1}`).toBe(q.id);
+        expect(stop!.title, `${q.id} stop ${k + 1}`).toBe(q.stops[k]!);
+      });
+    }
+  });
+  test("every stop of every lesson is claimed by exactly one quest stop, so no chapter is unreachable", () => {
+    const claimed = new Map<string, number>();
+    for (const q of quests) for (const [id, i] of at(q)) claimed.set(`${id}:${i}`, (claimed.get(`${id}:${i}`) ?? 0) + 1);
+    for (const id of lessonIds()) loadLesson(id)!.stops.forEach((_, i) => expect(claimed.get(`${id}:${i}`), `${id} stop ${i + 1}`).toBe(1));
+  });
+  test("a lesson with several stops lists each stop's beats, so Next chapter always has somewhere to go", () => {
+    for (const id of lessonIds()) for (const [i, s] of loadLesson(id)!.stops.entries()) expect(s.beats.length, `${id} stop ${i + 1}`).toBeGreaterThanOrEqual(3);
   });
 });

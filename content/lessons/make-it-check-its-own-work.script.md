@@ -50,7 +50,7 @@ highlight: then-ask-a-fresh-pair-of-eyes | my experience and not a measurement
 
 And be honest about that. It's my experience and not a measurement. Test it yourself on something small. If it finds nothing, you've earned a little trust in that piece of work.
 
-**Beat X**
+**Beat 4**
 highlight: then-ask-a-fresh-pair-of-eyes | figure: from done to proven
 
 Put the whole chain in one picture. The AI says it's done, which is only a claim. You ask for the evidence on each done line, and you run it yourself the way a user would. The shaded step is the fresh session, the one that didn't write the code. Last, whatever it keeps missing goes in the brief file, so the next session reads it.

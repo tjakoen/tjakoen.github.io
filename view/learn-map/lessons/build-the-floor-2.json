@@ -1,0 +1,212 @@
+{
+ "id": "build-the-floor-2",
+ "title": "Build the Floor, part two: from scored runs to the loop",
+ "summary": "The second half of the roadmap for building the floor under an AI agent: scoring the skills, taking the human out of the trigger, the loop and what it needs around it, six ways these systems fail quietly, and what to start with.",
+ "audio": "/media/lessons/build-the-floor-2.m4a",
+ "stops": [
+  {
+   "title": "Score it, then take the human out of the trigger",
+   "note": "build-the-floor",
+   "from": "stage-two-get-them-used-and-score-what-happens",
+   "to": "stage-three-the-same-skills-fired-by-triggers",
+   "beats": [
+    {
+     "section": "stage-two-get-them-used-and-score-what-happens",
+     "quote": "A skill nobody runs is a document",
+     "text": "Stage two has one objective. Find out which skills actually work, with numbers rather than impressions. A skill nobody runs is a document, and a skill nobody scored can't be promoted. So log every run. What it was invoked on, what it produced, and whether the outcome held. Then score a sample by hand. It's tedious and there's no way around it, because the whole promotion mechanism downstream is built on a count of scored runs. And \"it seems to be working well\" is not a threshold."
+    },
+    {
+     "section": "stage-two-get-them-used-and-score-what-happens",
+     "quote": "a skill that is not good enough yet",
+     "text": "Decide the required count in advance, sized to blast radius. Release notes can graduate on a handful of scored runs, because a wrong one is embarrassing. Review comments need more, because a wrong one wastes an engineer an hour. A skill that opens pull requests against production needs far more again, because a wrong one is an incident. Adoption is political here as much as technical. Don't mandate usage. A skill that has to be required is a skill that is not good enough yet, and mandating it costs you the signal that would have told you so."
+    },
+    {
+     "section": "stage-three-the-same-skills-fired-by-triggers",
+     "quote": "A lifecycle hook is enforcement",
+     "text": "Stage three takes the human out of the trigger, and nothing else. It should be a flag, not a rewrite. The skill a developer runs today runs headless in CI tomorrow. If your tooling can't do that, this is where you find out, at the worst possible moment, having written everything twice. Never automate a stage the skill hasn't actually completed. It sounds too obvious to say, and it's the most common violation I've seen, because a well-written skill reads as though it works. If I could only teach one thing, it'd be this. An instruction in a context file is a request. A lifecycle hook is enforcement. They feel similar when you write them, and they are not the same object at all."
+    },
+    {
+     "section": "stage-three-the-same-skills-fired-by-triggers",
+     "quote": "never once used a worktree. The rule",
+     "text": "My own standards require a git worktree per run. I wrote that rule twice, in two places, published it, and linked it from every repository. Then I checked, and I had never once used a worktree. The rule was perfect. Nothing enforced it, so nothing happened. So anything whose violation would be an incident belongs in a hook, not a paragraph. Don't ask the model. Models are badly calibrated about their own capability, and they'll say yes. Ask whether the substrate is there instead. Green means the substrate is there. Amber means it isn't, so the amber list is a work order, not an opinion."
+    }
+   ],
+   "runes": [
+    {
+     "id": "stage-two-get-them-used-and-score-what-happens",
+     "section": "stage-two-get-them-used-and-score-what-happens",
+     "quote": "A skill nobody runs is a document"
+    },
+    {
+     "id": "stage-two-get-them-used-and-score-what-happens-2",
+     "section": "stage-two-get-them-used-and-score-what-happens",
+     "quote": "a skill that is not good enough yet"
+    },
+    {
+     "id": "stage-three-the-same-skills-fired-by-triggers",
+     "section": "stage-three-the-same-skills-fired-by-triggers",
+     "quote": "A lifecycle hook is enforcement"
+    }
+   ],
+   "trial": "Pick one rule your team has written down, and check whether anything actually enforces it or whether it only asks.",
+   "digest": [
+    "Log every run, score a sample by hand, and set the promotion bar by what a wrong run costs.",
+    "Don't mandate usage, because a mandate hides whether a skill is wanted.",
+    "Then fire the same skill from a trigger, enforce anything serious with a hook, and judge tickets on the substrate rather than the model's opinion."
+   ]
+  },
+  {
+   "title": "The loop, and which parts are allowed to cost tokens",
+   "note": "build-the-floor",
+   "from": "stage-four-the-loop",
+   "to": "stage-four-the-loop",
+   "beats": [
+    {
+     "section": "stage-four-the-loop",
+     "quote": "work are legibility and containment",
+     "text": "Before anything runs unattended, four things have to be true, and all four are things you build. Visibility, meaning you can say what is happening today. Verifiability, meaning a machine can decide whether a change is correct. Legibility, meaning an agent can read the codebase without a human explaining it. And containment, meaning you know what breaks if it's wrong, and you've tested that. Assisted development needs the first and the third. Anything unattended needs all four. I like that framing because it turns \"we're not ready\" into a list somebody owns."
+    },
+    {
+     "section": "stage-four-the-loop",
+     "quote": "Two boxes cost model tokens.",
+     "text": "A trigger fires. A disposable sandbox is provisioned. A model implements the change. Then plain code lints and tests it. If it fails, a model gets a capped number of attempts and goes back to the tests. If it passes, a pull request opens and a human reviews it, and that review is never skipped. Two boxes cost model tokens. Everything else is plain code that runs the same way every time. That split is the design decision worth stealing from Stripe's minions, and a one-person project can have it on day one. Only the steps that need judgement call a model. It buys reliability and cuts cost in the same move, which is a combination you almost never get."
+    },
+    {
+     "section": "stage-four-the-loop",
+     "quote": "A kill switch that stops every loop, tested before you need it",
+     "text": "A hard retry cap. Code, CI, one attempt to fix, one more push, and then a human takes it. Without that, you get a loop that spends real money rediscovering that it can't solve the problem. A disposable sandbox with real permissions inside it. Cut off from production and the internet, and then stop asking for confirmation on every action. Contain at the environment boundary, not the action boundary. And a kill switch that stops every loop, tested before you need it. Untested rollback is a plan, not a control."
+    },
+    {
+     "section": "stage-four-the-loop",
+     "quote": "That is the wrong unit of decision",
+     "text": "When one of these gets expensive, the instinct is to swap the whole thing onto a cheaper model. That's the wrong unit of decision. In the systems I've actually measured, most of the bill sits in parallel fan-out, the several independent analysis passes over one change, while the instruction text is a rounding error. Swapping the model changes your price per token. It doesn't touch the fan-out, and it risks the precision that justified building the thing. Get a quality baseline first, because a cost change you can't measure is a change you can't evaluate. Then push work into plain code, because every candidate a script can rule out before the fan-out is fan-out you never pay for."
+    }
+   ],
+   "runes": [
+    {
+     "id": "stage-four-the-loop",
+     "section": "stage-four-the-loop",
+     "quote": "Two boxes cost model tokens."
+    },
+    {
+     "id": "stage-four-the-loop-2",
+     "section": "stage-four-the-loop",
+     "quote": "A kill switch that stops every loop, tested before you need it"
+    },
+    {
+     "id": "stage-four-the-loop-2-2",
+     "section": "stage-four-the-loop",
+     "quote": "That is the wrong unit of decision"
+    }
+   ],
+   "trial": "Take one workflow you would like to automate and mark each step as needing judgement or not, then count how many really need a model.",
+   "digest": [
+    "Nothing runs unattended without visibility, verifiability, legibility and containment.",
+    "In the loop only the implement and fix steps call a model, and everything else is plain code.",
+    "Cap retries, sandbox it, scope the credentials, test the kill switch, and push work into plain code before shopping for a cheaper model."
+   ]
+  },
+  {
+   "title": "Six ways it fails quietly",
+   "note": "build-the-floor",
+   "from": "six-ways-these-systems-fail-without-telling-you",
+   "to": "six-ways-these-systems-fail-without-telling-you",
+   "beats": [
+    {
+     "section": "six-ways-these-systems-fail-without-telling-you",
+     "quote": "A silent pass is not a pass",
+     "text": "The failure modes are. I have hit all six. And the uncomfortable thing about all six is that every one of them produces a report that reads like a pass. Checks that fail by going quiet. A broken check and a clean input produce exactly the same output, which is silence. This is the most dangerous mode on the list, because the system reports success the whole time. So every automated check has to tell \"I ran and found nothing\" apart from \"I did not run.\" Make each run say what executed and what was skipped. A silent pass is not a pass."
+    },
+    {
+     "section": "six-ways-these-systems-fail-without-telling-you",
+     "quote": "I was careful.",
+     "text": "Architecture built on a capability nobody checked. I once designed something with a layered credential system, multiple fallback paths, each layer documented and several of them individually verified. It was elegant. It has never completed a single run, because the whole structure rested on one capability nobody probed, and that capability doesn't exist. Every layer above it is correct and useless. And the lesson isn't \"be careful.\" I was careful. Other assumptions in that same system were verified end to end, and being rigorous everywhere else bought me exactly nothing. Verify the leaf before you build the tree."
+    },
+    {
+     "section": "six-ways-these-systems-fail-without-telling-you",
+     "quote": "Every number accurate, every sentence built on them false",
+     "text": "Three. Reporting a measurement as the thing measured. \"Zero results found\" quietly turns into \"there is nothing there.\" Every number accurate, every sentence built on them false. Four. Rules that are quietly impossible. You ask an agent to verify something its environment can't actually do. It produces output that reads as verified, because it has no way to tell you it couldn't. So ask for what's possible, and have it state what's left over. Five. A capability documented into existence. A flag shows up in the usage text. Six. Documentation drifting from the thing it describes. Accurate when written, and silently not anymore."
+    },
+    {
+     "section": "six-ways-these-systems-fail-without-telling-you",
+     "quote": "tools extract the structure, prose comes",
+     "text": "Deterministic tools extract the structure, and prose comes after. Documentation about how a system is built should come from tools that read the code and the commit history, with prose explaining what the tools found, never deciding what is true. A structural claim the tools missed and the prose covered for is a bug nobody can find, because the document reads as though it was checked. Build the generic thing, and treat your own version as a configuration of it. If an internal tool might one day be shared or reused, separate the engine from the configuration as a directory boundary from the first commit."
+    }
+   ],
+   "runes": [
+    {
+     "id": "six-ways-these-systems-fail-without-telling-you",
+     "section": "six-ways-these-systems-fail-without-telling-you",
+     "quote": "A silent pass is not a pass"
+    },
+    {
+     "id": "six-ways-these-systems-fail-without-telling-you-2",
+     "section": "six-ways-these-systems-fail-without-telling-you",
+     "quote": "Every number accurate, every sentence built on them false"
+    },
+    {
+     "id": "six-ways-these-systems-fail-without-telling-you-2-2",
+     "section": "six-ways-these-systems-fail-without-telling-you",
+     "quote": "I was careful."
+    }
+   ],
+   "trial": "Pick one automated check you rely on and find out how you would know if it had stopped running.",
+   "digest": [
+    "Six failures that all look like a good week: silent checks, unverified foundations, measurements read as facts, impossible rules, documented features that do not exist, and drifting docs.",
+    "Every check must report what ran and what was skipped.",
+    "Let tools establish the structure and let prose explain it."
+   ]
+  },
+  {
+   "title": "Scaffolding expires, the floor does not",
+   "note": "build-the-floor",
+   "from": "your-scaffolding-has-an-expiry-date",
+   "to": "what-i-would-want-to-build",
+   "beats": [
+    {
+     "section": "your-scaffolding-has-an-expiry-date",
+     "quote": "The scaffolding was real, it was load-bearing",
+     "text": "Every component in a harness encodes an assumption about what the model can't do on its own, and those assumptions are worth stress testing. An earlier version of their harness broke work into sprints with a full context reset between each one, because models lost coherence and wrapped up early as the window filled. A model generation later, that whole mechanism was removed, and the same work ran as one continuous session. The scaffolding was real, it was load-bearing, and then it was dead weight. Each of those is a bet about a current limitation, and some of those bets will expire. So schedule the stress test. Once a model generation, take one component out and see whether the outcome degrades. Keep what still earns its place, and delete what doesn't."
+    },
+    {
+     "section": "your-scaffolding-has-an-expiry-date",
+     "quote": "Verification, legible documentation, containment and the marker",
+     "text": "What doesn't expire is the other half. Verification, legible documentation, containment, and the marker on every agent change. Those aren't compensations for a weak model. They're how you find out what happened, and a better model makes them more valuable, not less. I now run the same loop on Claude, Codex and DeepSeek, and moving a task between them changes no instruction, because the standards are the contract and the model is a routing decision. For an organization, that's practical. Write the floor against the work, keep it out of any one vendor's harness, and a price change or an outage becomes a routing change."
+    },
+    {
+     "section": "where-to-start-concretely",
+     "quote": "If you can only do one thing this week, do the marker",
+     "text": "First, mark every agent-authored change. Today. It takes an afternoon, and it's the only item that can't be done later, because every comparison worth making for the next two years is a join against that marker. Second, pull ninety days of delivery history and publish it. Third, make your highest-traffic repository legible. Fourth, extract two skills from the people who do the work, ticket scoping and review assist, run by hand only. Fifth, start the outcome log on the first run, and score a sample by hand. If you can only do one thing this week, do the marker."
+    },
+    {
+     "section": "what-i-would-want-to-build",
+     "quote": "I would rather be the one who builds the floor",
+     "text": "The interesting problems all turned out to be in the plumbing, not the prompting. What I'd want is to own this end to end somewhere it matters. Run the baseline. And report the numbers honestly, including the ones that went the wrong way. And I'd ask for one thing up front, which is time to build the floor before anybody expects the agent. That's a quarter of unglamorous work. Everybody wants the agent. I would rather be the one who builds the floor."
+    }
+   ],
+   "runes": [
+    {
+     "id": "your-scaffolding-has-an-expiry-date",
+     "section": "your-scaffolding-has-an-expiry-date",
+     "quote": "The scaffolding was real, it was load-bearing"
+    },
+    {
+     "id": "where-to-start-concretely",
+     "section": "where-to-start-concretely",
+     "quote": "If you can only do one thing this week, do the marker"
+    },
+    {
+     "id": "what-i-would-want-to-build",
+     "section": "what-i-would-want-to-build",
+     "quote": "I would rather be the one who builds the floor"
+    }
+   ],
+   "trial": "Write the exact label, branch prefix or trailer your team would use to mark agent-authored changes, and the one query that would list them.",
+   "digest": [
+    "Most scaffolding is a bet on a current model weakness, so remove one piece each model generation and see if anything breaks.",
+    "Verification, legible docs, containment and the change marker do not expire.",
+    "Start with five unglamorous steps, and if you only do one this week, mark every agent-authored change."
+   ]
+  }
+ ]
+}

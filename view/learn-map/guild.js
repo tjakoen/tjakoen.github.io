@@ -153,7 +153,7 @@
 
   function badgeBody(bd, r, foreign) {
     const st = { progress: bd.progress, runes: bd.runes }, qs = regionQuests(r.n), stops = qs.reduce((n, q) => n + q.stops.length, 0);
-    const done = qs.reduce((n, q) => n + (st.progress[q.id] || []).length, 0), earned = regionDone(r.n, st), lessons = new Set(qs.map((q) => q.lesson).filter(Boolean));
+    const done = qs.reduce((n, q) => n + (st.progress[q.id] || []).length, 0), earned = regionDone(r.n, st), lessons = new Set(qs.flatMap((q) => (q.ls ? q.ls.map((x) => x[0]) : [q.lesson])).filter(Boolean));
     const skills = Object.keys(st.runes).filter((k) => lessons.has(k.split(':')[0])).map((k) => esc(k.split(':')[1].replace(/-/g, ' ')));
     const who = bd.name ? esc(bd.name) : 'This adventurer';
     return `<div class="gc__badge"><canvas width="64" height="64" aria-hidden="true"></canvas><div style="display:grid;gap:.5rem">

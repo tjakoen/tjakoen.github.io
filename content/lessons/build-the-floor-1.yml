@@ -1,46 +1,101 @@
 id: build-the-floor-1
 note: build-the-floor
-title: 
-summary: 
+title: "Build the Floor, part one: the roadmap and the first two stages"
+summary: "The first half of the roadmap for building the floor under an AI agent: why the floor is the variable, the five stages in order, what the floor is made of, and the first two stages, where supervision comes before output."
 audio: /media/lessons/build-the-floor-1.m4a
-stops:
-  - title: ""
+stops: 
+  - title: Everybody wants the agent
     note: build-the-floor
     from: intro
     to: the-floor-is-the-variable-and-it-is-measurable
-    words: 700
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-part-everybody-skips
+        section: the-part-everybody-skips
+        quote: making a codebase legible to a machine that has never met you
+      - id: the-floor-is-the-variable-and-it-is-measurable
+        section: the-floor-is-the-variable-and-it-is-measurable
+        quote: the thing that decides which side you land on the substrate gap
+      - id: the-floor-is-the-variable-and-it-is-measurable-2
+        section: the-floor-is-the-variable-and-it-is-measurable
+        quote: which tells you not to instrument this with a survey
+    trial: "Pick one repository you know and write two sentences, one on what an AI tool can already do there and one on what the codebase could not absorb."
+    digest: 
+      - "AI amplifies what an organization already is, and the Faros numbers show gains smaller than the costs."
+      - Generation scales and review does not.
+      - The substrate gap is the distance between what the tools can do and what the codebase can absorb.
+  - title: "Five stages, one artifact"
     note: build-the-floor
     from: the-roadmap
     to: the-roadmap
-    words: 1019
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-roadmap
+        section: the-roadmap
+        quote: a skill is written once and then promoted
+      - id: the-roadmap-2
+        section: the-roadmap
+        quote: It is not impressive and it is the entire foundation
+      - id: the-roadmap-2-2
+        section: the-roadmap
+        quote: Stage four remains a proposal.
+    trial: "Place your team on the five stages, then write the one thing you would need in place to honestly start the next one."
+    digest: 
+      - "Five stages over about eighteen months, and the order matters more than the dates."
+      - "A skill is written once and promoted from manual to triggered to unattended, so there is never a second system."
+      - "Only one skill has walked the first three stages in my own work, and stage four is still a proposal."
+  - title: What the floor actually is
     note: build-the-floor
     from: the-floor-has-a-shape-and-it-is-worth-naming
     to: the-floor-has-a-shape-and-it-is-worth-naming
-    words: 1082
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-floor-has-a-shape-and-it-is-worth-naming
+        section: the-floor-has-a-shape-and-it-is-worth-naming
+        quote: "The always-on file is a router, not an encyclopedia"
+      - id: the-floor-has-a-shape-and-it-is-worth-naming-2
+        section: the-floor-has-a-shape-and-it-is-worth-naming
+        quote: A skill is cheap to have and expensive to ignore.
+      - id: the-floor-has-a-shape-and-it-is-worth-naming-2-2
+        section: the-floor-has-a-shape-and-it-is-worth-naming
+        quote: closed when the class is gone
+    trial: "Open the context file of a repository you use and count its lines, then mark anything in it that belongs in a path-scoped rule instead."
+    digest: 
+      - "The floor is three layers of files: what the agent knows, what it can do, and what it can reach and what stops it."
+      - "Keep the always-on file short, let skills load on demand, and keep a code graph."
+      - "Every bug should come back as a rule, a test and a sweep."
+  - title: "Stage zero, know where you are"
     note: build-the-floor
     from: stage-zero-instrument-and-make-one-repository-legible
     to: stage-zero-instrument-and-make-one-repository-legible
-    words: 694
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: stage-zero-instrument-and-make-one-repository-legible
+        section: stage-zero-instrument-and-make-one-repository-legible
+        quote: individual-level metrics never feed a performance review
+      - id: stage-zero-instrument-and-make-one-repository-legible-2
+        section: stage-zero-instrument-and-make-one-repository-legible
+        quote: "Long context files make it worse, not better"
+      - id: stage-zero-instrument-and-make-one-repository-legible-2-2
+        section: stage-zero-instrument-and-make-one-repository-legible
+        quote: Environment parity is the boring one that decides everything
+    trial: "Check whether you could run one query today that separates agent-authored changes from human-authored ones, and if not, write down the marker you would add."
+    digest: 
+      - "Measure change failure rate split by agent and human, which needs a marker on every agent change from day one."
+      - Keep individual metrics out of performance reviews.
+      - "Make one repository legible with a short root file, path-scoped rules and committed tool configuration."
+  - title: "Stage one, supervision before output"
     note: build-the-floor
     from: stage-one-extract-the-skills
     to: stage-one-extract-the-skills
-    words: 899
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: stage-one-extract-the-skills
+        section: stage-one-extract-the-skills
+        quote: supervise work before the one that produces work
+      - id: stage-one-extract-the-skills-2
+        section: stage-one-extract-the-skills
+        quote: "Write them by extraction, not invention"
+      - id: stage-one-extract-the-skills-2-2
+        section: stage-one-extract-the-skills
+        quote: I know what that folder looks like. I have one.
+    trial: "Pick one task a senior on your team does well, and write the first five steps of it as they actually do it, then ask them to correct you."
+    digest: 
+      - "A skill is a senior's judgement written down and improved by pull request, extracted from people who do the work."
+      - "Build plan, review, docs and QA before the coder, because those four are what supervise it."
+      - Give the catalog an owner or it rots.

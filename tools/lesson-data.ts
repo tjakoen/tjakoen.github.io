@@ -10,6 +10,7 @@
 // The name is matched without regard to case or spacing and must name exactly one figure in that section, or the build fails.
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { slugifyHeading } from "@tjakoen/mill/core/slug.ts";
 
 const ROOT = join(import.meta.dir, "..");
 export const LESSONS_DIR = join(ROOT, "content", "lessons");
@@ -21,8 +22,8 @@ export type Beat = { section: string; quote?: string; figure?: string; text: str
 export type Stop = { title: string; note: string; from: string; to: string; beats: Beat[]; runes: Rune[]; trial: string; digest: string[] };
 export type Lesson = { id: string; title: string; summary: string; audio: string; external?: string; stops: Stop[] };
 
-/** The id MILL stamps on a heading: lower case, punctuation dropped, spaces to hyphens. */
-export const slugOf = (heading: string) => heading.toLowerCase().replace(/[^a-z0-9 -]/g, "").trim().replace(/ /g, "-");
+/** The id MILL stamps on a heading, from MILL's own slug function so a heading with a dot or a dash in it cannot drift. */
+export const slugOf = (heading: string) => slugifyHeading(heading);
 const squash = (s: string) => s.split(/\s+/).filter(Boolean).join(" ");
 
 /** The sections of a note by id, as plain text with the whitespace squashed. The text before the first heading is "intro". */
@@ -59,12 +60,22 @@ export function beatsOf(script: string): Beat[][] {
   }));
 }
 
+/** A beat heading the parser cannot read is a beat that silently never plays, so count them against what beatsOf found. */
+export function unreadBeats(script: string): string[] {
+  return script.split(/^## Stop \d+.*$/m).slice(1).flatMap((body, i) => {
+    const headings = (body.match(/^\*\*Beat\b[^\n]*$/gm) ?? []).length, read = beatsOf(`## Stop 1\n${body}`)[0]!.length;
+    return headings === read ? [] : [`stop ${i + 1}: ${headings} beat headings but ${read} readable beats`];
+  });
+}
+
 export function loadLesson(id: string): Lesson | null {
   const ymlFile = join(LESSONS_DIR, `${id}.yml`), scriptFile = join(LESSONS_DIR, `${id}.script.md`);
   if (!existsSync(ymlFile) || !existsSync(scriptFile)) return null;
   const y = Bun.YAML.parse(readFileSync(ymlFile, "utf8")) as Record<string, any>;
   const beats = beatsOf(readFileSync(scriptFile, "utf8"));
   if (!beats.some((b) => b.length)) return null;
+  const unread = unreadBeats(readFileSync(scriptFile, "utf8"));
+  if (unread.length) throw new Error(`${id}.script.md: ${unread.join("; ")}`);
   const stops: Stop[] = (y.stops as any[]).map((s, i) => ({
     title: String(s.title ?? ""), note: String(s.note ?? y.note ?? ""), from: String(s.from ?? ""), to: String(s.to ?? ""),
     beats: beats[i] ?? [], runes: (s.runes ?? []).map((r: any) => ({ id: String(r.id), section: String(r.section), quote: String(r.quote) })),
