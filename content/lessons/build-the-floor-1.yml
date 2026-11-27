@@ -1,0 +1,46 @@
+id: build-the-floor-1
+note: build-the-floor
+title: 
+summary: 
+audio: /media/lessons/build-the-floor-1.m4a
+stops:
+  - title: ""
+    note: build-the-floor
+    from: intro
+    to: the-floor-is-the-variable-and-it-is-measurable
+    words: 700
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: build-the-floor
+    from: the-roadmap
+    to: the-roadmap
+    words: 1019
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: build-the-floor
+    from: the-floor-has-a-shape-and-it-is-worth-naming
+    to: the-floor-has-a-shape-and-it-is-worth-naming
+    words: 1082
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: build-the-floor
+    from: stage-zero-instrument-and-make-one-repository-legible
+    to: stage-zero-instrument-and-make-one-repository-legible
+    words: 694
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: build-the-floor
+    from: stage-one-extract-the-skills
+    to: stage-one-extract-the-skills
+    words: 899
+    runes: []
+    trial: ""
+    digest: []
