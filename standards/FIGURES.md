@@ -73,7 +73,7 @@ relationship diagram (an *erDiagram* block), a sequence diagram, a state machine
 diagram, or a flow with more nodes and crossings than the flow scaffold holds without a hand-placed
 coordinate for every box. Write the fence, label it in words, and let MILL lay it out. The worked
 examples for a use case diagram, a data flow diagram and an ERD are in
-[Have the AI Draw It Before It Builds It](/notes/draw-it-before-the-ai-builds-it). Three steps, in order:
+[Have the AI Draw It Before It Builds It](/drafts/draw-it-before-the-ai-builds-it). Three steps, in order:
 
 1. Write the fence with its label: a *mermaid* fence with a label="…" attribute that says what the diagram shows, node by node.
 2. Render it on the authoring machine with *bun run diagrams:warm -- --drafts* (plain *bun run diagrams:warm* covers served notes only, and a draft page shows the raw source until its SVG is in
