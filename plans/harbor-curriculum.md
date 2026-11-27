@@ -355,18 +355,16 @@ or code, and the badge page. The map's lesson card on a note is also not built.
 
 ## The voice
 
-The recordings are not needed to see this working. The plan, in three steps:
+Decided 2026-11-27 (author): there are no audio steps. No speech synthesis, no text-to-speech service and no tools/lesson-audio.ts.
+The transcript is the voice, and the book is the place where the author's own words are heard.
 
-1. **Now: a temporary AI voice (done).** The book reads each line with the browser's own speech synthesis, so every lesson plays with
-   no recording and no cost. A browser with no voice gets each line timed from its word count. The Guide's name plate says temporary AI
-   voice, and the transcript is always on screen, so it also works with the sound off. Quality depends on the browser's voices.
-2. **Next: generated audio files.** A tool, tools/lesson-audio.ts, sends each stop's beats to a text-to-speech service and writes one
-   audio file per stop plus a cue time for every beat, so the highlight follows the real audio and not a timer. The lesson JSON gains
-   audio and cues. The book plays the file when there is one and falls back to browser speech when there is not. Decisions needed from
-   the author first: which service and voice, the cost he accepts, and who approves the voice. The service key lives in an environment
-   variable, never in the repo. Files are rebuilt when a script's text changes, and a check fails when audio is stale.
-3. **Last: the author's own recording.** Same file names and the same cue format, so nothing in the book changes. The temporary label
-   comes off the name plate. The AI voice can stay as the fallback for a stop not yet recorded.
+Each stop runs as a sequence. The note highlight moves to the quote, the Guide's transcript types out, and the next line follows once
+its words have had time to read, then the next highlight moves. At the end of a stop the book offers the next one. The pace of a line
+comes from its word count and the speed button. The stepper (previous and next line, previous and next stop) and the fast control stay.
+The Captions toggle was removed, because the transcript is now the only voice and hiding it would leave nothing.
+
+If the author records the stops later, the recording slots in under the same beats and cue idea, and nothing in the book has to change.
+That is a later choice and not part of this work.
 
 ## Decisions, 2026-11-27 (the map and the book)
 
@@ -380,4 +378,4 @@ The recordings are not needed to see this working. The plan, in three steps:
 - Social cards for the seven notes come from bun run social:card:harbor, which also fills socialImage and its alt text.
 - The full test suite has one failure that is older than this work and not mine: every diagram block in a note is the current
   drawing, which fails in a full run and passes alone.
-- Book layout, 2026-11-27 (author): the modal itself is the book, with the cover and title plate across the top (crumb, tabs, close) and the two leaves below. The controls are pinned to the foot of the right page. The first version had a flat sheet around a book, which did not fit the theme.
+- Book layout, 2026-11-27 (author): the modal itself is the book, with the cover and title plate across the top (crumb, then the page tabs standing in the brown bar over the right page, then close) and the two leaves below. The controls are pinned to the foot of the right page. The first version had a flat sheet around a book, which did not fit the theme.

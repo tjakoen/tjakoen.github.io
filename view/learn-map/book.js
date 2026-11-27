@@ -10,7 +10,7 @@
    This is a classic script that loads after the map's own, so it reads the map's globals (QUESTS, PROG, REG, P, spr, persist, noteHref). Progress is the
    reader's own, kept in this browser, and the lesson book writes the same save the map reads. */
 (function () {
-  const RUNE_KEY = 'learn.runes.v1', VOICE_KEY = 'learn.voice.v1';
+  const RUNE_KEY = 'learn.runes.v1';
   const RUNES = ['0110110|1001001|1000001|0100010|0010100|0001000|0001000', '0001000|0011100|0101010|1001001|0001000|0001000|0001000', '1111111|1000001|1011101|1010101|1011101|1000001|1111111', '0100010|0100010|0111110|0000100|0001000|0010000|0100000', '1001001|0101010|0011100|1111111|0011100|0101010|1001001', '0011100|0100010|1000001|1000001|1000001|0100010|0011100', '1110000|0010000|0011100|0000100|0000111|0000001|0000001', '0001000|0001000|1111111|0001000|0001000|1111111|0001000'];
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const read = (k) => { try { return JSON.parse(localStorage.getItem(k) || '{}'); } catch (e) { return {}; } };
@@ -102,26 +102,14 @@
     p.style.position = 'relative'; const cv = h('canvas', 'margin-rune'); cv.width = 7; cv.height = 7; drawRune(cv, runeIndex(runeId), inkColor()); p.prepend(cv);
   }
 
-  /* ---------- the voice: speech synthesis, or a timer where the browser has none ---------- */
-  const speechOk = () => 'speechSynthesis' in window && typeof SpeechSynthesisUtterance === 'function';
-  function pickVoice() {
-    if (!speechOk()) return null; const vs = speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang)); if (!vs.length) return null;
-    const saved = read(VOICE_KEY).name || '';
-    return vs.find((v) => v.name === saved) || vs.find((v) => /natural|neural|premium|enhanced/i.test(v.name)) || vs.find((v) => /google|samantha|daniel|aria|jenny/i.test(v.name)) || vs.find((v) => v.default) || vs[0];
-  }
+  /* ---------- the pace: the transcript is the voice, so each line is timed from its words ---------- */
   let token = 0, timer = 0, typer = 0;
   const beatMs = (text) => Math.max(2200, text.split(/\s+/).length * 380 / S.speed);
-  function speak(text, done) {
-    const mine = ++token; clearTimeout(timer);
-    const fallback = () => { timer = setTimeout(() => { if (mine === token) done(); }, beatMs(text)); };
-    const v = pickVoice(); if (!v) return fallback();
-    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.voice = v; u.rate = S.speed; u.lang = v.lang;
-      u.onend = () => { if (mine === token) done(); }; u.onerror = (e) => { if (mine !== token || e.error === 'interrupted' || e.error === 'canceled') return; fallback(); }; speechSynthesis.speak(u); } catch (e) { fallback(); }
-  }
-  function stopVoice() { token++; clearTimeout(timer); clearInterval(typer); if (speechOk()) speechSynthesis.cancel(); }
+  function speak(text, done) { const mine = ++token; clearTimeout(timer); timer = setTimeout(() => { if (mine === token) done(); }, beatMs(text)); }
+  function stopVoice() { token++; clearTimeout(timer); clearInterval(typer); }
 
   /* ---------- the book ---------- */
-  const S = { lesson: null, stop: 0, beat: 0, playing: false, speed: 1, tab: 'book', solo: false, captions: true, quest: null };
+  const S = { lesson: null, stop: 0, beat: 0, playing: false, speed: 1, tab: 'book', solo: false, quest: null };
   const ui = {};
   const stopOf = () => S.lesson.stops[S.stop], beatOf = () => stopOf().beats[S.beat];
   const questOf = (i) => { const s = S.lesson.stops[i]; return { id: s.note, local: S.lesson.stops.slice(0, i).filter((x) => x.note === s.note).length }; };
@@ -130,12 +118,12 @@
   function build() {
     root = h('div', 'bk'); root.hidden = true; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Quest book');
     root.innerHTML = `<div class="bk__shade"></div><div class="bk__sheet tome">
-      <div class="bk__bar"><div class="bk__crumb"></div><div class="bk__pg"><button data-page="note">Note</button><button data-page="guide">Guide</button></div><button class="bk__x" aria-label="Close the book">\u00d7</button></div>
+      <div class="bk__bar"><div class="bk__crumb"></div><div class="bk__right"><div class="tb bk__tabs" role="tablist"><span data-tab="book" data-on role="tab" tabindex="0">Book</span><span data-tab="log" role="tab" tabindex="0">Log</span><span data-tab="codex" role="tab" tabindex="0">Codex</span><span data-tab="pack" role="tab" tabindex="0">Pack</span></div><button class="bk__x" aria-label="Close the book">\u00d7</button></div><div class="bk__pg"><button data-page="note">Note</button><button data-page="guide">Guide</button></div></div>
       <div class="leaf bk__leafnote"><div class="bk__note"></div></div>
-      <div class="leaf bk__leafguide"><div class="tb bk__tabs" role="tablist"><span data-tab="book" data-on role="tab" tabindex="0">Book</span><span data-tab="log" role="tab" tabindex="0">Log</span><span data-tab="codex" role="tab" tabindex="0">Codex</span><span data-tab="pack" role="tab" tabindex="0">Pack</span></div><div class="bk__guide"></div><div class="bk__alt" hidden></div>
+      <div class="leaf bk__leafguide"><div class="bk__guide"></div><div class="bk__alt" hidden></div>
         <div class="controls bk__ctl"><div class="bk__prog"><div class="ribbonbar" aria-hidden="true"><i></i><u></u></div><div class="stops"><span class="bk__dots"></span><span class="bk__time"></span></div></div>
           <div class="row"><div><button data-do="prevstop" aria-label="Previous stop">\u23ee</button> <button data-do="prev" aria-label="Previous line">\u25c0</button> <button data-do="play" class="primary" aria-label="Play">\u25b6 Play</button> <button data-do="next" aria-label="Next line">\u25b6\u25b6</button> <button data-do="nextstop" aria-label="Next stop">\u23ed</button></div>
-            <div><button data-do="speed">1x</button> <button data-do="captions" aria-pressed="true">Captions</button> <button data-do="rest">Rest at campfire</button></div></div>
+            <div><button data-do="speed">1x</button> <button data-do="rest">Rest at campfire</button></div></div>
           </div></div>
       <div class="toast bk__toast" hidden></div></div>`;
     document.body.append(root);
@@ -150,7 +138,6 @@
     root.querySelector('.bk__ctl').addEventListener('click', (e) => { const b = e.target.closest('[data-do]'); if (!b) return; const a = b.dataset.do;
       if (a === 'play') toggle(); else if (a === 'next') step(1); else if (a === 'prev') step(-1); else if (a === 'nextstop') gotoStop(S.stop + 1); else if (a === 'prevstop') gotoStop(S.stop - 1);
       else if (a === 'speed') { const sp = [1, 1.15, 1.3, 0.9]; S.speed = sp[(sp.indexOf(S.speed) + 1) % sp.length]; b.textContent = S.speed + 'x'; if (S.playing) { stopVoice(); say(); } }
-      else if (a === 'captions') { S.captions = !S.captions; b.setAttribute('aria-pressed', String(S.captions)); ui.guide.classList.toggle('bk--nocap', !S.captions); }
       else if (a === 'rest') close(true); });
     root.dataset.page = 'note';
   }
@@ -205,7 +192,7 @@
     ui.guide.innerHTML = `<h4>Chapter ${S.stop + 1} · The Guide speaks</h4><div class="dlg"><canvas width="24" height="24"></canvas><div><div class="plate">Tjakoen, the Guide</div><div class="say"></div></div><span class="adv">▼</span></div><div class="hist"></div>
       <div class="bk__after"><h4>In plain words</h4><ul>${s.digest.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>
       <div class="trial"><h4>Trial</h4><span>${esc(s.trial)}</span><label><input type="checkbox" ${doneStop(S.stop) ? 'checked' : ''}> Mark trial done · +100 XP</label></div></div>`;
-    drawGuide(ui.guide.querySelector('canvas')); ui.guide.classList.toggle('bk--nocap', !S.captions);
+    drawGuide(ui.guide.querySelector('canvas'));
     ui.guide.querySelector('.trial input').addEventListener('change', (e) => { const set = PROG[q.id]; if (!set) return; if (e.target.checked) { set.add(q.local); toast('+100 XP · Trial done'); } else set.delete(q.local); persist(); renderDots(); });
     renderDots(); showBeat(); if (S.tab !== 'book') renderAlt(S.tab);
   }

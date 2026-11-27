@@ -228,13 +228,14 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 /* the modal IS the book: the leather cover, the spine and the two leaves are the dialog. The title plate runs across the cover. */
 .bk__sheet { position:relative; width:min(1180px,100%); height:min(90vh,800px); grid-template-columns:1fr 1fr; grid-template-rows:auto minmax(0,1fr); gap:0 0; padding:8px 10px 10px; box-shadow:8px 8px 0 rgba(0,0,0,.35),4px 4px 0 var(--q-ink); color:var(--q-ink); }
 .bk__sheet::before { top:2.7rem; }
-.bk__bar { grid-column:1 / -1; display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; padding:.1rem .15rem .5rem; position:relative; z-index:3; }
-.bk__crumb { flex:1 1 320px; font:700 .68rem ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; color:#f1e3c8; min-width:0; }
-/* page tabs: they sit on the top edge of the right page; the open tab is the page's own colour and flares out into it */
-.bk .tb.bk__tabs { flex:0 0 auto; display:flex; gap:6px; padding:8px 12px 0; background:color-mix(in srgb,var(--q-paper) 80%,var(--q-ink)); border-bottom:2px solid var(--q-ink); }
-.bk .tb span { flex:1 1 0; position:relative; text-align:center; padding:.32rem .4rem .28rem; margin-top:4px; border:2px solid var(--q-ink); border-bottom:0; border-radius:8px 8px 0 0; font:.72rem ui-monospace,monospace; background:color-mix(in srgb,var(--q-paper) 62%,var(--q-ink)); color:var(--q-ink); cursor:pointer; user-select:none; }
+.bk__bar { grid-column:1 / -1; display:grid; grid-template-columns:1fr 1fr; align-items:end; padding:.3rem .15rem 0; position:relative; z-index:3; }
+.bk__right { display:flex; align-items:flex-end; gap:.5rem; min-width:0; } .bk__right .bk__x { align-self:center; margin:0 0 .3rem; flex:0 0 auto; }
+.bk__crumb { align-self:center; padding:0 .8rem .35rem 0;  font:700 .68rem ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; color:#f1e3c8; min-width:0; }
+/* page tabs: they stand in the brown bar over the right page; the open tab is the page's own colour and flares out into it */
+.bk .tb.bk__tabs { flex:1 1 auto; display:flex; gap:6px; padding:0 12px 0 10px; align-items:flex-end; }
+.bk .tb span { flex:1 1 0; position:relative; text-align:center; padding:.32rem .4rem .28rem; margin-top:4px; border:2px solid var(--q-ink); border-radius:8px 8px 0 0; font:.72rem ui-monospace,monospace; background:color-mix(in srgb,var(--q-paper) 62%,var(--q-ink)); color:var(--q-ink); cursor:pointer; user-select:none; }
 .bk .tb span:hover { background:color-mix(in srgb,var(--q-paper) 78%,var(--q-ink)); }
-.bk .tb span[data-on] { background:var(--q-paper); margin-top:0; margin-bottom:-2px; padding-top:.5rem; padding-bottom:calc(.28rem + 2px); font-weight:700; z-index:2; cursor:default; }
+.bk .tb span[data-on] { background:var(--q-paper); border-bottom-color:var(--q-paper); margin-top:0; padding-top:.5rem; padding-bottom:calc(.28rem + 2px); margin-bottom:-2px; font-weight:700; z-index:2; cursor:default; }
 .bk .tb span[data-on]::before, .bk .tb span[data-on]::after { content:""; position:absolute; bottom:0; width:8px; height:8px; }
 .bk .tb span[data-on]::before { left:-10px; background:radial-gradient(circle at 0 0, transparent 6px, var(--q-ink) 6px 8px, var(--q-paper) 8px); }
 .bk .tb span[data-on]::after { right:-10px; background:radial-gradient(circle at 100% 0, transparent 6px, var(--q-ink) 6px 8px, var(--q-paper) 8px); }
@@ -259,7 +260,6 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 .bk__text table { border-collapse:collapse; font-size:.85rem; } .bk__text td, .bk__text th { border:1px solid var(--q-line); padding:.2rem .45rem; }
 .bk__guide .dlg .say { font-size:.95rem; line-height:1.55; min-height:5.8em; } .bk__guide .dlg .plate small { text-transform:none; letter-spacing:0; font-weight:400; }
 .bk__guide .hist p { font-size:.78rem; }
-.bk--nocap .say, .bk--nocap .hist { visibility:hidden; }
 .bk__alt .mini { border:0; background:transparent; }
 /* the controls are pinned to the foot of the right page, like a ribbon marker */
 .bk__ctl { flex:0 0 auto; display:grid; gap:.4rem; padding:.5rem .8rem .55rem; border-top:3px double var(--q-line); background:var(--q-paper); }
@@ -275,7 +275,7 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 .bk--solo .bk__sheet { grid-template-columns:1fr; } .bk--solo .bk__leafguide, .bk--solo .bk__pg, .bk--solo .bk__tabs { display:none !important; }
 .bk--solo .bk__sheet::before { display:none; } .bk--solo .bk__note { padding-left:1.4rem; }
 @media (max-width:860px) { .bk { padding:0; } .bk__sheet { height:100dvh; width:100%; border-width:0; box-shadow:none; grid-template-columns:1fr; padding-bottom:4.6rem; }
-  .bk__pg { display:flex; } .bk__sheet::before { display:none; }
+  .bk__pg { display:flex; grid-column:1 / -1; padding:.3rem 0; } .bk__bar { grid-template-columns:1fr; } .bk__crumb { padding-bottom:.3rem; } .bk__sheet::before { display:none; }
   .bk[data-page="note"] .bk__leafguide { display:none; } .bk[data-page="guide"] .bk__leafnote { display:none; } .bk--solo .bk__leafnote { display:flex !important; } }
 @media (prefers-reduced-motion: reduce) { .bk * { transition:none !important; animation:none !important; } }
 /* 7. lesson card on a note */
