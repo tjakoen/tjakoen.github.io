@@ -79,7 +79,7 @@ explain-and-fix | could I fix it if the AI weren't here tomorrow
 **Beat 1**
 highlight: let-the-ai-draft-it-then-you-edit-it | Don't write any code yet.
 
-You don't write the plan from scratch. Hand your AI the brief and the drawing and say this. Plenty of tools have a planning mode for exactly that, and if you're not sure yours does, ask it.
+You don't write the plan from scratch. Hand your AI the brief and the drawing and say this. That's what a planning mode is for, more on that in a second.
 
 **Beat 2**
 highlight: let-the-ai-draft-it-then-you-edit-it | The AI is guessing at your intentions, so the edit is where your judgment goes in.
@@ -87,11 +87,16 @@ highlight: let-the-ai-draft-it-then-you-edit-it | The AI is guessing at your int
 Now read it like a teammate's proposal. A step called "build the backend" isn't a step, it's a project. Split it. Cut what you didn't ask for. This is where you earn your keep.
 
 **Beat 3**
+highlight: use-what-your-harness-already-has | Use what your harness gives you before you build your own.
+
+Your harness probably has tools for this already. Claude Code and Codex both have a planning mode, where the agent proposes a plan before it touches a file. Both also have goals: you state what done means, and the agent keeps working until it's met. Planning mode is for when the finish line is fuzzy. A goal is for after. Your done lines are exactly what a goal wants. Names differ, so ask your agent. And if you use more than one harness, make your standards aware of what each can do. More on that later.
+
+**Beat 4**
 highlight: one-step-at-a-time | Do step 1 only. Stop and show me when it's done.
 
 Then the habit that makes the whole thing work. Left alone, it'll run through every step and a few extras. Make it stop after one, so you're checking one thing against one line of done, while the mistake is still small.
 
-**Digest:** Have the AI draft the plan and edit it yourself, splitting any step too big to explain in a sentence. Then build one step at a time and check each against its done line.
+**Digest:** Have the AI draft the plan, using the planning mode and goals your harness already has, and edit it yourself, splitting any step too big to explain in a sentence. Then build one step at a time and check each against its done line.
 
 **Trial:** Ask your AI for a plan for your portfolio with no code yet. Split one step, cut one, then tell it to do step 1 only and stop.
 

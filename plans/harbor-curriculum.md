@@ -267,3 +267,17 @@ issues before the note says anything specific), and a Harbor note on design syst
 - Outside links in notes 2 and 4 were found by search and not opened. Open each one first.
 - Start Here has a placeholder for the starter skeleton link. It cannot publish with a placeholder in it.
 - Before publishing anything specific about Claude Academy badges, check what the Academy actually issues.
+
+## Edits, 2026-11-27 (personal note, goals and planning mode)
+
+- Note 1 gained a personal section, I'm terrible at multitasking, and I'm lazy on purpose: a lazy programmer is
+  an effective one, the author wants to do the most while doing the least and spend the rest on building, and
+  that is why he made an agentic workflow and kept working on his loop for six months. The mentoring metaphor
+  from Ten Times Zero (a capable, sometimes overconfident junior, or a student rushing through an activity) is
+  now in the it-cant-think-for-you section, linked to its Ten Times Zero section.
+- The planning note gained Use what your harness already has: Claude Code and Codex both have a planning mode
+  and a goal feature. As the author understands it, planning mode is for a fuzzy finish line and a goal is for
+  when it is known, and done lines are what a goal wants. With more than one harness, make your standards
+  aware of what each can do (more later). Linked: Codex page on following goals. Details came from search of
+  third-party posts, so check the official Claude Code and Codex docs before publishing.
+- Gate added: confirm goal and planning mode claims against official docs.

@@ -82,16 +82,21 @@ highlight: intro | You know the teammate.
 Picture the group project teammate who says "got it" and asks nothing. They aren't lazy. They guessed so they wouldn't look lost. That's your AI.
 
 **Beat 2**
+highlight: im-terrible-at-multitasking-and-im-lazy-on-purpose | I strive to be lazy
+
+Here's the honest reason I do any of this. I'm terrible at multitasking, and I strive to be lazy. There's a saying that a lazy programmer is an effective one, because they put their effort into making their own life easier. I want to do the most while doing the least, and spend what's left on the part I enjoy, which is building. That's why I made an agentic workflow, and why I've kept working on my loop for six months.
+
+**Beat 3**
 highlight: it-says-yes-to-everything | Each of those was a choice
 
 Ask for "a portfolio site" and count what comes back. A hero banner, a color scheme, a bio in a stranger's voice, projects you never built. Choices you never made, delivered in a confident voice. That confidence is the risk.
 
-**Beat 3**
+**Beat 4**
 highlight: it-cant-think-for-you | capable junior developer
 
-On my team I say it's like a capable junior. Fast and willing, and it knows only what you told it. It doesn't know what you're building, or what you'd call finished, or which part of the project is fragile.
+Working with AI is a lot like mentoring, and I found I already knew how. It's like a capable junior, or a student rushing through an activity to finish. Fast and willing, and it knows only what you told it. It doesn't know what you're building, or what you'd call finished, or which part of the project is fragile.
 
-**Beat 4**
+**Beat 5**
 highlight: it-cant-think-for-you | the thinking about what to build
 
 This is what you keep. What it is, what it's for, what the end looks like. Everything else is typing, and typing is the part you can hand over.
