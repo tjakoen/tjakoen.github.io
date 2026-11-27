@@ -401,7 +401,7 @@ body { margin:0; background:var(--q-water); }
 .searchbar .qgo svg { width:18px; height:18px; image-rendering:pixelated; }
 .searchbar .qgo:hover, .searchbar .qgo:focus-visible { background:var(--q-accent); color:var(--q-accent-ink); }
 .searchbar .qgo:hover svg path:last-child, .searchbar .qgo:focus-visible svg path:last-child { fill:var(--q-accent-ink); }
-.panelcard { background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); overflow:auto; align-self:start; max-height:100%; }
+.panelcard { --pfoot-h:47px; /* the height of the previous and next footer, so the pinned action bar sits just above it */ background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); overflow:auto; align-self:start; max-height:100%; }
 .panelcard[hidden] { display:none; }
 .pnav { position:sticky; top:0; z-index:3; display:flex; align-items:center; gap:.6rem; padding:.45rem .6rem; background:var(--q-panel); border-bottom:3px solid var(--q-ink); }
 .pnav .back { display:inline-flex; align-items:center; gap:.35rem; flex:none; padding:.3rem .65rem .3rem .45rem; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); font:inherit; font-weight:700; font-size:.8rem; line-height:1.1; cursor:pointer; box-shadow:2px 2px 0 var(--q-ink); max-width:60%; }
@@ -434,6 +434,8 @@ body { margin:0; background:var(--q-water); }
 .stopline:hover { background:color-mix(in srgb,var(--q-accent) 16%,transparent); }
 .stopline[data-sel] { background:var(--q-accent); color:var(--q-accent-ink); }
 .stopline[data-sel] .sn { background:var(--q-accent-ink); color:var(--q-accent); }
+.pcta { position:sticky; bottom:var(--pfoot-h,47px); z-index:3; display:flex; justify-content:center; gap:.6rem; flex-wrap:wrap; padding:.55rem .8rem; background:var(--q-panel); border-top:3px solid var(--q-ink); }
+.pcta button { min-height:34px; padding:.25rem .9rem; }
 .pfoot { position:sticky; bottom:0; z-index:3; display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.45rem .6rem; background:var(--q-panel); border-top:3px solid var(--q-ink); }
 .pcount { color:var(--q-muted); font-size:.72rem; }
 .pfoot .steps { display:flex; gap:.3rem; margin-left:auto; }
@@ -1388,8 +1390,8 @@ function renderPanel(){
       <div class="stats"><div class="stat"><small>Quest level</small><strong>Lv ${qq.lv}</strong></div><div class="stat"><small>Experience</small><strong>+${qq.xp.toLocaleString()} XP</strong></div><div class="stat"><small>Reading</small><strong>~${qq.min} min</strong></div></div>
       <div><strong>It covers</strong><ul style="margin:.2rem 0 0;padding-left:1rem">${qq.learn.map(l=>`<li>${l}</li>`).join('')}</ul></div>
       <div class="stopbox"><div class="stopbox__h"><strong>${qq.stops.length} stops</strong><span class="sub">in lesson order, along the route</span></div>${qq.stops.map((st,j)=>`<div class="stopline" data-s="${j}" ${sel.t==='stop'&&sel.i===j?'data-sel':''} ${PROG[qq.id].has(j)?'data-done':''}><span class="sn">${PROG[qq.id].has(j)?'\u2713':j+1}</span><span>${st}</span>${(qq.id===YOUQ.id&&j===YOUQ.i)?'<b class="here">You are here</b>':''}</div>`).join('')}</div>
-      <div class="row">${sel.t==='stop'?`<button data-act="done">${PROG[qq.id].has(sel.i)?'Undo: open again':'Mark stop '+(sel.i+1)+' as done'}</button>`:''}${(qq.id===YOUQ.id&&(sel.t==='quest'||sel.i===YOUQ.i))?'':'<button data-act="where">\u25CE Where I am</button>'}</div>
-      <div class="row"><button class="primary" data-act="begin">${sel.t==='stop'?'Begin this stop':'Begin quest'}</button><button data-act="note">Read the note only</button></div></div>`; }
+      ${sel.t==='stop'||qq.lesson?`<div class="row">${sel.t==='stop'?`<button data-act="done">${PROG[qq.id].has(sel.i)?'Undo: open again':'Mark stop '+(sel.i+1)+' as done'}</button>`:''}${qq.lesson?'<button data-act="note">Read the note only</button>':''}</div>`:''}</div>
+      <div class="pcta" role="group" aria-label="Start here">${qq.lesson?`<button class="primary" data-act="begin">${sel.t==='stop'?'Begin this stop':'Begin quest'}</button>`:`<button class="primary" data-act="note">Read the note</button>`}${(qq.id===YOUQ.id&&(sel.t==='quest'||sel.i===YOUQ.i))?'':'<button data-act="where">\u25CE Where I am</button>'}</div>`; }
   panel.innerHTML=h+footer(); panel.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind)); syncPhone();
 }
 panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],[data-act],[data-s],[data-nav]'); if(!b) return; e.preventDefault();
