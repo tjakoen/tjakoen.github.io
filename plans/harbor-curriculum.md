@@ -289,13 +289,14 @@ under different names, and that the loop and standards need to know which. Recor
 in and check against each harness's docs before anything is published:
 
 - **Skills** are called skills everywhere.
-- **Routines** vary: called scheduled in Codex and Claude (to confirm which wording each uses), and in DSH you
-  create a cron job yourself. Same job, different implementation.
+- **Routines** vary: called scheduled in Codex and Claude, and in DSH you create a cron job yourself. Same job,
+  different implementation. The exact wording does not matter (author, 2026-11-27). The notes only say that
+  names differ and the idea is the same, so no need to verify each harness's term.
 - **Instruction file:** Claude uses CLAUDE.md even though AGENTS.md is the wider standard. A project that
   uses more than one harness has to say which file each reads.
 - **Planning mode and goals:** both Claude Code and Codex have them (already in the planning note).
 - The point for the reader: copy the idea, not the name. Ask your agent what your harness calls it, and tell
   your standards what each harness can do so each session reaches for its own tools.
-- Idea: a small table (concept by harness) in the harness note, filled from the official docs.
+- A concept-by-harness table is optional. With exact names not mattering, a sentence may do.
 - Note 5 now says routines go by different names (a scheduled task in some, a cron job in others) and drops
   the phrase scheduled loop.
