@@ -813,11 +813,14 @@ const DATA=JSON.parse(document.getElementById('qm-data').textContent);
 const QUESTS=DATA.quests, REG=DATA.regions, ROUTES=DATA.routes, SPEC=DATA.spec, WALK=DATA.walk;
 /* The guided path. content/quests/regions.json says which stage each note is in and in what order, and tools/quests.ts writes it into the
    qm-path block. The quests are put in that order and numbered, so Continue, You are here and the next and previous arrows all walk the path.
-   Where a pin sits is still the map's geography: the number says where it comes in the path. */
+   The pins take the island's places in the order the road runs, so the walk goes from the Harbor to the Summit. */
 const PATH=JSON.parse(document.getElementById('qm-path').textContent);
 { const pos=new Map(PATH.stages.flatMap(st=>st.quests.map(id=>[id,st.n]))), seq=PATH.stages.flatMap(st=>st.quests);
+  // The island has one place for each quest: a region, a pin and a road for it, listed in the order the road runs. The path takes the places
+  // in that order, so quest 1 stands near the Harbor and the last quest on the Summit, whatever each note is about.
+  const places=QUESTS.map(x=>({region:x.region,pos:x.pos}));
   QUESTS.sort((x,y)=>seq.indexOf(x.id)-seq.indexOf(y.id));
-  QUESTS.forEach((x,i)=>{ x.order=i+1; x.stage=pos.get(x.id)||0; }); }
+  QUESTS.forEach((x,i)=>{ x.order=i+1; x.stage=pos.get(x.id)||0; x.region=places[i].region; x.pos=places[i].pos; }); }
 const DONE=new Set(DATA.done);
 const YOU=[66,96];
 const LEVEL={intro:1,intermediate:2,deep:3}, CLASS={learn:'Learner',build:'Builder',lead:'Leader',teach:'Teacher'};
