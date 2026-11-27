@@ -41,11 +41,16 @@ highlight: let-your-agent-write-it-then-you-edit-it | Keep a skill to one job.
 Keep a skill to one job, and save it in the project next to your brief and plan, so every session finds it. Then as you catch new misses, add a line. That's how it gets better.
 
 **Beat 3**
+highlight: let-the-loop-notice-for-you | it asks whether I want to make a skill of it
+
+By hand, you do the noticing. In my own loop I've set the agent to do it. It writes down when I ask for the same kind of thing, and when the same request turns up in three sessions, it asks whether I want a skill. Yes, edit, or no. It's still being built and I haven't shown how well it works, so start by noticing yourself.
+
+**Beat 4**
 highlight: keep-judgment-manual | an audit is a judgment
 
 One more thing. Not every skill should run by itself. I run my audits by hand. My loop tells me when one is due and I decide to go. That's a preference, but the reason is that an audit is a judgment, and I want to be in the room for it.
 
-**Digest:** Ask your agent to turn a session that worked into a skill, then edit it. One job per skill, saved in the project. Keep judgment work, like audits, manual.
+**Digest:** Ask your agent to turn a session that worked into a skill, then edit it. One job per skill, saved in the project. My loop can notice repeats and ask, but by hand comes first. Keep judgment work, like audits, manual.
 
 **Trial:** Pick the prompt you've typed most, ask your agent to turn it into a skill, edit it, and save it in your project.
 
