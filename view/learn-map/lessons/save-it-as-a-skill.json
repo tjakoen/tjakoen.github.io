@@ -23,7 +23,7 @@
     {
      "section": "a-skill-is-a-prompt-youve-earned",
      "quote": "I don't write a skill until I've typed the thing three times by hand.",
-     "text": "A skill is a saved set of instructions your agent can run when you ask. Academy covers how. What I give you is my rule for when. I don't write one until I've typed it three times by hand. Before that, I'm guessing what it should say."
+     "text": "A skill is a saved set of instructions your agent can run when you ask. Academy covers how. What I give you is my rule for when. I don't write one until I've typed it three times by hand. Before that, I'm guessing what it should say.\n\n**Beat X**\nhighlight: a-skill-is-a-prompt-youve-earned | figure: typed three times, then saved\n\nThe rule is in one row of boxes. Type it by hand the first time, the second, the third. Before that, you're guessing what it should say. After the third, you've seen what you kept correcting, so you turn it into a skill, edit it, and add a line each time it misses. Three is my number, not a law."
     }
    ],
    "runes": [

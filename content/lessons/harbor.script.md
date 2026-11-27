@@ -28,12 +28,17 @@ highlight: who-i-am-in-case-we-havent-met | here's the short version
 
 In case we haven't met. I manage engineers at Career Team, and I teach software engineering part-time at a university. Nine years in. Mostly that means reading other people's code and finding the problems politely. The AI part is the last six months. If you'd rather check who's talking before you trust them, my About page has the rest. I'd encourage that.
 
-**Beat 5**
+**Beat X**
+highlight: why-i-started-over | figure: learning path as a line of six places
+
+Here's the shape of the whole path. The Harbor comes first, and it's the short on-ramp: the basics in plain words, plus Claude Academy outside this site. Then the mainland, in order of difficulty, ending at the deep technical notes. You don't have to walk all of it. The order is on purpose, so you meet the ideas before the deeper notes lean on them.
+
+**Beat 6**
 highlight: who-this-is-for | AI is a reason to learn them harder
 
 You'll hear me assume you can code a little. That's on purpose. The AI doesn't replace that skill, it raises the stakes on it, because you're the one who has to notice when it's wrong.
 
-**Beat 6**
+**Beat 7**
 highlight: builders-not-coders | You can hand the bricklaying to an AI.
 
 Here's the idea I keep coming back to. Architect and bricklayer. The AI lays bricks, fast. You decide what the building is. And there's a second line I care about. Plenty of people ship what they don't understand and can't fix. That's blind vibe coding. I'm after the orchestrator, who can explain and repair what gets built.
@@ -96,12 +101,17 @@ highlight: it-says-yes-to-everything | Each of those was a choice
 
 Ask for "a portfolio site" and count what comes back. A hero banner, a color scheme, a bio in a stranger's voice, projects you never built. Choices you never made, delivered in a confident voice. That confidence is the risk.
 
-**Beat 4**
+**Beat X**
+highlight: it-says-yes-to-everything | figure: two paths from the same request
+
+Look at the two paths side by side. The same request goes in on both. On the left, nobody says where the gaps are, so the agent guesses, and you find the wrong result late. On the right, a short brief goes first, and what comes back is something you can check against what you wrote. The only thing that changed is what you handed over before it started.
+
+**Beat 5**
 highlight: it-cant-think-for-you | capable junior developer
 
 Working with AI is a lot like mentoring, and I found I already knew how. It's a capable junior, or a student rushing through an activity to finish. Fast and willing, and it knows only what you told it.
 
-**Beat 5**
+**Beat 6**
 highlight: it-cant-think-for-you | the scarce thing stops being code and becomes intent
 
 And here's why it matters. When the AI types, the scarce thing is no longer code. It's intent. In my own repos, the documentation is the work and the code is the cheap part.
@@ -121,17 +131,22 @@ highlight: say-what-done-looks-like | What done looks like.
 
 Before I ask for anything, three lines: the goal, what done looks like, what to leave alone. The middle one is where people get stuck. If I can't say what done looks like, I've found something I haven't decided yet. Better to find that now.
 
-**Beat 2**
+**Beat X**
+highlight: say-what-done-looks-like | figure: the brief has three parts
+
+Here are the three lines side by side. Nothing in them is code. The middle one is shaded because it's the one people get stuck on, and it tells you whether the task is ready to hand over at all. A first-year with a clear brief will often get a better result than an expert with a vague one.
+
+**Beat 3**
 highlight: orchestrate-it-dont-just-vibe-it | couldn't explain half of it
 
 There was a week I looked at what had shipped across my repos and couldn't explain half of it. All worked, tests green. Output going up while understanding stays flat is debt with a nice green dashboard on top. That's the week I stopped, and it's why I ask one question about anything the AI builds: could I explain this, and fix it if the AI weren't here tomorrow?
 
-**Beat 3**
+**Beat 4**
 highlight: it-forgets-everything | A human teammate remembers yesterday.
 
 The AI doesn't. Close the session and it starts blank. So the brief goes in a file, where it can read it every time. Writing it down isn't paperwork. It's how you give a forgetful teammate a memory.
 
-**Beat 4**
+**Beat 5**
 highlight: your-turn | Write the three-part brief
 
 Your turn. Brief your portfolio, or ask for it with no brief and list the guesses, or brief something else. Then compare what you get with what you wrote. The gap shows you what you hadn't decided yet. I might be overselling the brief, so try both and see which fits you.

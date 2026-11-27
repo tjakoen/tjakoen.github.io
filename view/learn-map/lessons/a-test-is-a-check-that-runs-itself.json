@@ -53,7 +53,7 @@
     {
      "section": "two-kinds-worth-knowing-by-name",
      "quote": "drives the whole app the way a user would",
-     "text": "An end-to-end test drives the whole app the way a user would. Open your portfolio, find the roadmap, click an evidence link, check it opens. Slower, fewer of them, and the closest thing to asking whether it really works. The note links to good explanations of both. I'm not teaching the tools. Every language has a standard way to test, so ask your agent what yours is."
+     "text": "An end-to-end test drives the whole app the way a user would. Open your portfolio, find the roadmap, click an evidence link, check it opens. Slower, fewer of them, and the closest thing to asking whether it really works. The note links to good explanations of both. I'm not teaching the tools. Every language has a standard way to test, so ask your agent what yours is.\n\n**Beat X**\nhighlight: two-kinds-worth-knowing-by-name | figure: the test pyramid in words\n\nHere is how the two kinds fit. Many unit tests at the base, because each checks one small piece and runs in a blink. A few end-to-end tests on top, because they drive the whole app the way a user would, and they're slower. The Practical Test Pyramid article linked in the note tells the longer version if you want it."
     }
    ],
    "runes": [

@@ -40,6 +40,11 @@ highlight: two-kinds-worth-knowing-by-name | drives the whole app the way a user
 
 An end-to-end test drives the whole app the way a user would. Open your portfolio, find the roadmap, click an evidence link, check it opens. Slower, fewer of them, and the closest thing to asking whether it really works. The note links to good explanations of both. I'm not teaching the tools. Every language has a standard way to test, so ask your agent what yours is.
 
+**Beat X**
+highlight: two-kinds-worth-knowing-by-name | figure: the test pyramid in words
+
+Here is how the two kinds fit. Many unit tests at the base, because each checks one small piece and runs in a blink. A few end-to-end tests on top, because they drive the whole app the way a user would, and they're slower. The Practical Test Pyramid article linked in the note tells the longer version if you want it.
+
 **Digest:** A unit test checks one small piece, an end-to-end test drives the whole app like a user. | Every stack has a standard way to test, so ask your agent.
 
 **Trial:** Ask your agent what the usual way to test your stack is, and how to run the tests.
