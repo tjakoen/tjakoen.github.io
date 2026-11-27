@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~6 min"
+readingTime: "~7 min"
 tags: [ai, workflow, teaching]
 summary: >
   When an AI says it's finished, that's a claim and not a result. Check it by hand against the brief, the
@@ -59,35 +59,55 @@ writing the evidence, that it doesn't have any.
 
 ## Let tests do the checking
 
-Asking for evidence works, but you can do better. A test is a check written as code. It runs in seconds
-and says pass or fail, and it can run again tomorrow without anyone remembering what to look at. There
-are two kinds worth knowing by name.
+Testing often gets skipped in school, so if this is new to you, you're in good company. Here's the idea
+from scratch.
 
-A **unit test** checks one small piece on its own. Say you have a function that marks a task done. A unit
-test calls it with a task and checks the task comes back marked done. They run in a blink, so you can have
-hundreds.
+You already test your work. You open the page, click the button and see if it does the thing. A test is
+that same check written down as a little program, so a machine can do it for you in a second, as many
+times as you like, without getting bored or forgetting a step.
 
-An **end-to-end test**, often called an e2e test, drives the whole app the way a user would. It opens the
-page, adds a task, ticks it off, refreshes, and checks it's still crossed out. It's slower and there are
-fewer of them, but it's the closest thing to asking "does this really work?" The usual advice is lots of
-small tests and a few big ones, which people draw as a pyramid. Martin Fowler's site has a good article,
+Here's what one looks like. This is JavaScript, and yours will look different in another language, but
+the shape is the same everywhere.
+
+```js
+test("marking a task done", () => {
+  const task = { title: "Read chapter 3", done: false };
+  markDone(task);
+  expect(task.done).toBe(true);
+});
+```
+
+In words: make a task that isn't done, mark it done, and check that it's done. When you run the tests, the
+machine tells you pass or fail. A pass means the thing behaved as the test said it should. A fail comes
+with a message like "expected true, received false," which tells you where to look.
+
+There are two kinds worth knowing by name. The example above is a **unit test**. It checks one small piece
+on its own, and it runs in a blink, so you can have hundreds. An **end-to-end test**, often called an e2e
+test, drives the whole app the way a user would. It opens the page, adds a task, ticks it off, refreshes,
+and checks it's still crossed out. It's slower and there are fewer of them, but it's the closest thing to
+asking "does this really work?" The usual advice is lots of small tests and a few big ones, which people
+draw as a pyramid. Martin Fowler's site has a good article,
 [The Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html), and
 [freeCodeCamp](https://www.freecodecamp.org/news/end-to-end-testing-tutorial/) has an e2e tutorial. For
 websites, [Playwright](https://playwright.dev) is one popular tool for e2e tests.
 
-I'm not going to teach you either one here, and you don't have to learn the tools first. Every language
-and framework has a standard way to test. If you're not sure of yours, ask your agent: "What's the usual
-way to test a project built with this stack?"
+I'm not going to teach you the tools here. Every language and framework has a standard way to test, and
+you can learn yours as you go. If you're not sure what it is, ask your agent: "What's the usual way to
+test a project built with this stack, and how do I run the tests?"
 
 Here's the habit I'd wire in from the start, and put right in your brief: **the AI writes the tests as it
 builds.** Each done line in your plan gets a test, and a step isn't finished until its tests pass. That
 way the AI keeps itself accountable to its own definition of done, because it can't say "done" while a
-test is red. And it helps whoever comes next. The next session, which is another forgetful AI, can change
-the code and run the tests to find out whether it broke something. The tests are a memory that runs.
+test is failing. And it helps whoever comes next. The next session, which is another forgetful AI, can
+change the code and run the tests to find out whether it broke something. The tests are a memory that
+runs.
 
-Two honest limits. A test can be wrong, or so weak it can't fail, so read the names at least, and ask the
-AI what each one proves. And tests are only as good as your done lines, which is another reason to write
-them well.
+You don't have to read every test line by line at first. Do read the names, and ask the AI what each one
+proves. And ask to see a new test fail before it passes. A test that has never failed might not be
+checking anything, and watching it go from failing to passing is how you know it can tell the difference.
+
+Two honest limits. A test can be wrong, or so weak it can't fail. And tests are only as good as your done
+lines, which is another reason to write them well.
 
 ## Run it yourself
 
