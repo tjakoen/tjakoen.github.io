@@ -85,6 +85,11 @@ highlight: one-step-at-a-time | Do step 1 only. Stop and show me when it's done.
 
 Then the habit that makes the whole thing work. Left alone, it'll run through every step and a few extras. I make it stop after one, so I'm checking one thing against one line of done, while the mistake is still small.
 
+**Beat X**
+highlight: one-step-at-a-time | figure: plan, build, tick
+
+This is the loop that makes the plan work. The plan sits in a file. You ask for step one only, and the agent stops. You check that one step against its one done line, and tick it off in the file. Then you say now step two. If a step is wrong, you catch it while the mistake is still small.
+
 **Digest:** Have the AI draft the plan, using the planning mode and goals your harness already has, and edit it yourself. | Build one step at a time and check each against its done line.
 
 **Trial:** Ask your AI for a plan for your portfolio with no code yet. Split one step, cut one, then tell it to do step 1 only and stop.

@@ -21,7 +21,12 @@ highlight: why-drawing-matters-more-now | You don't have to draw it.
 
 And here's the good news. You don't have to draw it. The AI is very good at drawing. What matters isn't who held the pen. It's that you and the AI end up with the same picture, written down.
 
-**Beat 4**
+**Beat X**
+highlight: why-drawing-matters-more-now | figure: the six drawings and the one question
+
+This is the whole menu on one page. Six drawings, and each one answers exactly one question. You don't need to learn to draw any of them. You need to know which question you're stuck on, so you can ask for the right drawing and tell whether what comes back is right. The next stop takes them one at a time.
+
+**Beat 5**
 highlight: why-drawing-matters-more-now | the AI generates whatever the code can produce
 
 On my own projects I keep a design folder, and the AI generates whatever the code can produce, like the ERD from the database schema. That's heavier than you need. The point is these are old, useful drawings, and you only have to know they exist so you can ask for the right one.

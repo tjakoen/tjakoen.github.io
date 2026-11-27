@@ -21,6 +21,11 @@ highlight: a-skill-is-a-prompt-youve-earned | I don't write a skill until I've t
 
 A skill is a saved set of instructions your agent can run when you ask. Academy covers how. What I give you is my rule for when. I don't write one until I've typed it three times by hand. Before that, I'm guessing what it should say.
 
+**Beat X**
+highlight: a-skill-is-a-prompt-youve-earned | figure: typed three times, then saved
+
+The rule is in one row of boxes. Type it by hand the first time, the second, the third. Before that, you're guessing what it should say. After the third, you've seen what you kept correcting, so you turn it into a skill, edit it, and add a line each time it misses. Three is my number, not a law.
+
 **Digest:** A skill is a saved prompt. | I wait until I have typed it three times by hand, then I know what it should say. | Every correction I give twice is a line to add.
 
 **Trial:** Name the prompts you have typed most in the last few notes.
