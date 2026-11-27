@@ -12,7 +12,9 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)" || root="
 # the verdict the script produced. Without it, fall through to the standards-only block below.
 checklist="${AGENT_CONFIG_DIR:-$root/../agent-config}/shared/tools/session-checklist.sh"
 if [ -r "$checklist" ] && command -v jq >/dev/null 2>&1; then
-  out="$(CLAUDE_PROJECT_DIR="$root" bash "$checklist" 2>/dev/null)"
+  # The checklist reads cwd from the hook's stdin JSON before it reads CLAUDE_PROJECT_DIR, and a multi-repo
+  # session reports its parent folder there. Hand it this repository as the cwd instead.
+  out="$(jq -cn --arg c "$root" '{cwd:$c}' | CLAUDE_PROJECT_DIR="$root" bash "$checklist" 2>/dev/null)"
   if printf '%s' "$out" | jq -e '.hookSpecificOutput.additionalContext' >/dev/null 2>&1; then
     printf '%s\n' "$out"
     exit 0
