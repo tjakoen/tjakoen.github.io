@@ -85,6 +85,30 @@ export function proposeAll(): Lesson[] {
   return groupLessons(cuts);
 }
 
+const plain = (v: string) => v.replace(/\s+/g, " ").replace(/[*_`]/g, "").trim().toLowerCase();
+
+/** The runes in a script: each Runes line is "section-id | quote". Every quote must be in that section of the stop's note, word for word. */
+export function checkScript(file: string): string[] {
+  const errors: string[] = [];
+  const lesson = Bun.YAML.parse(readFileSync(join(LESSONS_DIR, file.replace(".script.md", ".yml")), "utf8")) as { stops: { note?: string }[] };
+  const stops = readFileSync(join(LESSONS_DIR, file), "utf8").split(/^## Stop \d+:/m).slice(1);
+  if (stops.length !== lesson.stops.length) errors.push(`${file}: ${stops.length} stops in the script, ${lesson.stops.length} in the lesson`);
+  stops.forEach((block, i) => {
+    const note = lesson.stops[i]?.note;
+    const runes = /\*\*Runes:\*\*([\s\S]*?)(?=\n\*\*|\n## |$)/.exec(block)?.[1] ?? "";
+    for (const line of runes.split("\n").map((l) => l.replace(/^[-* ]+/, "").trim()).filter((l) => l.includes("|"))) {
+      const [id, ...rest] = line.split("|"), quote = rest.join("|");
+      if (!note) { errors.push(`${file} stop ${i + 1}: a rune names ${id!.trim()} but the stop has no note`); continue; }
+      const text = readFileSync(join(NOTES_DIR, `${note}.md`), "utf8").replace(/^---\n[\s\S]*?\n---\n?/, "");
+      const sections = text.split(/^## /m).map((sec, k) => ({ id: k === 0 ? "intro" : slugifyHeading(sec.split("\n")[0]!), body: sec }));
+      const sec = sections.find((x) => x.id === id!.trim());
+      if (!sec) errors.push(`${file} stop ${i + 1}: ${note} has no section ${id!.trim()}`);
+      else if (!plain(sec.body).includes(plain(quote))) errors.push(`${file} stop ${i + 1}: the quote "${quote.trim().slice(0, 50)}" is not in ${id!.trim()}`);
+    }
+  });
+  return errors;
+}
+
 const yamlOf = (l: Lesson) => [
   `id: ${l.id}`, `note: ${l.notes[0]!.note}`, "title: ", "summary: ", `audio: /media/lessons/${l.id}.m4a`, "stops:",
   ...l.notes.flatMap((p) => p.stops.map((s) => [`  - title: ""`, `    note: ${p.note}`, `    from: ${s.from}`, `    to: ${s.to}`, `    words: ${s.words}`, ...(s.reference ? ["    reference: true"] : []), "    runes: []", `    trial: ""`, "    digest: []"].join("\n"))),
@@ -113,5 +137,8 @@ if (import.meta.main) {
     }
     if (errors.length) { console.error(errors.join("\n")); process.exit(1); }
     console.log("every lesson section resolves");
+    for (const f of existsSync(LESSONS_DIR) ? readdirSync(LESSONS_DIR).filter((x) => x.endsWith(".script.md")) : []) errors.push(...checkScript(f));
+    if (errors.length) { console.error(errors.join("\n")); process.exit(1); }
+    console.log("every script rune quote is in its note");
   } else { console.error("usage: bun tools/lessons.ts cuts [slug] | draft | verify"); process.exit(2); }
 }
