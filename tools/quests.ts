@@ -4,13 +4,15 @@
 //   bun tools/quests.ts write          regenerate content/quests/index.json and the path and plain route list in view/learn-map/map.html
 //   bun tools/quests.ts verify         fail when the index is stale, or a region lists a draft or a missing note
 // The regions are hand approved in content/quests/regions.json. The index is generated from them and from each note's own
-// frontmatter, so nothing is typed per note. A draft never becomes a quest, and a region that lists one is an error.
+// frontmatter, so nothing is typed per note. A note a region lists that is still a DRAFT becomes a quest flagged draft, so the
+// map can show an unfinished path. Its link goes to /drafts/<slug>, which sends the reader on to /notes/<slug> once it publishes.
+// A note that is neither PUBLISHED nor DRAFT, or that does not exist, is still an error.
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 export type Region = { n: number; id: string; name: string; landmark: string; notes: string[]; external?: { id: string; title: string; url: string }[] };
 export type Note = { slug: string; title: string; status: string; level?: string; audience?: string[]; tags?: string[]; sources?: string[]; readingTime?: string };
-export type Quest = { id: string; region: number; title: string; level: string; audience: string[]; minutes: number; tags: string[]; sources: string[] };
+export type Quest = { id: string; region: number; title: string; level: string; audience: string[]; minutes: number; tags: string[]; sources: string[]; draft?: boolean };
 export type Placement =
   | { outcome: "fits"; region: Region; position: number }
   | { outcome: "fits-nothing"; tags: string[] }
@@ -92,10 +94,11 @@ export function buildIndex(regions: Region[], load: (slug: string) => Note | nul
     for (const slug of region.notes) {
       const note = load(slug);
       if (!note) { errors.push(`${region.id} lists ${slug}, which is not a note`); continue; }
-      const placed = placeNote(note, regions);
-      if (placed.outcome === "draft") { errors.push(`${region.id} lists ${slug}, which is not published (${note.status || "no status"}): a draft never becomes a quest`); continue; }
+      const status = note.status.trim().toUpperCase();
+      if (status !== "PUBLISHED" && status !== "DRAFT") { errors.push(`${region.id} lists ${slug}, whose status is ${note.status || "missing"}: it must be PUBLISHED or DRAFT`); continue; }
+      const placed = placeNote({ ...note, status: "PUBLISHED" }, regions);
       if (placed.outcome === "cannot-place") { errors.push(`${slug} cannot be placed, it is missing ${placed.missing.join(", ")}`); continue; }
-      quests.push({ id: slug, region: region.n, title: note.title, level: note.level!, audience: note.audience!, minutes: minutesOf(note.readingTime!), tags: note.tags!, sources: note.sources ?? [] });
+      quests.push({ id: slug, region: region.n, title: note.title, level: note.level!, audience: note.audience!, minutes: minutesOf(note.readingTime!), tags: note.tags!, sources: note.sources ?? [], ...(status === "DRAFT" ? { draft: true } : {}) });
     }
   }
   return { quests, errors };
@@ -118,9 +121,11 @@ export function renderPathRoute(path: PathData, regions: Region[], mapQuests: Ma
   const stages = path.stages.map((st) => {
     const qs = st.quests.map((id) => mapQuests.find((m) => m.id === id)).filter((m): m is MapQuest => !!m);
     const items = qs.map((q) => `<li><h3>${esc(q.title)}</h3>\n<p>${LEVEL[q.level] ?? esc(q.level)} · ${q.min} min · ${q.stops.length} stops</p>\n<ol>\n${q.stops.map((x) => `<li>${esc(x)}</li>`).join("\n")}\n</ol></li>`);
-    return `<li><h2>Stage ${st.n}</h2>\n<p>${qs.length} quests, about ${qs.reduce((t, q) => t + q.min, 0)} min of reading.</p>\n<ol>\n${items.join("\n")}\n</ol></li>`;
+    const start = academy && st.n === harbor?.n ? ` Start with ${academy.url ? `<a href="${esc(academy.url)}">${esc(academy.title)}</a>` : esc(academy.title)}, outside this site.` : "";
+    return `<li><h2>Stage ${st.n}</h2>\n<p>${qs.length} quests, about ${qs.reduce((t, q) => t + q.min, 0)} min of reading.${start}</p>\n<ol>\n${items.join("\n")}\n</ol></li>`;
   });
-  const first = academy ? `<li><h2>Stage 1: Harbor</h2>\n<p>Start here: the basics, outside this site. ${academy.url ? `<a href="${esc(academy.url)}">${esc(academy.title)}</a>` : esc(academy.title)}.</p></li>` : "";
+  const harborHasQuests = path.stages.some((st) => st.n === harbor?.n);
+  const first = academy && !harborHasQuests ? `<li><h2>Stage 1: Harbor</h2>\n<p>Start here: the basics, outside this site. ${academy.url ? `<a href="${esc(academy.url)}">${esc(academy.title)}</a>` : esc(academy.title)}.</p></li>` : "";
   return `<div id="route" class="route">\n<h1>Learn AI with me</h1>\n<p>This is the guided path, in the order to read it: the stages, the quests in each and the stops in each quest. The interactive map needs JavaScript.</p>\n<ol>\n${[first, ...stages].filter(Boolean).join("\n")}\n</ol>\n</div>`;
 }
 

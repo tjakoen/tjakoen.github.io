@@ -334,3 +334,49 @@ and encourages the reader's own agency and innovation. Not a tutorial or a step-
 request; a drawing that caught a gap before building; a plan or a missing plan that cost a session; a test
 or evidence that caught a wrong done; the first skill made beyond clean on main; a student or junior who
 shipped what they did not understand.
+
+## The Harbor is on the map, in draft (2026-11-27)
+
+**What is wired.** The seven Harbor notes are quests on the Harbor island, pins 1 to 7 in path order, each marked Draft.
+content/quests/regions.json lists them. tools/quests.ts now lets a region list a DRAFT note: it becomes a quest flagged
+draft, and any other status is still an error. A quest links to /drafts/<slug>, which sends the reader on to /notes/<slug> once
+the note publishes, so no link has to change by hand. The map's progress is the reader's own, saved in this browser
+(learn.progress.v1), and the sample progress that used to ship is gone.
+
+**The book.** Begin quest opens a modal book over the map, as in docs/mockups/quest-map/index.html section 4 and as the author
+asked: the real note on the left page, fetched from its own page and left untouched, and on the right page the pixel Guide (a
+wizard standing for the author) with the spoken transcript as dialogue. While a line plays, its quote lights up on the left page,
+and a rune glows in the margin when a concept is taught. Tabs: Book, Log (objectives), Codex (runes), Pack (sources). Rest at the
+campfire saves and closes. A phone shows one page at a time with a Note and Guide toggle. Read the note only opens the note alone.
+The lesson files are view/learn-map/lessons/<id>.json, built by bun tools/lesson-data.ts write from content/lessons.
+
+**Not built yet from the mockup:** the character, XP bar and levels (XP shows only as toasts), the level-up banner, save as a file
+or code, and the badge page. The map's lesson card on a note is also not built.
+
+## The voice
+
+The recordings are not needed to see this working. The plan, in three steps:
+
+1. **Now: a temporary AI voice (done).** The book reads each line with the browser's own speech synthesis, so every lesson plays with
+   no recording and no cost. A browser with no voice gets each line timed from its word count. The Guide's name plate says temporary AI
+   voice, and the transcript is always on screen, so it also works with the sound off. Quality depends on the browser's voices.
+2. **Next: generated audio files.** A tool, tools/lesson-audio.ts, sends each stop's beats to a text-to-speech service and writes one
+   audio file per stop plus a cue time for every beat, so the highlight follows the real audio and not a timer. The lesson JSON gains
+   audio and cues. The book plays the file when there is one and falls back to browser speech when there is not. Decisions needed from
+   the author first: which service and voice, the cost he accepts, and who approves the voice. The service key lives in an environment
+   variable, never in the repo. Files are rebuilt when a script's text changes, and a check fails when audio is stale.
+3. **Last: the author's own recording.** Same file names and the same cue format, so nothing in the book changes. The temporary label
+   comes off the name plate. The AI voice can stay as the fallback for a stop not yet recorded.
+
+## Decisions, 2026-11-27 (the map and the book)
+
+- The lesson is a modal book on the map, not a sidebar takeover and not a note page with a card (author, after the first attempt put
+  it on the note page, which was wrong and was removed).
+- Left page is the note with its quote lit, right page is the Guide wizard and transcript.
+- Draft notes are supported on the map and flagged. Links to them use /drafts/<slug>.
+- A mistake to remember: tools/lessons.ts already existed (it cuts notes into stops by the plan's rules). An earlier overwrite of it was
+  caught and restored. The new lesson JSON tool is tools/lesson-data.ts. Script Runes lines now use the section id first, the format
+  the older tool reads.
+- Social cards for the seven notes come from bun run social:card:harbor, which also fills socialImage and its alt text.
+- The full test suite has one failure that is older than this work and not mine: every diagram block in a note is the current
+  drawing, which fails in a full run and passes alone.

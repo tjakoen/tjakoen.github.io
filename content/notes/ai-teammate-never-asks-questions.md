@@ -21,6 +21,8 @@ social: |
 
   Your AI is that teammate. It can't think for you, so the brief is your job. Three lines, written
   before you start:
+socialImage: "/media/notes/ai-teammate-never-asks-questions-social.png"
+socialImageAlt: "A card from the Harbor path of Learn AI with me, titled Your AI Is the Teammate Who Never Asks Questions, with the line: Every group project has the teammate who says \"got it\" to everything and never asks a question."
 ---
 
 You know the teammate. In every group project there's one. You explain the task, they nod, they say

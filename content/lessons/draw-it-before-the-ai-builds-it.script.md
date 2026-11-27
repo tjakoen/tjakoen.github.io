@@ -31,8 +31,8 @@ On my own projects I keep a design folder, and the AI generates whatever the cod
 **Trial:** Think of the last time you said that is not what I meant. Write down what you had not decided yet.
 
 **Runes:**
-the-walk-you-skipped | A drawing is the walk you skipped.
-shared-picture | A shared, documented understanding is the goal
+why-drawing-matters-more-now | A drawing is the walk you skipped.
+why-drawing-matters-more-now | A shared, documented understanding is the goal
 
 ## Stop 2: Six drawings, one question each
 
@@ -71,7 +71,7 @@ You won't need all six. Pick the one that answers the question you can't answer 
 **Trial:** Look at your portfolio brief and name which one of the six answers the question you cannot answer yet. For a portfolio, a use case diagram and a wireframe are plenty.
 
 **Runes:**
-one-question-each | Reach for the one that answers the question
+six-drawings-one-question-each | Reach for the one that answers the question
 
 ## Stop 3: Let the AI hold the pen
 
@@ -105,5 +105,5 @@ One honest limit, and here I might be wrong about how much you need. A drawing i
 **Trial:** Give your AI your portfolio brief and ask for a use case diagram as Mermaid, then a gray-box wireframe of the roadmap page. Read them, fix one thing, ask what is missing, then save both next to the brief. Or draw it by hand, or draw something stranger.
 
 **Runes:**
-save-it | A common, written-down understanding
-make-it-ask | Ask me five questions before you build anything.
+let-the-ai-hold-the-pen | A common, written-down understanding
+make-the-teammate-ask-questions | Ask me five questions before you build anything.

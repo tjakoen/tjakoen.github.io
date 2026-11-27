@@ -21,6 +21,8 @@ social: |
 
   You don't have to draw the plan yourself. The AI is good at it. What you need is one drawing you
   both agree on, saved in the project, before anything gets built:
+socialImage: "/media/notes/draw-it-before-the-ai-builds-it-social.png"
+socialImageAlt: "A card from the Harbor path of Learn AI with me, titled Have the AI Draw It Before It Builds It, with the line: The most expensive sentence in building with AI: \"that's not what I meant.\""
 ---
 
 When the AI does the typing, the scarce thing is intent, and a sentence is a thin way to carry it. So you

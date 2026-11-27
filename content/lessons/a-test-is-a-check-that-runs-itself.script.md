@@ -26,7 +26,7 @@ You already test your work. You open the page, click the button, see if it works
 **Trial:** Name one check you do by hand every time you change something in your portfolio.
 
 **Runes:**
-seatbelt | They're the seatbelt that lets me drive fast.
+intro | They're the seatbelt that lets me drive fast.
 
 ## Stop 2: Two kinds, by name
 
@@ -45,7 +45,7 @@ An end-to-end test drives the whole app the way a user would. Open your portfoli
 **Trial:** Ask your agent what the usual way to test your stack is, and how to run the tests.
 
 **Runes:**
-two-kinds | it checks one small piece on its own
+two-kinds-worth-knowing-by-name | it checks one small piece on its own
 
 ## Stop 3: Make the AI write them
 
@@ -74,5 +74,5 @@ And where I might be wrong. Tests can be weak, and they cost time to keep. For a
 **Trial:** Ask your AI to add a test for one done line in your plan, show it failing first, then passing, and explain what it proves.
 
 **Runes:**
-ai-writes-the-tests | the AI writes the tests as it builds
-tests-are-memory | The tests are a memory that runs.
+make-the-ai-write-them-as-it-builds | the AI writes the tests as it builds
+make-the-ai-write-them-as-it-builds | The tests are a memory that runs.

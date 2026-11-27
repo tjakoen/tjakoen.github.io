@@ -1,0 +1,131 @@
+{
+ "id": "save-it-as-a-skill",
+ "title": "The third time you type it, save it",
+ "summary": "In three short stops I show you when a prompt has earned a skill, how to have your agent write it and edit it yourself, and when a skill is boring and checkable enough to run as a routine, with the judgment work kept for you.",
+ "audio": "/media/lessons/save-it-as-a-skill.m4a",
+ "stops": [
+  {
+   "title": "A prompt you have earned",
+   "note": "save-it-as-a-skill",
+   "from": "intro",
+   "to": "a-skill-is-a-prompt-youve-earned",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "I had a catchphrase, and I was saying it to a machine.",
+     "text": "I noticed this autumn that I had a catchphrase, and I was saying it to a machine. Are we clean on main? If yes, remove the worktrees and branches, local and remote. I typed it at the end of a lot of sessions. The model did exactly what I asked every time. I was just the only part of the system that remembered."
+    },
+    {
+     "section": "intro",
+     "quote": "That tiredness is useful.",
+     "text": "That tiredness is useful. It tells me what to save."
+    },
+    {
+     "section": "a-skill-is-a-prompt-youve-earned",
+     "quote": "I don't write a skill until I've typed the thing three times by hand.",
+     "text": "A skill is a saved set of instructions your agent can run when you ask. Academy covers how. What I give you is my rule for when. I don't write one until I've typed it three times by hand. Before that, I'm guessing what it should say."
+    }
+   ],
+   "runes": [
+    {
+     "id": "three-times",
+     "section": "a-skill-is-a-prompt-youve-earned",
+     "quote": "I don't write a skill until I've typed the thing three times by hand."
+    }
+   ],
+   "trial": "Name the prompts you have typed most in the last few notes.",
+   "digest": [
+    "A skill is a saved prompt.",
+    "I wait until I have typed it three times by hand, then I know what it should say.",
+    "Every correction I give twice is a line to add."
+   ]
+  },
+  {
+   "title": "Let your agent write it",
+   "note": "save-it-as-a-skill",
+   "from": "let-your-agent-write-it-then-you-edit-it",
+   "to": "keep-judgment-manual",
+   "beats": [
+    {
+     "section": "let-your-agent-write-it-then-you-edit-it",
+     "quote": "Turn what we just did into a skill.",
+     "text": "I don't start from a blank page. Right after a session where the prompt worked, I say: turn what we just did into a skill. Then I read it the way I'd read a plan. When does it say to use it? Are those the steps I'd take? Is something in there I never asked for?"
+    },
+    {
+     "section": "let-your-agent-write-it-then-you-edit-it",
+     "quote": "I keep a skill to one job",
+     "text": "I keep a skill to one job, and save it in the project next to the brief and plan, so every session finds it. A good one for your portfolio is adding a roadmap entry. It asks what you learned, in your own words, and doesn't write your words for you. Later in the path you'll meet my loop, which notices repeats and asks if I want a skill. For now, you do the noticing."
+    },
+    {
+     "section": "keep-judgment-manual",
+     "quote": "an audit is a judgment",
+     "text": "Not every skill should run by itself. I run my audits by hand. My loop tells me when one is due and I decide to go. That's a preference, but the reason is that an audit is a judgment, and I want to be in the room for it."
+    }
+   ],
+   "runes": [
+    {
+     "id": "one-job",
+     "section": "let-your-agent-write-it-then-you-edit-it",
+     "quote": "I keep a skill to one job"
+    }
+   ],
+   "trial": "Pick the prompt you have typed most, or the roadmap entry one, ask your agent to turn it into a skill, edit it, save it in your project, and use it to add your next entry.",
+   "digest": [
+    "Ask your agent to turn a session that worked into a skill, then edit it.",
+    "One job per skill, saved in the project.",
+    "Keep judgment work, like audits, manual."
+   ]
+  },
+  {
+   "title": "When a skill earns a routine",
+   "note": "save-it-as-a-skill",
+   "from": "when-a-skill-earns-a-routine",
+   "to": "your-turn",
+   "beats": [
+    {
+     "section": "when-a-skill-earns-a-routine",
+     "quote": "It has to be repeated, boring, and",
+     "text": "A routine runs a skill on a timer or when something happens, with you nowhere in sight. Skills are called skills everywhere. Routines go by different names, a scheduled task in some harnesses, a cron job in others. Same idea, so ask your agent. The test is repeated, boring, and checkable, so you can tell it worked without reading its mind."
+    },
+    {
+     "section": "when-a-skill-earns-a-routine",
+     "quote": "One moves tickets that are due for code review",
+     "text": "Mine are plain. One checks whether my classes are graded. One moves tickets that are due for code review into the reviewer's queue. One updates my team's metrics calculations. Nobody makes a judgment call in any of them, and a wrong result is easy to spot."
+    },
+    {
+     "section": "when-a-skill-earns-a-routine",
+     "quote": "No audits.",
+     "text": "Look at what's missing. No audits. Nothing that edits code and ships it unreviewed. A routine that does something you'd have to think about doesn't save time. It files a mess for you to sort out later."
+    },
+    {
+     "section": "when-a-skill-earns-a-routine",
+     "quote": "needs something that tells you when it didn",
+     "text": "And check it actually ran. Anything that runs while you're not looking needs something that tells you when it didn't."
+    },
+    {
+     "section": "your-turn",
+     "quote": "Three is my number, not a law.",
+     "text": "And where I might be wrong. Three is my number, not a law. A pile of skills can cost more to maintain than it saves. Your skills will look nothing like mine, and that's the point. Write down one boring, checkable chore. Don't build the routine yet. Just notice it's there."
+    }
+   ],
+   "runes": [
+    {
+     "id": "routine-test",
+     "section": "when-a-skill-earns-a-routine",
+     "quote": "It has to be repeated, boring, and"
+    },
+    {
+     "id": "routine-ran",
+     "section": "when-a-skill-earns-a-routine",
+     "quote": "needs something that tells you when it didn"
+    }
+   ],
+   "trial": "Write down one chore that is boring and checkable, such as checking that the links on your roadmap still open. Do not build the routine yet.",
+   "digest": [
+    "A routine runs a skill on a schedule.",
+    "Build one only for work that is repeated, boring and checkable.",
+    "Never schedule judgment, and make something tell you when a routine did not run."
+   ]
+  }
+ ]
+}

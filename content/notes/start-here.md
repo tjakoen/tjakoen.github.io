@@ -22,6 +22,8 @@ social: |
 
   If you're a student or junior who uses ChatGPT and wants to build your own AI workflow, I wrote the
   ramp I wish I'd had. Start at the harbor:
+socialImage: "/media/notes/start-here-social.png"
+socialImageAlt: "A card from the Harbor path of Learn AI with me, titled I'm Six Months In, Not an Expert, and I Built This Whole Path With AI, with the line: I'm six months into working with AI every day and I am not an expert."
 ---
 
 I'm going to say what I'm not first, because it saves us both some time. I'm not an AI expert. I have
@@ -128,7 +130,8 @@ standards are a later job, and each of them built something that fits how they t
 Board](show-them-the-board.md) tells that story.
 
 So copy what's useful, change the rest, and ask your AI to explain anything you don't follow. It's very
-good at teaching you what other people built. If you make something, tell me. I'd like to see it.
+good at teaching you what other people built. If you make something, tell me. Email me, message me on
+LinkedIn, or use the contact page on my [portfolio](/mail). I'd like to see it.
 
 ## It's moving fast, and that's the good part
 

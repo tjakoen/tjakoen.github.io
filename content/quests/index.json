@@ -2,6 +2,126 @@
   "generated": "bun tools/quests.ts write",
   "quests": [
     {
+      "id": "start-here",
+      "region": 1,
+      "title": "I'm Six Months In, Not an Expert, and I Built This Whole Path With AI",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 7,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "ai-teammate-never-asks-questions",
+      "region": 1,
+      "title": "Your AI Is the Teammate Who Never Asks Questions",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 7,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "draw-it-before-the-ai-builds-it",
+      "region": 1,
+      "title": "Have the AI Draw It Before It Builds It",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 6,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching",
+        "design"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "plan-it-then-build-from-the-plan",
+      "region": 1,
+      "title": "Plan It, Then Build From the Plan",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 6,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "make-it-check-its-own-work",
+      "region": 1,
+      "title": "The AI Says It's Done. Make It Prove It.",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 4,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "a-test-is-a-check-that-runs-itself",
+      "region": 1,
+      "title": "A Test Is a Check That Runs Itself",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 3,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "save-it-as-a-skill",
+      "region": 1,
+      "title": "The Third Time You Type It, Save It",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 5,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
       "id": "ten-times-zero",
       "region": 2,
       "title": "Ten Times Zero Is Still Zero",

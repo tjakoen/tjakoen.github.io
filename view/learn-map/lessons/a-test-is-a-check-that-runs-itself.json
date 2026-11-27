@@ -1,0 +1,119 @@
+{
+ "id": "a-test-is-a-check-that-runs-itself",
+ "title": "A test is a check that runs itself",
+ "summary": "In three short stops I show you what a test is from scratch, the two kinds worth knowing by name, and the one habit I would wire in from the start, which is having the AI write the tests as it builds.",
+ "audio": "/media/lessons/a-test-is-a-check-that-runs-itself.m4a",
+ "stops": [
+  {
+   "title": "The seatbelt",
+   "note": "a-test-is-a-check-that-runs-itself",
+   "from": "intro",
+   "to": "its-the-check-you-already-do",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "They're the seatbelt that lets me drive fast.",
+     "text": "Tests are the least glamorous rule I follow, and they do the most work. They're the seatbelt that lets me drive fast. In my own repos, the type-checker and the tests have to come back green before I call anything done."
+    },
+    {
+     "section": "intro",
+     "quote": "you're in good company",
+     "text": "Testing often gets skipped in school. If this is new to you, you're in good company. So here's the idea from scratch."
+    },
+    {
+     "section": "its-the-check-you-already-do",
+     "quote": "A test is that same check written down as a little program",
+     "text": "You already test your work. You open the page, click the button, see if it works. A test is that same check, written down as a little program. A machine runs it in a second, as often as you want, and never forgets a step. It says pass or fail, and a fail tells you where to look."
+    }
+   ],
+   "runes": [
+    {
+     "id": "seatbelt",
+     "section": "intro",
+     "quote": "They're the seatbelt that lets me drive fast."
+    }
+   ],
+   "trial": "Name one check you do by hand every time you change something in your portfolio.",
+   "digest": [
+    "A test is the check you already do by hand, written down so a machine runs it.",
+    "It says pass or fail, and a fail tells you where to look."
+   ]
+  },
+  {
+   "title": "Two kinds, by name",
+   "note": "a-test-is-a-check-that-runs-itself",
+   "from": "two-kinds-worth-knowing-by-name",
+   "to": "two-kinds-worth-knowing-by-name",
+   "beats": [
+    {
+     "section": "two-kinds-worth-knowing-by-name",
+     "quote": "it checks one small piece on its own",
+     "text": "Two kinds to know by name. A unit test checks one small piece on its own, and you can have hundreds."
+    },
+    {
+     "section": "two-kinds-worth-knowing-by-name",
+     "quote": "drives the whole app the way a user would",
+     "text": "An end-to-end test drives the whole app the way a user would. Open your portfolio, find the roadmap, click an evidence link, check it opens. Slower, fewer of them, and the closest thing to asking whether it really works. The note links to good explanations of both. I'm not teaching the tools. Every language has a standard way to test, so ask your agent what yours is."
+    }
+   ],
+   "runes": [
+    {
+     "id": "two-kinds",
+     "section": "two-kinds-worth-knowing-by-name",
+     "quote": "it checks one small piece on its own"
+    }
+   ],
+   "trial": "Ask your agent what the usual way to test your stack is, and how to run the tests.",
+   "digest": [
+    "A unit test checks one small piece, an end-to-end test drives the whole app like a user.",
+    "Every stack has a standard way to test, so ask your agent."
+   ]
+  },
+  {
+   "title": "Make the AI write them",
+   "note": "a-test-is-a-check-that-runs-itself",
+   "from": "make-the-ai-write-them-as-it-builds",
+   "to": "your-turn",
+   "beats": [
+    {
+     "section": "make-the-ai-write-them-as-it-builds",
+     "quote": "the AI writes the tests as it builds",
+     "text": "Here's the habit I'd wire in from day one, and put right in your brief. The AI writes the tests as it builds. Every done line in your plan gets a test, and a step isn't finished until its tests pass. Now it's accountable to its own definition of done. It can't say done while a test is failing."
+    },
+    {
+     "section": "make-the-ai-write-them-as-it-builds",
+     "quote": "The tests are a memory that runs.",
+     "text": "And it helps whoever comes next. Tomorrow's session is another forgetful AI. It can change the code, run the tests, and find out whether it broke something. The tests are a memory that runs."
+    },
+    {
+     "section": "make-the-ai-write-them-as-it-builds",
+     "quote": "ask to see a new test fail before it passes",
+     "text": "One trick. Ask to see each new test fail before it passes. A test that has never failed might not be checking anything."
+    },
+    {
+     "section": "your-turn",
+     "quote": "I'd skip them",
+     "text": "And where I might be wrong. Tests can be weak, and they cost time to keep. For a one-evening experiment I'd skip them. The moment something matters to me, I add them."
+    }
+   ],
+   "runes": [
+    {
+     "id": "ai-writes-the-tests",
+     "section": "make-the-ai-write-them-as-it-builds",
+     "quote": "the AI writes the tests as it builds"
+    },
+    {
+     "id": "tests-are-memory",
+     "section": "make-the-ai-write-them-as-it-builds",
+     "quote": "The tests are a memory that runs."
+    }
+   ],
+   "trial": "Ask your AI to add a test for one done line in your plan, show it failing first, then passing, and explain what it proves.",
+   "digest": [
+    "Tell the AI to write tests as it builds, one for each done line.",
+    "Ask to see each new test fail before it passes.",
+    "Skip them for a throwaway experiment, add them when it matters."
+   ]
+  }
+ ]
+}

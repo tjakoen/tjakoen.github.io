@@ -31,7 +31,7 @@ Don't ask is it done. Ask for evidence for every done line. Something you can se
 **Trial:** Take the last step your AI called finished on your portfolio and ask it to show evidence for each done line.
 
 **Runes:**
-done-is-a-claim | They're what you check against.
+done-is-a-claim-not-a-result | They're what you check against.
 
 ## Stop 2: Run it, then ask fresh eyes
 
@@ -55,7 +55,7 @@ And be honest about that. It's my experience and not a measurement. Test it your
 **Trial:** Run your last piece of work yourself, then open a new session and ask it to review the brief, plan and changes.
 
 **Runes:**
-fresh-eyes | It's the same reason you don't mark your own exam.
+then-ask-a-fresh-pair-of-eyes | It's the same reason you don't mark your own exam.
 
 ## Stop 3: Write down what it keeps missing
 
@@ -84,4 +84,4 @@ Your turn is the whole thing. Evidence, run it yourself, fresh session, write do
 **Trial:** Ask for evidence, run it yourself, review it in a fresh session, and write down anything the review found that the first session missed. Then add your first roadmap entry, in your own words.
 
 **Runes:**
-accountable | You're still the person accountable for what ships
+your-turn | You're still the person accountable for what ships

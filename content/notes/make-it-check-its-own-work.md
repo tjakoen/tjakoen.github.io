@@ -21,6 +21,8 @@ social: |
   Said every AI, every day. It's a claim, not a result.
 
   Before you have a loop that checks for you, you check by hand. Three habits, in order:
+socialImage: "/media/notes/make-it-check-its-own-work-social.png"
+socialImageAlt: "A card from the Harbor path of Learn AI with me, titled The AI Says It's Done. Make It Prove It., with the line: \"Done! All tests passing.\""
 ---
 
 "Done! Everything is working and all the tests pass."

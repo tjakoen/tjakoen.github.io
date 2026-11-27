@@ -77,7 +77,7 @@ This is your permission slip. I tried every organizing app there is, and each on
 **Trial:** Do the Claude Academy basics if you haven't, then decide: add to a portfolio you have, or start from the skeleton.
 
 **Runes:**
-build-your-own | copy what's useful, change the rest
+build-your-own-dont-copy-mine | copy what's useful, change the rest
 
 ## Stop 3: The teammate who never asks questions
 
@@ -111,8 +111,8 @@ And here's why it matters. When the AI types, the scarce thing is no longer code
 **Trial:** Ask your AI for something vague, like "a portfolio site," and list every choice it made that you didn't.
 
 **Runes:**
-it-says-yes | Each of those was a choice
-you-keep-the-intent | the scarce thing stops being code and becomes intent
+it-says-yes-to-everything | Each of those was a choice
+it-cant-think-for-you | the scarce thing stops being code and becomes intent
 
 ## Stop 4: Brief it, and stay the orchestrator
 
@@ -142,5 +142,5 @@ Your turn. Brief your portfolio, or ask for it with no brief and list the guesse
 
 **Runes:**
 say-what-done-looks-like | What done looks like.
-explain-and-fix | could I explain this, and could I fix it if the AI weren't here
-it-forgets | A human teammate remembers yesterday.
+orchestrate-it-dont-just-vibe-it | could I explain this, and could I fix it if the AI weren't here
+it-forgets-everything | A human teammate remembers yesterday.
