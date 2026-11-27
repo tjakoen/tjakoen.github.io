@@ -477,6 +477,7 @@ test("a note whose lesson is cut in two parts opens at the first part and counts
   await book.locator('[data-do="nextstop"]').click();
   await book.locator(".trial input").check();
   expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toContain('"build-the-floor":[1]');
+});
 
 test("the panel's Begin quest and Where I am sit in a centered bar pinned above the footer, and a quest with no lesson says Read the note", async ({ page }) => {
   await page.goto("/learn");
