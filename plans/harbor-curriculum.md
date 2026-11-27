@@ -136,3 +136,8 @@ them in All, and show them individually under the Learning to build tab.
 - [ ] Every new Harbor note ships with its script and lesson stops in the same pass (decided 2026-11-27: the script is a companion of the note, written from it)
 - [ ] Next drafts: note 2 (know what done looks like first, may fold into note 1), then the drawing map
 - [x] Script format decided 2026-11-27: a script is a short concept narration, not the note read aloud. Each stop is three or four beats, each beat is one idea in about 20 to 45 seconds, and each beat names the section and the quote in the note that lights up while it plays. Narration adds the why or the practice and does not repeat the page. About 1.5 minutes a stop. The harbor script was rewritten to this format. Cues and timestamps come later, once the recordings exist.
+- [x] Start Here deepened with a Who I am section and a link to /about (2026-11-27). Facts taken only from the public About page.
+- [x] Note 2 drafted: content/notes/draw-it-before-the-ai-builds-it.md, a map of six drawings (use case, data flow, ERD, wireframe, mockup, design system) with outside links, plus its lesson file and script (three stops). The earlier idea of a separate know-what-done-looks-like note is folded into note 1.
+- [ ] Atomic design with GRAIN as the worked example: still to decide whether it is its own note (it is teased in note 2 as coming later)
+- [ ] The outside links in note 2 were found by search and not opened. Check each one before the note is published.
+- [ ] Per-note scripts: each note ships with a script. Short notes share a lesson (the Harbor lesson holds Start Here and note 1), because a lesson needs three to six stops.
