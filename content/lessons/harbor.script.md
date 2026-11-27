@@ -4,7 +4,7 @@ Status: DRAFT script for Tjakoen to read aloud and edit. Not yet read or checked
 
 How this script works. The note stays open on the page while the recording plays. The script is not the note read aloud. Each beat is a short spoken line about one idea, and it names the phrase in the note that lights up while it plays. The line should add something the page does not say: why the idea matters, what it looks like in practice, or what to watch for. A reader who only listens should get the concepts. A reader who only reads should lose nothing.
 
-Format of a beat: a highlight line (section id, then a quote that must appear in that section of the note), then the spoken words. Aim for about 20 to 45 seconds a beat and about a minute and a half a stop, roughly 5 minutes in all.
+Format of a beat: a highlight line (section id, then a quote that must appear in that section of the note), then the spoken words. Aim for about 20 to 45 seconds a beat and about a minute and a half to two minutes a stop.
 
 ## Stop 1: Before you set off
 
@@ -19,11 +19,16 @@ highlight: intro | in about two days
 I mention the two days because it's the point, not a flex. If I can go from an idea to a working thing that fast, so can you. The rest of this path is how.
 
 **Beat 3**
+highlight: who-i-am-in-case-we-havent-met | here's the short version
+
+In case we haven't met. I manage engineers at Career Team, and I teach software engineering part-time at a university. Nine years in. Mostly that means reading other people's code and finding the problems politely. The AI part is the last six months. If you'd rather check who's talking before you trust them, my About page has the rest. I'd encourage that.
+
+**Beat 4**
 highlight: who-this-is-for | AI is a reason to learn them harder
 
 You'll hear me assume you can code a little. That's on purpose. The AI doesn't replace that skill. It raises the stakes on it, because you're the one who has to notice when it's wrong.
 
-**Beat 4**
+**Beat 5**
 highlight: builders-not-coders | You can hand the bricklaying to an AI.
 
 Here's the idea I keep coming back to. Architect and bricklayer. The AI lays bricks, fast. You decide what the building is. If you remember one line from this stop, make it that one.

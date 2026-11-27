@@ -7,10 +7,10 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~6 min"
+readingTime: "~7 min"
 tags: [ai, workflow, teaching]
 summary: >
-  A short welcome to the Learn path. I am about six months into working with AI every day, I am not an
+  A short welcome to the Learn path, and who I am if we have not met. I am about six months into working with AI every day, I am not an
   expert, and most of this path was built in two days by talking to an AI. It is for students and juniors
   who already know some programming and want to build their own AI workflow. I share how I work, you try
   things and make your own version, and the first step is the free Claude Academy lessons.
@@ -33,6 +33,21 @@ down, and reading what came back before I let any of it ship. The polish took lo
 build went from my head to a working thing faster than I would have believed a year ago.
 
 I want you to be able to do that too. That's the whole reason this exists.
+
+## Who I am, in case we haven't met
+
+If you found this from a link and have no idea who I am, here's the short version. I'm Tjakoen. I'm an
+engineering manager at Career Team, where I lead a group of engineers and product specialists, and I
+teach software engineering part-time at a university, a couple hundred students a term. Most of my
+nine years in software went into growing engineers and shipping products from nothing. In practice
+that's a lot of reading other people's code and finding the problems politely.
+
+I'm also Filipino and Dutch, which explains nothing here, but people ask.
+
+The AI part is newer. Six months, daily. I care about it because I've spent years trying to make two
+jobs fit into one life, and this is the first thing that really helped. My [About page](/about) has the rest, including
+the résumé and a plainer statement of how I use AI. It's one click away if you'd rather check who's
+talking before you trust me. I'd encourage that.
 
 ## Why I started over
 
