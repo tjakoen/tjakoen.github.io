@@ -57,7 +57,7 @@ one-job | Keep a skill to one job.
 **Beat 1**
 highlight: when-a-skill-earns-a-routine | It has to be repeated, boring, and
 
-A routine, sometimes called a scheduled loop, runs a skill on a timer or when something happens, with you nowhere in sight. Your agent can show you how yours does it. Same test as for a skill, plus one clause. It has to be repeated, boring, and checkable, so you can tell it worked without reading its mind.
+A routine runs a skill on a timer or when something happens, with you nowhere in sight. Skills are called skills everywhere, but routines go by different names. A scheduled task in some harnesses, a cron job you set up yourself in others. Same idea, so ask your agent how yours does it. Same test as for a skill, plus one clause. It has to be repeated, boring, and checkable, so you can tell it worked without reading its mind.
 
 **Beat 2**
 highlight: when-a-skill-earns-a-routine | moves tickets that are due for code review
