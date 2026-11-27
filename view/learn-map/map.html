@@ -264,6 +264,9 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 /* the controls are pinned to the foot of the right page, like a ribbon marker */
 .bk__ctl { flex:0 0 auto; display:grid; gap:.4rem; padding:.5rem .8rem .55rem; border-top:3px double var(--q-line); background:var(--q-paper); }
 .bk__ctl button { font:.68rem/1.2 ui-monospace,monospace; padding:.15rem .4rem; border:2px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
+.bk__ctl button.is-next { font-weight:700; outline:2px solid var(--q-ink); outline-offset:2px; animation:nextnudge 1.2s steps(2) infinite; }
+@keyframes nextnudge { 50% { box-shadow:3px 3px 0 var(--q-ink); } }
+@media (prefers-reduced-motion: reduce) { .bk__ctl button.is-next { animation:none; } }
 .bk__ctl button.primary, .bk__ctl button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
 .bk__ctl .row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.3rem .4rem; }
 .bk__ctl .row > div { display:flex; gap:.25rem; align-items:center; }
