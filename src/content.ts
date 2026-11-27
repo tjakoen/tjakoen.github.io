@@ -161,10 +161,10 @@ function docsLink(currentPrefix: string) {
 // ships. A published note can then point at a follow-up before that one is ready, and neither the
 // reader nor the export check meets a dead /notes/ address. The set is reread at most every two
 // seconds, so flipping a status in the dev server takes effect without a restart.
-let draftSlugsCache: { at: number; slugs: Set<string> } | null = null;
+let draftSlugsCache: { dir: string; at: number; slugs: Set<string> } | null = null;
 export function draftNoteSlugs(dir = join(import.meta.dir, "..", "content", "notes")): Set<string> {
   const now = Date.now();
-  if (draftSlugsCache && now - draftSlugsCache.at < 2000) return draftSlugsCache.slugs;
+  if (draftSlugsCache && draftSlugsCache.dir === dir && now - draftSlugsCache.at < 2000) return draftSlugsCache.slugs;
   const slugs = new Set<string>();
   for (const file of readdirSync(dir)) {
     if (!file.endsWith(".md")) continue;
@@ -174,7 +174,7 @@ export function draftNoteSlugs(dir = join(import.meta.dir, "..", "content", "not
     const status = head?.[0].match(/^status:\s*"?([A-Za-z]+)"?\s*$/m)?.[1];
     if (!isPublishedStatus(status)) slugs.add(mdSlug(file));
   }
-  draftSlugsCache = { at: now, slugs };
+  draftSlugsCache = { dir, at: now, slugs };
   return slugs;
 }
 const noteHref = (slug: string, frag = "") => `${draftNoteSlugs().has(slug) ? "/drafts" : "/notes"}/${slug}${frag}`;
