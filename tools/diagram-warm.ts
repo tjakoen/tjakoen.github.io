@@ -10,9 +10,13 @@
 // wrong for this tool: a warm run that quietly rendered nothing would leave someone believing the
 // cache was filled right up until the gate said otherwise.
 //
-//   bun run diagrams:warm
+//   bun run diagrams:warm             fill the cache for served content
+//   bun run diagrams:warm -- --drafts  also fill it for draft notes, which the gate does not check
+//
+// The renderer launches playwright's own chromium. If the installed browser is a different build than the one
+// playwright expects, point PLAYWRIGHT_BROWSERS_PATH at a folder that links the installed one under the expected name.
 import { createRequire } from "node:module";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readdir, readFile } from "node:fs/promises";
 import { relative, join } from "node:path";
 import { prepareDiagrams } from "@tjakoen/mill/diagrams/prepare.ts";
 import { cachedRenderer } from "@tjakoen/mill/diagrams/cache.ts";
@@ -37,7 +41,7 @@ function missingPieces(): string[] {
 }
 
 const before = await checkDiagramCache();
-if (before.length === 0) {
+if (before.length === 0 && !process.argv.includes("--drafts")) {
   console.log(`[diagram-warm] nothing to render: every diagram fence in served content is already cached`);
   process.exit(0);
 }
@@ -66,6 +70,13 @@ try {
       const svgs = await prepareDiagrams(raw, render);
       if (svgs.size) console.log(`[diagram-warm] ${prefix}/${slug}: ${svgs.size} diagram(s) ready`);
     }
+  }
+  // Draft notes are not in the served sources above, so a diagram in a draft would render as a code block
+  // on the /drafts page until the note published. Warm every note file, so a draft shows its diagrams too.
+  const notesDir = join(REPO_ROOT, "content", "notes");
+  for (const f of (await readdir(notesDir)).filter((x) => x.endsWith(".md"))) {
+    const svgs = await prepareDiagrams(await readFile(join(notesDir, f), "utf8"), render);
+    if (svgs.size) console.log(`[diagram-warm] notes/${f.slice(0, -3)}: ${svgs.size} diagram(s) ready (drafts included)`);
   }
 } finally {
   await mermaid.close();

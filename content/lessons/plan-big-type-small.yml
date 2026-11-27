@@ -1,30 +1,63 @@
 id: plan-big-type-small
 note: plan-big-type-small
-title: 
-summary: 
+title: "Plan on the big model, type on the small one"
+summary: "I explain why I plan on the big model and type on the small one, why running it on low effort works only because of what the repo already says, and why the real skill is the floor underneath both."
 audio: /media/lessons/plan-big-type-small.m4a
-stops:
-  - title: ""
+stops: 
+  - title: Thinking and typing are different jobs
     note: plan-big-type-small
     from: the-question-that-made-me-write-this
     to: the-biggest-model-is-not-the-default
-    words: 734
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-question-that-made-me-write-this
+        section: the-question-that-made-me-write-this
+        quote: Every turn was paying top rate
+      - id: thinking-and-typing-are-different-jobs
+        section: thinking-and-typing-are-different-jobs
+        quote: Only hand off work that is already decided.
+      - id: the-biggest-model-is-not-the-default
+        section: the-biggest-model-is-not-the-default
+        quote: It adds a layer on top of it.
+    trial: "Take one task on your list and try to write its subagent brief in a few lines: the files, the contract, the finish line. If you cannot, the design is not done yet."
+    digest: 
+      - "Deciding is the hard part, typing is not."
+      - "Plan and review on the big model, implement with cheaper subagents."
+      - Only hand off work that is already decided.
+  - title: "Low effort, and checking what actually ran"
     note: plan-big-type-small
     from: try-low-effort-before-you-assume-high
     to: where-the-split-is-actually-wired
-    words: 887
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: try-low-effort-before-you-assume-high
+        section: try-low-effort-before-you-assume-high
+        quote: Would more thinking have fixed this
+      - id: where-the-split-is-actually-wired
+        section: where-the-split-is-actually-wired
+        quote: A pin in a file is a request.
+      - id: where-the-split-is-actually-wired-2
+        section: where-the-split-is-actually-wired
+        quote: "check what actually ran, not what the config says should have."
+    trial: "Think of the last thing a session got wrong for you, and write the one line in your instruction file that would have prevented it."
+    digest: 
+      - Low effort works when the repo already holds the context.
+      - Test it on your own tasks before you decide.
+      - "Fix a miss with a written rule, and check what actually ran."
+  - title: The floor underneath the split
     note: plan-big-type-small
     from: the-same-pattern-in-codex
     to: where-this-goes-next
-    words: 684
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: the-same-pattern-in-codex
+        section: the-same-pattern-in-codex
+        quote: "the stronger model plans and reviews, the cheaper one types."
+      - id: the-lesson
+        section: the-lesson
+        quote: where the intelligence in a session should live.
+      - id: where-this-goes-next
+        section: where-this-goes-next
+        quote: The floor it stands on took me months.
+    trial: "Write down three rules you keep repeating to the model, and put the first one into your instruction file today."
+    digest: 
+      - "The same split works in Codex, because the rules live in shared files."
+      - "Put the intelligence in your files, not only in the model."
+      - The loop grows one repeated rule at a time.

@@ -1,46 +1,98 @@
 id: one-loop-three-harnesses
 note: one-loop-three-harnesses
-title: 
-summary: 
+title: "One Loop, Three Harnesses"
+summary: "The day Claude ran out taught me the model is a route and the loop is the thing worth keeping. Then the correction behind it: the check that was meant to start every session ran once in a hundred and sixty-five, and I read the silence wrongly for three weeks."
 audio: /media/lessons/one-loop-three-harnesses.m4a
-stops:
-  - title: ""
+stops: 
+  - title: The day Claude ran out
     note: one-loop-three-harnesses
     from: intro
     to: the-loop-was-the-thing-i-had-not-written-down
-    words: 612
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-day-one-of-them-ran-out
+        section: the-day-one-of-them-ran-out
+        quote: "What I am buying is usage, not access."
+      - id: the-loop-was-the-thing-i-had-not-written-down
+        section: the-loop-was-the-thing-i-had-not-written-down
+        quote: A loop that is remembered is not a loop.
+    trial: "Write down where the state of your current project lives right now: the plan, the branch, the next step. If it only lives in your head or one chat, note that."
+    digest: 
+      - Running out of Claude mid-task showed that switching models only works if something holds the state.
+      - "The model is rented, and the loop is built."
+      - A loop you only remember is not a loop.
+  - title: The model is a route
     note: one-loop-three-harnesses
     from: what-the-loop-actually-is
     to: the-model-is-a-routing-decision
-    words: 1003
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: what-the-loop-actually-is
+        section: what-the-loop-actually-is
+        quote: A plans folder is enough; it is just what I use.
+      - id: three-harnesses-one-standard
+        section: three-harnesses-one-standard
+        quote: The rules did not change.
+      - id: the-model-is-a-routing-decision
+        section: the-model-is-a-routing-decision
+        quote: The model switch is not a crisis. It is a Tuesday.
+    trial: "Write a three-line handoff for something you're working on: what the work is, where it stops, and which branch it's on. Could another model pick it up from that alone?"
+    digest: 
+      - "The loop is five pieces: an instruction file, a plan, a checklist, a report and a human gate."
+      - The harness and the model can change underneath it.
+      - Switching is safe because the work is committed and handed off.
+  - title: The line I do not cross
     note: one-loop-three-harnesses
     from: a-week-with-one-to-five-projects
     to: the-part-i-keep
-    words: 853
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-line-i-do-not-cross
+        section: the-line-i-do-not-cross
+        quote: "The separation is the machine and the account, not the room."
+      - id: what-i-have-not-solved
+        section: what-i-have-not-solved
+        quote: It cannot prove the work is good.
+      - id: the-part-i-keep
+        section: the-part-i-keep
+        quote: I am loyal to the loop that lets me switch.
+    trial: "List the places your AI tools can see data. For each, write one line saying what must never go there."
+    digest: 
+      - One loop carries five threads because it holds the state.
+      - Work and personal stay split by machine and account.
+      - "The checklist proves the loop loaded, never that the work is good."
+  - title: One run in a hundred and sixty-five
     note: the-check-that-never-ran
     from: one-run-in-a-hundred-and-sixty-five-sessions
     to: then-i-ran-it-myself-from-the-wrong-folder
-    words: 821
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: one-run-in-a-hundred-and-sixty-five-sessions
+        section: one-run-in-a-hundred-and-sixty-five-sessions
+        quote: Not one in ten. One.
+      - id: the-story-i-told-myself-and-it-was-a-good-one
+        section: the-story-i-told-myself-and-it-was-a-good-one
+        quote: which is a warning sign I did not read at the time
+      - id: then-i-ran-it-myself-from-the-wrong-folder
+        section: then-i-ran-it-myself-from-the-wrong-folder
+        quote: It could not find its own program.
+    trial: "Pick one hook or script you rely on. Run it by hand from a folder other than the one you built it in, and read what it says."
+    digest: 
+      - The check had run once in a hundred and sixty-five sessions.
+      - I built a discipline theory for it.
+      - Running it by hand showed it had never been able to start.
+  - title: A path with two dots in it
     note: the-check-that-never-ran
     from: why-the-wrong-answer-was-so-comfortable
     to: what-it-says-now
-    words: 822
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: why-the-wrong-answer-was-so-comfortable
+        section: why-the-wrong-answer-was-so-comfortable
+        quote: There is only a path with two dots in it.
+      - id: what-i-still-cannot-reproduce-including-one-i-got-wrong-twice
+        section: what-i-still-cannot-reproduce-including-one-i-got-wrong-twice
+        quote: Measuring the loop is loop work.
+      - id: what-it-says-now
+        section: what-it-says-now
+        quote: that is a rollout and not a result
+    trial: "Take one number you have quoted about your own work. Write down the date it was true, and the one command that would confirm or kill your reading of it."
+    digest: 
+      - "A measurement says what did not happen, never why."
+      - "The behavior story was comfortable, and the cause was a relative path."
+      - A rollout is not a result until it is measured again.

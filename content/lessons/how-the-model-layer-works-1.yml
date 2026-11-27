@@ -1,38 +1,76 @@
 id: how-the-model-layer-works-1
 note: how-the-model-layer-works
-title: 
-summary: 
+title: "How the model layer works, part one"
+summary: "The technical half of the model layer story, part one: what the layer owns, how a registry turns a role into a tier, why a rule in a file needs a guard, how repository clearance works, and the order light work falls down."
 audio: /media/lessons/how-the-model-layer-works-1.m4a
-stops:
-  - title: ""
+stops: 
+  - title: "Four decisions, one file"
     note: how-the-model-layer-works
     from: intro
     to: the-registry-and-tiers-instead-of-models
-    words: 836
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: what-a-model-intelligence-layer-is
+        section: what-a-model-intelligence-layer-is
+        quote: "it never stalls, it never overspends and it never leaks private code"
+      - id: the-registry-and-tiers-instead-of-models
+        section: the-registry-and-tiers-instead-of-models
+        quote: the registry says which model that tier is today
+      - id: the-registry-and-tiers-instead-of-models-2
+        section: the-registry-and-tiers-instead-of-models
+        quote: names a tier and never a model
+    trial: "Open your own agent config and list every place a model name appears. Count how many files that is, and pick the one file you would make the only home for them."
+    digest: 
+      - A Model Intelligence Layer owns four decisions about models.
+      - "Work asks for a tier, and one registry file says which model that tier is today."
+      - Every model carries a cost class and a private flag.
+  - title: "The guard, and why I never switch models mid-session"
     note: how-the-model-layer-works
     from: the-guard-that-restarts-a-session-on-the-wrong-model
     to: hard-work-is-delegated-never-switched-to
-    words: 725
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-guard-that-restarts-a-session-on-the-wrong-model
+        section: the-guard-that-restarts-a-session-on-the-wrong-model
+        quote: A rule that lives in a document is a suggestion.
+      - id: hard-work-is-delegated-never-switched-to
+        section: hard-work-is-delegated-never-switched-to
+        quote: Nothing in the light chain is ever allowed to take them.
+    trial: "Think of the last time you switched models halfway through a long session. Write down which single piece of that work actually needed the stronger model, and how you would have handed just that piece off."
+    digest: 
+      - "A guard stops any main session on the wrong model before it does work, and offers a restart."
+      - "Hard work goes to a strong subagent instead of switching the main model, so the cache survives."
+  - title: Who gets to see the code
     note: how-the-model-layer-works
     from: repository-clearance-and-the-privacy-flag
     to: repository-clearance-and-the-privacy-flag
-    words: 571
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: repository-clearance-and-the-privacy-flag
+        section: repository-clearance-and-the-privacy-flag
+        quote: A flag is not a decision
+      - id: repository-clearance-and-the-privacy-flag-2
+        section: repository-clearance-and-the-privacy-flag
+        quote: Nothing is cleared by default
+      - id: repository-clearance-and-the-privacy-flag-2-2
+        section: repository-clearance-and-the-privacy-flag
+        quote: "Not clever, and exactly as clever as it needs to be."
+    trial: List the repositories you worked in this week. Mark each one yes or no for whether a free model that might keep your prompts may see its code.
+    digest: 
+      - "Every model is flagged private or not, and an unlisted model counts as not private."
+      - "Each repository gets asked once whether non-private models may see it, and nothing is cleared by default."
+  - title: "The light chain, in order"
     note: how-the-model-layer-works
     from: the-light-chain-in-order
     to: the-light-chain-in-order
-    words: 1339
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: the-light-chain-in-order
+        section: the-light-chain-in-order
+        quote: "the reason is the plan, not the model"
+      - id: the-light-chain-in-order-2
+        section: the-light-chain-in-order
+        quote: A pick is sticky.
+      - id: the-light-chain-in-order-2-2
+        section: the-light-chain-in-order
+        quote: "One retry, on purpose."
+    trial: "Write your own light chain in order, cheapest first, as three or four lines. Next to each one, write the single condition that should make the layer skip it."
+    digest: 
+      - "Light work walks one free model, then the Go plan, then Codex, and takes the first one not skipped."
+      - "Picks are sticky, failures cool or bench a model, and a failed child gets exactly one retry."

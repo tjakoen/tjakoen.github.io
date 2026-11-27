@@ -1689,7 +1689,7 @@
       "title": "FIGURES.md — figures & visualizations",
       "summary": "The standard for every diagram and chart - HTML when a figure has state, two tokenized inline-SVG scaffolds when it does not, one palette each, and a generated diagram carries the same accessible name a hand-drawn one does.",
       "when": "Read this BEFORE drawing the first shape of any figure that will ship: a chart, a graph, a timeline, a ratio, an architecture diagram, a flow, a loop, a pipeline. It gives the two inline-SVG scaffolds to copy, the token palette, the type scale, and the rule that no figure publishes without an accessible name. Don't skip because it is \"just a quick diagram\" or because a mermaid fence is faster to type - a freehanded figure will not match the family, and a mermaid fence without a label is refused and degrades to a code block rather than rendering.",
-      "lines": 248,
+      "lines": 264,
       "lead": {
         "lines": [
           14,
@@ -1704,7 +1704,7 @@
           "anchor": "three-figure-shapes-two-media-the-one-rule",
           "lines": [
             23,
-            69
+            85
           ],
           "summary": "A figure that has state is HTML.",
           "refs": []
@@ -1714,8 +1714,8 @@
           "heading": "The data-viz scaffold (copy this, don't freehand)",
           "anchor": "the-data-viz-scaffold-copy-this-dont-freehand",
           "lines": [
-            71,
-            141
+            87,
+            157
           ],
           "summary": "Every data-viz SVG starts from this exact skeleton.",
           "refs": [],
@@ -1725,8 +1725,8 @@
               "heading": "The tokens (the palette, single source)",
               "anchor": "the-tokens-the-palette-single-source",
               "lines": [
-                90,
-                99
+                106,
+                115
               ],
               "summary": "A table: Token, Value, Role.",
               "refs": []
@@ -1736,8 +1736,8 @@
               "heading": "The type scale",
               "anchor": "the-type-scale",
               "lines": [
-                101,
-                104
+                117,
+                120
               ],
               "summary": "Serif always (Georgia / Times, set once on the root and inherited).",
               "refs": []
@@ -1747,8 +1747,8 @@
               "heading": "Non-negotiables",
               "anchor": "non-negotiables",
               "lines": [
-                106,
-                118
+                122,
+                134
               ],
               "summary": "Canvas is 0 0 620 H, width=\"100%\", max-width:560px.",
               "refs": []
@@ -1758,8 +1758,8 @@
               "heading": "A figure may be upgraded, never replaced",
               "anchor": "a-figure-may-be-upgraded-never-replaced",
               "lines": [
-                120,
-                141
+                136,
+                157
               ],
               "summary": "An earlier version of this rule said \"no client JS\" and gave as its reason that script would break the zero-framework-JS promise.",
               "refs": []
@@ -1771,8 +1771,8 @@
           "heading": "The flow scaffold (steps, loops, relationships)",
           "anchor": "the-flow-scaffold-steps-loops-relationships",
           "lines": [
-            143,
-            198
+            159,
+            214
           ],
           "summary": "A flow is structural, not quantitative, so it does the opposite of the data-viz figure on one point: it inherits the page's theme tokens instead of carrying its own palette, so it themes with the...",
           "refs": [],
@@ -1782,8 +1782,8 @@
               "heading": "Non-negotiables (flow)",
               "anchor": "non-negotiables-flow",
               "lines": [
-                182,
-                198
+                198,
+                214
               ],
               "summary": "Theme tokens, never hex. --color-fg / --color-bg / --color-line / --color-muted only.",
               "refs": []
@@ -1795,8 +1795,8 @@
           "heading": "The reference figures (built to this standard)",
           "anchor": "the-reference-figures-built-to-this-standard",
           "lines": [
-            200,
-            206
+            216,
+            222
           ],
           "summary": "All live in ten-times-zero.md.",
           "refs": []
@@ -1806,8 +1806,8 @@
           "heading": "Rendering reality (know this before you build)",
           "anchor": "rendering-reality-know-this-before-you-build",
           "lines": [
-            208,
-            248
+            224,
+            264
           ],
           "summary": "Inline SVG renders everywhere the site serves, today, with zero dependencies.",
           "refs": []

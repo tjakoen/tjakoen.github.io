@@ -59,9 +59,49 @@ A coding agent does the same thing with more reach: it can edit files, add packa
 things you didn't mention. It isn't being sneaky. It filled every gap with a guess, because nobody told it
 where the gaps were.
 
-> *Figure: two paths from the same request. Left: a vague request, the agent guesses, a confident
-> wrong result, found late. Right: a short brief, the agent works inside it, a result you can check
-> against what you wrote. To be drawn to the figures standard.*
+<svg viewBox="0 0 600 250" width="100%" role="img"
+     aria-label="Two paths from the same request. Without a brief: a vague request, the agent guesses, a confident wrong result, found late. With a brief: a short brief, the agent works inside it, a result you can check against what you wrote."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-twopaths" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="20" y="36" width="250" height="34" rx="6"/>
+    <rect x="330" y="36" width="250" height="34" rx="6"/>
+    <rect x="20" y="88" width="250" height="34" rx="6"/>
+    <rect x="330" y="88" width="250" height="34" rx="6"/>
+    <rect x="20" y="140" width="250" height="34" rx="6"/>
+    <rect x="20" y="192" width="250" height="34" rx="6"/>
+  </g>
+  <g style="fill:var(--color-fg);stroke:var(--color-fg)">
+    <rect x="330" y="140" width="250" height="68" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="145" y1="70" x2="145" y2="88" marker-end="url(#fl-twopaths)"/>
+    <line x1="455" y1="70" x2="455" y2="88" marker-end="url(#fl-twopaths)"/>
+    <line x1="145" y1="122" x2="145" y2="140" marker-end="url(#fl-twopaths)"/>
+    <line x1="455" y1="122" x2="455" y2="140" marker-end="url(#fl-twopaths)"/>
+    <line x1="145" y1="174" x2="145" y2="192" marker-end="url(#fl-twopaths)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="145.0" y="57.5" style="fill:var(--color-fg)">A vague request</text>
+    <text x="455.0" y="57.5" style="fill:var(--color-fg)">A short brief</text>
+    <text x="145.0" y="109.5" style="fill:var(--color-fg)">The agent guesses</text>
+    <text x="455.0" y="109.5" style="fill:var(--color-fg)">The agent works inside it</text>
+    <text x="145.0" y="161.5" style="fill:var(--color-fg)">A confident, wrong result</text>
+    <text x="455.0" y="170.0" style="fill:var(--color-bg)">A result you can check</text>
+    <text x="455.0" y="187.0" style="fill:var(--color-bg)">against what you wrote</text>
+    <text x="145.0" y="213.5" style="fill:var(--color-fg)">Found late</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="145" y="22">without a brief</text>
+    <text x="455" y="22">with a brief</text>
+  </g>
+</svg>
+
+*Two paths from the same request: a guess you find late, and a brief you can check against.*
 
 ## It can't think for you
 
@@ -100,6 +140,40 @@ don't add trackers or packages I didn't ask for.
 
 Nothing in a brief is code. It's the thinking, written down, and it's the part you can do at any level.
 A first-year with a clear brief will often get a better result than an expert with a vague one.
+
+<svg viewBox="0 0 600 170" width="100%" role="img"
+     aria-label="The brief has three parts: the goal, what done looks like, and what to leave alone. Done is the part people get stuck on, and if you cannot say it the task is not ready."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-brief" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="16" y="40" width="180" height="76" rx="6"/>
+    <rect x="404" y="40" width="180" height="76" rx="6"/>
+  </g>
+  <g style="fill:var(--color-fg);stroke:var(--color-fg)">
+    <rect x="210" y="40" width="180" height="76" rx="6"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="106.0" y="65.5" style="fill:var(--color-fg)">The goal</text>
+    <text x="106.0" y="82.5" style="fill:var(--color-fg)">what this is,</text>
+    <text x="106.0" y="99.5" style="fill:var(--color-fg)">and why it exists</text>
+    <text x="300.0" y="65.5" style="fill:var(--color-bg)">What done looks like</text>
+    <text x="300.0" y="82.5" style="fill:var(--color-bg)">what you will see</text>
+    <text x="300.0" y="99.5" style="fill:var(--color-bg)">when it works</text>
+    <text x="494.0" y="65.5" style="fill:var(--color-fg)">What not to touch</text>
+    <text x="494.0" y="82.5" style="fill:var(--color-fg)">files and behavior</text>
+    <text x="494.0" y="99.5" style="fill:var(--color-fg)">that must stay as they are</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="300" y="24">the brief: three lines, none of them code</text>
+    <text x="300" y="146">if you cannot say the middle one, the task is not ready</text>
+  </g>
+</svg>
+
+*The brief is three lines. The middle one is the one worth stopping over.*
 
 ## Orchestrate it, don't just vibe it
 

@@ -44,6 +44,49 @@ should say. After that I know, because I've seen what I kept correcting. The fir
 probably already in front of you: the plan prompt, the check prompt, and adding a roadmap entry to your
 portfolio. Every correction I give twice is a line waiting to go into the skill.
 
+<svg viewBox="0 0 600 150" width="100%" role="img"
+     aria-label="Typed three times, then saved. You type the prompt by hand the first time, the second time and the third time. Then you turn it into a skill, and edit it. After that you ask your agent for it by name, and add a line each time it misses."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-skill" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="6" y="26" width="98" height="64" rx="6"/>
+    <rect x="129" y="26" width="98" height="64" rx="6"/>
+    <rect x="252" y="26" width="98" height="64" rx="6"/>
+    <rect x="498" y="26" width="98" height="64" rx="6"/>
+  </g>
+  <g style="fill:var(--color-fg);stroke:var(--color-fg)">
+    <rect x="375" y="26" width="98" height="64" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="104" y1="58" x2="129" y2="58" marker-end="url(#fl-skill)"/>
+    <line x1="227" y1="58" x2="252" y2="58" marker-end="url(#fl-skill)"/>
+    <line x1="350" y1="58" x2="375" y2="58" marker-end="url(#fl-skill)"/>
+    <line x1="473" y1="58" x2="498" y2="58" marker-end="url(#fl-skill)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="55.0" y="54.0" style="fill:var(--color-fg)">Type it</text>
+    <text x="55.0" y="71.0" style="fill:var(--color-fg)">1st time</text>
+    <text x="178.0" y="54.0" style="fill:var(--color-fg)">Type it</text>
+    <text x="178.0" y="71.0" style="fill:var(--color-fg)">2nd time</text>
+    <text x="301.0" y="54.0" style="fill:var(--color-fg)">Type it</text>
+    <text x="301.0" y="71.0" style="fill:var(--color-fg)">3rd time</text>
+    <text x="424.0" y="54.0" style="fill:var(--color-bg)">Turn it into</text>
+    <text x="424.0" y="71.0" style="fill:var(--color-bg)">a skill</text>
+    <text x="547.0" y="45.5" style="fill:var(--color-fg);font-size:12.5px">Edit it, then</text>
+    <text x="547.0" y="62.5" style="fill:var(--color-fg);font-size:12.5px">add a line per</text>
+    <text x="547.0" y="79.5" style="fill:var(--color-fg);font-size:12.5px">new miss</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="300" y="124">before the third time you are guessing what it should say</text>
+  </g>
+</svg>
+
+*Three times by hand, then a skill, then a line for each new miss.*
+
 ## Let your agent write it, then you edit it
 
 I don't start from a blank page. Right after a session where the prompt worked, I say: "Turn what we just

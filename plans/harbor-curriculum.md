@@ -366,6 +366,24 @@ The Captions toggle was removed, because the transcript is now the only voice an
 If the author records the stops later, the recording slots in under the same beats and cue idea, and nothing in the book has to change.
 That is a later choice and not part of this work.
 
+### A beat can light a figure
+
+A beat lights a quote by default. It can light a figure instead, so the Guide can point at the drawing while it explains the idea.
+The highlight line has the same two parts, with the second part written as a figure target:
+
+```
+highlight: the-six-drawings | figure: six drawings, each answering one question
+```
+
+The text after "figure:" is any distinctive run of the figure's accessible name. For an inline SVG that is its aria-label, for a
+figure element it is the aria-label on the element, and for a generated diagram it is the label on the mermaid fence. The match ignores
+case and spacing. The book outlines the figure, scrolls it into view, marks it with aria-current for a screen reader and skips the
+smooth scroll and the glow transition under reduced motion. If the figure is gone from the page, the book lights the section heading
+instead, the same fallback a missing quote gets.
+
+bun tools/lesson-data.ts verify fails the build when the name matches no figure in that section, or matches more than one, the same
+way it fails a quote that is not in the note. The format is also written in the header of tools/lesson-data.ts.
+
 ## Decisions, 2026-11-27 (the map and the book)
 
 - The lesson is a modal book on the map, not a sidebar takeover and not a note page with a card (author, after the first attempt put

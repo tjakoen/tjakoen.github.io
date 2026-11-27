@@ -68,6 +68,33 @@ has an e2e tutorial, and [Playwright](https://playwright.dev) is one popular e2e
 language and framework has a standard way to test, so I won't teach the tools here. Ask your agent: "What's
 the usual way to test a project built with this stack, and how do I run the tests?"
 
+<svg viewBox="0 0 600 230" width="100%" role="img"
+     aria-label="The test pyramid in words. At the top, a few end-to-end tests that drive the whole app the way a user would: slower, but the closest thing to asking whether it really works. At the base, many unit tests that each check one small piece and run in a blink."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-pyramid" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <polygon points="194,96 406,96 505,200 95,200"/>
+  </g>
+  <g style="fill:var(--color-fg);stroke:var(--color-fg)">
+    <polygon points="260,16 340,16 401,84 199,84"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="300" y="54.5" style="fill:var(--color-bg)">End-to-end tests</text>
+    <text x="300" y="144.0" style="fill:var(--color-fg)">Unit tests</text>
+    <text x="300" y="161.0" style="fill:var(--color-fg)">many, one small piece each, run in a blink</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="420" y="40" text-anchor="start">a few, and slower</text>
+    <text x="420" y="58" text-anchor="start">drives the whole app like a user</text>
+  </g>
+</svg>
+
+*Many small tests at the base, a few whole-app tests on top.*
+
 ## Make the AI write them as it builds
 
 Here's the habit I'd wire in from the start, and put right in your brief: **the AI writes the tests as it

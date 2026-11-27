@@ -1,46 +1,101 @@
 id: one-loop-every-repo
 note: one-loop-every-repo
-title: 
-summary: 
+title: "One loop, every repo"
+summary: "I could not explain half of what had shipped across my repositories, so I gave every repo one loop: a plan in a file, a heartbeat at the desk, and a contract that keeps a run honest. Then I show why I want to watch the AI work, and what I have not earned."
 audio: /media/lessons/one-loop-every-repo.m4a
-stops:
-  - title: ""
+stops: 
+  - title: The week I could not explain my own work
     note: one-loop-every-repo
     from: intro
     to: so-i-stopped-building-features-and-read
-    words: 662
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-week-i-couldnt-explain-my-own-work
+        section: the-week-i-couldnt-explain-my-own-work
+        quote: It all worked. The tests were green.
+      - id: first-an-honest-look-at-what-i-was-doing-wrong
+        section: first-an-honest-look-at-what-i-was-doing-wrong
+        quote: The embarrassing part is that I had built the trap myself
+      - id: so-i-stopped-building-features-and-read
+        section: so-i-stopped-building-features-and-read
+        quote: I stole the shape the field already agreed on
+    trial: "Pick two of your repos. Write down, for each, where its current plan lives. If the answers differ, you have found the first thing to fix."
+    digest: 
+      - "Output went up while my understanding stayed flat, and that is debt."
+      - Twelve repos ran twelve workflows.
+      - I borrowed a shared shape from loop engineering and from aerospace manuals instead of inventing one.
+  - title: "A plan in a file, and a heartbeat at the desk"
     note: one-loop-every-repo
     from: the-first-thing-i-fixed-was-where-the-plan-lives
     to: one-heartbeat-and-it-fires-while-im-already-working
-    words: 783
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-first-thing-i-fixed-was-where-the-plan-lives
+        section: the-first-thing-i-fixed-was-where-the-plan-lives
+        quote: "The board writes nothing. It is a window, not a database."
+      - id: the-first-thing-i-fixed-was-where-the-plan-lives-2
+        section: the-first-thing-i-fixed-was-where-the-plan-lives
+        quote: The output has provenance. The intent has none.
+      - id: one-heartbeat-and-it-fires-while-im-already-working
+        section: one-heartbeat-and-it-fires-while-im-already-working
+        quote: "The fix is not discipline, because discipline is exactly the thing"
+    trial: "Write one plan for something you are doing this week as a markdown file with an id, a status and a checklist. Update its status once when you finish a step."
+    digest: 
+      - Plans live in small markdown files the AI already edits.
+      - A board renders them and writes nothing back.
+      - "A doctor fires when I sit down, so skipped chores become visible."
+  - title: "The contract, and the correction"
     note: one-loop-every-repo
     from: the-contract-that-keeps-an-unattended-run-honest
     to: where-that-leaves-me
-    words: 809
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-contract-that-keeps-an-unattended-run-honest
+        section: the-contract-that-keeps-an-unattended-run-honest
+        quote: None of it is exotic.
+      - id: what-i-am-honest-about
+        section: what-i-am-honest-about
+        quote: "This is one person's estate, not a study."
+      - id: where-that-leaves-me
+        section: where-that-leaves-me
+        quote: It was to stop shipping things I could not explain.
+    trial: "Before your next AI run, write down the files it may touch and two lines it may not cross. Afterwards, check the run against that list."
+    digest: 
+      - "A run must bring evidence, stay inside a declared envelope, and be checked by a pass that did not write it."
+      - "It is one person's estate, not a study."
+      - "My own check once ran in one session out of a hundred and sixty-five, and I left that correction in."
+  - title: Watch its hands
     note: watch-its-hands
     from: intro
     to: so-i-built-the-boring-version
-    words: 1040
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: intro
+        section: intro
+        quote: Nobody has ever learned anything from my finished repo.
+      - id: most-ai-is-a-recording
+        section: most-ai-is-a-recording
+        quote: both of them put the work offstage.
+      - id: so-i-built-the-boring-version
+        section: so-i-built-the-boring-version
+        quote: "One door, one writer."
+    trial: "Open any AI tool you use and ask it to change one thing for you. Afterwards, write down what you could actually see it do, apart from its own summary."
+    digest: 
+      - "Most AI works offstage, as a sidebar or as a cursor imitating a person."
+      - I built the boring version instead.
+      - "Same buttons, one door, and the AI leaves its handwriting on everything it touches."
+  - title: What I have not earned
     note: watch-its-hands
     from: what-i-have-not-earned
     to: watch-its-hands
-    words: 465
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: what-i-have-not-earned
+        section: what-i-have-not-earned
+        quote: Writing the design costs nothing.
+      - id: what-i-have-not-earned-2
+        section: what-i-have-not-earned
+        quote: And I am not first.
+      - id: watch-its-hands
+        section: watch-its-hands
+        quote: None of this makes the AI smarter.
+    trial: "Pick one claim you make about a tool you built. Sort it into either shown, with a test or a receipt, or hoped for, and say which out loud."
+    digest: 
+      - "The door, the list and the grain are built and tested."
+      - "A small in-browser model drives part of it, narrowly."
+      - Whether watching teaches anyone is a hypothesis I have not tested with people.

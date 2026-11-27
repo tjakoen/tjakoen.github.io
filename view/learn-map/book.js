@@ -59,7 +59,7 @@
     return (noteCache[slug] = box);
   }
 
-  let marks = [], headingHl = null, root = null;
+  let marks = [], headingHl = null, figHl = null, root = null;
   function sectionNodes(id) {
     const box = ui.noteBody; if (!box) return [];
     const first = box.querySelector('h2[id]');
@@ -70,10 +70,27 @@
   function clearMarks() {
     for (const m of marks) { const p = m.parentNode; if (!p) continue; while (m.firstChild) p.insertBefore(m.firstChild, m); p.removeChild(m); p.normalize(); }
     marks = []; if (headingHl) { headingHl.classList.remove('hl'); headingHl = null; }
+    if (figHl) { figHl.classList.remove('hl-fig'); figHl.removeAttribute('aria-current'); figHl = null; }
     ui.noteBody?.querySelectorAll('canvas.margin-rune').forEach((c) => c.remove());
   }
+  /* A figure is found by its accessible name: the aria-label of an inline SVG or of a figure element, the same name tools/lesson-data.ts checks. */
+  function figureIn(sectionId, name) {
+    const want = squash(name).toLowerCase(); if (!want) return null;
+    for (const n of sectionNodes(sectionId)) for (const el of [n, ...n.querySelectorAll('svg[aria-label], figure[aria-label], [role="img"][aria-label]')]) {
+      const label = el.getAttribute && el.getAttribute('aria-label'); if (label && squash(label).toLowerCase().includes(want)) return el.closest('figure') || el;
+    }
+    return null;
+  }
+  /* Lights a figure: an outline, scrolled into view, and aria-current for a screen reader. The motion is skipped under reduced motion. */
+  function lightFigure(sectionId, name) {
+    clearMarks(); const fig = figureIn(sectionId, name);
+    if (!fig) { const hd = sectionId === 'intro' ? null : ui.noteBody.querySelector('[id="' + CSS.escape(sectionId) + '"]'); if (hd) { headingHl = hd; hd.classList.add('hl'); scrollNote(hd); } return false; }
+    fig.classList.add('hl-fig'); fig.setAttribute('aria-current', 'true'); figHl = fig; scrollNote(fig); return true;
+  }
+  function scrollNote(target) { const sc = ui.note, top = target.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - sc.clientHeight * 0.3; sc.scrollTo({ top: Math.max(0, top), behavior: reduced() ? 'auto' : 'smooth' }); }
   /* Lights the quote inside its section. If the quote is gone the heading is lit instead, which is still addressable (plans/quest-lessons.md, rule 7). */
-  function light(sectionId, quote) {
+  function light(sectionId, quote, figure) {
+    if (figure) return lightFigure(sectionId, figure);
     clearMarks();
     const nodes = sectionNodes(sectionId), want = squash(quote); let norm = ''; const map = [];
     for (const rootEl of nodes) {
@@ -111,7 +128,9 @@
   const S = { ended: false, lesson: null, stop: 0, beat: 0, playing: false, speed: 1, tab: 'book', solo: false, quest: null };
   const ui = {};
   const stopOf = () => S.lesson.stops[S.stop], beatOf = () => stopOf().beats[S.beat];
-  const questOf = (i) => { const s = S.lesson.stops[i]; return { id: s.note, local: S.lesson.stops.slice(0, i).filter((x) => x.note === s.note).length }; };
+  /* A quest's stop j is its j-th stop. A lesson cut in two parts lists each stop's lesson and place on the quest (ls), so the second part counts on from the first. */
+  const questOf = (i) => { const s = S.lesson.stops[i], qq = QUESTS.find((x) => x.id === s.note), k = qq && qq.ls ? qq.ls.findIndex((x) => x[0] === S.lesson.id && x[1] === i) : -1;
+    return { id: s.note, local: k >= 0 ? k : S.lesson.stops.slice(0, i).filter((x) => x.note === s.note).length }; };
   const doneStop = (i) => { const q = questOf(i); return !!PROG[q.id]?.has(q.local); };
 
   function build() {
@@ -169,7 +188,7 @@
   }
   function markRunes(b) {
     const have = read(RUNE_KEY); const s = stopOf();
-    for (const r of s.runes) if (r.section === b.section && squash(b.quote).includes(squash(r.quote).slice(0, 24))) {
+    for (const r of s.runes) if (r.section === b.section && b.quote && squash(b.quote).includes(squash(r.quote).slice(0, 24))) {
       marginRune(r.id); const key = S.lesson.id + ':' + r.id;
       ui.guide.querySelector('.rune-card')?.remove(); const card = h('div', 'rune-card', `<canvas width="7" height="7"></canvas><div><strong>Rune learned</strong><br>${esc(r.id.replace(/-/g, ' '))}<small>${have[key] ? 'already in the Codex' : '+25 XP · added to the Codex'}</small></div>`);
       drawRune(card.querySelector('canvas'), runeIndex(r.id), inkColor()); ui.guide.querySelector('.bk__after').before(card);
@@ -178,7 +197,7 @@
   }
 
   function showBeat() {
-    const s = stopOf(), b = beatOf(); light(b.section, b.quote); ui.guide.querySelector('.rune-card')?.remove(); markRunes(b);
+    const s = stopOf(), b = beatOf(); light(b.section, b.quote, b.figure); ui.guide.querySelector('.rune-card')?.remove(); markRunes(b);
     const el = ui.guide.querySelector('.say'); if (el && !S.playing) el.innerHTML = esc(b.text) + '<span class="caret">▌</span>';
     const hist = ui.guide.querySelector('.hist'); hist.innerHTML = s.beats.slice(Math.max(0, S.beat - 2), S.beat).map((x) => `<p class="fade">${esc(x.text)}</p>`).join('');
     const total = s.beats.length, pct = Math.round((S.beat + 1) / total * 100); ui.fill.style.width = pct + '%'; ui.flag.style.left = 'calc(' + pct + '% - ' + Math.round(pct / 10) + 'px)';

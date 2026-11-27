@@ -63,10 +63,26 @@ that is still the default. **This changed on 2026-08-16.** MILL renders a mermai
 SVG on the server, styled with the page's own theme tokens, and since mill 0.4.0 the fence has to
 carry a label saying in words what the diagram shows. A fence with no label is refused, warned
 about, and degraded to a code block, which is why an unlabelled diagram cannot reach a page by
-accident. Reach for the flow scaffold first anyway: a hand-built flow is smaller, it needs no
-render step, and it is the family the rest of the site is drawn in. Mermaid earns its place when a
-diagram is generated rather than drawn. Don't reach for it to chart a proportional bar either, that has
-always been an SVG.
+accident. Reach for the flow scaffold first for a simple flow: a hand-built flow is smaller, it needs no
+render step, and it is the family the rest of the site is drawn in. Don't reach for mermaid to chart a
+proportional bar either, that has always been an SVG.
+
+**Reach for the mermaid renderer when the diagram is more complicated than a flow you can draw by hand.**
+It earns its place when the diagram is generated from structure rather than composed: an entity
+relationship diagram (an *erDiagram* block), a sequence diagram, a state machine, a use case or data flow
+diagram, or a flow with more nodes and crossings than the flow scaffold holds without a hand-placed
+coordinate for every box. Write the fence, label it in words, and let MILL lay it out. The worked
+examples for a use case diagram, a data flow diagram and an ERD are in
+[Have the AI Draw It Before It Builds It](/notes/draw-it-before-the-ai-builds-it). Three steps, in order:
+
+1. Write the fence with its label: a *mermaid* fence with a label="…" attribute that says what the diagram shows, node by node.
+2. Render it on the authoring machine with *bun run diagrams:warm -- --drafts* (plain *bun run diagrams:warm* covers served notes only, and a draft page shows the raw source until its SVG is in
+   the cache). It needs the playwright and mermaid packages and a matching chromium, which a deploy
+   does not carry.
+3. Commit the new SVGs in the content/diagrams folder with the note, so the diagram cache gate stays green.
+
+A lesson script can point a beat at a rendered diagram with a *figure:* target that carries the label text, and
+the lesson data tool checks that the label exists in that section of the note.
 
 ## The data-viz scaffold (copy this, don't freehand)
 

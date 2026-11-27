@@ -22,6 +22,11 @@ highlight: why-drawing-matters-more-now | You don't have to draw it.
 And here's the good news. You don't have to draw it. The AI is very good at drawing. What matters isn't who held the pen. It's that you and the AI end up with the same picture, written down.
 
 **Beat 4**
+highlight: why-drawing-matters-more-now | figure: the six drawings and the one question
+
+This is the whole menu on one page. Six drawings, and each one answers exactly one question. You don't need to learn to draw any of them. You need to know which question you're stuck on, so you can ask for the right drawing and tell whether what comes back is right. The next stop takes them one at a time.
+
+**Beat 5**
 highlight: why-drawing-matters-more-now | the AI generates whatever the code can produce
 
 On my own projects I keep a design folder, and the AI generates whatever the code can produce, like the ERD from the database schema. That's heavier than you need. The point is these are old, useful drawings, and you only have to know they exist so you can ask for the right one.
@@ -37,17 +42,17 @@ why-drawing-matters-more-now | A shared, documented understanding is the goal
 ## Stop 2: Six drawings, one question each
 
 **Beat 1**
-highlight: six-drawings-one-question-each | Stick figures on the left, ovals on the right
+highlight: six-drawings-one-question-each | figure: Use case diagram for the portfolio
 
 Use case diagram. Who uses it, and what can they do. Draw it before anything else, because it's where you find out you have two kinds of user, not one.
 
 **Beat 2**
-highlight: six-drawings-one-question-each | where does information go?
+highlight: six-drawings-one-question-each | figure: Data flow diagram for the portfolio
 
 Data flow. Where does information travel. It's the drawing that shows data moving somewhere you didn't plan. A static portfolio can skip it.
 
 **Beat 3**
-highlight: six-drawings-one-question-each | what does it remember?
+highlight: six-drawings-one-question-each | figure: Entity relationship diagram for the portfolio
 
 The ERD. What does the thing remember, and how are those things related. For your portfolio, an entry has a date, a title, what you learned, and a link.
 

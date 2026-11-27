@@ -1,54 +1,111 @@
 id: ten-times-zero
 note: ten-times-zero
-title: 
-summary: 
+title: Ten Times Zero Is Still Zero
+summary: "I call myself a professional vibe coder, and I brought the counts to back it up. The idea is that AI multiplies what you bring, so ten times zero is still zero. This lesson covers where I was the zero, what the git history shows, the seven rules, why the mistakes are a measurement, and how to start."
 audio: /media/lessons/ten-times-zero.m4a
-stops:
-  - title: ""
+stops: 
+  - title: I was the zero
     note: ten-times-zero
     from: intro
     to: i-was-the-zero-for-years
-    words: 887
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: ai-is-a-multiplier-not-an-addend
+        section: ai-is-a-multiplier-not-an-addend
+        quote: And ten times zero is still zero.
+      - id: ai-is-a-multiplier-not-an-addend-2
+        section: ai-is-a-multiplier-not-an-addend
+        quote: become worth multiplying first
+      - id: i-was-the-zero-for-years
+        section: i-was-the-zero-for-years
+        quote: You have to be the right person before you try the thing.
+    trial: "Pick one thing you would hand to an AI this week. Write down honestly whether you could check its answer without it. If not, that is the foundation to lay first."
+    digest: 
+      - "AI multiplies what you bring, so ten times zero is still zero."
+      - I was the zero for years.
+      - Become worth multiplying first.
+  - title: A decade of rehearsal
     note: ten-times-zero
     from: so-were-clear-whos-talking
     to: a-decade-of-rehearsal-billed-as-management
-    words: 742
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: so-were-clear-whos-talking
+        section: so-were-clear-whos-talking
+        quote: the typing was never the valuable part
+      - id: a-decade-of-rehearsal-billed-as-management
+        section: a-decade-of-rehearsal-billed-as-management
+        quote: "if you can't explain it, you didn't build it."
+    trial: "Write down one role you have already held, a job, a club, a group project, and list two moves from it that you could reuse when directing an AI."
+    digest: 
+      - "I can write the code, which is why I let the machine type it."
+      - "Running an AI uses the same skills as managing, leading and teaching."
+      - "If you can't explain it, you didn't build it."
+  - title: The receipts
     note: ten-times-zero
     from: the-receipts
     to: now-the-vibe-part-because-i-do-go-fast
-    words: 706
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-one-number-that-matters
+        section: the-one-number-that-matters
+        quote: the scarce resource stops being code
+      - id: now-the-vibe-part-because-i-do-go-fast
+        section: now-the-vibe-part-because-i-do-go-fast
+        quote: I built the rails before I opened the throttle
+    trial: "Open a project of yours and roughly count how many files are writing (notes, a readme, docs) against code. Write down the split and one thing you wish you had written down."
+    digest: 
+      - "More than half of what I have written in this repo is words, not code."
+      - Writing down intent is the method.
+      - Speed is safe because the rails went up first.
+  - title: The playbook
     note: ten-times-zero
     from: the-part-that-actually-makes-it-professional
     to: the-part-that-actually-makes-it-professional
-    words: 1460
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-part-that-actually-makes-it-professional
+        section: the-part-that-actually-makes-it-professional
+        quote: Professional vibe coding is structured delegation.
+      - id: the-part-that-actually-makes-it-professional-2
+        section: the-part-that-actually-makes-it-professional
+        quote: A rule you have to remember is a wish.
+      - id: the-part-that-actually-makes-it-professional-2-2
+        section: the-part-that-actually-makes-it-professional
+        quote: I stopped prompting harder and started leaving better notes.
+    trial: "Open a cold AI session with no history, give it one sentence asking for a small change to a project of yours, and note what it guesses wrong first. That gap is a note you have not written yet."
+    digest: 
+      - Professional vibe coding is structured delegation.
+      - "Seven rules build the environment, and the last one makes them enforce themselves."
+      - "Brief, build, verify, record."
+  - title: The mistakes are a measurement
     note: ten-times-zero
     from: the-best-trick-of-all-the-ais-mistakes-are-a-measurement
     to: the-tell-is-the-ratio
-    words: 788
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-best-trick-of-all-the-ais-mistakes-are-a-measurement
+        section: the-best-trick-of-all-the-ais-mistakes-are-a-measurement
+        quote: So the mistakes stopped being bugs and started being data.
+      - id: the-tell-is-the-ratio
+        section: the-tell-is-the-ratio
+        quote: That surrounding structure is the profession.
+    trial: "Think of one mistake you or an AI made twice in the same project. Write one sentence on what about the project made it easy to make, and one change that would make it impossible."
+    digest: 
+      - "When the AI keeps slipping in the same place, the design is unclear there."
+      - "Design the mistake out, then lock it with a test."
+      - The structure around the model is the profession.
+  - title: "Run it, and where to start"
     note: ten-times-zero
     from: dont-work-for-the-ai-run-it
     to: the-point
-    words: 625
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: dont-work-for-the-ai-run-it
+        section: dont-work-for-the-ai-run-it
+        quote: "accept nothing you couldn't defend with the tab closed"
+      - id: where-to-start-if-youre-early
+        section: where-to-start-if-youre-early
+        quote: Every correction you give twice becomes a line in that file
+      - id: the-point
+        section: the-point
+        quote: "I don't prompt and pray. I prompt and prove."
+    trial: "Write the first three lines of a brief file for a project you know: what it is, how it is built, and one thing not to touch."
+    digest: 
+      - "Run the AI, do not work for it."
+      - "Start with a project you know, a brief file and cheap gates."
+      - "Use AI to buy reps, not just output."

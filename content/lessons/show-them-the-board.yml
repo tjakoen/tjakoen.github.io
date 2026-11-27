@@ -1,46 +1,101 @@
 id: show-them-the-board
 note: show-them-the-board
-title: 
-summary: 
+title: Show them the board
+summary: "I spent a month on the wrong thing, got to a dashboard in an afternoon by asking what I wanted to see, and learned that a demo spreads better than a mandate. Then the epic checker my tech lead built, what came back to my own reviewer, and what the numbers do not yet say."
 audio: /media/lessons/show-them-the-board.m4a
-stops:
-  - title: ""
+stops: 
+  - title: A month on the wrong thing
     note: show-them-the-board
     from: i-was-building-the-wrong-thing-carefully
     to: the-review-kit-now-with-a-window
-    words: 689
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: i-was-building-the-wrong-thing-carefully
+        section: i-was-building-the-wrong-thing-carefully
+        quote: "I was thinking like a developer, not like an AI orchestrator."
+      - id: i-was-building-the-wrong-thing-carefully-2
+        section: i-was-building-the-wrong-thing-carefully
+        quote: I was spending the machine on the work
+      - id: the-review-kit-now-with-a-window
+        section: the-review-kit-now-with-a-window
+        quote: It never approves or merges; approval stays mine.
+    trial: "Pick one view you keep meaning to build as an app. Write down, in three sentences, what you want to see on it, and ask Claude for a dashboard instead."
+    digest: 
+      - I spent a month building an app the way a developer would.
+      - An afternoon with a Claude dashboard replaced it.
+      - "The review kit got a window, and approval stayed with me."
+  - title: Four tries at one view
     note: show-them-the-board
     from: crew-watch-attempt-number-four
     to: crew-watch-attempt-number-four
-    words: 885
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: crew-watch-attempt-number-four
+        section: crew-watch-attempt-number-four
+        quote: DevLake measured the pipeline. My questions were about the people in it.
+      - id: crew-watch-attempt-number-four-2
+        section: crew-watch-attempt-number-four
+        quote: The app did not ship. The thinking inside it did.
+      - id: crew-watch-attempt-number-four-2-2
+        section: crew-watch-attempt-number-four
+        quote: The expensive work was never the code.
+    trial: "Write down the three questions you actually ask in a one-on-one. For each, name the one number that would help you ask it better."
+    digest: 
+      - Crew Watch took four tries.
+      - It was fast only because a month of written-down judgment already existed.
+      - "It compares people to the team to point at where to focus, not to grade."
+  - title: The demo is the policy
     note: show-them-the-board
     from: my-whole-ai-policy-is-a-demo
     to: what-i-have-not-earned-yet
-    words: 1435
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: my-whole-ai-policy-is-a-demo
+        section: my-whole-ai-policy-is-a-demo
+        quote: Nobody gets inspired by a mandate.
+      - id: the-rule-that-comes-with-the-tokens
+        section: the-rule-that-comes-with-the-tokens
+        quote: It is not allowed to think for you.
+      - id: what-i-have-not-earned-yet
+        section: what-i-have-not-earned-yet
+        quote: "Two weeks and three tools is a good story, not a trend."
+    trial: "Pick one thing you built that helps you. Book ten minutes to show it to one colleague, rough edges included."
+    digest: 
+      - "I lead with demos, not mandates."
+      - "Three people built their own tools without being asked, and one of them made my reviews better."
+      - "The rule stays the same: own what you ship."
+  - title: Move bugs left
     note: move-bugs-left
     from: intro
     to: how-the-epic-checker-works
-    words: 783
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: matts-rule
+        section: matts-rule
+        quote: Move bugs as far to the left in the process as possible.
+      - id: how-the-epic-checker-works
+        section: how-the-epic-checker-works
+        quote: The checker does not decide anything.
+      - id: who-built-it
+        section: who-built-it
+        quote: "Same tool, opposite direction, and both of them right."
+    trial: Take one open ticket and its plan or spec. Spend five minutes listing anything in the ticket the plan does not already decide.
+    digest: 
+      - A wrong assumption is cheaper the earlier you catch it.
+      - The epic checker reads tickets and pull requests against the plan and puts each drift in front of its owner.
+      - It recommends; a person decides.
+  - title: "What came back, and what the board says"
     note: move-bugs-left
     from: what-came-back-to-me
     to: what-i-have-not-earned-yet
-    words: 768
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: what-came-back-to-me
+        section: what-came-back-to-me
+        quote: "I did not plan that, and I like it a lot."
+      - id: what-the-board-says-so-far
+        section: what-the-board-says-so-far
+        quote: These numbers do not say whether a flag was right.
+      - id: what-i-have-not-earned-yet
+        section: what-i-have-not-earned-yet
+        quote: It is a few weeks old.
+    trial: "Look at the last five flags or review comments your team left. Mark each as fixed, answered, closed without change, or ignored."
+    digest: 
+      - "Helping on a teammate's tool made my own reviewer smarter."
+      - "Three lessons carry over: keep score, split by topic, and treat a miss as a test."
+      - "The early counts are real, but they do not yet say whether a flag was right."
