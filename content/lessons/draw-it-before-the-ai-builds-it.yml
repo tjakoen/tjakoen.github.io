@@ -4,49 +4,49 @@ title: Have the AI draw it before it builds it
 summary: In three short stops I tell you why drawing matters more now that you do not type the code, give you the one question each of six old drawings answers, and show you how to have the AI draw it for you, agree on it, and save it in the project.
 audio: /media/lessons/draw-it-before-the-ai-builds-it.m4a
 stops:
-  - title: The sentence that costs the most
-    note: draw-it-before-the-ai-builds-it
-    from: intro
-    to: why-drawing-matters-more-now
-    runes:
-      - id: the-walk-you-skipped
-        section: why-drawing-matters-more-now
-        quote: A drawing is the walk you skipped.
-      - id: shared-picture
-        section: why-drawing-matters-more-now
-        quote: A shared, documented understanding is the goal
-    trial: Think of the last time you said that is not what I meant. Write down what you had not decided yet.
-    digest:
-      - The AI builds what you described, and what you described had holes.
-      - When you do not type the code, you miss the walk through it.
-      - A drawing is that walk. You do not have to draw it, because the AI will.
-      - What matters is a shared, written-down picture of the plan.
-  - title: Six drawings, one question each
-    note: draw-it-before-the-ai-builds-it
-    from: six-drawings-one-question-each
-    to: six-drawings-one-question-each
-    runes:
-      - id: one-question-each
-        section: six-drawings-one-question-each
-        quote: Reach for the one that answers the question
-    trial: Pick a small thing you want to build and name which one of the six answers the question you cannot answer yet.
-    digest:
-      - Use case, who does what. Data flow, where information goes. ERD, what it remembers.
-      - Wireframe, what is on each screen. Mockup, how it looks. Design system, the reusable parts.
-      - You will not need all six. Reach for the one that answers your open question.
-  - title: Let the AI hold the pen
-    note: draw-it-before-the-ai-builds-it
-    from: let-the-ai-hold-the-pen
-    to: try-this
-    runes:
-      - id: save-it
-        section: let-the-ai-hold-the-pen
-        quote: A common, written-down understanding
-      - id: make-it-ask
-        section: make-the-teammate-ask-questions
-        quote: Ask me five questions before you build anything.
-    trial: Give your AI your brief and ask for a use case diagram as Mermaid. Read it, fix one thing, ask what is missing, then save it next to the brief.
-    digest:
-      - Describe it and let the AI draw it, ideally in text it can update.
-      - Read it and correct it. That is your part.
-      - Save the agreed drawing in the project, so every session works from the same plan.
+- title: The sentence that costs the most
+  note: draw-it-before-the-ai-builds-it
+  from: intro
+  to: why-drawing-matters-more-now
+  runes:
+  - id: the-walk-you-skipped
+    section: why-drawing-matters-more-now
+    quote: A drawing is the walk you skipped.
+  - id: shared-picture
+    section: why-drawing-matters-more-now
+    quote: A shared, documented understanding is the goal
+  trial: Think of the last time you said that is not what I meant. Write down what you had not decided yet.
+  digest:
+  - The AI builds what you described, and what you described had holes.
+  - When you do not type the code, you miss the walk through it.
+  - A drawing is that walk. You do not have to draw it, because the AI will.
+  - What matters is a shared, written-down picture of the plan.
+- title: Six drawings, one question each
+  note: draw-it-before-the-ai-builds-it
+  from: six-drawings-one-question-each
+  to: six-drawings-one-question-each
+  runes:
+  - id: one-question-each
+    section: six-drawings-one-question-each
+    quote: Reach for the one that answers the question
+  trial: Look at your portfolio brief and name which one of the six answers the question you cannot answer yet. For a portfolio, a use case diagram and a wireframe are plenty.
+  digest:
+  - Use case, who does what. Data flow, where information goes. ERD, what it remembers.
+  - Wireframe, what is on each screen. Mockup, how it looks. Design system, the reusable parts.
+  - You will not need all six. Reach for the one that answers your open question.
+- title: Let the AI hold the pen
+  note: draw-it-before-the-ai-builds-it
+  from: let-the-ai-hold-the-pen
+  to: try-this
+  runes:
+  - id: save-it
+    section: let-the-ai-hold-the-pen
+    quote: A common, written-down understanding
+  - id: make-it-ask
+    section: make-the-teammate-ask-questions
+    quote: Ask me five questions before you build anything.
+  trial: Give your AI your portfolio brief and ask for a use case diagram as Mermaid, then a gray-box wireframe of the roadmap page. Read them, fix one thing, ask what is missing, then save both next to the brief.
+  digest:
+  - Describe it and let the AI draw it, ideally in text it can update.
+  - Read it and correct it. That is your part.
+  - Save the agreed drawing in the project, so every session works from the same plan.

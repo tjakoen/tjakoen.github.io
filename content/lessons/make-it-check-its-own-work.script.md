@@ -23,7 +23,7 @@ Don't ask "is it done?" Ask for evidence for every done line. Something you can 
 
 **Digest:** Done is a claim, not a result. Check it against the brief, the drawing and the plan, and ask for evidence you can see for each done line.
 
-**Trial:** Take the last thing your AI called finished and ask it to show evidence for each done line.
+**Trial:** Take the last step your AI called finished on your portfolio and ask it to show evidence for each done line.
 
 **Runes:**
 done-is-a-claim | They're what you check against.
@@ -38,12 +38,12 @@ Testing often gets skipped in school. If it's new to you, you're in good company
 **Beat 2**
 highlight: let-tests-do-the-checking | a little program
 
-A test is that same check, written down as a little program. A machine runs it in a second, as many times as you want, and never forgets a step. Make a task, mark it done, check that it's done. It says pass or fail, and a fail tells you where to look.
+A test is that same check, written down as a little program. A machine runs it in a second, as many times as you want, and never forgets a step. Make two roadmap entries, sort them, check the newest comes first. It says pass or fail, and a fail tells you where to look.
 
 **Beat 3**
 highlight: let-tests-do-the-checking | drives the whole app the way a user would
 
-Two kinds to know by name. A unit test checks one small piece, and you can have hundreds. An end-to-end test drives the whole app the way a user would. Open the page, add a task, tick it, refresh. Slower, fewer, and the closest to asking whether it really works. The note links to good explanations of both. I'm not teaching the tools. Ask your agent how your stack does it.
+Two kinds to know by name. A unit test checks one small piece, and you can have hundreds. An end-to-end test drives the whole app the way a user would. Open your portfolio, find the roadmap, click an evidence link. Slower, fewer, and the closest to asking whether it really works. The note links to good explanations of both. I'm not teaching the tools. Ask your agent how your stack does it.
 
 **Beat 4**
 highlight: let-tests-do-the-checking | the AI writes the tests as it builds
@@ -112,11 +112,11 @@ One honest limit. None of this makes mistakes impossible. A fresh reviewer can m
 **Beat 4**
 highlight: try-this | Write down anything the review found
 
-Your trial is the whole thing. Evidence, run it yourself, fresh session, and write down what the review found that the first session didn't.
+Your trial is the whole thing. Evidence, run it yourself, fresh session, write down what the review found. Then add your first roadmap entry, in your own words. The AI can fix your typos, but the words are yours.
 
 **Digest:** When you catch the same miss twice, write it in the file your sessions read. Do the checks by hand first, so you learn which ones are worth automating. You're still accountable for what ships.
 
-**Trial:** Ask for evidence, run it yourself, review it in a fresh session, and write down anything the review found that the first session missed.
+**Trial:** Ask for evidence, run it yourself, review it in a fresh session, and write down anything the review found that the first session missed. Then add your first roadmap entry, in your own words.
 
 **Runes:**
 write-it-down | Write it down

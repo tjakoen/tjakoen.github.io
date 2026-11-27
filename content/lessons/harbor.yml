@@ -26,9 +26,10 @@ stops:
       - id: build-your-own
         section: build-your-own-dont-copy-mine
         quote: copy what's useful, change the rest
-    trial: Do the Claude Academy basics if you have not, then write down one thing you would like to build.
+    trial: Do the Claude Academy basics if you have not, then decide whether to add to a portfolio you have or start from the skeleton.
     digest:
       - Start at the Harbor, then cross to the mainland. Each stop ends with one small thing to try.
+      - You build your own portfolio along the way, with an AI roadmap page and a home for your badges.
       - Progress is self-reported, so the only person you can fool is you.
       - What I do works for me. Copy what is useful, change the rest, and show me what you make.
   - title: The teammate who never asks questions
@@ -42,7 +43,7 @@ stops:
       - id: you-keep-the-narrative
         section: it-cant-think-for-you
         quote: the thinking about what to build
-    trial: Ask your AI for something vague, like a login page, and list every choice it made that you did not.
+    trial: Ask your AI for something vague, like a portfolio site, and list every choice it made that you did not.
     digest:
       - An AI agent behaves like the group project teammate who says got it and asks nothing.
       - It fills every gap with a guess, and then sounds sure.
@@ -58,7 +59,7 @@ stops:
       - id: it-forgets
         section: it-forgets-everything
         quote: A human teammate remembers yesterday.
-    trial: Write the three-part brief for something small you want to build, give it to your AI, and compare what you get with what you wrote.
+    trial: Write the three-part brief for your portfolio, or its roadmap section, give it to your AI, and compare what you get with what you wrote.
     digest:
       - A brief has three parts. The goal, what done looks like, and what not to touch.
       - The AI forgets between sessions, so the brief has to live in a file.

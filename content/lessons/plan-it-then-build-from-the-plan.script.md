@@ -23,7 +23,7 @@ Goal, a list of small steps, and what done looks like for each one. And no code 
 
 **Digest:** A plan is a short file: the goal, small steps in order, and what done looks like for each step. It gives you something to point at.
 
-**Trial:** Think of something you're building and write its goal and two steps, each with a done line.
+**Trial:** For your portfolio, write the goal and two steps, each with a done line.
 
 **Runes:**
 small-steps | A list of small steps, in order
@@ -67,7 +67,7 @@ So here's the test for anything it builds. Could I explain this, and could I fix
 
 **Digest:** Talk through the stack with your AI before the plan has steps. Stick with what you know and with popular tools. Never do agentic coding blind in a stack you have no experience with. To learn one, make it a learning project on purpose. Orchestrate, don't just vibe. Write the choice, and the reason, at the top of the plan.
 
-**Trial:** Describe something you want to build to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan. Then ask yourself: could I explain this and fix it if the AI weren't here tomorrow?
+**Trial:** Describe your portfolio to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan. Then ask yourself: could I explain this and fix it if the AI weren't here tomorrow?
 
 **Runes:**
 stack-familiar | stick with what you're familiar with
@@ -93,7 +93,7 @@ Then the habit that makes the whole thing work. Left alone, it'll run through ev
 
 **Digest:** Have the AI draft the plan and edit it yourself, splitting any step too big to explain in a sentence. Then build one step at a time and check each against its done line.
 
-**Trial:** Ask your AI for a plan with no code yet. Split one step, cut one, then tell it to do step 1 only and stop.
+**Trial:** Ask your AI for a plan for your portfolio with no code yet. Split one step, cut one, then tell it to do step 1 only and stop.
 
 **Runes:**
 one-step-at-a-time | Do step 1 only. Stop and show me when it's done.
@@ -122,7 +122,7 @@ Your trial is the whole loop in miniature. Plan with no code, edit it, save it, 
 
 **Digest:** Keep the plan in a file next to the brief so any session can pick it up. It's a guess, so update it when it changes. What matters is that you and the AI hold the same one.
 
-**Trial:** Ask your AI for a plan with no code yet, edit it, save it in your project, then have it do step 1 only and check the result against the done line.
+**Trial:** Ask your AI for a plan for your portfolio with no code yet, edit it, save it in your project, then have it do step 1 only and check the result against the done line.
 
 **Runes:**
 lives-in-a-file | If the plan lives only in a chat, it dies when the session does.

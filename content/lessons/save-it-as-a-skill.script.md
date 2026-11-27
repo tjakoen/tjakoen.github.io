@@ -9,7 +9,7 @@ Same format as the other scripts: one idea a beat, about 20 to 45 seconds, names
 **Beat 1**
 highlight: intro | That tiredness is useful.
 
-You've typed the same prompts a few times now. The plan one, the check one. You're a bit tired of them. That tiredness is useful, because it's telling you what to save.
+You've typed the same prompts a few times now. The plan one, the check one, and adding a roadmap entry. You're a bit tired of them. That tiredness is useful, because it's telling you what to save.
 
 **Beat 2**
 highlight: a-skill-is-a-prompt-youve-earned | Don't write a skill until you've typed the thing three times by hand.
@@ -23,7 +23,7 @@ And every correction you give twice is a line waiting to go in. That's how it en
 
 **Digest:** A skill is a saved prompt. Wait until you've typed it three times by hand, then you know what it should say. Every correction you give twice is a line to add.
 
-**Trial:** Name the two prompts you've typed most in the last few notes.
+**Trial:** Name the prompts you've typed most in the last few notes.
 
 **Runes:**
 three-times | Don't write a skill until you've typed the thing three times by hand.
@@ -38,7 +38,7 @@ Don't start from a blank page. Right after a session where the prompt worked, sa
 **Beat 2**
 highlight: let-your-agent-write-it-then-you-edit-it | Keep a skill to one job.
 
-Keep a skill to one job, and save it in the project next to your brief and plan, so every session finds it. Then as you catch new misses, add a line. That's how it gets better. Later in the path you'll meet my loop, which notices when I repeat a request and asks if I want a skill. For now, you're the one noticing.
+A good one for your portfolio is adding a roadmap entry. It asks what you learned, in your own words, adds the entry with a date and a link, and checks the link opens. It doesn't write your words for you. Keep a skill to one job, and save it in the project next to your brief and plan, so every session finds it. Then as you catch new misses, add a line. That's how it gets better. Later in the path you'll meet my loop, which notices when I repeat a request and asks if I want a skill. For now, you're the one noticing.
 
 **Beat 3**
 highlight: keep-judgment-manual | an audit is a judgment
@@ -47,7 +47,7 @@ One more thing. Not every skill should run by itself. I run my audits by hand. M
 
 **Digest:** Ask your agent to turn a session that worked into a skill, then edit it. One job per skill, saved in the project. Later you'll meet a loop that notices repeats for you, but by hand comes first. Keep judgment work, like audits, manual.
 
-**Trial:** Pick the prompt you've typed most, ask your agent to turn it into a skill, edit it, and save it in your project.
+**Trial:** Pick the prompt you've typed most, or the roadmap entry one, ask your agent to turn it into a skill, edit it, save it in your project, and use it to add your next entry.
 
 **Runes:**
 one-job | Keep a skill to one job.
@@ -81,7 +81,7 @@ Your trial. Skill first. Then write down one chore that's boring and checkable, 
 
 **Digest:** A routine runs a skill on a schedule. Build one only for work that is repeated, boring and checkable. Never schedule judgment, and make something tell you when a routine did not run.
 
-**Trial:** Write down one chore you do over and over that is boring and checkable. Do not build the routine yet.
+**Trial:** Write down one chore that is boring and checkable, such as checking that the links on your roadmap still open. Do not build the routine yet.
 
 **Runes:**
 routine-test | It has to be repeated, boring, and

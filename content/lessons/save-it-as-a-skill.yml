@@ -25,7 +25,7 @@ stops:
   - id: one-job
     section: let-your-agent-write-it-then-you-edit-it
     quote: Keep a skill to one job.
-  trial: Pick the prompt you have typed most, ask your agent to turn it into a skill, edit it, and save it in your project.
+  trial: Pick the prompt you have typed most, or the roadmap entry one, ask your agent to turn it into a skill, edit it, save it in your project, and use it to add your next entry.
   digest:
   - Ask your agent to turn a session that worked into a skill, then edit it.
   - One job per skill, saved in the project.
@@ -42,7 +42,7 @@ stops:
   - id: routine-ran
     section: when-a-skill-earns-a-routine
     quote: needs something that tells you when it didn't
-  trial: Write down one chore you do over and over that is boring and checkable. Do not build the routine yet.
+  trial: Write down one chore that is boring and checkable, such as checking that the links on your roadmap still open. Do not build the routine yet.
   digest:
   - A routine runs a skill on a schedule.
   - Build one only for work that is repeated, boring and checkable.

@@ -12,7 +12,7 @@ stops:
   - id: small-steps
     section: a-plan-is-a-list-you-can-tick-off
     quote: A list of small steps, in order
-  trial: Think of something you are building and write its goal and two steps, each with a done line.
+  trial: For your portfolio, write the goal and two steps, each with a done line.
   digest:
   - A plan is a short file with a goal, small steps in order, and what done looks like for each.
   - It gives you something to point at when a session gets long.
@@ -30,7 +30,7 @@ stops:
   - id: explain-and-fix
     section: orchestrate-it-dont-just-vibe-it
     quote: could I fix it if the AI weren't here tomorrow
-  trial: 'Describe something you want to build to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan. Then ask yourself: could I explain this and fix it if the AI weren''t here tomorrow?'
+  trial: 'Describe your portfolio to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan. Then ask yourself: could I explain this and fix it if the AI weren''t here tomorrow?'
   digest:
   - Talk through the stack with your AI before the plan has steps.
   - Stick with what you know and with popular tools.
@@ -45,7 +45,7 @@ stops:
   - id: one-step-at-a-time
     section: one-step-at-a-time
     quote: Do step 1 only. Stop and show me when it's done.
-  trial: Ask your AI for a plan with no code yet. Split one step, cut one, then tell it to do step 1 only and stop.
+  trial: Ask your AI for a plan for your portfolio with no code yet. Split one step, cut one, then tell it to do step 1 only and stop.
   digest:
   - Have the AI draft the plan, then edit it yourself. A step too big to explain in a sentence needs splitting.
   - Build one step at a time and check each against its done line.
@@ -57,7 +57,7 @@ stops:
   - id: lives-in-a-file
     section: keep-it-where-it-survives
     quote: If the plan lives only in a chat, it dies when the session does.
-  trial: Ask your AI for a plan with no code yet, edit it, save it in your project, then have it do step 1 only and check the result against the done line.
+  trial: Ask your AI for a plan for your portfolio with no code yet, edit it, save it in your project, then have it do step 1 only and check the result against the done line.
   digest:
   - Keep the plan in a file next to the brief so any session can pick it up.
   - A plan is a guess. Update it when it changes, and keep you and the AI on the same one.
