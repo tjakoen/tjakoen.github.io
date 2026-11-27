@@ -1233,10 +1233,11 @@ function paint(tick){
   const put=(wx,wy,c)=>{ const sx=Math.round((wx-vx)*z), sy=Math.round((wy-vy)*z); if(sx<-z||sy<-z||sx>=CW||sy>=CH) return; ctx.fillStyle=c; ctx.fillRect(sx,sy,z,z); };
   // Landmark detail maps replace the low-resolution landmark once you are close, one region at a time. The landmark nearest the
   // middle of the view fades in, every other one fades out, so dragging from region to region crossfades them.
+  if(z>=3) ensureScenes();
   let focus=0; if(z>=4&&view!=='path'){ let best=1e9; DET.forEach(sc=>{ const d=Math.hypot(V.cx-(sc.ox+sc.W/4),(V.cy-(sc.oy+sc.H/4))*1.2); if(d<best){ best=d; focus=sc.n; } }); if(best>34) focus=0; }
   focusN=focus; { const now=performance.now(), dt=Math.min(100,fadeT?now-fadeT:16); fadeT=now; let moving=false;
-    DET.forEach(sc=>{ const t=sc.n===focus?1:0, a=FADE[sc.n]||0, na=a<t?Math.min(t,a+dt/340):Math.max(t,a-dt/340); FADE[sc.n]=na; if(na!==t) moving=true;
-      if(na<=0) return; const dx=Math.round((sc.ox-vx)*z), dy=Math.round((sc.oy-vy)*z), dw=sc.W*z/2, dh=sc.H*z/2; if(dx>=CW||dy>=CH||dx+dw<=0||dy+dh<=0) return;
+    DET.forEach(sc=>{ const t=(sc.n===focus&&sc.cv)?1:0, a=FADE[sc.n]||0, na=a<t?Math.min(t,a+dt/340):Math.max(t,a-dt/340); FADE[sc.n]=na; if(na!==t) moving=true;
+      if(na<=0||!sc.cv) return; const dx=Math.round((sc.ox-vx)*z), dy=Math.round((sc.oy-vy)*z), dw=sc.W*z/2, dh=sc.H*z/2; if(dx>=CW||dy>=CH||dx+dw<=0||dy+dh<=0) return;
       ctx.globalAlpha=na*na*(3-2*na); ctx.drawImage(sc.cv,0,0,sc.W,sc.H,dx,dy,dw,dh); ctx.globalAlpha=1; });
     if(moving) drawSoon(); else fadeT=0; }
   if(view==='path'){ const rr=(x,y,c)=>{ put(x,y,c); if(z<=3){ put(x+1,y,c); } else { put(x+1,y,c); put(x,y+1,c); put(x+1,y+1,c); } };
@@ -1447,10 +1448,13 @@ const FORCE_PROC=/[?&]procedural\b/.test(location.search), ART_DIR='art/';
 const artKey=()=>(root.dataset.theme||'sourdough')+'-'+(isNightNow()?'dark':'light');
 const loadImg=u=>new Promise((ok,no)=>{ const im=new Image(); im.onload=()=>{ const c=document.createElement('canvas'); c.width=im.naturalWidth; c.height=im.naturalHeight; c.getContext('2d').drawImage(im,0,0); ok(c); }; im.onerror=()=>no(new Error(u)); im.src=u; });
 async function loadArt(key){ if(FORCE_PROC) return null; try{ const dir=ART_DIR+key+'/', r=await fetch(dir+'manifest.json'); if(!r.ok) return null; const m=await r.json();
-    const [base,waves,path,layerCv,...det]=await Promise.all([loadImg(dir+'base.png'),loadImg(dir+'waves.png'),loadImg(dir+'path.png'),loadImg(dir+'layer.png'),...m.det.map(d=>loadImg(dir+'scene-'+d.n+'.png'))]);
-    return {base,waves,path,layerCv,glints:m.glints,sprites:m.sprites||null,det:m.det.map((d,i)=>({...d,cv:det[i]}))}; }catch(e){ return null; } }
+    const [base,waves,path,layerCv]=await Promise.all([loadImg(dir+'base.png'),loadImg(dir+'waves.png'),loadImg(dir+'path.png'),loadImg(dir+'layer.png')]);
+    return {base,waves,path,layerCv,glints:m.glints,sprites:m.sprites||null,det:m.det.map(d=>({...d,cv:null,url:dir+'scene-'+d.n+'.png'}))}; }catch(e){ return null; } }
+/* The landmark scenes are only seen from the Regions level in, so they load the first time the reader zooms that far, not at the start. */
+let scenesAsked=false;
+function ensureScenes(){ if(scenesAsked) return; scenesAsked=true; DET.filter(sc=>!sc.cv&&sc.url).forEach(sc=>loadImg(sc.url).then(c=>{ sc.cv=c; draw(); }).catch(()=>{ scenesAsked=false; })); }
 let layerCv=null;
-function applyArt(a){ NIGHT=isNightNow(); CL1=NIGHT?shade(P.snow,.55):P.snow; CL2=NIGHT?shade(P.snow2,.55):P.snow2; base=a.base; wavesCv=a.waves; baseP=a.path; layerCv=a.layerCv; glints=a.glints; DET=a.det; makeMoverSprites(); makePeople(); }
+function applyArt(a){ scenesAsked=false; NIGHT=isNightNow(); CL1=NIGHT?shade(P.snow,.55):P.snow; CL2=NIGHT?shade(P.snow2,.55):P.snow2; base=a.base; wavesCv=a.waves; baseP=a.path; layerCv=a.layerCv; glints=a.glints; DET=a.det; makeMoverSprites(); makePeople(); }
 let skin=0;
 async function reskin(){ const mine=++skin; loadPalette(); const art=await loadArt(artKey()); if(mine!==skin) return;
   ART_SPRITES=art&&art.sprites||null;

@@ -22,12 +22,12 @@ This audit covers the learn map at /learn, its quest book, and the new guild car
 5. **A phone could not zoom out far enough.** At the World level a phone shows only half the island. Small screens now get an extra Overview level that fits all of it, and the first view is the whole island. Wide screens do not get this level, because the island would sit small in a large empty sea.
 6. **The ambient animation repainted about six times a second even under a modal.** It now rests while the guide or the book covers the map, and starts again when they close. The guild card's check also stops while the tab is hidden.
 7. **Pins were 22 px when zoomed out, below a comfortable finger target.** On a phone they are now 32 px, and 38 px at the landmark level.
-8. **The phone book wasted about 70 px at the bottom, and its controls were small.** The extra padding is gone and its buttons are at least 36 px tall.
+8. **The six landmark scene images loaded at start although they only show from the Regions zoom in.** They now load the first time the reader zooms to Regions. The saving is real but small, because the six images together are about 25 KB, so the bigger load cost is still the shell.
+9. **The phone book wasted about 70 px at the bottom, and its controls were small.** The extra padding is gone and its buttons are at least 36 px tall.
 
 ## What I did not fix, and what I could not measure
 
 - **The shell dominates the load.** Opening /learn also loads the whole desk shell, about 25 scripts, before the map's own 163 KB. Trimming the shell on a phone is a separate piece of work in the portfolio frame.
-- **All scene art loads at start.** Six scene images load up front although a reader sees one or two at a time. Lazy loading them is small and worth doing next.
 - **A real phone.** I could not measure real frame rate, battery draw, touch latency or a Lighthouse run. The preview pane throttled animation frames, so its frame rate is not a reading of the code. A pass on a real mid-range phone is the missing evidence.
 - **Several failed resource loads in the console.** They read ERR_INCOMPLETE_CHUNKED_ENCODING and look like the dev server's event stream, not the map. I did not trace them.
 - **Landscape and the top safe area** were not checked.
