@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~6 min"
+readingTime: "~5 min"
 tags: [ai, workflow, teaching]
 summary: >
   A plan is a short checklist in a file, with a goal, small steps and what done looks like for each. Have
@@ -23,19 +23,17 @@ social: |
   Do it by hand first. Here's how:
 ---
 
-You're two hours into a session. The AI has changed eleven files. You asked for five things, and you
-could not tell me right now which of them are done, which are half done, and which it quietly skipped.
-The chat scrolls on for miles. You close it to get lunch, and when you come back, you're not sure what
-you were doing.
+You're two hours into a session. The AI has changed eleven files, you asked for five things, and you
+couldn't say which of them are done, which are half done, and which it quietly skipped. The chat scrolls
+on for miles.
 
 That's not a problem with the AI. It's a problem with having nothing to point at. A plan is the thing
 to point at.
 
 ## A plan is a list you can tick off
 
-I mean something very plain. A short file with three parts. The goal, a sentence or two, the same one
-from your brief. A list of small steps, in order. And under each step, what done looks like, so you
-can tell when it's finished.
+A short file with three parts: the goal, from your brief. A list of small steps, in order. And under each
+step, what done looks like.
 
 ```text
 Goal: a study planner where a student can add tasks and mark them done.
@@ -49,109 +47,89 @@ Stack: plain HTML, CSS and JavaScript, because I already know them.
    Done: ticking it crosses the task out, and it stays crossed out after a refresh.
 ```
 
-That's the whole thing. Nothing in it is code. It's your brief, cut into pieces small enough that you
-can check each one with your own eyes. If you've done the last two notes, you already have most of the
-parts: the brief gives you the goal, and the drawing tells you what the steps should cover.
+Nothing in it is code. It's your brief cut into pieces small enough to check with your own eyes. The
+brief gives you the goal, and the drawing tells you what the steps should cover.
 
 ## Talk about the stack first
 
-Before the plan has any steps, have a short conversation with your AI about what you'll build it with.
-That's the stack: the language, the framework, and the tools. Say what you want to make and ask: "What are
-the usual ways to build this? What would you pick, and why?"
+Before the plan has steps, ask your AI what you'll build this with, meaning the language, the framework and
+the tools. Say what you want to make and ask: "What are the usual ways to build this? What would you pick,
+and why?"
 
-There are many ways to build the same thing. A mobile app might be Flutter or React Native. A website
-might be plain HTML, CSS and JavaScript, which is what I use, or a framework, or even PHP. Most of them
-work. So start from the popular, common ones. There's more written about them, more people have solved
-your problem on them, and in my experience the AI is steadier on them too.
+Many ways work. A mobile app might be Flutter or React Native. A website might be plain HTML, CSS and
+JavaScript, which is what I use, or a framework, or even PHP. Start from the popular ones. More has been
+written about them, and in my experience the AI is steadier on them too.
 
-My advice is the same as it's always been: stick with what you're familiar with. And avoid agentic coding
-in a language or framework you have no experience with at all. That sounds backwards, because the AI makes
-anything feel easy. But if you can't read what it wrote, you can't tell whether it's right, and you risk
-not knowing what you're building.
+My advice hasn't changed: stick with what you're familiar with. Avoid agentic coding in a language or
+framework you have no experience with at all. The AI makes anything feel easy, but if you can't read what
+it wrote, you risk not knowing what you're building.
 
-You can use a project to learn a new stack, with the AI as your teacher. The catch is that you have to make
-it a learning project on purpose, or it quietly turns into blind vibe coding. Ask it to explain each file
-before you move on. Make it say why it chose this way and not another. Break something deliberately and
-fix it with its help. And hold yourself to one rule: don't start the next step until you can explain this
-one in your own words. Keep it small and throwaway at first, and build the real thing once you can follow
-along.
+You can learn a new stack on a project, with the AI as your teacher, if you make it a learning project on
+purpose. Ask it to explain each file. Make it say why this way and not another. Break something and fix it
+together. Don't start the next step until you can explain this one in your own words. Keep it small and
+throwaway, and build the real thing once you can follow along.
 
-Then write the choice into the plan, as a line at the top, with the reason. If the stack is new to you,
-that goes in too: add a step to learn the basics before the first feature. The plan should be honest
-about what you know.
+Then put the stack at the top of the plan, with the reason. If it's new to you, add a step to learn the
+basics first. The plan should be honest about what you know.
 
 ## Orchestrate it, don't just vibe it
 
-There's a pitfall here, and it's the common one. You can ship something you don't understand and can't
-easily fix. It works on Tuesday. On Friday it breaks, and you're staring at code that's nobody's. You
-didn't write it, you didn't read it, and the AI that did has forgotten it.
+The common pitfall is that you can ship something you don't understand and can't easily fix. It works on
+Tuesday, breaks on Friday, and you're staring at code that's nobody's.
 
-That's the difference I care about between two people using the same tools. One vibe codes blind: prompt,
-accept, ship, and hope. The other orchestrates. They decide what gets built, cut it into steps, check each
-step, and understand enough to fix it when it breaks. [Ten Times Zero Is Still Zero](ten-times-zero.md) is
-where I argue this at length. I call myself a vibe coder there too, with one word in front: professional.
-This is what that word means in practice. It isn't speed. It's being able to explain your work.
+Two people can use the same tools. One vibe codes blind: prompt, accept, ship, hope. The other
+orchestrates. They decide what gets built, cut it into steps, check each one, and understand enough to fix
+it. [Ten Times Zero Is Still Zero](ten-times-zero.md) is where I argue this at length. I call myself a vibe
+coder there too, with one word in front: professional. It isn't speed. It's being able to explain your work.
 
-Here's a test for anything the AI builds. Could I explain this to someone else, and could I fix it if the
-AI weren't here tomorrow? If not, you adopted it and you didn't build it. Slow down until you can.
+Here's a test for anything the AI builds. Could I explain this, and could I fix it if the AI weren't here
+tomorrow? If not, you adopted it and you didn't build it. Slow down until you can.
 
 ## Let the AI draft it, then you edit it
 
-You don't need to write this from scratch. Give your AI the brief, the drawing and your stack choice and ask for a plan:
-"Don't write any code yet. Break this into small steps, each with what done looks like." Many tools have
-a planning mode that does exactly this. Ask your agent whether yours does.
+Don't write the plan from scratch. Give your AI the brief, the drawing and your stack and ask:
+"Don't write any code yet. Break this into small steps, each with what done looks like." Many tools have a
+planning mode for exactly this, so ask your agent whether yours does.
 
-Then read it like you'd read a teammate's proposal. Is a step too big? Is the order wrong? Is something
-missing that the drawing says should be there? Is there a step you didn't ask for? Cut it, split it, and
-reorder it. The AI is guessing at your intentions, so the edit is where your judgment goes in.
-
-A good step is small enough that you could explain what changed in a sentence. If a step reads "build
-the backend", it isn't a step, it's a project. Ask for it to be split.
+Then read it like a teammate's proposal. Is a step too big? Is the order wrong? Is something missing, or
+something there you didn't ask for? The AI is guessing at your intentions, so the edit is where your
+judgment goes in. A good step is small enough to explain in a sentence. "Build the backend" isn't a step,
+it's a project, so ask for it to be split.
 
 ## One step at a time
 
-Now build, and here's the habit that makes the plan work: "Do step 1 only. Stop and show me when it's
-done."
+Now build, with the habit that makes the plan work: "Do step 1 only. Stop and show me when it's done."
 
-That last sentence is the point. Left alone, the AI will happily run through all three steps and a few
-you didn't ask for. When it stops after one, you can check one thing against one line of done. If it's
-right, tick it off and say "now step 2." If it's wrong, you catch it while the mistake is small, which is
-a lot cheaper than finding it under ten more steps.
-
-Ticking things off is a small pleasure, and I won't pretend otherwise. It's also real information. At
-any moment you can see how far along you are, and what's next.
+Left alone, the AI will run through every step and a few you didn't ask for. When it stops after one, you
+check one thing against one line of done. If it's right, tick it off and say "now step 2." If it's wrong,
+you catch it while the mistake is small.
 
 ## Keep it where it survives
 
-Put the plan in a file in the project, next to your brief and your drawing, and have the AI update it as
-it goes: ticking steps off, adding anything new it discovers. Remember the forgetful teammate. If the
-plan lives only in a chat, it dies when the session does. In a file, tomorrow's session reads it and
-picks up at step 3, because it can see steps 1 and 2 are done.
+Put the plan in a file in the project, next to your brief and your drawing, and have the AI tick steps off
+as it goes. Remember the forgetful teammate. If the plan lives only in a chat, it dies when the session
+does. In a file, tomorrow's session picks up at step 3, because it can see steps 1 and 2 are done.
 
-I keep mine as plain markdown files in a plans folder, each with a status at the top. A tool I built,
-[PROOF](/proof), turns that folder into a board, and [PANTRY](/pantry) is the app that keeps the board
-open beside my AI sessions, so the plan and I stay agreed on what's next. I built them for myself
-because I kept losing track, and they work for me. You don't need either one. You need one file you can
-open and read in ten seconds. If you want a board later, build a small one of your own. The juniors on
-my team each did, and [Show Them the Board](show-them-the-board.md) is that story.
+I keep mine as markdown files in a plans folder, each with a status at the top. A tool I built,
+[PROOF](/proof), turns that folder into a board, and [PANTRY](/pantry) keeps the board open beside my
+sessions. I built them for myself and they work for me. You don't need either. You need one file you can
+read in ten seconds, and if you want a board later, build a small one of your own. The juniors on my team
+each did, and [Show Them the Board](show-them-the-board.md) is that story.
 
 ## A plan is a guess
 
-One honest note. A plan is your best guess at the start, and it'll be wrong somewhere. Step 2 turns out
-to need something you didn't see coming, or you change your mind after seeing step 1. That's fine. Tell
-the AI the plan has changed and update the file. The point isn't that the plan is right. The point is
-that you and the AI always have the same one.
+It'll be wrong somewhere. Step 2 needs something you didn't see coming, or you change your mind after step
+1. That's fine. Tell the AI the plan has changed and update the file. The point isn't that the plan is
+right. The point is that you and the AI always have the same one.
 
 ## Try this
 
-Take the brief and the drawing you made. First talk through the stack with your AI, and pick one you know.
-Then ask for a plan with small steps and a done line for each, with no code yet. Edit it: split one
-step, cut one, and fix the order. Save it in your project.
-Then tell it, "Do step 1 only, and stop," and check the result against the done line before you let it
-go on.
+Take your brief and your drawing. Talk through the stack with your AI and pick one you know. Ask for a plan
+with small steps and a done line for each, no code yet. Split one step, cut one, fix the order, and save it
+in your project. Then tell it, "Do step 1 only, and stop," and check the result against the done line
+before you let it go on.
 
-Next time, we'll look at what to do when the AI says it's finished and you want to know whether it
-really is.
+Next time: what to do when the AI says it's finished.
 
 ---
 

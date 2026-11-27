@@ -14,7 +14,7 @@ stops:
         quote: A drawing is the walk you skipped.
       - id: shared-picture
         section: why-drawing-matters-more-now
-        quote: A shared, documented understanding is the goal.
+        quote: A shared, documented understanding is the goal
     trial: Think of the last time you said that is not what I meant. Write down what you had not decided yet.
     digest:
       - The AI builds what you described, and what you described had holes.
