@@ -904,7 +904,7 @@ export const NOTE_AUDIENCES: ReadonlyArray<{ id: string; label: string }> = [
   { id: "learn", label: "Learning to build" },
 ];
 
-/** The notes in the order the learning map walks them: stage by stage, each note numbered as the map
+/** The AI roadmap tab: the notes in the order the learning map walks them: stage by stage, each note numbered as the map
  *  numbers it ("Quest 8 of 21"). It is read from the same two files the map is built from, so the two
  *  cannot drift: content/quests/regions.json names the stages and content/quests/index.json holds the
  *  quests in order. Only published notes are listed (a quest still marked as a draft is not public),
@@ -921,11 +921,14 @@ export function learnPathSection(entries: NoteFeedEntry[]): { html: string; coun
   const bySlug = new Map(entries.map((e) => [e.slug, e]));
   const ordered = regions.flatMap((r) => quests.filter((q) => q.region === r.n).map((q) => ({ q, r })));
   let count = 0;
+  const jumps: string[] = [];
   const stages = regions.map((r) => {
     const here = ordered.map((o, i) => ({ ...o, no: i + 1 })).filter((o) => o.r.n === r.n && bySlug.has(o.q.id));
     if (!here.length) return "";
     count += here.length;
     const minutes = here.reduce((t, o) => t + (bySlug.get(o.q.id)!.score || 0), 0);
+    const stageLevel = here.every(({ q }) => q.level === "intro") ? "Intro" : here.every(({ q }) => q.level === "deep") ? "Deep dive" : "Mixed";
+    jumps.push(`<a class="learn-jump__link" href="#learn-stage-${r.n}" data-learn-jump><span>Stage ${r.n} · ${escapeHtml(r.name)}</span><small>${stageLevel} · ${here.length}</small></a>`);
     const cards = here.map(({ q, no }) => {
       const e = bySlug.get(q.id)!, slug = escapeHtml(e.slug);
       const level = q.level === "intro" ? "Intro" : q.level === "deep" ? "Deep dive" : q.level ? "Intermediate" : "";
@@ -938,8 +941,8 @@ export function learnPathSection(entries: NoteFeedEntry[]): { html: string; coun
         </div>
       </li>`;
     }).join("\n");
-    return `<section class="learn-stage" data-learn-stage>
-      <h2 class="learn-stage__h">Stage ${r.n} · ${escapeHtml(r.name)} <span class="learn-stage__sub">${here.length} note${here.length === 1 ? "" : "s"} · about ${minutes} min</span></h2>
+    return `<section class="learn-stage" id="learn-stage-${r.n}" data-learn-stage>
+      <h2 class="learn-stage__h">Stage ${r.n} · ${escapeHtml(r.name)} <span class="learn-stage__sub">${stageLevel} · ${here.length} note${here.length === 1 ? "" : "s"} · about ${minutes} min</span></h2>
       <ul class="learn-stage__list">
 ${cards}
       </ul>
@@ -949,7 +952,13 @@ ${cards}
   return {
     count,
     html: `<div class="learn-path" data-learn-path hidden>
-    <p class="learn-path__lede">The notes in reading order, grouped into stages from the way in to the deep ones. The number on each note is its place on the learning path.</p>
+    <a class="learn-quest" href="/learn">
+      <svg class="learn-quest__icon" viewBox="0 0 9 8" width="45" height="40" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" d="M8 0h1v1H8zM7 1h1v1H7zM6 2h1v1H6zM5 3h1v1H5zM3 3h1v1H3zM4 4h1v1H4zM5 5h1v1H5zM3 5h1v1H3zM2 6h1v1H2zM1 7h1v1H1z"/></svg>
+      <span class="learn-quest__text"><strong>Learn AI with me</strong><small>Open the quest map and walk this path as an adventure</small></span>
+      <span class="learn-quest__go" aria-hidden="true">&#9654;</span>
+    </a>
+    <p class="learn-path__lede">The notes in reading order, grouped into stages from the way in to the deep ones. The number on each note is its place on the learning path. Pick the stage that fits where you are.</p>
+    <nav class="learn-jump" aria-label="Jump to a stage"><span class="learn-jump__label">Jump to</span>${jumps.join("")}</nav>
     ${stages.join("\n")}
     </div>`,
   };
@@ -1037,6 +1046,19 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       var moreBtn = form.querySelector("[data-tags-more]");
       var empty = list.parentNode.querySelector("[data-feed-empty]");
       var pathEl = list.parentNode.querySelector("[data-learn-path]");
+      // A stage link scrolls its stage into view. It is a script rather than a bare #anchor so the
+      // address does not change and the notes page, which scrolls inside the desk's main pane, moves
+      // the right container; reduced motion jumps instead of gliding.
+      if (pathEl) pathEl.addEventListener("click", function (ev) {
+        var a = ev.target.closest ? ev.target.closest("[data-learn-jump]") : null;
+        if (!a) return;
+        var stage = pathEl.querySelector(a.getAttribute("href"));
+        if (!stage) return;
+        ev.preventDefault();
+        var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        stage.scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "start" });
+        stage.setAttribute("tabindex", "-1"); stage.focus({ preventScroll: true });
+      });
       var sortBox = form.querySelector(".notes-sort");
 
       // the flagship stays pinned to the top in BOTH New and Top — float any data-pinned card to
@@ -1073,7 +1095,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked:not([name="level"])'));
         var wanted = boxes.map(function (b) { return b.value; });
         var q = (search && search.value || "").trim().toLowerCase();
-        // The Learn tab swaps the feed for the path: the stages in reading order. Sorting and the tag
+        // The AI roadmap tab swaps the feed for the path: the stages in reading order. Sorting and the tag
         // filters make no sense there (the order is the point), so they step aside, and the search
         // box still narrows the notes it lists.
         var inPath = audience === "path";
@@ -1203,7 +1225,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     <form class="notes-toolbar" data-feed-controls hidden>
       <div class="notes-audience" role="radiogroup" aria-label="Show notes for">
         <label class="notes-audience__tab"><input type="radio" name="audience" value="" checked><span>All</span><span class="notes-audience__n">${entries.length}</span></label>
-        ${learnPath.count ? `<label class="notes-audience__tab"><input type="radio" name="audience" value="path"><span>Learn</span><span class="notes-audience__n">${learnPath.count}</span></label>` : ""}
+        ${learnPath.count ? `<label class="notes-audience__tab"><input type="radio" name="audience" value="path"><span>AI roadmap</span><span class="notes-audience__n">${learnPath.count}</span></label>` : ""}
         ${NOTE_AUDIENCES.map((a) => `<label class="notes-audience__tab"><input type="radio" name="audience" value="${a.id}"><span>${a.label}</span><span class="notes-audience__n">${entries.filter((e) => e.audience.includes(a.id)).length}</span></label>`).join("\n        ")}
       </div>
       <div class="notes-toolbar__bar">

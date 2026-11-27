@@ -126,3 +126,9 @@ in stages 2 to 6; the Harbor stage holds only drafts, so it does not appear, and
 "Quest 8 of 21" as the map does. The page does not link to /learn, which is deliberately unadvertised.
 The badge lists the collected runes by name with their line and shows the rest as small faint tiles,
 because the Harbor alone teaches 28 and a full list of them made the badge a long scroll.
+
+## 7. Added on 2026-11-27: the notes tab becomes the AI roadmap
+
+- [x] The tab is named AI roadmap.
+- [x] A jump bar lists each stage with its level (Intro, Deep dive) and note count, and scrolls to it, so a reader goes straight to where they are.
+- [x] A Learn AI with me button, in the map's look (square corners, heavy outline, hard shadow, monospace, a pixel sword), opens the quest map. The notes page now links to /learn. The page itself stays noindex and out of the sitemap and search, which the existing test checks.

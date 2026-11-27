@@ -238,11 +238,11 @@ test.describe("the /notes feed (no JS)", () => {
   });
 });
 
-test.describe("the Learn tab on /notes", () => {
+test.describe("the AI roadmap tab on /notes", () => {
   test("it groups the published notes by stage in the learning path's order, and leaves the feed controls out of the way", async ({ page }) => {
     await page.goto("/notes");
     const tab = page.locator('.notes-audience__tab:has(input[value="path"])');
-    await expect(tab).toContainText("Learn");
+    await expect(tab).toContainText("AI roadmap");
     const path = page.locator("[data-learn-path]");
     await expect(path).toBeHidden();
     await tab.click();
@@ -270,9 +270,35 @@ test.describe("the Learn tab on /notes", () => {
     await expect(page.locator(".notes-sort")).toBeVisible();
   });
 
-  test("?for=path opens on the Learn tab", async ({ page }) => {
+  test("?for=path opens on the AI roadmap tab", async ({ page }) => {
     await page.goto("/notes?for=path");
     await expect(page.locator("[data-learn-path]")).toBeVisible();
     await expect(page.locator('.notes-audience__tab:has(input[value="path"]) input')).toBeChecked();
+  });
+
+  test("it has a jump bar that scrolls to each stage, and a button into the quest map", async ({ page }) => {
+    await page.goto("/notes?for=path");
+    const links = page.locator("[data-learn-jump]");
+    const n = await links.count();
+    expect(n).toBe(await page.locator("[data-learn-stage]").count());
+    expect(n).toBeGreaterThan(1);
+    // every link names its stage and its level, and points at a real stage
+    for (let i = 0; i < n; i++) {
+      await expect(links.nth(i)).toContainText(/Stage \d+/);
+      await expect(links.nth(i)).toContainText(/Intro|Deep dive|Mixed/);
+      const target = (await links.nth(i).getAttribute("href"))!;
+      await expect(page.locator(target)).toHaveCount(1);
+    }
+    // choosing the last stage brings it into view without changing the address
+    const last = links.nth(n - 1);
+    const target = (await last.getAttribute("href"))!;
+    const urlBefore = page.url();
+    await last.click();
+    await expect(page.locator(target)).toBeInViewport();
+    expect(page.url()).toBe(urlBefore);
+    // the quest map button is a plain link to /learn, with the words asked for
+    const quest = page.locator(".learn-quest");
+    await expect(quest).toContainText("Learn AI with me");
+    await expect(quest).toHaveAttribute("href", "/learn");
   });
 });
