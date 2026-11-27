@@ -2,10 +2,23 @@
 # Committed by `pantry init --kit`. Gives a cloud session the standards that a local session gets
 # from the owner's machine. Silent when the standards are already mounted as skills.
 set -uo pipefail
-root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+# The repository this script lives in, not the session's cwd: a multi-repo cloud session starts in a
+# parent folder that is not a repository, and the user-level hook calls this script from there.
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)" || root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 # On the owner's machine the machine-level checklist already reports; stay silent there.
 [ "${CLAUDE_CODE_REMOTE:-}" != true ] && [ -f "$HOME/.claude/tools/session-checklist.sh" ] && exit 0
-base="https://tjakoen.github.io/standards"
+# The full checklist lives in agent-config. When a cloud session has it checked out beside this
+# repository (or at AGENT_CONFIG_DIR), run it: it prints the same block a local session gets, with
+# the verdict the script produced. Without it, fall through to the standards-only block below.
+checklist="${AGENT_CONFIG_DIR:-$root/../agent-config}/shared/tools/session-checklist.sh"
+if [ -r "$checklist" ] && command -v jq >/dev/null 2>&1; then
+  out="$(CLAUDE_PROJECT_DIR="$root" bash "$checklist" 2>/dev/null)"
+  if printf '%s' "$out" | jq -e '.hookSpecificOutput.additionalContext' >/dev/null 2>&1; then
+    printf '%s\n' "$out"
+    exit 0
+  fi
+fi
+base="https://portfolio.tjakoen.com/standards"
 reach="reachable"; st="ok  "
 curl -fs -m 5 -o /dev/null "$base/voice.md" 2>/dev/null || { reach="NOT reachable"; st="fail"; }
 msg="Agentic loop check, $(basename "$root") (cloud or unsynced checkout)
