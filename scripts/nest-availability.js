@@ -1,4 +1,15 @@
-export const nestDesktop = matchMedia("(min-width: 769px) and (hover: hover) and (pointer: fine)");
+// The Nest, the ant in the status bar and the stray ant belong to the notes and the desk. They never
+// run on /learn: that page is a quiet, guided path, and a stray ant crossing it would break the
+// lesson. This is the one place that says so, and every launcher, command and clock reads it.
+export const nestBlocked = () => {
+  try { return document.body?.dataset.screen === "learn" || /^\/learn(\/|$)/.test(location.pathname); } catch { return false; }
+};
+const nestMedia = matchMedia("(min-width: 769px) and (hover: hover) and (pointer: fine)");
+export const nestDesktop = {
+  get matches() { return nestMedia.matches && !nestBlocked(); },
+  addEventListener: (...args) => nestMedia.addEventListener(...args),
+  removeEventListener: (...args) => nestMedia.removeEventListener(...args),
+};
 
 // How rare the stray ant is. The first one is due after two to four minutes of reading, and each
 // later one after ten to twenty. Both are counted in time the tab was visible, and the count is

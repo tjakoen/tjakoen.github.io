@@ -264,6 +264,9 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 /* the controls are pinned to the foot of the right page, like a ribbon marker */
 .bk__ctl { flex:0 0 auto; display:grid; gap:.4rem; padding:.5rem .8rem .55rem; border-top:3px double var(--q-line); background:var(--q-paper); }
 .bk__ctl button { font:.68rem/1.2 ui-monospace,monospace; padding:.15rem .4rem; border:2px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
+.bk__ctl button.is-next { font-weight:700; outline:2px solid var(--q-ink); outline-offset:2px; animation:nextnudge 1.2s steps(2) infinite; }
+@keyframes nextnudge { 50% { box-shadow:3px 3px 0 var(--q-ink); } }
+@media (prefers-reduced-motion: reduce) { .bk__ctl button.is-next { animation:none; } }
 .bk__ctl button.primary, .bk__ctl button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
 .bk__ctl .row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.3rem .4rem; }
 .bk__ctl .row > div { display:flex; gap:.25rem; align-items:center; }
@@ -392,6 +395,10 @@ body { margin:0; background:var(--q-water); }
 .searchbar { background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); display:flex; gap:.5rem; align-items:center; padding:.3rem .5rem; }
 .searchbar input { flex:1; border:0; background:transparent; font:inherit; color:var(--q-ink); outline:none; min-width:0; }
 .searchbar button { box-shadow:none; border:2px solid var(--q-ink); padding:0 .4rem; }
+.searchbar .qgo { width:30px; height:30px; padding:0; display:grid; place-items:center; background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
+.searchbar .qgo svg { width:18px; height:18px; image-rendering:pixelated; }
+.searchbar .qgo:hover, .searchbar .qgo:focus-visible { background:var(--q-accent); color:var(--q-accent-ink); }
+.searchbar .qgo:hover svg path:last-child, .searchbar .qgo:focus-visible svg path:last-child { fill:var(--q-accent-ink); }
 .panelcard { background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); overflow:auto; align-self:start; max-height:100%; }
 .panelcard[hidden] { display:none; }
 .pnav { position:sticky; top:0; z-index:3; display:flex; align-items:center; gap:.6rem; padding:.45rem .6rem; background:var(--q-panel); border-bottom:3px solid var(--q-ink); }
@@ -716,7 +723,7 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 <!--/qm-route-->
 <div id="stage"><canvas id="map" aria-hidden="true"></canvas><canvas id="fx" aria-hidden="true"></canvas><div id="over"></div></div>
 <div class="col">
-  <div class="searchbar"><button id="fold" aria-label="Fold the panel">◀</button><input id="q" type="search" placeholder="Search quests, notes, topics" aria-label="Search quests"><span>🔍</span></div>
+  <div class="searchbar"><button id="fold" aria-label="Fold the panel">◀</button><input id="q" type="search" placeholder="Search quests, notes, topics" aria-label="Search quests" enterkeyhint="search"><button type="button" id="qgo" class="qgo" aria-label="Search" title="Search"><svg viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" d="M2 0h3v1H2zM1 1h1v1H1zM5 1h1v1H5zM0 2h1v3H0zM6 2h1v3H6zM1 5h1v1H1zM5 5h1v1H5zM2 6h3v1H2zM6 6h1v1H6zM7 7h1v1H7zM8 8h1v1H8zM9 9h1v1H9z"/><path fill="var(--q-accent)" d="M2 2h2v1H2z"/></svg></button></div>
   <div class="panelcard" id="panel" aria-live="polite"></div>
 </div>
 <div class="chipsbar"><span class="chip" data-on>All</span><span class="chip">Loop</span><span class="chip">Models</span><span class="chip">Leading</span><span class="chip">Design</span><span class="chip">Not started</span></div>
@@ -1360,11 +1367,11 @@ function neighbours(){ if(sel.t==='region'){ const a=REG[sel.id-2], b=REG[sel.id
   return null; }
 function stepBy(d){ const nb=neighbours(); if(!nb) return; const o=d<0?nb.prev:nb.next; if(!o) return; const m=o.a.match(/data-(\w)="([^"]+)"/); if(m[1]==='r') selectRegion(+m[2]); else if(m[1]==='q') selectQuest(m[2]); else selectStop(sel.id,+m[2]); }
 function goBack(){ if(q.trim()){ q=''; document.getElementById('q').value=''; renderPanel(); } else if(sel.t==='stop') selectQuest(sel.id); else if(sel.t==='quest') selectRegion(QUESTS.find(x=>x.id===sel.id).region); else if(sel.t==='region') home(); }
-let pm=false, navStep=false; /* pm: the panel modal is open on a phone */
+let pm=false, navStep=false, typing=false; /* pm: the panel modal is open on a phone */
 function setPM(v){ pm=v; document.body.toggleAttribute('data-pm',v); if(!v&&motion&&!raf) raf=requestAnimationFrame(fxLoop); }
 function syncPhone(){ const ph=!wide();
   if(!ph){ if(pm) setPM(false); return; }
-  if(q.trim()||(sel.t!=='none'&&!navStep)) setPM(true);
+  if(sel.t!=='none'&&!navStep&&!typing) setPM(true);
   const sq=seq(), lbl=document.getElementById('mlbl'), pv=document.getElementById('mprev'), nx=document.getElementById('mnext');
   if(!sq||q.trim()){ lbl.textContent=sel.t==='none'?'Open the guide':'Open'; pv.disabled=nx.disabled=true; return; }
   const name=sel.t==='region'?REG[sel.id-1].name:sel.t==='quest'?QUESTS.find(x=>x.id===sel.id).short:'Stop '+(sel.i+1);
@@ -1417,7 +1424,11 @@ function openQuest(id,lesson,stop){ const qq=QUESTS.find(x=>x.id===id);
 /* The book (book.js) calls this when it closes, so the map shows the stops the reader finished. */
 function onBookClosed(rest){ if(motion&&!raf) raf=requestAnimationFrame(fxLoop);  QUESTS.forEach(q=>{ const saved=loadSaved()[q.id]||[]; PROG[q.id]=new Set(saved.filter(i=>i<q.stops.length)); }); refreshProgress(); placeYou(); renderPanel(); draw(); if(rest) toast('Progress saved. Rest well.'); }
 function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2400); }
-document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; renderPanel(); });
+document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; typing=true; renderPanel(); typing=false; });
+/* Searching opens the panel on Enter or on the icon: unfolded on a wide screen, as the modal on a phone. */
+function submitSearch(){ openPanel(); renderPanel(); if(!wide()) setPM(true); }
+document.getElementById('q').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); submitSearch(); } });
+document.getElementById('qgo').addEventListener('click',submitSearch);
 document.getElementById('pclose').addEventListener('click',()=>setPM(false)); document.getElementById('pscrim').addEventListener('click',()=>setPM(false));
 document.getElementById('mopen').addEventListener('click',()=>setPM(true));
 document.getElementById('mprev').addEventListener('click',()=>{ navStep=true; stepBy(-1); navStep=false; }); document.getElementById('mnext').addEventListener('click',()=>{ navStep=true; stepBy(1); navStep=false; });
