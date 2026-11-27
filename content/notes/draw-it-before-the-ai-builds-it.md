@@ -52,10 +52,47 @@ is owed when. That's a heavier setup than you need. The point is only that these
 drawings, and you need to know they exist so you can ask for the right one and tell whether what comes
 back is right. They're the basics of software engineering, and you may have met a few in class.
 
-> *Figure: the six drawings in a line, each with the one question it answers. Use case: who does what.
-> Data flow: where does information go. ERD: what does it remember. Wireframe: what is on each screen.
-> Mockup: how does it look. Design system: what are the reusable parts. To be drawn to the figures
-> standard.*
+<svg viewBox="0 0 600 320" width="100%" role="img"
+     aria-label="The six drawings and the one question each answers. Use case diagram: who uses it, and what can they do. Data flow diagram: where does information go. ERD: what does it remember. Wireframe: what is on each screen. Mockup: how does it look. Design system: what are the reusable parts."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-six" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="16" y="14" width="190" height="36" rx="6"/>
+    <rect x="16" y="64" width="190" height="36" rx="6"/>
+    <rect x="16" y="114" width="190" height="36" rx="6"/>
+    <rect x="16" y="164" width="190" height="36" rx="6"/>
+    <rect x="16" y="214" width="190" height="36" rx="6"/>
+    <rect x="16" y="264" width="190" height="36" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="206" y1="32" x2="242" y2="32" marker-end="url(#fl-six)"/>
+    <line x1="206" y1="82" x2="242" y2="82" marker-end="url(#fl-six)"/>
+    <line x1="206" y1="132" x2="242" y2="132" marker-end="url(#fl-six)"/>
+    <line x1="206" y1="182" x2="242" y2="182" marker-end="url(#fl-six)"/>
+    <line x1="206" y1="232" x2="242" y2="232" marker-end="url(#fl-six)"/>
+    <line x1="206" y1="282" x2="242" y2="282" marker-end="url(#fl-six)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="111.0" y="36.5" style="fill:var(--color-fg)">Use case diagram</text>
+    <text x="250" y="37" text-anchor="start" style="fill:var(--color-fg)">Who uses it, and what can they do?</text>
+    <text x="111.0" y="86.5" style="fill:var(--color-fg)">Data flow diagram</text>
+    <text x="250" y="87" text-anchor="start" style="fill:var(--color-fg)">Where does information go?</text>
+    <text x="111.0" y="136.5" style="fill:var(--color-fg)">ERD</text>
+    <text x="250" y="137" text-anchor="start" style="fill:var(--color-fg)">What does it remember?</text>
+    <text x="111.0" y="186.5" style="fill:var(--color-fg)">Wireframe</text>
+    <text x="250" y="187" text-anchor="start" style="fill:var(--color-fg)">What is on each screen?</text>
+    <text x="111.0" y="236.5" style="fill:var(--color-fg)">Mockup</text>
+    <text x="250" y="237" text-anchor="start" style="fill:var(--color-fg)">How does it look?</text>
+    <text x="111.0" y="286.5" style="fill:var(--color-fg)">Design system</text>
+    <text x="250" y="287" text-anchor="start" style="fill:var(--color-fg)">What are the reusable parts?</text>
+  </g>
+</svg>
+
+*Six drawings, each answering one question. Ask for the one whose question you cannot yet answer.*
 
 ## Six drawings, one question each
 

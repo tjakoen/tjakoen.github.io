@@ -57,9 +57,48 @@ My notes were written for people who already know the vocabulary. I'd say harnes
 as if everybody had been in the room when I learned them. If you were new, the first note on this site was
 a wall. So here's a short ramp in front of it: the basics, in plain words, before the deeper notes start.
 
-> *Figure: the path as a line of islands. The Harbor first (short notes, basics, and Claude Academy),
-> then the mainland in order of difficulty, ending at the deep technical notes. To be drawn to the
-> figures standard.*
+<svg viewBox="0 0 660 128" width="100%" role="img"
+     aria-label="The learning path as a line of six places, in order of difficulty: Harbor, Loop Forest, Model Mines, Guild Hall, GRAIN Keep and Summit. The Harbor comes first and holds the basics and Claude Academy. The Summit comes last and holds the deep technical notes."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-path" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="116" y="24" width="90" height="44" rx="6"/>
+    <rect x="222" y="24" width="90" height="44" rx="6"/>
+    <rect x="328" y="24" width="90" height="44" rx="6"/>
+    <rect x="434" y="24" width="90" height="44" rx="6"/>
+    <rect x="540" y="24" width="90" height="44" rx="6"/>
+  </g>
+  <g style="fill:var(--color-fg);stroke:var(--color-fg)">
+    <rect x="10" y="24" width="90" height="44" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="100" y1="46" x2="116" y2="46" marker-end="url(#fl-path)"/>
+    <line x1="206" y1="46" x2="222" y2="46" marker-end="url(#fl-path)"/>
+    <line x1="312" y1="46" x2="328" y2="46" marker-end="url(#fl-path)"/>
+    <line x1="418" y1="46" x2="434" y2="46" marker-end="url(#fl-path)"/>
+    <line x1="524" y1="46" x2="540" y2="46" marker-end="url(#fl-path)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="55.0" y="50.5" style="fill:var(--color-bg)">Harbor</text>
+    <text x="161.0" y="50.5" style="fill:var(--color-fg)">Loop Forest</text>
+    <text x="267.0" y="50.5" style="fill:var(--color-fg)">Model Mines</text>
+    <text x="373.0" y="50.5" style="fill:var(--color-fg)">Guild Hall</text>
+    <text x="479.0" y="50.5" style="fill:var(--color-fg)">GRAIN Keep</text>
+    <text x="585.0" y="50.5" style="fill:var(--color-fg)">Summit</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="10" y="92" text-anchor="start">basics and Claude Academy</text>
+    <text x="10" y="108" text-anchor="start">start here</text>
+    <text x="650" y="92" text-anchor="end">the deep technical notes</text>
+    <text x="330" y="120">in order of difficulty</text>
+  </g>
+</svg>
+
+*The path as a line of six places. The Harbor comes first, then the mainland in order of difficulty, ending at the deep technical notes.*
 
 ## Who this is for
 
