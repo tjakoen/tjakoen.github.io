@@ -50,13 +50,29 @@ highlight: talk-about-the-stack-first | as a line at the top, with the reason
 
 And write the choice into the plan, with the reason. If the stack is new to you, add a step to learn the basics before the first feature. A good plan is honest about what you know.
 
-**Digest:** Talk through the stack with your AI before the plan has steps. Stick with what you know and with popular tools. Never do agentic coding in a stack you have no experience with. Write the choice, and the reason, at the top of the plan.
+**Beat 5**
+highlight: talk-about-the-stack-first | make it a learning project on purpose
 
-**Trial:** Describe something you want to build to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan.
+If you do want to learn a new stack by building, go ahead, with the AI as your teacher. But make it a learning project on purpose, or it quietly turns into blind vibe coding. Have it explain every file. Make it say why this way and not another. Break something deliberately and fix it. And one rule: no next step until you can explain this one in your own words.
+
+**Beat 6**
+highlight: orchestrate-it-dont-just-vibe-it | ship something you don't understand and can't easily fix
+
+Here's the common pitfall. You ship something you don't understand and can't easily fix. It works Tuesday, breaks Friday, and it's code that's nobody's. Two people can use the same tools. One vibe codes blind. The other orchestrates: decides what gets built, checks each step, and understands enough to fix it. I argue this in Ten Times Zero. I call myself a vibe coder there too, with one word in front: professional. It isn't speed. It's being able to explain your work.
+
+**Beat 7**
+highlight: orchestrate-it-dont-just-vibe-it | could I fix it if the AI weren't here tomorrow
+
+So here's the test for anything it builds. Could I explain this, and could I fix it if the AI weren't here tomorrow? If not, you adopted it, you didn't build it. Slow down until you can.
+
+**Digest:** Talk through the stack with your AI before the plan has steps. Stick with what you know and with popular tools. Never do agentic coding blind in a stack you have no experience with. To learn one, make it a learning project on purpose. Orchestrate, don't just vibe. Write the choice, and the reason, at the top of the plan.
+
+**Trial:** Describe something you want to build to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan. Then ask yourself: could I explain this and fix it if the AI weren't here tomorrow?
 
 **Runes:**
 stack-familiar | stick with what you're familiar with
 no-blind-stack | you risk not knowing what you're building
+explain-and-fix | could I fix it if the AI weren't here tomorrow
 
 ## Stop 3: Draft it, edit it, one step at a time
 

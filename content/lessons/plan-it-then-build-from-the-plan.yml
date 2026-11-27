@@ -1,7 +1,7 @@
 id: plan-it-then-build-from-the-plan
 note: plan-it-then-build-from-the-plan
 title: Plan it, then build from the plan
-summary: In four short stops I show you what a plan is, why to talk about the stack first, how to have the AI draft the plan and edit it yourself, and the one habit that makes it work, which is building one step at a time.
+summary: In four short stops I show you what a plan is, why to talk about the stack first and orchestrate instead of just vibing, how to have the AI draft the plan and edit it yourself, and the one habit that makes it work, which is building one step at a time.
 audio: /media/lessons/plan-it-then-build-from-the-plan.m4a
 stops:
 - title: A list you can tick off
@@ -19,7 +19,7 @@ stops:
 - title: Talk about the stack first
   note: plan-it-then-build-from-the-plan
   from: talk-about-the-stack-first
-  to: talk-about-the-stack-first
+  to: orchestrate-it-dont-just-vibe-it
   runes:
   - id: stack-familiar
     section: talk-about-the-stack-first
@@ -27,11 +27,16 @@ stops:
   - id: no-blind-stack
     section: talk-about-the-stack-first
     quote: you risk not knowing what you're building
-  trial: Describe something you want to build to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan.
+  - id: explain-and-fix
+    section: orchestrate-it-dont-just-vibe-it
+    quote: could I fix it if the AI weren't here tomorrow
+  trial: 'Describe something you want to build to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan. Then ask yourself: could I explain this and fix it if the AI weren''t here tomorrow?'
   digest:
   - Talk through the stack with your AI before the plan has steps.
   - Stick with what you know and with popular tools.
   - Never do agentic coding in a stack you have no experience with.
+  - To learn a new stack, make it a learning project on purpose and do not start the next step until you can explain this one.
+  - Orchestrate, do not just vibe. If you cannot explain it and fix it, you adopted it.
 - title: Draft it, edit it, one step at a time
   note: plan-it-then-build-from-the-plan
   from: let-the-ai-draft-it-then-you-edit-it
