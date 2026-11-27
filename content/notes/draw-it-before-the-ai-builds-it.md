@@ -104,10 +104,29 @@ own. [Lucidchart](https://www.lucidchart.com/pages/tutorial/uml-use-case-diagram
 [TU Delft](https://cese.ewi.tudelft.nl/software-systems/part-2/tutorials/uml/use-case.html) have clear
 walkthroughs.
 
+```mermaid label="Use case diagram for the portfolio: a visitor reads the roadmap and opens an evidence link, and the owner adds an entry."
+flowchart LR
+  visitor([Visitor]) --> read[Read the roadmap]
+  visitor --> open[Open an evidence link]
+  owner([Owner]) --> add[Add an entry]
+```
+
+*A use case diagram for the portfolio, generated from three lines of text: two kinds of user, and "add an entry" as a feature of its own.*
+
 **Data flow diagram: where does information go?** Boxes for the outside world, circles for what your
 system does, open boxes for where data rests, and arrows for data in motion. It asks who sends what to
 whom, and AI-built systems can quietly send data somewhere you didn't plan. A static portfolio can skip
 this one. [IBM's guide](https://www.ibm.com/think/topics/data-flow-diagram) is a good place to start.
+
+```mermaid label="Data flow diagram for the portfolio: the owner sends a new entry to the site, the site keeps it with the roadmap entries, and sends the page to the visitor."
+flowchart LR
+  owner[Owner] -->|new entry| site((The site))
+  site -->|keeps| data[(Roadmap entries)]
+  data -->|entries| site
+  site -->|the page| visitor[Visitor]
+```
+
+*A data flow diagram for the same portfolio: who sends what to whom, and where it rests.*
 
 **ERD, the entity relationship diagram: what does it remember?** The boxes are the things your system
 keeps, like roadmap entries and badges, and the lines say how they relate. An entry has a date, a title,
@@ -116,6 +135,23 @@ this halfway through and you're rewriting, not editing.
 [Atlassian](https://www.atlassian.com/work-management/project-management/entity-relationship-diagram)
 covers the idea, and [freeCodeCamp](https://www.freecodecamp.org/news/crows-foot-notation-relationship-symbols-and-how-to-read-diagrams/)
 explains the crow's foot lines.
+
+```mermaid label="Entity relationship diagram for the portfolio: a roadmap entry holds a date, a title, what you learned and an evidence link, and a badge holds a name, an issuer and a link."
+erDiagram
+  ENTRY {
+    string date
+    string title
+    string learned
+    string evidence_link
+  }
+  BADGE {
+    string name
+    string issuer
+    string link
+  }
+```
+
+*An ERD for the same portfolio: the two things it keeps, and the fields of each.*
 
 **Wireframe: what is on each screen, and where?** Gray boxes. No colors, no fonts, no polish. A box
 labeled "roadmap list", a box labeled "badges". It makes you decide what each screen is for without

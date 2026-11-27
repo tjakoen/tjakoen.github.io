@@ -56,17 +56,17 @@
    "beats": [
     {
      "section": "six-drawings-one-question-each",
-     "quote": "Stick figures on the left, ovals on the right",
+     "figure": "Use case diagram for the portfolio",
      "text": "Use case diagram. Who uses it, and what can they do. Draw it before anything else, because it's where you find out you have two kinds of user, not one."
     },
     {
      "section": "six-drawings-one-question-each",
-     "quote": "where does information go?",
+     "figure": "Data flow diagram for the portfolio",
      "text": "Data flow. Where does information travel. It's the drawing that shows data moving somewhere you didn't plan. A static portfolio can skip it."
     },
     {
      "section": "six-drawings-one-question-each",
-     "quote": "what does it remember?",
+     "figure": "Entity relationship diagram for the portfolio",
      "text": "The ERD. What does the thing remember, and how are those things related. For your portfolio, an entry has a date, a title, what you learned, and a link."
     },
     {
