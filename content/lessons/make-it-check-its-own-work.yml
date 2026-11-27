@@ -28,11 +28,11 @@ stops:
   - id: tests-are-memory
     section: let-tests-do-the-checking
     quote: The tests are a memory that runs.
-  trial: Ask your AI to add a test for one done line in your plan, and to explain what the test proves.
+  trial: Ask your AI to add a test for one done line in your plan, show it failing first, then passing, and explain what it proves.
   digest:
+  - A test is the check you already do by hand, written down so a machine runs it.
   - A unit test checks one small piece. An end-to-end test drives the whole app like a user.
-  - Every stack has a standard way to test, so ask your agent.
-  - Tell the AI to write tests as it builds, one for each done line.
+  - Tell the AI to write tests as it builds, one for each done line, and to show each new test fail before it passes.
 - title: Run it, then ask fresh eyes
   note: make-it-check-its-own-work
   from: run-it-yourself

@@ -31,33 +31,38 @@ done-is-a-claim | They're what you check against.
 ## Stop 2: Let tests do the checking
 
 **Beat 1**
-highlight: let-tests-do-the-checking | A test is a check written as code.
+highlight: let-tests-do-the-checking | you're in good company
 
-Asking for evidence works, but a test is better. It's a check written as code. It runs in seconds, says pass or fail, and can run again tomorrow without anyone remembering what to look at.
+Testing often gets skipped in school. If it's new to you, you're in good company. So here's the idea from scratch. You already test your work. You open the page, click the button, and see if it works.
 
 **Beat 2**
-highlight: let-tests-do-the-checking | checks one small piece on its own
+highlight: let-tests-do-the-checking | a little program
 
-Two kinds to know by name. A unit test checks one small piece on its own. Does the function that marks a task done actually mark it done. They're fast, so you have a lot of them.
+A test is that same check, written down as a little program. A machine runs it in a second, as many times as you want, and never forgets a step. Make a task, mark it done, check that it's done. It says pass or fail, and a fail tells you where to look.
 
 **Beat 3**
 highlight: let-tests-do-the-checking | drives the whole app the way a user would
 
-An end-to-end test drives the whole app the way a user would. Open the page, add a task, tick it, refresh, check it's still crossed out. Slower, fewer of them, and the closest thing to asking whether it really works. Both are linked in the note. I'm not teaching them. Every language has a standard way to test, so ask your agent what yours is.
+Two kinds to know by name. A unit test checks one small piece, and you can have hundreds. An end-to-end test drives the whole app the way a user would. Open the page, add a task, tick it, refresh. Slower, fewer, and the closest to asking whether it really works. The note links to good explanations of both. I'm not teaching the tools. Ask your agent how your stack does it.
 
 **Beat 4**
 highlight: let-tests-do-the-checking | the AI writes the tests as it builds
 
-Here's the habit I'd wire in from day one. The AI writes the tests as it builds. Every done line in your plan gets a test, and a step isn't finished until the tests pass. Now the AI is accountable to its own definition of done, because it can't say "done" while a test is red.
+Here's the habit I'd wire in from day one. The AI writes the tests as it builds. Every done line in your plan gets a test, and a step isn't finished until its tests pass. Now it's accountable to its own definition of done. It can't say "done" while a test is failing.
 
 **Beat 5**
 highlight: let-tests-do-the-checking | The tests are a memory that runs.
 
-And it helps whoever comes next. Tomorrow's session is another forgetful AI. It can change the code, run the tests, and find out whether it broke something. The tests are a memory that runs. One caution: a test can be wrong, or too weak to ever fail. Ask the AI what each one proves.
+And it helps whoever comes next. Tomorrow's session is another forgetful AI. It can change the code, run the tests, and find out whether it broke something. The tests are a memory that runs.
 
-**Digest:** A unit test checks one small piece, an end-to-end test drives the whole app like a user. Every stack has a standard way to test. Tell the AI to write tests as it builds, one for each done line, so it can't call a step done while a test fails.
+**Beat 6**
+highlight: let-tests-do-the-checking | ask to see a new test fail before it passes
 
-**Trial:** Ask your AI to add a test for one done line in your plan, and to explain what the test proves.
+One trick. Ask to see each new test fail before it passes. A test that has never failed might not be checking anything. Watching it go from failing to passing is how you know it can tell the difference.
+
+**Digest:** A test is the check you already do by hand, written down so a machine runs it. A unit test checks one small piece, an end-to-end test drives the whole app like a user. Tell the AI to write tests as it builds, one for each done line, and to show each new test fail before it passes.
+
+**Trial:** Ask your AI to add a test for one done line in your plan, show it failing first, then passing, and explain what it proves.
 
 **Runes:**
 ai-writes-the-tests | the AI writes the tests as it builds

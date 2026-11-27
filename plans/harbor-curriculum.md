@@ -192,3 +192,4 @@ the Academy explains it.
   never do agentic coding in a stack you have no experience with, and write the choice and its reason at the
   top of the plan. Lesson went to four stops.
 - Outside links in note 4 came from search and have not been opened. Check them before publishing.
+- Testing is unfamiliar to this reader (school often skips it), so note 4's tests section is written from zero: the idea as the check you already do by hand, one small JavaScript example in words and code, what pass and fail mean, unit versus end-to-end, and a trick of watching each new test fail before it passes. The note grew to about 1,450 words. Option to decide: split testing into its own note if the section keeps growing.
