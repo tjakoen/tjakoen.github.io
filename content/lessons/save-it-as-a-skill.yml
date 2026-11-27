@@ -29,7 +29,7 @@ stops:
   digest:
   - Ask your agent to turn a session that worked into a skill, then edit it.
   - One job per skill, saved in the project.
-  - My own loop notices repeated requests and asks if I want a skill. Start by noticing yourself.
+  - Later you will meet a loop that notices repeats for you. For now, you do the noticing.
   - Keep judgment work, like audits, manual.
 - title: When a skill earns a routine
   note: save-it-as-a-skill

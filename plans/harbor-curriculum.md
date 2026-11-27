@@ -233,3 +233,4 @@ writing in their own words what they learned, which is also evidence for a job i
 - Examples in notes 1 to 5 use an invented study planner. Replace them with this project, or with the author's
   own real portfolio artifacts, which are more honest than an invented scenario.
 - The skeleton needs a home repo, which is an outward action and needs the author's go-ahead.
+- Rule, 2026-11-27: the loop is not introduced until the chat-to-loop note, so earlier Harbor notes only mention it in a clause and link out. Note 5's section on the loop noticing repeats was cut to a short paragraph linking I Kept Telling My AI the Same Thing.

@@ -60,14 +60,9 @@ Keep a skill to one job. Save it in the project, next to your brief and plan, so
 And as you catch new misses, add a line. That's how it gets better, and how it starts to sound like how
 you work.
 
-## Let the loop notice for you
-
-By hand, you do the noticing. In my own loop I've set the agent to do it. While we work, it writes down
-when I ask for the same kind of thing again. At the end of a session it looks over those notes, and when
-the same request has turned up in three sessions, it asks whether I want to make a skill of it. I say yes,
-edit it, or no. That "three" is the same rule as above, written into the loop. It's still being built, and
-I haven't shown how well it works, which [I Kept Telling My AI the Same Thing](the-loop-that-learned-how-i-work.md)
-is honest about. Start by noticing yourself. The loop comes later.
+Later in this path you'll meet the loop, my whole setup for working with AI. One thing it does is notice
+when I repeat a request and ask whether I want a skill from it. For now, you're the one noticing. The
+note is [I Kept Telling My AI the Same Thing](the-loop-that-learned-how-i-work.md), if you're curious.
 
 ## Keep judgment manual
 
