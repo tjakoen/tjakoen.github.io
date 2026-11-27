@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { cutStops, groupLessons, proposeAll, sectionsOf, type Section, type Stop } from "./lessons.ts";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { NOTES_DIR } from "./quests.ts";
+import { buildIndex, loadNote, loadRegions, NOTES_DIR } from "./quests.ts";
 
 const words = (n: number) => Array.from({ length: n }, () => "word").join(" ");
 const sec = (id: string, w: number): Section => ({ id, title: id, words: w });
@@ -57,7 +57,7 @@ describe("groupLessons", () => {
 describe("the real notes", () => {
   const lessons = proposeAll();
   test("every note on the path is in a lesson, and no lesson passes six stops", () => {
-    expect(new Set(lessons.flatMap((l) => l.notes.map((n) => n.note))).size).toBe(14);
+    expect(new Set(lessons.flatMap((l) => l.notes.map((n) => n.note))).size).toBe(buildIndex(loadRegions(), loadNote).quests.length);
     for (const l of lessons) expect(l.stops, l.id).toBeLessThanOrEqual(6);
   });
   test("every stop's sections resolve in its note and no stop is empty", () => {

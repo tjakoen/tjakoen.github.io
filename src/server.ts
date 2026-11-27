@@ -372,7 +372,7 @@ const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAG
 // terminal's `learn` command. The map itself is static files in view/learn-map, served below.
 const serveUnlisted = makePageServer(bunRuntime, join(config.pagesDir, "..", "unlisted"), renderAppPage, PAGE_ASSETS, PAGE_HEAD);
 const LEARN_MAP_DIR = join(config.pagesDir, "..", "learn-map");
-const LEARN_MIME: Record<string, string> = { ".html": "text/html; charset=utf-8", ".json": "application/json; charset=utf-8", ".png": "image/png" };
+const LEARN_MIME: Record<string, string> = { ".html": "text/html; charset=utf-8", ".json": "application/json; charset=utf-8", ".png": "image/png", ".js": "text/javascript; charset=utf-8" };
 async function serveLearnMap(pathname: string): Promise<Response> {
   const rel = decodeURIComponent(pathname.slice("/learn-map/".length));
   const file = resolve(LEARN_MAP_DIR, rel);

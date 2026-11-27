@@ -1,0 +1,174 @@
+{
+ "id": "plan-it-then-build-from-the-plan",
+ "title": "Plan it, then build from the plan",
+ "summary": "In four short stops I show you what a plan is, why to talk about the stack first, how to have the AI draft the plan and edit it yourself, and the one habit that makes it work, which is building one step at a time.",
+ "audio": "/media/lessons/plan-it-then-build-from-the-plan.m4a",
+ "stops": [
+  {
+   "title": "A list you can tick off",
+   "note": "plan-it-then-build-from-the-plan",
+   "from": "intro",
+   "to": "a-plan-is-a-list-you-can-tick-off",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "having nothing to point at",
+     "text": "Two hours in, the AI has touched a pile of files and you can't say which of your asks are done. That isn't the AI's fault. You've got nothing to point at."
+    },
+    {
+     "section": "intro",
+     "quote": "The first thing I fixed in my own workflow was where the plan lives.",
+     "text": "The first thing I fixed in my own workflow was where the plan lives. I took it out of the conversation and put it in a markdown file in the project. Sessions have been easier to pick up ever since."
+    },
+    {
+     "section": "a-plan-is-a-list-you-can-tick-off",
+     "quote": "A list of small steps, in order.",
+     "text": "Goal, a list of small steps, and what done looks like for each one. Nothing in it is code. It's your brief cut into pieces small enough to check with your own eyes. And the example in the note is an example, not a template."
+    }
+   ],
+   "runes": [
+    {
+     "id": "small-steps",
+     "section": "a-plan-is-a-list-you-can-tick-off",
+     "quote": "A list of small steps, in order."
+    }
+   ],
+   "trial": "For your portfolio, write the goal and two steps, each with a done line.",
+   "digest": [
+    "A plan is a short file with the goal, small steps in order, and what done looks like for each step.",
+    "It gives you something to point at when a session gets long."
+   ]
+  },
+  {
+   "title": "Talk about the stack first",
+   "note": "plan-it-then-build-from-the-plan",
+   "from": "talk-about-the-stack-first",
+   "to": "talk-about-the-stack-first",
+   "beats": [
+    {
+     "section": "talk-about-the-stack-first",
+     "quote": "What would you pick, and why?",
+     "text": "Before the plan has steps, I ask my AI what to build it with. Say what you want to make and ask what the usual options are, and what it would pick and why. A mobile app could be Flutter or React Native. A website could be plain HTML and JavaScript, or a framework, or even PHP. Most of them work."
+    },
+    {
+     "section": "talk-about-the-stack-first",
+     "quote": "stick with what you're familiar with",
+     "text": "My advice hasn't changed. Stick with what you're familiar with, and when you pick something new, pick something popular. More has been written about it, and in my experience the AI is steadier on it."
+    },
+    {
+     "section": "talk-about-the-stack-first",
+     "quote": "you risk not knowing what you're building",
+     "text": "Here's the one I'd really warn you about. Don't do agentic coding in a language or framework you've never touched. The AI makes anything feel easy, and that's the danger. If you can't read what it wrote, you risk not knowing what you're building."
+    },
+    {
+     "section": "talk-about-the-stack-first",
+     "quote": "learning project on purpose",
+     "text": "You can learn a new stack on a project, with the AI as your teacher, if you make it a learning project on purpose. Have it explain every file. Break something and fix it. Don't move on until you can explain this step, or it quietly turns into blind vibe coding."
+    },
+    {
+     "section": "talk-about-the-stack-first",
+     "quote": "I put the stack at the top of the plan",
+     "text": "Then I put the stack at the top of the plan, with the reason. If it's new to me, I add a step to learn the basics first."
+    }
+   ],
+   "runes": [
+    {
+     "id": "stack-familiar",
+     "section": "talk-about-the-stack-first",
+     "quote": "stick with what you're familiar with"
+    },
+    {
+     "id": "no-blind-stack",
+     "section": "talk-about-the-stack-first",
+     "quote": "you risk not knowing what you're building"
+    }
+   ],
+   "trial": "Describe your portfolio to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan. Then ask yourself: could I explain this and fix it if the AI weren't here tomorrow?",
+   "digest": [
+    "Talk through the stack with your AI before the plan has steps.",
+    "Stick with what you know and with popular tools. Never do agentic coding blind in a stack you have no experience with.",
+    "To learn one, make it a learning project on purpose. Write the choice at the top of the plan."
+   ]
+  },
+  {
+   "title": "Draft it, edit it, one step at a time",
+   "note": "plan-it-then-build-from-the-plan",
+   "from": "let-the-ai-draft-it-then-you-edit-it",
+   "to": "one-step-at-a-time",
+   "beats": [
+    {
+     "section": "let-the-ai-draft-it-then-you-edit-it",
+     "quote": "Don't write any code yet.",
+     "text": "I don't write the plan from scratch. I hand my AI the brief and the drawing and say this."
+    },
+    {
+     "section": "let-the-ai-draft-it-then-you-edit-it",
+     "quote": "the edit is where my judgment goes in",
+     "text": "Then I read it like a teammate's proposal. A step called build the backend isn't a step, it's a project, so I split it. The AI is guessing at my intentions, so the edit is where my judgment goes in."
+    },
+    {
+     "section": "use-what-your-harness-already-has",
+     "quote": "Use what your harness gives you before you build your own.",
+     "text": "Your harness probably has tools for this already. Claude Code and Codex both have a planning mode, where the agent proposes a plan before it touches a file. Both also have goals: you state what done means, and the agent keeps working until it's met. Your done lines are exactly what a goal wants. Names differ, so ask your agent. If sessions run dry, my plan big, type small note is how I stretched mine."
+    },
+    {
+     "section": "one-step-at-a-time",
+     "quote": "Do step 1 only. Stop and show me when it's done.",
+     "text": "Then the habit that makes the whole thing work. Left alone, it'll run through every step and a few extras. I make it stop after one, so I'm checking one thing against one line of done, while the mistake is still small."
+    }
+   ],
+   "runes": [
+    {
+     "id": "one-step-at-a-time",
+     "section": "one-step-at-a-time",
+     "quote": "Do step 1 only. Stop and show me when it's done."
+    }
+   ],
+   "trial": "Ask your AI for a plan for your portfolio with no code yet. Split one step, cut one, then tell it to do step 1 only and stop.",
+   "digest": [
+    "Have the AI draft the plan, using the planning mode and goals your harness already has, and edit it yourself.",
+    "Build one step at a time and check each against its done line."
+   ]
+  },
+  {
+   "title": "Keep it where it survives",
+   "note": "plan-it-then-build-from-the-plan",
+   "from": "keep-it-where-it-survives",
+   "to": "your-turn",
+   "beats": [
+    {
+     "section": "keep-it-where-it-survives",
+     "quote": "If the plan lives only in a chat, it dies when the session does.",
+     "text": "Remember the forgetful teammate. The plan goes in a file in the project, and the AI ticks it off as it goes. Tomorrow's session picks up at step three. And one caution: it's in your repo, so never put keys or passwords in it."
+    },
+    {
+     "section": "keep-it-where-it-survives",
+     "quote": "turns that folder into a board",
+     "text": "I keep my plans as markdown files, and a tool I built called PROOF turns that folder into a board. PANTRY keeps the board open beside my sessions. I built them for me. You don't need either. One file you can read in ten seconds is enough, and if you want a board later, build your own."
+    },
+    {
+     "section": "your-turn",
+     "quote": "A plan is a guess, and it'll be wrong somewhere.",
+     "text": "And I might be wrong that you need one. A plan is a guess, and it'll be wrong somewhere. When it is, tell the AI and update the file. The point is that you both hold the same one. For something tiny, you may not need a plan at all."
+    },
+    {
+     "section": "your-turn",
+     "quote": "Do step 1 only, and stop,",
+     "text": "Your turn is the whole loop in miniature. Plan with no code, edit it, save it, then step one only, and check it against the done line. Or plan something different and tell me how it went."
+    }
+   ],
+   "runes": [
+    {
+     "id": "lives-in-a-file",
+     "section": "keep-it-where-it-survives",
+     "quote": "If the plan lives only in a chat, it dies when the session does."
+    }
+   ],
+   "trial": "Ask your AI for a plan for your portfolio with no code yet, edit it, save it in your project, then have it do step 1 only and check the result against the done line.",
+   "digest": [
+    "Keep the plan in a file next to the brief so any session can pick it up, and never put secrets in it.",
+    "A plan is a guess. Update it when it changes, and keep you and the AI on the same one."
+   ]
+  }
+ ]
+}

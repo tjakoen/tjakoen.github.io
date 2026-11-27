@@ -6,6 +6,11 @@ import AxeBuilder from "@axe-core/playwright";
 type Quest = { id: string; stops: string[]; order: number; stage: number; done: boolean };
 declare const QUESTS: Quest[];
 declare const sel: { t: string; id?: string; i?: number };
+declare const PROG: Record<string, Set<number>>;
+declare const V: { z: number };
+declare function selectRegion(n: number): void;
+declare function persist(): void;
+declare const Guild: { xp(): number; codeOf(b: unknown): string; bundle(): unknown };
 
 const frameOf = async (page: Page) => {
   const handle = await page.locator("#learn-frame").elementHandle();
@@ -170,7 +175,8 @@ test("the map walks the guided path: numbered in order, Continue follows it, and
   await page.goto("/learn");
   const frame = await frameOf(page);
   const path = await frame.evaluate(() => PATH.stages.flatMap((st) => st.quests));
-  expect(path.length).toBe(14);
+  expect(path.length).toBe(await frame.evaluate(() => QUESTS.length));
+  expect(path.length).toBe(21);
   const order = await frame.evaluate(() => QUESTS.map((q) => [q.id, q.order]));
   expect(order.map(([id]) => id)).toEqual(path);
   expect(order.map(([, n]) => n)).toEqual(path.map((_, i) => i + 1));
@@ -182,16 +188,145 @@ test("the map walks the guided path: numbered in order, Continue follows it, and
   // the path starts near the Harbor and ends on the Summit: the regions only ever go up along it, and You are here begins in the first one
   const regions = await frame.evaluate(() => QUESTS.map((q) => (q as unknown as { region: number }).region));
   expect(regions).toEqual(regions.toSorted((a, b) => a - b));
-  expect(regions[0]).toBe(2);
+  expect(regions[0]).toBe(1);
   expect(regions.at(-1)).toBe(6);
-  expect(await frame.evaluate(() => { const q = QUESTS.find((x) => x.id === YOUQ.id)! as unknown as { region: number }; return q.region; })).toBe(2);
+  expect(await frame.evaluate(() => { const q = QUESTS.find((x) => x.id === YOUQ.id)! as unknown as { region: number }; return q.region; })).toBe(1);
 
   // the panel says where a quest comes in the path
   await frame.evaluate((id) => (window as unknown as { selectQuest(i: string): void }).selectQuest(id), path[2]!);
-  await expect(frame.locator(".ribbon")).toHaveText("Stage 2 · Quest 3 of 14");
+  await expect(frame.locator(".ribbon")).toHaveText("Stage 1 · Quest 3 of 21 · Draft");
 
   // the plain list reads without the map, one section per stage, quests in path order
   const list = await frame.evaluate(() => [...document.querySelectorAll("#route > ol > li")].map((li) => [li.querySelector("h2")!.textContent, [...li.querySelectorAll(":scope > ol > li > h3")].map((h) => h.textContent)]));
-  expect(list.map(([h]) => h)).toEqual(["Stage 1: Harbor", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6"]);
-  expect(list.flatMap(([, titles]) => titles as string[]).length).toBe(14);
+  expect(list.map(([h]) => h)).toEqual(["Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6"]);
+  expect(list.flatMap(([, titles]) => titles as string[]).length).toBe(21);
+});
+
+test("Begin quest opens the book over the map: the note on the left, the Guide on the right, a line lights its quote, and the trial is saved", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.evaluate(() => localStorage.removeItem("learn.progress.v1"));
+  await frame.evaluate(() => { (window as unknown as { selectQuest(i: string): void }).selectQuest("start-here"); });
+  await frame.locator('[data-act="begin"]').click();
+  const book = frame.locator(".bk");
+  await expect(book).toBeVisible();
+  await expect(book.locator(".bk__note h3")).toContainText("Six Months In");
+  await expect(book.locator(".bk__guide .plate")).toContainText("the Guide");
+  await expect(book.locator("mark.hl")).toHaveText("I'm not an AI expert.");
+  // the line is the transcript, so it reads without sound
+  await expect(book.locator(".bk__guide .say")).toContainText("I'm not an expert");
+  await book.locator('[data-do="next"]').click();
+  await expect(book.locator("mark.hl")).toHaveText("This isn't a tutorial or a step-by-step guide.");
+  // the trial is self-reported and kept in this browser only
+  await book.locator(".trial input").check();
+  expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toContain('"start-here":[0]');
+  await page.keyboard.press("Escape");
+  await expect(book).toBeHidden();
+  await expect(frame.locator(".stopline[data-done]")).toHaveCount(1);
+});
+
+const resetGuild = (frame: Awaited<ReturnType<typeof frameOf>>) =>
+  frame.evaluate(() => { for (const k of ["learn.progress.v1", "learn.runes.v1", "learn.guild.v1"]) localStorage.removeItem(k); });
+
+test("the guild HUD counts XP from the trials ticked and shows the level", async ({ page }) => {
+  await page.goto("/learn");
+  let frame = await frameOf(page);
+  await resetGuild(frame);
+  await page.reload();
+  frame = await frameOf(page);
+  await expect(frame.locator(".gh__lv")).toHaveText("Lv 1 · Newcomer");
+  await frame.evaluate(() => { for (let i = 0; i < 2; i++) PROG["start-here"].add(i); persist(); });
+  await expect.poll(() => frame.evaluate(() => Guild.xp())).toBe(200);
+  await expect(frame.locator(".gh__lv")).toHaveText("Lv 2 · Apprentice");
+  await expect(frame.locator(".lvl")).toContainText("Newcomer");
+  await expect(frame.locator(".lvl")).toHaveAttribute("role", "status");
+});
+
+test("the guild card saves a code, loads it back, and refuses a bad one", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await resetGuild(frame);
+  await frame.evaluate(() => { PROG["start-here"].add(0); persist(); });
+  const code = await frame.evaluate(() => Guild.codeOf(Guild.bundle()));
+  await frame.evaluate(() => { PROG["start-here"].clear(); persist(); });
+  await frame.locator(".gh").click();
+  await frame.locator('[data-f="code"]').fill("not a code");
+  await frame.locator('[data-do="loadcode"]').click();
+  await expect(frame.locator("[data-msg]")).toContainText("did not load");
+  await frame.locator('[data-f="code"]').fill(code);
+  await frame.locator('[data-do="loadcode"]').click();
+  expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toContain('"start-here":[0]');
+});
+
+test("a badge link rebuilds the badge page from the code alone, with the evidence link and no claim of a credential", async ({ page }) => {
+  await page.goto("/learn");
+  let frame = await frameOf(page);
+  await resetGuild(frame);
+  const code = await frame.evaluate(() => {
+    const progress: Record<string, number[]> = {};
+    QUESTS.filter((q) => (q as Quest & { region: number }).region === 1).forEach((q) => { progress[q.id] = q.stops.map((_, i) => i); });
+    return Guild.codeOf({ v: 1, name: "Test Holder", seed: "ABC234", since: "2026-11", evidence: "https://example.com/roadmap", progress, runes: {} });
+  });
+  await page.goto("/learn#badge=1." + code);
+  frame = await frameOf(page);
+  const badge = frame.locator(".gc");
+  await expect(badge.locator("h3")).toHaveText("Walks the Harbor");
+  await expect(badge).toContainText("Earned · Test Holder");
+  await expect(badge.locator('a[href="https://example.com/roadmap"]')).toHaveAttribute("rel", /noopener/);
+  await expect(badge).toContainText("not a signed credential");
+  // looking at someone else's badge never writes to this browser's own progress
+  expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toBeNull();
+});
+
+test.describe("on a phone", () => {
+  test.use({ viewport: { width: 375, height: 812 }, hasTouch: true });
+
+  test("the map takes the screen above the shell's bottom bar, with one more zoom level out and the panel as a modal", async ({ page }) => {
+    await page.goto("/learn");
+    const frame = await frameOf(page);
+    // nothing of the map sits behind the shell's bottom bar
+    const gap = await page.evaluate(() => {
+      const f = document.getElementById("learn-frame")!.getBoundingClientRect(), nav = document.querySelector(".mobile-nav")!.getBoundingClientRect();
+      return nav.top - f.bottom;
+    });
+    expect(gap).toBeGreaterThanOrEqual(-1);
+    // the whole island fits at the first view, one level out from World
+    expect(await frame.evaluate(() => V.z)).toBe(1);
+    await expect(frame.locator("#zname")).toHaveText("Overview");
+    // the guide is closed until asked for, and the map carries its own previous and next
+    await expect(frame.locator("#panel")).toBeHidden();
+    await expect(frame.locator("#mnav")).toBeVisible();
+    await frame.locator("#mopen").click();
+    await expect(frame.locator("#panel")).toBeVisible();
+    await frame.locator("#pclose").click();
+    await expect(frame.locator("#panel")).toBeHidden();
+    await frame.evaluate(() => { selectRegion(2); });
+    await frame.locator("#pclose").click();
+    await expect(frame.locator("#mlbl")).toHaveText(/Region 2 of 6/);
+    await frame.locator("#mnext").click();
+    await expect(frame.locator("#mlbl")).toHaveText(/Region 3 of 6/);
+    await expect(frame.locator("#panel")).toBeHidden();
+  });
+
+  test("two fingers pinch the map onto the nearest zoom level, and pinching in goes back out", async ({ page }) => {
+    await page.goto("/learn");
+    const frame = await frameOf(page);
+    const z = () => frame.evaluate(() => V.z);
+    await frame.evaluate(async () => {
+      const st = document.getElementById("stage")!;
+      const fire = (t: string, id: number, x: number, y: number) => st.dispatchEvent(new PointerEvent(t, { pointerId: id, pointerType: "touch", clientX: x, clientY: y, bubbles: true }));
+      fire("pointerdown", 1, 150, 300); fire("pointerdown", 2, 230, 300);
+      for (let i = 1; i <= 10; i++) { fire("pointermove", 1, 150 - i * 6, 300); fire("pointermove", 2, 230 + i * 6, 300); await new Promise((r) => setTimeout(r, 16)); }
+      fire("pointerup", 2, 290, 300); fire("pointerup", 1, 90, 300);
+    });
+    await expect.poll(z).toBe(3);
+    await frame.evaluate(async () => {
+      const st = document.getElementById("stage")!;
+      const fire = (t: string, id: number, x: number, y: number) => st.dispatchEvent(new PointerEvent(t, { pointerId: id, pointerType: "touch", clientX: x, clientY: y, bubbles: true }));
+      fire("pointerdown", 1, 90, 300); fire("pointerdown", 2, 290, 300);
+      for (let i = 1; i <= 10; i++) { fire("pointermove", 1, 90 + i * 7, 300); fire("pointermove", 2, 290 - i * 7, 300); await new Promise((r) => setTimeout(r, 16)); }
+      fire("pointerup", 2, 220, 300); fire("pointerup", 1, 160, 300);
+    });
+    await expect.poll(z).toBe(1);
+  });
 });
