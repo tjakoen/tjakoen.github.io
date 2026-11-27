@@ -1010,6 +1010,10 @@ let YOUQ={id:'',i:0};
 /* You are here: the next unfinished stop of the next unfinished quest. Browsing and the next button never move it; only finishing a stop does. */
 function placeYou(){ const nx=QUESTS.find(q=>!q.done)||QUESTS[QUESTS.length-1]; let i=0; while(i<nx.stops.length-1&&PROG[nx.id].has(i)) i++; YOUQ={id:nx.id,i}; const p=stopPos(nx,Math.min(i,8)); YOU[0]=p[0]; YOU[1]=p[1]; }
 function where(){ selectStop(YOUQ.id,YOUQ.i); }
+/* Has the reader finished any stop yet? Decides whether the home panel offers Start or Continue. */
+const started=()=>QUESTS.some(x=>PROG[x.id].size>0);
+/* What the quest sheet's main button will open: the first stop, the next unfinished one, or the whole quest again. */
+function beginLabel(qq){ const n=PROG[qq.id].size; if(!n) return 'Begin quest'; if(n>=qq.stops.length) return 'Read it again'; let j=0; while(j<qq.stops.length-1&&PROG[qq.id].has(j)) j++; return 'Next: stop '+(j+1); }
 function youWalk(){ const el=document.querySelector('.you'); if(el){ el.classList.add('walk'); setTimeout(()=>el.classList.remove('walk'),950); } }
 function markDone(){ if(sel.t!=='stop') return; const set=PROG[sel.id]; if(set.has(sel.i)) set.delete(sel.i); else set.add(sel.i); refreshProgress(); persist(); placeYou(); youWalk(); renderPanel(); draw(); toast(set.has(sel.i)?'Stop '+(sel.i+1)+' marked as done. You moved on.':'Stop '+(sel.i+1)+' is open again.'); }
 const routeOf=qq=>{ const r=ROUTES[qq.region]; return r&&r[byReg(qq.region).indexOf(qq)]; };
@@ -1375,23 +1379,23 @@ function renderPanel(){
   if(q.trim()){ const m=QUESTS.filter(x=>(x.title+' '+x.short).toLowerCase().includes(q.trim().toLowerCase()));
     h=pnav('Back','data-act="clear"','Search results')+`<div class="pc-body"><h3>Search</h3><div class="sub">${m.length} quest${m.length===1?'':'s'} match</div><div class="results">${m.map(x=>`<button class="rowbtn" data-q="${x.id}"><span class="n">${x.order}</span><span>${x.title}<small>${REG[x.region-1].name} · ${x.min} min</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Nothing yet. A note joins the map when it publishes and has a lesson.</div>'}</div></div>`; }
   else if(sel.t==='none'){
-    h=sceneHead('harbor')+`<div class="pc-body"><h3>Learn AI with me</h3><div class="sub">${QUESTS.length} quests · 6 regions · about ${hours} hours of reading</div>
+    h=sceneHead('harbor')+`<div class="pc-body"><h3>Learn AI with me</h3><div class="sub">${dn} of ${QUESTS.length} quests done · 6 regions · about ${hours} hours of reading</div>
       <p style="margin:0;font:.86rem/1.55 Georgia,serif">A guided path through what I have actually built and learned, in my own notes and the sources I used. Pick a region, or zoom in and wander.</p>
-      <div class="row"><button class="primary" data-act="start">&#9654; Start at the Harbor</button><button data-act="cont">Continue</button></div>
+      <div class="row">${started()?'<button class="primary" data-act="cont">&#9654; Continue where I left off</button>':'<button class="primary" data-act="start">&#9654; Start with quest 1</button>'}</div>
       <div><strong>The path</strong> <span class="sub">${PATH.stages.length} stages, in the order to read them</span></div>${PATH.stages.map(st=>{ const qs=st.quests.map(id=>QUESTS.find(x=>x.id===id)); return `<div class="sub" style="margin-top:.35rem">Stage ${st.n} · ${qs.length} quests · about ${qs.reduce((t,x)=>t+x.min,0)} min</div>`+qs.map(x=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${x.order}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops${x.draft?' \u00b7 <b class="draftmark">Draft</b>':''}</small></span><span class="go">&#9654;</span></button>`).join(''); }).join('')}
       <div><strong>Regions</strong> <span class="sub">where the quests sit on the island</span></div>${REG.slice(1).map(r=>{ const qs=byReg(r.n), d=qs.filter(x=>x.done).length; return `<button class="rowbtn" data-r="${r.n}"><span class="n">${r.n}</span><span>${r.name}<small>${r.sub} · ${d}/${qs.length} done</small></span><span class="go">&#9654;</span></button>`; }).join('')}
-      <div class="sub">${dn} of ${QUESTS.length} quests done. Drag to pan, scroll or +/- to zoom, Esc to return here.</div></div>`; }
+      <div class="sub">Drag to pan, scroll or +/- to zoom, Esc to return here.</div></div>`; }
   else if(sel.t==='region'){ const r=REG[sel.id-1], qs=byReg(r.n);
     h=pnav('All regions','data-act="home"',r.name,neighbours())+sceneHead(r.scene)+`<div class="pc-body"><h3>${r.name}</h3><div class="sub">${r.sub}</div><p style="margin:0;font:.86rem/1.55 Georgia,serif">${r.blurb}</p>
-      ${r.n===1?'<div class="row"><button class="primary" data-act="academy">Open Claude Academy \u2197</button><button data-act="ferry">Ferry to the Guild Hall</button></div>':''}<div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${x.order}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops${x.draft?' \u00b7 <b class="draftmark">Draft</b>':''}${x.id===YOUQ.id?' \u00b7 <b class="here">You are here</b>':''}</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}</div>`; }
+      <div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${x.order}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops${x.draft?' \u00b7 <b class="draftmark">Draft</b>':''}${x.id===YOUQ.id?' \u00b7 <b class="here">You are here</b>':''}</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}${r.n===1?'<div class="row"><button data-act="ferry">Skip ahead to the Guild Hall</button></div><div class="sub">New to AI? <a href="https://academy.claude.com" target="_blank" rel="noopener" data-act="academy">Claude Academy \u2197</a> teaches the basics, outside this site.</div>':''}</div>`; }
   else { const qq=QUESTS.find(x=>x.id===sel.id), r=REG[qq.region-1];
     h=(sel.t==='stop'?pnav(qq.short,`data-q="${qq.id}"`,`${qq.short} › Stop ${sel.i+1}`,neighbours()):pnav(r.name,`data-r="${r.n}"`,`${r.name} › ${qq.short}`,neighbours()))+sceneHead(r.scene,40)+`<div class="pc-body"><span class="ribbon">Stage ${qq.stage} · Quest ${qq.order} of ${QUESTS.length}${qq.draft?' · Draft':''}</span><h3>${qq.title}</h3>
-      <div class="row"><span class="chip">Class: ${qq.cls}</span><span class="chip">Level: ${qq.level}</span></div>
+      <div class="row"><span class="chip">For: ${qq.cls}</span><span class="chip">Level: ${qq.level}</span></div>
       <div class="stats"><div class="stat"><small>Quest level</small><strong>Lv ${qq.lv}</strong></div><div class="stat"><small>Experience</small><strong>+${qq.xp.toLocaleString()} XP</strong></div><div class="stat"><small>Reading</small><strong>~${qq.min} min</strong></div></div>
       <div><strong>It covers</strong><ul style="margin:.2rem 0 0;padding-left:1rem">${qq.learn.map(l=>`<li>${l}</li>`).join('')}</ul></div>
       <div class="stopbox"><div class="stopbox__h"><strong>${qq.stops.length} stops</strong><span class="sub">in lesson order, along the route</span></div>${qq.stops.map((st,j)=>`<div class="stopline" data-s="${j}" ${sel.t==='stop'&&sel.i===j?'data-sel':''} ${PROG[qq.id].has(j)?'data-done':''}><span class="sn">${PROG[qq.id].has(j)?'\u2713':j+1}</span><span>${st}</span>${(qq.id===YOUQ.id&&j===YOUQ.i)?'<b class="here">You are here</b>':''}</div>`).join('')}</div>
       ${sel.t==='stop'||qq.lesson?`<div class="row">${sel.t==='stop'?`<button data-act="done">${PROG[qq.id].has(sel.i)?'Undo: open again':'Mark stop '+(sel.i+1)+' as done'}</button>`:''}${qq.lesson?'<button data-act="note">Read the note only</button>':''}</div>`:''}</div>
-      <div class="pcta" role="group" aria-label="Start here">${qq.lesson?`<button class="primary" data-act="begin">${sel.t==='stop'?'Begin this stop':'Begin quest'}</button>`:`<button class="primary" data-act="note">Read the note</button>`}${(qq.id===YOUQ.id&&(sel.t==='quest'||sel.i===YOUQ.i))?'':'<button data-act="where">\u25CE Where I am</button>'}</div>`; }
+      <div class="pcta" role="group" aria-label="Start here">${qq.lesson?`<button class="primary" data-act="begin">${sel.t==='stop'?'Begin this stop':beginLabel(qq)}</button>`:`<button class="primary" data-act="note">Read the note</button>`}${(qq.id===YOUQ.id&&(sel.t==='quest'||sel.i===YOUQ.i))?'':'<button data-act="where">\u25CE Where I am</button>'}</div>`; }
   panel.innerHTML=h+footer(); panel.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind)); syncPhone();
 }
 panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],[data-act],[data-s],[data-nav]'); if(!b) return; e.preventDefault();
@@ -1401,10 +1405,11 @@ panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],
   else if(b.dataset.s!==undefined) selectStop(sel.id,+b.dataset.s);
   else if(b.dataset.act==='home') home();
   else if(b.dataset.act==='clear'){ q=''; document.getElementById('q').value=''; renderPanel(); }
-  else if(b.dataset.act==='start'){ selectRegion(1); }
-  else if(b.dataset.act==='academy'){ window.open('https://academy.claude.com','_blank','noopener'); }
+  else if(b.dataset.act==='start'){ const f=QUESTS[0]; selectQuest(f.id); openQuest(f.id,true,-1); }
+  else if(b.dataset.act==='academy'){ e.preventDefault(); window.open('https://academy.claude.com','_blank','noopener'); }
   else if(b.dataset.act==='ferry'){ selectRegion(4); }
-  else if(b.dataset.act==='cont'||b.dataset.act==='where') where();
+  else if(b.dataset.act==='cont'){ where(); openQuest(YOUQ.id,true,YOUQ.i); }
+  else if(b.dataset.act==='where') where();
   else if(b.dataset.act==='done') markDone();
   else if(b.dataset.act==='begin'||b.dataset.act==='note') openQuest(sel.id,b.dataset.act==='begin',sel.t==='stop'?sel.i:-1); });
 /* Where a quest opens. The note is fetched from its own page and shown in the book. A note that is still a draft lives at /drafts/<slug>, which sends

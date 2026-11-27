@@ -1,6 +1,6 @@
 ---
 id: learn-ux-pass
-status: todo
+status: doing
 track: learning
 depends: [quest-map]
 touches: [view/learn-map/map.html, view/learn-map/book.js, view/learn-map/guild.js, view/unlisted/learn.html, e2e/learn.e2e.ts, scripts/learn-command.js, docs/AUDIT-LEARN-MAP-2026-11-27.md]
@@ -27,15 +27,20 @@ emulation, so nothing here is measured on a real phone.
 
 The goal: a newcomer presses one obvious button and is reading lesson one.
 
-- [ ] Make Start at the Harbor open quest 1 at stop 1 in the book, not the Harbor region page.
-- [ ] On the Harbor region page, make Open Claude Academy a plain text link below the route, so the
+- [x] Make Start at the Harbor open quest 1 at stop 1 in the book, not the Harbor region page.
+- [x] On the Harbor region page, make Open Claude Academy a plain text link below the route, so the
   primary button on that page is the first quest, not an exit from the site.
-- [ ] Show Continue only when there is saved progress. At zero progress, Start is the only button.
-- [ ] Say what the Ferry button does. Read what it does in the code first, then label it for that
+- [x] Show Continue only when there is saved progress. At zero progress, Start is the only button.
+- [x] Say what the Ferry button does. Read what it does in the code first, then label it for that
   ("Skip ahead to the Guild Hall" if that is what it is).
-- [ ] After closing the book, show a Next stop button on the quest sheet so finishing a stop leads
+- [x] After closing the book, show a Next stop button on the quest sheet so finishing a stop leads
   somewhere.
-- [ ] Say "0 of 21 done" on the progress card next to the level, so progress reads as progress.
+- [x] Say "0 of 21 done" on the progress card next to the level, so progress reads as progress.
+
+Done on 2026-11-27, with three notes on how the plan was read. The "0 of 21 done" line is in the
+home panel's header, not the small HUD card, which is too narrow to carry it. The Next stop button is
+the quest sheet's main button, which now reads "Next: stop N" once a quest is under way, then "Read it
+again" when it is finished. Class is relabelled For ("For: Learner, Builder") rather than explained.
 
 ## 2. Phone: finger targets and the lesson header
 
@@ -56,12 +61,12 @@ The goal: every control on a phone is at least 44 by 44, and the lesson text sta
 
 The goal: nothing on the screen needs a game manual.
 
-- [ ] Rename the Codex tab to Runes in book.js, including its heading and the rune card wording.
+- [x] Rename the Codex tab to Runes in book.js, including its heading and the rune card wording.
   Check the e2e tests and the mockups for the old word, and leave the product mentions alone.
-- [ ] Put a one-line hint under each of Log, Runes and Pack that says what it holds. If one is empty,
+- [x] Put a one-line hint under each of Log, Runes and Pack that says what it holds. If one is empty,
   say so instead of showing a blank panel.
-- [ ] Rename Rest at campfire to say what it does ("Save and close"). Keep the campfire as the icon.
-- [ ] Explain Class and Level once, in a tooltip or a line on the quest sheet, or drop Class where it
+- [x] Rename Rest at campfire to say what it does ("Save and close"). Keep the campfire as the icon.
+- [x] Explain Class and Level once, in a tooltip or a line on the quest sheet, or drop Class where it
   adds nothing.
 
 ## 4. How close the map zooms

@@ -136,12 +136,12 @@
   function build() {
     root = h('div', 'bk'); root.hidden = true; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Quest book');
     root.innerHTML = `<div class="bk__shade"></div><div class="bk__sheet tome">
-      <div class="bk__bar"><div class="bk__crumb"></div><div class="bk__right"><div class="tb bk__tabs" role="tablist"><span data-tab="book" data-on role="tab" tabindex="0">Book</span><span data-tab="log" role="tab" tabindex="0">Log</span><span data-tab="codex" role="tab" tabindex="0">Codex</span><span data-tab="pack" role="tab" tabindex="0">Pack</span></div><button class="bk__x" aria-label="Close the book">\u00d7</button></div><div class="bk__pg"><button data-page="note">Note</button><button data-page="guide">Guide</button></div></div>
+      <div class="bk__bar"><div class="bk__crumb"></div><div class="bk__right"><div class="tb bk__tabs" role="tablist"><span data-tab="book" data-on role="tab" tabindex="0">Book</span><span data-tab="log" role="tab" tabindex="0">Log</span><span data-tab="runes" role="tab" tabindex="0">Runes</span><span data-tab="pack" role="tab" tabindex="0">Pack</span></div><button class="bk__x" aria-label="Close the book">\u00d7</button></div><div class="bk__pg"><button data-page="note">Note</button><button data-page="guide">Guide</button></div></div>
       <div class="leaf bk__leafnote"><div class="bk__note"></div></div>
       <div class="leaf bk__leafguide"><div class="bk__guide"></div><div class="bk__alt" hidden></div>
         <div class="controls bk__ctl"><div class="bk__prog"><div class="ribbonbar" aria-hidden="true"><i></i><u></u></div><div class="stops"><span class="bk__dots"></span><span class="bk__time"></span></div></div>
           <div class="row"><div><button data-do="prevstop" aria-label="Previous chapter" title="Previous chapter">\u23ee</button> <button data-do="prev" aria-label="Previous line" title="Previous line">\u25c0</button> <button data-do="play" class="primary" aria-label="Play">\u25b6 Play</button> <button data-do="replay" aria-label="Replay this chapter" hidden>\u21bb Replay</button> <button data-do="next" aria-label="Next line" title="Next line">\u25b6\u25b6</button> <button data-do="nextstop" aria-label="Next chapter" title="Next chapter">\u23ed</button></div>
-            <div><button data-do="speed">1x</button> <button data-do="rest">Rest at campfire</button></div></div>
+            <div><button data-do="speed">1x</button> <button data-do="rest">Save and close</button></div></div>
           </div></div>
       <div class="toast bk__toast" hidden></div></div>`;
     document.body.append(root);
@@ -167,10 +167,10 @@
   function renderAlt(t) {
     const L = S.lesson; if (!L) { ui.alt.innerHTML = ''; return; }
     const have = read(RUNE_KEY);
-    if (t === 'log') ui.alt.innerHTML = '<div class="mini"><h3>Log · objectives</h3>' + L.stops.map((s, i) => `<div class="obj" data-go="${i}" style="cursor:pointer"><i ${doneStop(i) ? 'data-d' : ''}></i><div>Stop ${i + 1} · ${esc(s.title)}<small>${doneStop(i) ? 'done' : (i === S.stop ? 'in progress' : 'open')} · ${esc(s.note)}</small></div></div>`).join('') + '</div>';
-    else if (t === 'codex') { ui.alt.innerHTML = '<div class="mini"><h3>Codex · runes</h3><div class="runes"></div><small>A rune is one concept taught in one stop. It is cosmetic and self-reported.</small></div>';
+    if (t === 'log') ui.alt.innerHTML = '<div class="mini"><h3>Log · your place in this quest</h3>' + L.stops.map((s, i) => `<div class="obj" data-go="${i}" style="cursor:pointer"><i ${doneStop(i) ? 'data-d' : ''}></i><div>Stop ${i + 1} · ${esc(s.title)}<small>${doneStop(i) ? 'done' : (i === S.stop ? 'in progress' : 'open')} · ${esc(s.note)}</small></div></div>`).join('') + '</div>';
+    else if (t === 'runes') { ui.alt.innerHTML = '<div class="mini"><h3>Runes · ideas you have learned</h3><div class="runes"></div><small>A rune is one idea taught in one stop. It is cosmetic and self-reported.</small></div>';
       const grid = ui.alt.querySelector('.runes'); L.stops.forEach((s) => s.runes.forEach((r) => { const got = have[L.id + ':' + r.id]; const d = h('div', 'rn' + (got ? '' : ' off'), `<canvas width="7" height="7"></canvas><div>${esc(r.id.replace(/-/g, ' '))}<small>${got ? esc(r.quote) : 'not learned yet'}</small></div>`); drawRune(d.querySelector('canvas'), runeIndex(r.id), inkColor()); grid.append(d); })); }
-    else if (t === 'pack') ui.alt.innerHTML = '<div class="mini"><h3>Pack · sources</h3>' + (L.external ? `<div class="pack"><div></div><div><a href="${esc(L.external)}" target="_blank" rel="noopener">Claude Academy</a><small>external · opens in a new tab · do these first</small></div></div>` : '') + [...new Set(L.stops.map((s) => s.note))].map((n) => { const q = QUESTS.find((x) => x.id === n); return `<div class="pack"><div></div><div><a href="${noteHref(q || { id: n })}" target="_blank" rel="noopener">${esc(q ? q.title : n)}</a><small>note · ${q && q.draft ? 'draft' : 'published'}</small></div></div>`; }).join('') + '</div>';
+    else if (t === 'pack') ui.alt.innerHTML = '<div class="mini"><h3>Pack · where to read more</h3>' + (L.external ? `<div class="pack"><div></div><div><a href="${esc(L.external)}" target="_blank" rel="noopener">Claude Academy</a><small>external · opens in a new tab · do these first</small></div></div>` : '') + [...new Set(L.stops.map((s) => s.note))].map((n) => { const q = QUESTS.find((x) => x.id === n); return `<div class="pack"><div></div><div><a href="${noteHref(q || { id: n })}" target="_blank" rel="noopener">${esc(q ? q.title : n)}</a><small>note · ${q && q.draft ? 'draft' : 'published'}</small></div></div>`; }).join('') + '</div>';
     ui.alt.querySelectorAll('[data-go]').forEach((el) => el.addEventListener('click', () => { setTab('book'); gotoStop(+el.dataset.go); }));
   }
 
@@ -190,7 +190,7 @@
     const have = read(RUNE_KEY); const s = stopOf();
     for (const r of s.runes) if (r.section === b.section && b.quote && squash(b.quote).includes(squash(r.quote).slice(0, 24))) {
       marginRune(r.id); const key = S.lesson.id + ':' + r.id;
-      ui.guide.querySelector('.rune-card')?.remove(); const card = h('div', 'rune-card', `<canvas width="7" height="7"></canvas><div><strong>Rune learned</strong><br>${esc(r.id.replace(/-/g, ' '))}<small>${have[key] ? 'already in the Codex' : '+25 XP · added to the Codex'}</small></div>`);
+      ui.guide.querySelector('.rune-card')?.remove(); const card = h('div', 'rune-card', `<canvas width="7" height="7"></canvas><div><strong>Rune learned</strong><br>${esc(r.id.replace(/-/g, ' '))}<small>${have[key] ? 'already in your runes' : '+25 XP · added to your runes'}</small></div>`);
       drawRune(card.querySelector('canvas'), runeIndex(r.id), inkColor()); ui.guide.querySelector('.bk__after').before(card);
       if (!have[key]) { have[key] = 1; write(RUNE_KEY, have); toast('+25 XP · Rune learned: ' + r.id.replace(/-/g, ' ')); }
     }
@@ -238,7 +238,7 @@
   function endStop() {
     stopVoice(); S.playing = false; S.ended = true; clearMarks();
     ui.playBtn.textContent = lastStop() ? '\u26fa Finish and rest' : 'Next chapter \u25b6'; ui.playBtn.classList.add('is-next'); ui.replayBtn.hidden = false;
-    const el = ui.guide.querySelector('.say'); if (el) el.innerHTML = esc(lastStop() ? "That's the last chapter. Tick your trial when you have done it, then finish and rest at the campfire." : "That's the chapter. Tick your trial when you have done it, then go on to the next chapter.") + '<span class="caret">▌</span>';
+    const el = ui.guide.querySelector('.say'); if (el) el.innerHTML = esc(lastStop() ? "That's the last chapter. Tick your trial when you have done it, then press Save and close." : "That's the chapter. Tick your trial when you have done it, then go on to the next chapter.") + '<span class="caret">▌</span>';
     ui.fill.style.width = '100%'; ui.flag.style.left = 'calc(100% - 10px)';
   }
   function resetEnd() { S.ended = false; ui.playBtn.classList.remove('is-next'); ui.replayBtn.hidden = true; }

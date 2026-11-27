@@ -495,3 +495,61 @@ test("the panel's Begin quest and Where I am sit in a centered bar pinned above 
   await frame.evaluate(() => { selectStop("start-here", 0); });
   await expect(frame.locator("#panel .pcta button.primary")).toHaveText("Begin this stop");
 });
+
+test("the home panel offers Start at zero progress and Continue after, and Start opens lesson one", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await resetGuild(frame);
+  await frame.evaluate(() => { for (const q of QUESTS) PROG[q.id]!.clear(); (window as unknown as { home(): void }).home(); });
+  const row = frame.locator("#panel .pc-body > .row").first();
+  await expect(row.locator("button")).toHaveCount(1);
+  await expect(row.locator('[data-act="start"]')).toHaveText(/Start with quest 1/);
+  await expect(frame.locator("#panel .pc-body .sub").first()).toContainText("0 of 21 quests done");
+  // Start goes to the first lesson, not to a region page
+  await row.locator('[data-act="start"]').click();
+  const book = frame.locator(".bk");
+  await expect(book).toBeVisible();
+  await expect(book.locator(".bk__note h3")).toContainText("Six Months In");
+  await page.keyboard.press("Escape");
+  // one finished stop later, the one button becomes Continue and opens the next unfinished stop
+  await frame.evaluate(() => { PROG["start-here"]!.add(0); (window as unknown as { placeYou(): void }).placeYou(); (window as unknown as { home(): void }).home(); });
+  await expect(row.locator("button")).toHaveCount(1);
+  await expect(row.locator('[data-act="cont"]')).toHaveText(/Continue where I left off/);
+  await row.locator('[data-act="cont"]').click();
+  await expect(book).toBeVisible();
+  await expect(book.locator(".bk__crumb")).toContainText("Stop 2");
+});
+
+test("the quest sheet's main button says what it opens, and the Harbor page leads with its first quest", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await resetGuild(frame);
+  await frame.evaluate(() => { for (const q of QUESTS) PROG[q.id]!.clear(); selectQuest("start-here"); });
+  await expect(frame.locator("#panel .pcta button.primary")).toHaveText("Begin quest");
+  await frame.evaluate(() => { PROG["start-here"]!.add(0); selectQuest("start-here"); });
+  await expect(frame.locator("#panel .pcta button.primary")).toHaveText("Next: stop 2");
+  await frame.evaluate(() => { PROG["start-here"]!.add(1); selectQuest("start-here"); });
+  await expect(frame.locator("#panel .pcta button.primary")).toHaveText("Read it again");
+  // the Harbor page: no primary button that leaves the site, the ferry says what it skips, Claude Academy is a plain link
+  await frame.evaluate(() => selectRegion(1));
+  await expect(frame.locator('#panel [data-act="ferry"]')).toHaveText("Skip ahead to the Guild Hall");
+  await expect(frame.locator('#panel .pc-body > .row button.primary')).toHaveCount(0);
+  const link = frame.locator('#panel a[data-act="academy"]');
+  await expect(link).toHaveAttribute("href", "https://academy.claude.com");
+  await expect(link).toHaveAttribute("target", "_blank");
+});
+
+test("the book's tabs are Book, Log, Runes and Pack, each with a line saying what it holds, and none says Codex", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.evaluate(() => { (window as unknown as { selectQuest(i: string): void }).selectQuest("start-here"); });
+  await frame.locator('[data-act="begin"]').click();
+  const book = frame.locator(".bk");
+  await expect(book.locator(".bk__tabs [data-tab]")).toHaveText(["Book", "Log", "Runes", "Pack"]);
+  for (const [tab, heading] of [["log", /your place in this quest/], ["runes", /ideas you have learned/], ["pack", /where to read more/]] as const) {
+    await book.locator(`.bk__tabs [data-tab="${tab}"]`).click();
+    await expect(book.locator(".bk__alt h3, .mini h3").first()).toContainText(heading);
+  }
+  await expect(book.locator(".bk__tabs")).not.toContainText("Codex");
+  await expect(book).toContainText("Save and close");
+});
