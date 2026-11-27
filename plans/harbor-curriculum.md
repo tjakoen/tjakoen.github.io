@@ -380,3 +380,4 @@ The recordings are not needed to see this working. The plan, in three steps:
 - Social cards for the seven notes come from bun run social:card:harbor, which also fills socialImage and its alt text.
 - The full test suite has one failure that is older than this work and not mine: every diagram block in a note is the current
   drawing, which fails in a full run and passes alone.
+- Book layout, 2026-11-27 (author): the modal itself is the book, with the cover and title plate across the top (crumb, tabs, close) and the two leaves below. The controls are pinned to the foot of the right page. The first version had a flat sheet around a book, which did not fit the theme.

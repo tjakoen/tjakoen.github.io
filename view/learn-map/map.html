@@ -225,20 +225,23 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 .bk { position:fixed; inset:0; z-index:100; display:grid; place-items:center; padding:2.5vh 2.5vw; }
 .bk[hidden] { display:none; }
 .bk__shade { position:absolute; inset:0; background:rgba(24,18,12,.58); }
-.bk__sheet { position:relative; width:min(1180px,100%); height:min(90vh,800px); display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:.6rem; background:var(--q-ground); border:3px solid var(--q-ink); box-shadow:6px 6px 0 var(--q-ink); padding:.75rem .85rem; color:var(--q-ink); }
-.bk__bar { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; }
-.bk__crumb { flex:1 1 320px; font:700 .68rem ui-monospace,monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--q-muted); min-width:0; }
-.bk .tb { display:flex; gap:.3rem; flex-wrap:wrap; } .bk .tb span { border:2px solid var(--q-ink); padding:.05rem .6rem; font:.72rem ui-monospace,monospace; background:var(--q-panel); }
+/* the modal IS the book: the leather cover, the spine and the two leaves are the dialog. The title plate runs across the cover. */
+.bk__sheet { position:relative; width:min(1180px,100%); height:min(90vh,800px); grid-template-columns:1fr 1fr; grid-template-rows:auto minmax(0,1fr); gap:0 0; padding:8px 10px 10px; box-shadow:8px 8px 0 rgba(0,0,0,.35),4px 4px 0 var(--q-ink); color:var(--q-ink); }
+.bk__sheet::before { top:2.7rem; }
+.bk__bar { grid-column:1 / -1; display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; padding:.1rem .15rem .5rem; position:relative; z-index:3; }
+.bk__crumb { flex:1 1 320px; font:700 .68rem ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase; color:#f1e3c8; min-width:0; }
+.bk .tb { display:flex; gap:.3rem; flex-wrap:wrap; } .bk .tb span { border:2px solid var(--q-ink); padding:.05rem .6rem; font:.72rem ui-monospace,monospace; background:var(--q-paper); color:var(--q-ink); cursor:pointer; user-select:none; }
 .bk .tb span[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
-.bk__tabs span { cursor:pointer; user-select:none; } .bk__tabs span:focus-visible, .bk button:focus-visible { outline:2px dashed var(--q-accent); outline-offset:2px; }
-.bk__x { font:700 1.1rem/1 ui-monospace,monospace; padding:.05rem .5rem; border:2px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
-.bk__pg { display:none; gap:.25rem; } .bk__pg button { padding:.05rem .5rem; font:.72rem ui-monospace,monospace; }
-.bk__tome { min-height:0; height:100%; grid-template-columns:1fr 1fr; }
-.bk .leaf { min-height:0; overflow:auto; }
-.bk__note { font:15px/1.68 Georgia,serif; padding:.9rem 1.1rem .9rem 2.6rem; scroll-behavior:auto; }
+.bk__tabs span:focus-visible, .bk button:focus-visible { outline:2px dashed var(--q-accent); outline-offset:2px; }
+.bk__x { font:700 1.1rem/1 ui-monospace,monospace; padding:.05rem .5rem; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); cursor:pointer; }
+.bk__pg { display:none; gap:.25rem; } .bk__pg button { padding:.05rem .5rem; font:.72rem ui-monospace,monospace; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); }
+.bk .leaf { min-height:0; overflow:hidden; position:relative; z-index:1; display:flex; flex-direction:column; padding:0; gap:0; }
+.bk__leafnote { border-radius:2px 0 0 2px; } .bk__leafguide { border-radius:0 2px 2px 0; }
+.bk__note { flex:1 1 auto; min-height:0; overflow:auto; font:15px/1.68 Georgia,serif; padding:.9rem 1.1rem .9rem 2.6rem; }
+.bk__guide, .bk__alt { flex:1 1 auto; min-height:0; overflow:auto; font:.82rem/1.5 Georgia,serif; padding:.8rem; display:grid; gap:.7rem; align-content:start; }
 .bk__text h3 { font-size:1.35rem; line-height:1.2; margin:.1rem 0 .9rem; font-family:Georgia,serif; color:var(--q-ink); }
 .bk__text h2 { font:700 1.05rem/1.3 Georgia,serif; margin:1.4rem 0 .5rem; }
-.bk__text h3 + p, .bk__text p { margin:0 0 .85rem; }
+.bk__text p { margin:0 0 .85rem; }
 .bk__text ul, .bk__text ol { margin:0 0 .85rem; padding-left:1.2rem; } .bk__text li { margin:.15rem 0; }
 .bk__text blockquote { margin:0 0 .85rem; padding:.1rem .8rem; border-left:3px solid var(--q-accent); color:var(--q-muted); }
 .bk__text pre { overflow:auto; padding:.6rem; border:2px solid var(--q-line); background:var(--q-paper); font-size:.8rem; line-height:1.45; }
@@ -246,21 +249,22 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 .bk__text svg, .bk__text img, .bk__text figure { max-width:100%; height:auto; } .bk__text hr { border:0; border-top:2px solid var(--q-line); margin:1.2rem 0; }
 .bk__text mark.hl { color:inherit; }
 .bk__text table { border-collapse:collapse; font-size:.85rem; } .bk__text td, .bk__text th { border:1px solid var(--q-line); padding:.2rem .45rem; }
-.bk__guide { font:.82rem/1.5 Georgia,serif; gap:.7rem; padding:.8rem; }
 .bk__guide .dlg .say { font-size:.95rem; line-height:1.55; min-height:5.8em; } .bk__guide .dlg .plate small { text-transform:none; letter-spacing:0; font-weight:400; }
 .bk__guide .hist p { font-size:.78rem; }
 .bk--nocap .say, .bk--nocap .hist { visibility:hidden; }
-.bk__alt { overflow:auto; min-height:0; } .bk__alt .mini { border:3px solid var(--q-ink); background:var(--q-paper); }
+.bk__alt .mini { border:2px solid var(--q-ink); background:var(--q-paper); }
+/* the controls are pinned to the foot of the right page, like a ribbon marker */
+.bk__ctl { flex:0 0 auto; display:grid; gap:.45rem; padding:.55rem .8rem .65rem; border-top:3px double var(--q-line); background:var(--q-paper); }
 .bk__ctl button { font:.74rem ui-monospace,monospace; padding:.25rem .55rem; border:2px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
 .bk__ctl button.primary, .bk__ctl button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
+.bk__ctl .row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.4rem; }
 .bk__dots { display:inline-flex; gap:.35rem; }
-.bk__toast { position:absolute; right:1.2rem; bottom:5.2rem; z-index:3; }
-.bk--solo .bk__tome { grid-template-columns:1fr; } .bk--solo .bk__guide, .bk--solo .bk__pg { display:none !important; }
-.bk--solo .bk__tome::before { display:none; }
-.bk--solo .bk__note { padding-left:1.4rem; }
-@media (max-width:860px) { .bk { padding:0; } .bk__sheet { height:100dvh; width:100%; border-width:0; box-shadow:none; padding-bottom:4.6rem; } .bk__ctl .row { flex-wrap:wrap; gap:.4rem; }
-  .bk__pg { display:flex; } .bk__tome { grid-template-columns:1fr; } .bk__tome::before { display:none; }
-  .bk[data-page="note"] .bk__guide { display:none; } .bk[data-page="guide"] .bk__note { display:none; } .bk--solo .bk__note { display:block !important; } }
+.bk__toast { position:absolute; right:1.4rem; bottom:5.6rem; z-index:4; }
+.bk--solo .bk__sheet { grid-template-columns:1fr; } .bk--solo .bk__leafguide, .bk--solo .bk__pg, .bk--solo .bk__tabs { display:none !important; }
+.bk--solo .bk__sheet::before { display:none; } .bk--solo .bk__note { padding-left:1.4rem; }
+@media (max-width:860px) { .bk { padding:0; } .bk__sheet { height:100dvh; width:100%; border-width:0; box-shadow:none; grid-template-columns:1fr; padding-bottom:4.6rem; }
+  .bk__pg { display:flex; } .bk__sheet::before { display:none; }
+  .bk[data-page="note"] .bk__leafguide { display:none; } .bk[data-page="guide"] .bk__leafnote { display:none; } .bk--solo .bk__leafnote { display:flex !important; } }
 @media (prefers-reduced-motion: reduce) { .bk * { transition:none !important; animation:none !important; } }
 /* 7. lesson card on a note */
 .notepage { padding:1.1rem 1.4rem 1.4rem; display:grid; gap:.8rem; }
