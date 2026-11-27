@@ -46,7 +46,7 @@ highlight: talk-about-the-stack-first | you risk not knowing what you're buildin
 Here's the one I'd really warn you about. Don't do agentic coding in a language or framework you've never touched. The AI makes anything feel easy, and that's the danger. If you can't read what it wrote, you risk not knowing what you're building. Want to learn a new stack? Learn it slowly first, in a throwaway project, with the AI as your teacher.
 
 **Beat 4**
-highlight: talk-about-the-stack-first | as a line at the top, with the reason
+highlight: talk-about-the-stack-first | at the top of the plan, with the reason
 
 And write the choice into the plan, with the reason. If the stack is new to you, add a step to learn the basics before the first feature. A good plan is honest about what you know.
 

@@ -71,7 +71,7 @@ tests-are-memory | The tests are a memory that runs.
 ## Stop 3: Run it, then ask fresh eyes
 
 **Beat 1**
-highlight: run-it-yourself | Open the thing and use it the way a user would.
+highlight: run-it-yourself | Open the thing and use it the way a user would
 
 Then do the part nobody can do for you. Open it and use it like a user. A minute or two. And skim the list of changed files against your leave-alone list. Reading a diff gets easier fast, and it's the skill I'd most encourage you to build.
 
