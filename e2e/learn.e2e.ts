@@ -9,6 +9,7 @@ declare const sel: { t: string; id?: string; i?: number };
 declare const PROG: Record<string, Set<number>>;
 declare const V: { z: number };
 declare function selectRegion(n: number): void;
+declare function selectQuest(id: string): void;
 declare function persist(): void;
 declare const Guild: { xp(): number; codeOf(b: unknown): string; bundle(): unknown };
 
@@ -388,4 +389,23 @@ test.describe("search on a phone", () => {
     await frame.locator("#qgo").click();
     await expect(frame.locator("#panel")).toBeVisible();
   });
+});
+
+test("when a chapter ends the main button becomes Next chapter, and the last chapter offers to finish", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.evaluate(() => localStorage.removeItem("learn.progress.v1"));
+  await frame.evaluate(() => { selectQuest("ai-teammate-never-asks-questions"); });
+  await frame.locator('[data-act="begin"]').click();
+  const book = frame.locator(".bk");
+  const play = book.locator('[data-do="play"]');
+  await expect(book.locator(".bk__crumb")).toContainText("Stop 3 of 4");
+  for (let i = 0; i < 12; i++) { if ((await play.textContent())?.includes("Next chapter")) break; await book.locator('[data-do="next"]').click(); }
+  await expect(play).toHaveText(/Next chapter/);
+  await expect(book.locator('[data-do="replay"]')).toBeVisible();
+  await play.click();
+  await expect(book.locator(".bk__crumb")).toContainText("Stop 4 of 4");
+  await expect(book.locator('[data-do="replay"]')).toBeHidden();
+  for (let i = 0; i < 12; i++) { if ((await play.textContent())?.includes("Finish")) break; await book.locator('[data-do="next"]').click(); }
+  await expect(play).toHaveText(/Finish and rest/);
 });
