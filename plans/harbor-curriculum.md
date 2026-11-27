@@ -255,3 +255,15 @@ writing in their own words what they learned, which is also evidence for a job i
 
 Open: the starter repo, the badge criteria pages, the Claude Academy badge naming (check what Academy actually
 issues before the note says anything specific), and a Harbor note on design systems.
+
+## Publish gates (read before flipping any Harbor note to PUBLISHED)
+
+- **Note 5 (save-it-as-a-skill) must not be published until the-loop-that-learned-how-i-work is published.**
+  Note 5 links to it, and a link to a DRAFT note does not work for readers. The author will publish that
+  note down the line. Remind him before note 5 goes live. Checked 2026-11-27: this is the only link from the
+  six drafts to an unpublished note.
+- Every Harbor note still needs its social card, alt text and drawn figure (the note-contract test caps
+  drafts without a card).
+- Outside links in notes 2 and 4 were found by search and not opened. Open each one first.
+- Start Here has a placeholder for the starter skeleton link. It cannot publish with a placeholder in it.
+- Before publishing anything specific about Claude Academy badges, check what the Academy actually issues.
