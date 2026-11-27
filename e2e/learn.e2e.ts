@@ -3,7 +3,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-type Quest = { id: string; stops: string[] };
+type Quest = { id: string; stops: string[]; order: number; stage: number; done: boolean };
 declare const QUESTS: Quest[];
 declare const sel: { t: string; id?: string; i?: number };
 
@@ -110,7 +110,7 @@ test("the movers are built from the baked data, and match what the page draws", 
     for (const scheme of SCHEMES) {
       const frame = await setShellTheme(page, flavor, scheme);
       const out = await frame.evaluate(() => {
-        const dump = () => JSON.stringify([SPR, PEOPLE], (_k, v) => (v instanceof Map ? [...v].sort((a, b) => (a[0] < b[0] ? -1 : 1)) : v));
+        const dump = () => JSON.stringify([SPR, PEOPLE], (_k, v) => (v instanceof Map ? [...v].toSorted((a, b) => (a[0] < b[0] ? -1 : 1)) : v));
         const baked = ART_SPRITES !== null;
         const fromData = dump();
         makeMoverSprites();
@@ -161,3 +161,29 @@ for (const flavor of FLAVORS) {
     });
   }
 }
+
+declare const PATH: { stages: { n: number; quests: string[] }[] };
+declare function where(): void;
+
+test("the map walks the guided path: numbered in order, Continue follows it, and the plain list is grouped by stage", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  const path = await frame.evaluate(() => PATH.stages.flatMap((st) => st.quests));
+  expect(path.length).toBe(14);
+  const order = await frame.evaluate(() => QUESTS.map((q) => [q.id, q.order]));
+  expect(order.map(([id]) => id)).toEqual(path);
+  expect(order.map(([, n]) => n)).toEqual(path.map((_, i) => i + 1));
+
+  // Continue and You are here go to the first quest not finished, in path order
+  const first = await frame.evaluate(() => { where(); return sel.id!; });
+  expect(first).toBe(await frame.evaluate(() => QUESTS.find((q) => !q.done)!.id));
+
+  // the panel says where a quest comes in the path
+  await frame.evaluate((id) => (window as unknown as { selectQuest(i: string): void }).selectQuest(id), path[2]!);
+  await expect(frame.locator(".ribbon")).toHaveText("Stage 2 · Quest 3 of 14");
+
+  // the plain list reads without the map, one section per stage, quests in path order
+  const list = await frame.evaluate(() => [...document.querySelectorAll("#route > ol > li")].map((li) => [li.querySelector("h2")!.textContent, [...li.querySelectorAll(":scope > ol > li > h3")].map((h) => h.textContent)]));
+  expect(list.map(([h]) => h)).toEqual(["Stage 1: Harbor", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6"]);
+  expect(list.flatMap(([, titles]) => titles as string[]).length).toBe(14);
+});
