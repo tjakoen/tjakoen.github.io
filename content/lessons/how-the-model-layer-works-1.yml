@@ -1,0 +1,38 @@
+id: how-the-model-layer-works-1
+note: how-the-model-layer-works
+title: 
+summary: 
+audio: /media/lessons/how-the-model-layer-works-1.m4a
+stops:
+  - title: ""
+    note: how-the-model-layer-works
+    from: intro
+    to: the-registry-and-tiers-instead-of-models
+    words: 836
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: how-the-model-layer-works
+    from: the-guard-that-restarts-a-session-on-the-wrong-model
+    to: hard-work-is-delegated-never-switched-to
+    words: 725
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: how-the-model-layer-works
+    from: repository-clearance-and-the-privacy-flag
+    to: repository-clearance-and-the-privacy-flag
+    words: 571
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: how-the-model-layer-works
+    from: the-light-chain-in-order
+    to: the-light-chain-in-order
+    words: 1339
+    runes: []
+    trial: ""
+    digest: []

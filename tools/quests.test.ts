@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
-import { buildIndex, INDEX_FILE, proposeRegions, loadNote, loadRegions, minutesOf, placeNote, readNote, type Note, type Region } from "./quests.ts";
+import { buildIndex, INDEX_FILE, MAP_FILE, pathOf, proposeRegions, readMapQuests, renderMap, loadNote, loadRegions, minutesOf, placeNote, readNote, type Note, type Region } from "./quests.ts";
 
 const regions: Region[] = [{ n: 1, id: "forest", name: "Forest", landmark: "pines", notes: ["a", "b"] }];
 const note = (over: Partial<Note> = {}): Note => ({ slug: "a", title: "A", status: "PUBLISHED", level: "intro", audience: ["learn"], tags: ["ai", "workflow"], readingTime: "~10 min", ...over });
@@ -28,8 +28,8 @@ describe("proposeRegions", () => {
     expect(proposeRegions(unplaced(4, ["ai", "teaching"]), regions)).toEqual([]);
   });
   test("notes a region already lists, drafts and notes tagged only ai never count", () => {
-    expect(proposeRegions([...unplaced(5, ["ai", "workflow"]).map((n, i) => (i === 0 ? { ...n, slug: "a" } : n)), ...unplaced(5, ["ai"])], regions)).toEqual([]);
-    expect(proposeRegions(unplaced(5, ["ai", "x"]).map((n) => ({ ...n, status: "DRAFT" })), regions)).toEqual([]);
+    expect(proposeRegions([...unplaced(5, ["ai", "workflow"]).map((n, i) => (i === 0 ? Object.assign({}, n, { slug: "a" }) : n)), ...unplaced(5, ["ai"])], regions)).toEqual([]);
+    expect(proposeRegions(unplaced(5, ["ai", "x"]).map((n) => Object.assign({}, n, { status: "DRAFT" })), regions)).toEqual([]);
   });
   test("a note tagged only ai cannot be placed, because the tag says too little", () => {
     expect(placeNote(note({ slug: "z", tags: ["ai"] }), regions)).toEqual({ outcome: "cannot-place", missing: ["a tag besides ai"] });
@@ -67,6 +67,16 @@ describe("the real data", () => {
   test("the path is in difficulty order: the first three stages are intro only, the last two deep only", () => {
     const { quests } = buildIndex(loadRegions(), loadNote);
     for (const q of quests) expect(q.level, `${q.id} in stage ${q.region}`).toBe(q.region <= 4 ? "intro" : "deep");
+  });
+  test("the map's path and plain route list are the ones the tool generates", () => {
+    const { quests } = buildIndex(loadRegions(), loadNote);
+    const html = readFileSync(MAP_FILE, "utf8");
+    expect(renderMap(html, quests, loadRegions())).toBe(html);
+  });
+  test("every quest the map draws is on the path, and every quest on the path is drawn", () => {
+    const { quests } = buildIndex(loadRegions(), loadNote);
+    const onPath = pathOf(quests, loadRegions()).stages.flatMap((st) => st.quests).toSorted();
+    expect(readMapQuests(readFileSync(MAP_FILE, "utf8")).map((q) => q.id).toSorted()).toEqual(onPath);
   });
   test("reading time and frontmatter parse", () => {
     expect(minutesOf("~12 min")).toBe(12);

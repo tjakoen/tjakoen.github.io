@@ -60,7 +60,7 @@ what a note cannot: the stop's title in my words, its cut, its runes, its trial 
 
 ```yaml
 id: loop-setup
-quest: loop-forest-3
+quest: loop-setup
 title: Set up your own loop
 summary: In five short stops I walk you through setting up the loop on a repo of your own, from the first prompt to the first check.
 audio: /media/lessons/loop-setup.m4a
@@ -149,9 +149,8 @@ note's section on where the plan lives.
 
 
 
-Counts come from the rules above and move whenever a note is edited. Totals today: 14 notes, 69 stops,
-17 lessons, which is roughly four and a half hours of recording at four minutes a stop. That is the honest
-cost, and why the order below matters.
+Counts come from the rules above and move whenever a note is edited. Totals by the hand count: 14 notes, 69 stops,
+17 lessons. The tool's count is lower, see The cuts today. That is the honest cost, and why the order below matters.
 
 **Loop Forest · one-loop-every-repo**
 
@@ -281,15 +280,24 @@ Lesson 2
 
 ## Order of recording
 
-1. **Pilot: necessity-and-the-model-layer.** Four stops, and it is the quest the mockups already show. It
-   proves the book, the cues, the runes and the trial end to end before anything else is recorded.
-2. **The Loop Forest quests**, because they are the spine of the path and the notes people reach first.
-3. **Plan big, type small**, then the rest of Model Mines.
-4. **Guild Hall**, then **GRAIN Keep**.
-5. **Summit last.** It is the capstone and the longest, and by then the format has been tested on a dozen
-   quests.
+The path is the order, so the recordings follow it. A learner hears them in this order, and the recording order is the same.
 
-Foothills has no lesson. Its one stop points out to Claude Academy.
+1. **The opening talk, the Harbor.** It is introductory and inspiring: why getting good at AI matters, that this is not really taught where I teach, my view that builders matter more than coders, and the Claude Academy address for the basics. It hands over to Ten Times Zero. It has no note behind it, so it is the one lesson written from my own words.
+2. **Stage 2, intro:** ten-times-zero, loop-setup, plan-big-type-small. Ten Times Zero is the first stop of the path.
+3. **Stage 3, intro:** necessity-and-the-model-layer, then build-the-floor in two lessons.
+4. **Stage 4, intro:** show-them-the-board, which carries move-bugs-left as its last stop.
+5. **Stage 5, deep:** one-loop-every-repo, which carries watch-its-hands, then whitepaper-one-vocabulary.
+6. **Stage 6, deep, last:** one-loop-three-harnesses, which carries the-check-that-never-ran, then how-the-model-layer-works in two lessons, then the-reviewer-that-learned-to-be-wrong.
+
+**The pilot** stays small. If the path's first lessons are too long to prove the book on, record necessity-and-the-model-layer first (three stops, intro level) to prove the cues, the runes and the trial end to end, then record in path order.
+
+Harbor has one stop that points out to Claude Academy at academy.claude.com. The opening talk is where that pointer is spoken.
+
+### The cuts today
+
+bun tools/lessons.ts cuts prints what the rules give for the notes on the path: 13 lessons and 58 stops, plus the opening talk. That is less than the 69 stops counted by hand above, because a stop now closes as soon as it reaches 600 words and a note that is mostly short sections packs into fewer stops. At four minutes a stop it is a little under four hours of recording, plus the opening. A lesson joins the next note of its stage when it has fewer than three stops, else the one before it, and a note over six stops is cut into lessons of near equal size. The hand count above stays as the first guess, and the tool is the one that tests hold.
+
+Draft lesson files are in content/lessons, one per lesson, and each has a draft script beside it for me to read aloud and edit. The scripts are drafts written from the notes. They are not mine until I have read them, changed what is wrong and recorded them.
 
 ## What each stop owes
 

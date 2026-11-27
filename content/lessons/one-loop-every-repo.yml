@@ -1,0 +1,46 @@
+id: one-loop-every-repo
+note: one-loop-every-repo
+title: 
+summary: 
+audio: /media/lessons/one-loop-every-repo.m4a
+stops:
+  - title: ""
+    note: one-loop-every-repo
+    from: intro
+    to: so-i-stopped-building-features-and-read
+    words: 662
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: one-loop-every-repo
+    from: the-first-thing-i-fixed-was-where-the-plan-lives
+    to: one-heartbeat-and-it-fires-while-im-already-working
+    words: 783
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: one-loop-every-repo
+    from: the-contract-that-keeps-an-unattended-run-honest
+    to: where-that-leaves-me
+    words: 809
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: watch-its-hands
+    from: intro
+    to: so-i-built-the-boring-version
+    words: 1040
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: watch-its-hands
+    from: what-i-have-not-earned
+    to: watch-its-hands
+    words: 465
+    runes: []
+    trial: ""
+    digest: []

@@ -1,7 +1,7 @@
 // tools/quests.ts: the quest layer of the learning map (plans/quest-map.md, "Adding a note adds a quest").
 //   bun tools/quests.ts check [slug]   place one note, or every published note, and print the outcome
 //   bun tools/quests.ts propose        propose a region where five or more unplaced notes share a tag
-//   bun tools/quests.ts write          regenerate content/quests/index.json
+//   bun tools/quests.ts write          regenerate content/quests/index.json and the path and plain route list in view/learn-map/map.html
 //   bun tools/quests.ts verify         fail when the index is stale, or a region lists a draft or a missing note
 // The regions are hand approved in content/quests/regions.json. The index is generated from them and from each note's own
 // frontmatter, so nothing is typed per note. A draft never becomes a quest, and a region that lists one is an error.
@@ -21,7 +21,8 @@ const ROOT = join(import.meta.dir, "..");
 export const NOTES_DIR = join(ROOT, "content", "notes");
 export const REGIONS_FILE = join(ROOT, "content", "quests", "regions.json");
 export const INDEX_FILE = join(ROOT, "content", "quests", "index.json");
-const LEVELS = ["intro", "intermediate", "deep"];
+export const MAP_FILE = join(ROOT, "view", "learn-map", "map.html");
+const LEVELS = new Set(["intro", "intermediate", "deep"]);
 // Every published note carries this tag, so it says nothing about where a note belongs.
 export const GENERIC_TAG = "ai";
 // Five unplaced notes that share a tag are enough to propose a region for a person to approve.
@@ -43,7 +44,7 @@ export function readNote(slug: string, text: string): Note {
 export function placeNote(note: Note, regions: Region[]): Placement {
   if (note.status !== "PUBLISHED") return { outcome: "draft" };
   const missing: string[] = [];
-  if (!note.level || !LEVELS.includes(note.level)) missing.push("level");
+  if (!note.level || !LEVELS.has(note.level)) missing.push("level");
   if (!note.audience?.length) missing.push("audience");
   if (!note.tags?.some((t) => t !== GENERIC_TAG)) missing.push(`a tag besides ${GENERIC_TAG}`);
   if (!note.readingTime) missing.push("readingTime");
@@ -100,6 +101,42 @@ export function buildIndex(regions: Region[], load: (slug: string) => Note | nul
   return { quests, errors };
 }
 
+export type PathData = { stages: { n: number; quests: string[] }[] };
+/** The stages in walking order, each with its quests in order. Harbor is stage 1 and holds no note, so it is not in the data. */
+export const pathOf = (quests: Quest[], regions: Region[]): PathData => ({
+  stages: regions.filter((r) => quests.some((q) => q.region === r.n)).map((r) => ({ n: r.n, quests: quests.filter((q) => q.region === r.n).map((q) => q.id) })),
+});
+
+type MapQuest = { id: string; title: string; level: string; min: number; stops: string[] };
+const esc = (v: string) => v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const LEVEL: Record<string, string> = { intro: "Intro", intermediate: "Intermediate", deep: "Deep" };
+
+/** The route as plain HTML, grouped by stage in path order, so the path reads without JavaScript. */
+export function renderPathRoute(path: PathData, regions: Region[], mapQuests: MapQuest[]): string {
+  const harbor = regions.find((r) => r.external?.length);
+  const academy = harbor?.external?.[0];
+  const stages = path.stages.map((st) => {
+    const qs = st.quests.map((id) => mapQuests.find((m) => m.id === id)).filter((m): m is MapQuest => !!m);
+    const items = qs.map((q) => `<li><h3>${esc(q.title)}</h3>\n<p>${LEVEL[q.level] ?? esc(q.level)} · ${q.min} min · ${q.stops.length} stops</p>\n<ol>\n${q.stops.map((x) => `<li>${esc(x)}</li>`).join("\n")}\n</ol></li>`);
+    return `<li><h2>Stage ${st.n}</h2>\n<p>${qs.length} quests, about ${qs.reduce((t, q) => t + q.min, 0)} min of reading.</p>\n<ol>\n${items.join("\n")}\n</ol></li>`;
+  });
+  const first = academy ? `<li><h2>Stage 1: Harbor</h2>\n<p>Start here: the basics, outside this site. ${academy.url ? `<a href="${esc(academy.url)}">${esc(academy.title)}</a>` : esc(academy.title)}.</p></li>` : "";
+  return `<div id="route" class="route">\n<h1>Learn AI with me</h1>\n<p>This is the guided path, in the order to read it: the stages, the quests in each and the stops in each quest. The interactive map needs JavaScript.</p>\n<ol>\n${[first, ...stages].filter(Boolean).join("\n")}\n</ol>\n</div>`;
+}
+
+const between = (html: string, open: string, close: string) => [html.indexOf(open) + open.length, html.indexOf(close)] as const;
+export const readMapQuests = (html: string): MapQuest[] => JSON.parse(/<script type="application\/json" id="qm-data">([\s\S]*?)<\/script>/.exec(html)![1]!).quests;
+
+/** The map file with its path block and plain route list rewritten from the index. */
+export function renderMap(html: string, quests: Quest[], regions: Region[]): string {
+  const path = pathOf(quests, regions);
+  let out = html;
+  const [pa, pb] = between(out, "<!--qm-path-->", "<!--/qm-path-->");
+  out = out.slice(0, pa) + `\n<script type="application/json" id="qm-path">${JSON.stringify(path)}</script>\n` + out.slice(pb);
+  const [ra, rb] = between(out, "<!--qm-route-->", "<!--/qm-route-->");
+  return out.slice(0, ra) + "\n" + renderPathRoute(path, regions, readMapQuests(out)) + "\n" + out.slice(rb);
+}
+
 const serialize = (quests: Quest[]) => JSON.stringify({ generated: "bun tools/quests.ts write", quests }, null, 2) + "\n";
 
 if (import.meta.main) {
@@ -125,11 +162,14 @@ if (import.meta.main) {
     const { quests, errors } = buildIndex(regions, loadNote);
     if (errors.length) { console.error(errors.join("\n")); process.exit(1); }
     const next = serialize(quests);
-    if (cmd === "write") { writeFileSync(INDEX_FILE, next); console.log(`wrote ${quests.length} quests to content/quests/index.json`); }
-    else {
+    const map = readFileSync(MAP_FILE, "utf8"), nextMap = renderMap(map, quests, regions);
+    if (cmd === "write") {
+      writeFileSync(INDEX_FILE, next); writeFileSync(MAP_FILE, nextMap);
+      console.log(`wrote ${quests.length} quests to content/quests/index.json and the path into view/learn-map/map.html`);
+    } else {
       let have = ""; try { have = readFileSync(INDEX_FILE, "utf8"); } catch { /* missing */ }
-      if (have !== next) { console.error("content/quests/index.json is stale: run bun tools/quests.ts write"); process.exit(1); }
-      console.log(`index is current, ${quests.length} quests`);
+      if (have !== next || map !== nextMap) { console.error("the quest index or the map's path is stale: run bun tools/quests.ts write"); process.exit(1); }
+      console.log(`index and map path are current, ${quests.length} quests`);
     }
   } else { console.error("usage: bun tools/quests.ts check [slug] | propose | write | verify"); process.exit(2); }
 }
