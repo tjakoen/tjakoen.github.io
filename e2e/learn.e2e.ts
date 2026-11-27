@@ -164,6 +164,7 @@ for (const flavor of FLAVORS) {
 
 declare const PATH: { stages: { n: number; quests: string[] }[] };
 declare function where(): void;
+declare const YOUQ: { id: string; i: number };
 
 test("the map walks the guided path: numbered in order, Continue follows it, and the plain list is grouped by stage", async ({ page }) => {
   await page.goto("/learn");
@@ -177,6 +178,13 @@ test("the map walks the guided path: numbered in order, Continue follows it, and
   // Continue and You are here go to the first quest not finished, in path order
   const first = await frame.evaluate(() => { where(); return sel.id!; });
   expect(first).toBe(await frame.evaluate(() => QUESTS.find((q) => !q.done)!.id));
+
+  // the path starts near the Harbor and ends on the Summit: the regions only ever go up along it, and You are here begins in the first one
+  const regions = await frame.evaluate(() => QUESTS.map((q) => (q as unknown as { region: number }).region));
+  expect(regions).toEqual(regions.toSorted((a, b) => a - b));
+  expect(regions[0]).toBe(2);
+  expect(regions.at(-1)).toBe(6);
+  expect(await frame.evaluate(() => { const q = QUESTS.find((x) => x.id === YOUQ.id)! as unknown as { region: number }; return q.region; })).toBe(2);
 
   // the panel says where a quest comes in the path
   await frame.evaluate((id) => (window as unknown as { selectQuest(i: string): void }).selectQuest(id), path[2]!);
