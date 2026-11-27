@@ -63,8 +63,13 @@ Everything marked proposal is a suggestion, not a decision.
 7. **Lessons are mostly empty shells.** Only the Harbor script and a few others are drafted. Stop titles,
    digests, runes and trials are blank in most lesson files. New Harbor notes should get their lesson cut
    at the same time, using the quest-lessons rules.
-8. **I could not find the teaching curriculum** in either repo. The software engineering course material
-   is not here, so notes drawn from it need it pasted in or linked.
+8. **No curriculum is needed (decided 2026-11-27).** The software engineering basics are reintroduced in
+   short, and each concept links out to a good outside source instead of reproducing a course.
+9. **Atomic design is already in the notes, but never taught.** Origin Story says GRAIN is built on Brad
+   Frost's atomic design, Four of Fourteen says it is half the reason GRAIN exists, and Feels Like an App
+   mentions it in passing. No note explains it to a beginner or shows GRAIN as the example.
+10. **The browser note exists.** The Browser Grew Up (16 minutes, published) is the platform story.
+    Harbor links to it and does not repeat it.
 
 ## Proposal: the Harbor notes
 
@@ -74,7 +79,7 @@ Short notes, one idea each, about 1,200 to 2,000 words and under 8 minutes. Orde
 |---|---|---|---|
 | 1 | Your AI is a junior on your team | It cannot think for you, so you set the direction. This is the mental model for everything after. | new |
 | 2 | Know what done looks like first | Say what you expect to see at the end before you start. Framing, a brief, an expected result. | brief standard |
-| 3 | Draw it before you build it | Mockups, a data flow diagram, a user flow, a persona. Why drawing matters more when you did not type the code. | design standard |
+| 3 | Draw it before you build it | A map note: use case diagram, ERD, DFD, wireframe, mockup, design system. One plain paragraph each on what it answers and when to draw it, then a link out to a good source. Why drawing matters more when you did not type the code. | design standard |
 | 4 | The fundamentals you still own | Clean code, tests, git, reading a diff. Not taught here. Why they matter more when you review more than you write. | new |
 | 5 | The words you will hear | Model, harness, context, token, prompt, agent, skill, loop. One plain line each, then back to work. | glossary standard |
 | 6 | From a chat window to your first loop | The step from ChatGPT to a harness with a plan file and one check. Any harness works. | loop-setup (later) |
@@ -86,7 +91,9 @@ usage runs out (exists); how to make it sound like you (exists).
 
 ## Tasks
 
-- [ ] Answer the open questions in the decision file
+- [x] Answer the open questions in the decision file (2026-11-27)
+- [ ] Find outside sources for each drawing in note 3 and for the fundamentals in note 4
+- [ ] Decide whether atomic design and GRAIN as the worked example is its own note or part of note 3
 - [ ] Decide the final list and order of Harbor notes
 - [ ] Update regions.json so Harbor lists its notes, and update quest-map's "No Harbor notes" line
 - [ ] Draft note 1 as DRAFT under the note standard, in a conversation, then read it aloud before it ships

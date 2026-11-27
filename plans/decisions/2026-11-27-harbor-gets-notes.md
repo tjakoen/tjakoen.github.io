@@ -1,6 +1,6 @@
 ---
 title: The Harbor gets its own notes, written as an on-ramp
-status: open
+status: resolved
 ---
 
 # Decision: the Harbor gets its own notes
@@ -45,14 +45,13 @@ These come from the owner, in conversation, and are recorded as stated.
 - Whether the "junior on a team" metaphor and the Harbor script's "architect, not construction worker"
   metaphor are both kept. A suggestion: the architect is what you decide, the junior is how you supervise.
 
-## Open questions
+## Answers, 2026-11-27
 
-1. Is Harbor one island with several short notes, or one lesson with no notes (as the quest-map plan said)?
-   Recommendation: several short notes, because Ten Times Zero is the wrong first step for this reader.
-2. One path, or a student track and a lead track? Model Mines and Guild Hall hold notes written for leads.
-3. The drawing about "user experience" that looks like a person: a persona, a user journey, or a user
-   story? Each needs a different note.
-4. Where does the software engineering curriculum live? It is not in either repo.
-5. How long have you been at this? Earlier you said four months, then six. The portfolio's first AI-era
-   commits start in early July 2026, which is closer to five. Whatever the number, it should be one number,
-   and it should match what the notes already say.
+1. Several short notes in the Harbor.
+2. One track. Readers who lead teams skip ahead.
+3. The person drawing is a use case diagram.
+4. No curriculum is needed. The basics are reintroduced in short and linked out to outside sources.
+5. About six months of daily use is the number.
+
+Also decided: the drawing note is a map of the artifacts (ERD, DFD, use case, wireframe, mockup, design
+system) that links out. The browser story stays in The Browser Grew Up and is linked, not repeated.
