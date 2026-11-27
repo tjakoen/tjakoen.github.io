@@ -516,7 +516,6 @@ body { margin:0; background:var(--q-water); }
   body[data-pm] .pscrim { display:block; position:fixed; inset:0; background:rgba(20,12,6,.5); z-index:4; }
   body[data-pm] .pclose { display:block; position:fixed; right:10px; top:calc(max(56px,11vh) + 8px); z-index:9; width:40px; height:40px; font:700 1.3rem ui-monospace,monospace; border:3px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); box-shadow:2px 2px 0 var(--q-ink); cursor:pointer; }
   body[data-pm] :is(.chipsbar,.ctl,.topright,.mnav) { visibility:hidden; }
-  body[data-pm] .searchbar { visibility:hidden; }
   .mnav { display:grid; grid-template-columns:52px 1fr 52px; gap:8px; position:fixed; left:8px; right:8px; bottom:8px; z-index:6; }
   .mnav button { height:48px; border:3px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font:700 .78rem ui-monospace,monospace; cursor:pointer; padding:0 .5rem; }
   .mnav button:disabled { opacity:.45; box-shadow:none; }
@@ -1473,8 +1472,8 @@ function openQuest(id,lesson,stop){ const qq=QUESTS.find(x=>x.id===id);
 /* The book (book.js) calls this when it closes, so the map shows the stops the reader finished. */
 function onBookClosed(rest){ if(motion&&!raf) raf=requestAnimationFrame(fxLoop);  QUESTS.forEach(q=>{ const saved=loadSaved()[q.id]||[]; PROG[q.id]=new Set(saved.filter(i=>i<q.stops.length)); }); refreshProgress(); placeYou(); renderPanel(); draw(); if(rest) toast('Progress saved. Rest well.'); }
 function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2400); }
-document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; typing=true; renderPanel(); typing=false; });
-/* Searching opens the panel on Enter or on the icon: unfolded on a wide screen, as the modal on a phone. */
+/* Searching opens the results as soon as typing starts: the side panel unfolds on a wide screen and the modal opens on a phone, with the search field kept in view above it so typing carries on. Enter and the icon still open it too, for an empty field. */
+document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; typing=true; if(q.trim()) openPanel(); renderPanel(); typing=false; if(q.trim()&&!wide()&&!document.body.hasAttribute('data-pm')) setPM(true); });
 function submitSearch(){ openPanel(); renderPanel(); if(!wide()) setPM(true); }
 document.getElementById('q').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); submitSearch(); } });
 document.getElementById('qgo').addEventListener('click',submitSearch);

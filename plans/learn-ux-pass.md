@@ -143,3 +143,7 @@ because the Harbor alone teaches 28 and a full list of them made the badge a lon
 - [x] The tab is named AI roadmap.
 - [x] A jump bar lists each stage with its level (Intro, Deep dive) and note count, and scrolls to it, so a reader goes straight to where they are.
 - [x] A Learn AI with me button, in the map's look (square corners, heavy outline, hard shadow, monospace, a pixel sword), opens the quest map. The notes page now links to /learn. The page itself stays noindex and out of the sitemap and search, which the existing test checks.
+
+## 8. Added on 2026-11-27: search opens as you type
+
+- [x] On both desktop and phone, results open as soon as typing starts: the side panel unfolds, or the modal opens. On a phone the search field is no longer hidden behind the modal, so typing carries on. Enter and the icon still open it for an empty field.

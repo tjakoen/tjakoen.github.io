@@ -359,16 +359,22 @@ test.describe("the ant game never runs on /learn", () => {
   });
 });
 
-test("searching opens the panel on Enter or on the search icon, and typing alone does not", async ({ page }) => {
+test("searching opens the panel as soon as typing starts, and Enter or the icon open it for an empty field", async ({ page }) => {
   await page.goto("/learn");
   const frame = await frameOf(page);
   await frame.locator("#fold").click();
   await expect(frame.locator("#panel")).toBeHidden();
-  await frame.locator("#q").fill("loop");
-  await expect(frame.locator("#panel")).toBeHidden();
-  await frame.locator("#q").press("Enter");
+  // the first letter unfolds the panel with results, and more letters narrow them
+  await frame.locator("#q").pressSequentially("l");
   await expect(frame.locator("#panel")).toBeVisible();
   await expect(frame.locator("#panel h3")).toHaveText("Search");
+  const many = await frame.locator("#panel .results .rowbtn").count();
+  await frame.locator("#q").pressSequentially("oop");
+  await expect(frame.locator("#panel .results .rowbtn")).not.toHaveCount(0);
+  expect(await frame.locator("#panel .results .rowbtn").count()).toBeLessThanOrEqual(many);
+  await expect(frame.locator("#q")).toBeFocused();
+  // with the field empty, the icon is still the way in
+  await frame.locator("#q").fill("");
   await frame.locator("#fold").click();
   await expect(frame.locator("#panel")).toBeHidden();
   await frame.locator("#qgo").click();
@@ -377,13 +383,20 @@ test("searching opens the panel on Enter or on the search icon, and typing alone
 
 test.describe("search on a phone", () => {
   test.use({ viewport: { width: 375, height: 812 }, hasTouch: true });
-  test("typing shows nothing over the map, and Enter or the icon opens the modal", async ({ page }) => {
+  test("typing opens the modal at once, and the field stays in view and focused above it", async ({ page }) => {
     await page.goto("/learn");
     const frame = await frameOf(page);
-    await frame.locator("#q").fill("loop");
     await expect(frame.locator("#panel")).toBeHidden();
-    await frame.locator("#q").press("Enter");
+    await frame.locator("#q").pressSequentially("l");
     await expect(frame.locator("#panel")).toBeVisible();
+    await expect(frame.locator("#panel .results .rowbtn")).not.toHaveCount(0);
+    // the field is not hidden or covered by the sheet, so typing carries on
+    await expect(frame.locator("#q")).toBeVisible();
+    await expect(frame.locator("#q")).toBeFocused();
+    const gap = await frame.evaluate(() => document.querySelector(".searchbar")!.getBoundingClientRect().bottom <= document.getElementById("panel")!.getBoundingClientRect().top);
+    expect(gap).toBe(true);
+    await frame.locator("#q").pressSequentially("oop");
+    await expect(frame.locator("#q")).toHaveValue("loop");
     await expect(frame.locator("#panel .results .rowbtn")).not.toHaveCount(0);
     await frame.locator("#pclose").click();
     await expect(frame.locator("#panel")).toBeHidden();
@@ -729,5 +742,10 @@ test.describe("on a phone, close in", () => {
     await expect(frame.locator("#q")).toBeFocused();
     await frame.locator("#q").blur();
     await expect(frame.locator("#q")).toBeHidden();
+    // typing from the folded search opens the results at once, the field still showing
+    await frame.locator(".searchbar .qgo").click();
+    await frame.locator("#q").pressSequentially("l");
+    await expect(frame.locator("#panel")).toBeVisible();
+    await expect(frame.locator("#q")).toBeVisible();
   });
 });
