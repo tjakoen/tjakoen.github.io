@@ -131,6 +131,7 @@
     banner.hidden = false; clearTimeout(bannerT); bannerT = setTimeout(() => { banner.hidden = true; }, reduced() ? 6000 : 4200);
   }
   function tick() {
+    if (document.hidden) return;
     const { xp, lv } = refreshHud(); const had = G.lv || lv.n;
     if (lv.n > had) levelUp(LEVELS[had - 1] || LEVELS[0], lv);
     if (lv.n !== G.lv && (lv.n > (G.lv || 0))) { G.lv = lv.n; write(GUILD_KEY, G); }
