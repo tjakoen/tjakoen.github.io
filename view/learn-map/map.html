@@ -254,10 +254,14 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 .bk--nocap .say, .bk--nocap .hist { visibility:hidden; }
 .bk__alt .mini { border:2px solid var(--q-ink); background:var(--q-paper); }
 /* the controls are pinned to the foot of the right page, like a ribbon marker */
-.bk__ctl { flex:0 0 auto; display:grid; gap:.45rem; padding:.55rem .8rem .65rem; border-top:3px double var(--q-line); background:var(--q-paper); }
-.bk__ctl button { font:.74rem ui-monospace,monospace; padding:.25rem .55rem; border:2px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
+.bk__ctl { flex:0 0 auto; display:grid; gap:.4rem; padding:.5rem .8rem .55rem; border-top:3px double var(--q-line); background:var(--q-paper); }
+.bk__ctl button { font:.68rem/1.2 ui-monospace,monospace; padding:.15rem .4rem; border:2px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
 .bk__ctl button.primary, .bk__ctl button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
-.bk__ctl .row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.4rem; }
+.bk__ctl .row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.3rem .4rem; }
+.bk__ctl .row > div { display:flex; gap:.25rem; align-items:center; }
+.bk__prog { display:flex; align-items:center; gap:.6rem; } .bk__prog .ribbonbar { flex:1 1 auto; }
+.bk__prog .stops { flex:0 0 auto; font-size:.66rem; }
+.bk__guide .trial { margin-top:.4rem; }
 .bk__dots { display:inline-flex; gap:.35rem; }
 .bk__toast { position:absolute; right:1.4rem; bottom:5.6rem; z-index:4; }
 .bk--solo .bk__sheet { grid-template-columns:1fr; } .bk--solo .bk__leafguide, .bk--solo .bk__pg, .bk--solo .bk__tabs { display:none !important; }
