@@ -3,9 +3,8 @@
    the Guide, a pixel wizard standing for the author, with the spoken transcript as dialogue. While a line plays, the phrase it is about lights up
    on the left page, and a rune glows in the margin when a concept is taught.
 
-   The voice is TEMPORARY. It is the browser's own speech synthesis reading the script, so every lesson plays today with no recording. A recorded or
-   generated file replaces it later through the lesson's audio field (plans/harbor-curriculum.md, "The voice"). Where a browser has no voice, each line
-   is timed from its word count so the book still plays. The transcript is the caption track and is always readable, so the book works without sound.
+   There is no audio. The transcript is the voice: each line is timed from its words, the phrase it is about lights up on the left page, and
+   the next line follows (plans/harbor-curriculum.md, "The voice").
 
    This is a classic script that loads after the map's own, so it reads the map's globals (QUESTS, PROG, REG, P, spr, persist, noteHref). Progress is the
    reader's own, kept in this browser, and the lesson book writes the same save the map reads. */
