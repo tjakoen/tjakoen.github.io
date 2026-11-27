@@ -130,3 +130,8 @@ them in All, and show them individually under the Learning to build tab.
 - [ ] Introduction still owes: a social card image, the path figure, and four claims only the author can
   confirm (see the list in the conversation)
 - [ ] Decide the notes page option above
+- [x] Note 1 drafted as content/notes/ai-teammate-never-asks-questions.md (DRAFT, 2026-11-27)
+- [x] Harbor lesson file and spoken script written for both drafts (content/lessons/harbor.yml and harbor.script.md, four stops). Replaces the earlier placeholder script, which was written before the notes existed.
+- [ ] Both notes still owe a social card image and a drawn figure, and the contract test cap on drafts without a card (7) is now exceeded
+- [ ] Every new Harbor note ships with its script and lesson stops in the same pass (decided 2026-11-27: the script is a companion of the note, written from it)
+- [ ] Next drafts: note 2 (know what done looks like first, may fold into note 1), then the drawing map
