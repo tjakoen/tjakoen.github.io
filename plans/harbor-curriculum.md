@@ -198,3 +198,38 @@ the Academy explains it.
 - Trim pass, 2026-11-27: the concepts are basic, so the notes should not run long. Start Here 1,300 to 1,235 words, drawing note 1,410 to 1,230, planning note 1,400 to 1,060, audit note 1,450 to 1,115. Cut repeats and kept every phrase the scripts highlight. Rule going forward: say it once, drop the second example, and aim for about 1,000 words a note unless the idea needs more.
 - [x] Note 5 drafted: content/notes/save-it-as-a-skill.md (about 700 words), with a three-stop lesson and script. A skill is a prompt earned by typing it by hand three times, written by the agent from a session that worked and edited by the reader. Audits stay manual (the author's loop tells him when one is due and he decides). A routine, or scheduled loop, runs a skill only when the work is repeated, boring and checkable. The author's real examples, no judgment in any: checking whether classes are graded, moving tickets due for code review into the reviewer queue, updating team metrics calculations. This matches plans/decisions/2026-09-16-proactive-loops.md, which refuses an audit on a timer and any scheduled chore that edits source.
 - [ ] Next in the arc: note 6 (the words you will hear), note 7 (from a chat window to your first loop), note 8 (catch the idea, then loop it), note 9 (build your own). Atomic design with GRAIN and the fundamentals note still to decide.
+
+## A running project for the Harbor (proposal, 2026-11-27)
+
+Idea from the author: give the first island one small ongoing project, so each note has a stage to point at.
+A basic portfolio skeleton, with an AI roadmap page that records what the reader learned about agentic coding.
+A reader who already has a portfolio adds to it. A reader without one starts from the skeleton, a static page
+on GitHub Pages. The framework and design system from this site can be suggested, with starting prompts,
+but nothing is required. The design and content come from the reader, and the notes guide. The roadmap page
+is also a home for the badges. When the Harbor is done the reader has a real thing.
+
+**Mapping notes to project stages (draft):**
+
+| Note | Project stage |
+|---|---|
+| Start Here | Choose: add to a portfolio you have, or start the skeleton. Repo and GitHub Pages. |
+| 1 The teammate | Write the brief for your portfolio: goal, what done looks like, what not to touch |
+| 2 The drawing | Draw it: who visits, what an entry on the roadmap remembers, the roadmap page wireframe |
+| 3 The plan | Pick the stack, write the plan, build step 1 only |
+| 4 Check its work | Evidence, a test or two, a fresh review. Roadmap entry one. |
+| 5 Save it as a skill | The repeated chore is adding a roadmap entry, so that becomes the skill. A link check is a candidate routine. |
+| later | Words, chat to loop, capture ideas, design system (their own design), build your own, badges |
+
+**Why it works:** each note ends with a trial that is a real step, and each roadmap entry is the reader
+writing in their own words what they learned, which is also evidence for a job interview.
+
+**Risks named so far (to resolve in conversation):**
+- Some drawings (ERD, data flow) are light for a static site. The notes must say so honestly.
+- The stack note says stick with what you know, so the skeleton is a default and never a requirement.
+- Badges are self-reported (quest-map decision), so a portfolio cannot prove them. A badge may need to point at
+  evidence on the roadmap page. Decide before promising anything.
+- A public repo and a public page: remind readers to leave out personal data and secrets, and to claim only
+  what they learned.
+- Examples in notes 1 to 5 use an invented study planner. Replace them with this project, or with the author's
+  own real portfolio artifacts, which are more honest than an invented scenario.
+- The skeleton needs a home repo, which is an outward action and needs the author's go-ahead.
