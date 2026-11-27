@@ -904,6 +904,57 @@ export const NOTE_AUDIENCES: ReadonlyArray<{ id: string; label: string }> = [
   { id: "learn", label: "Learning to build" },
 ];
 
+/** The notes in the order the learning map walks them: stage by stage, each note numbered as the map
+ *  numbers it ("Quest 8 of 21"). It is read from the same two files the map is built from, so the two
+ *  cannot drift: content/quests/regions.json names the stages and content/quests/index.json holds the
+ *  quests in order. Only published notes are listed (a quest still marked as a draft is not public),
+ *  and the numbers keep counting the drafts so a note has the same number here as on the map. */
+export function learnPathSection(entries: NoteFeedEntry[]): { html: string; count: number } {
+  type Region = { n: number; name: string };
+  type Quest = { id: string; region: number; level?: string };
+  let regions: Region[] = [], quests: Quest[] = [];
+  try {
+    const dir = join(import.meta.dir, "..", "content", "quests");
+    regions = (JSON.parse(readFileSync(join(dir, "regions.json"), "utf8")) as { regions: Region[] }).regions;
+    quests = (JSON.parse(readFileSync(join(dir, "index.json"), "utf8")) as { quests: Quest[] }).quests;
+  } catch { return { html: "", count: 0 }; }
+  const bySlug = new Map(entries.map((e) => [e.slug, e]));
+  const ordered = regions.flatMap((r) => quests.filter((q) => q.region === r.n).map((q) => ({ q, r })));
+  let count = 0;
+  const stages = regions.map((r) => {
+    const here = ordered.map((o, i) => ({ ...o, no: i + 1 })).filter((o) => o.r.n === r.n && bySlug.has(o.q.id));
+    if (!here.length) return "";
+    count += here.length;
+    const minutes = here.reduce((t, o) => t + (bySlug.get(o.q.id)!.score || 0), 0);
+    const cards = here.map(({ q, no }) => {
+      const e = bySlug.get(q.id)!, slug = escapeHtml(e.slug);
+      const level = q.level === "intro" ? "Intro" : q.level === "deep" ? "Deep dive" : q.level ? "Intermediate" : "";
+      return `<li class="learn-card" data-learn-card>
+        <div class="note-card__vote" title="${e.score} minute read"><span class="note-card__score">${e.score}</span><span class="note-card__unit">min</span><span class="visually-hidden"> minute read</span></div>
+        <div class="note-card__main">
+          <p class="note-card__byline">Quest ${no} of ${ordered.length}${level ? ` · ${level}` : ""}</p>
+          <h3 class="note-card__title"><a href="/notes/${slug}">${escapeHtml(e.title)}</a></h3>
+          <p class="note-card__summary">${escapeHtml(e.summary || e.subtitle)}</p>
+        </div>
+      </li>`;
+    }).join("\n");
+    return `<section class="learn-stage" data-learn-stage>
+      <h2 class="learn-stage__h">Stage ${r.n} · ${escapeHtml(r.name)} <span class="learn-stage__sub">${here.length} note${here.length === 1 ? "" : "s"} · about ${minutes} min</span></h2>
+      <ul class="learn-stage__list">
+${cards}
+      </ul>
+    </section>`;
+  }).filter(Boolean);
+  if (!count) return { html: "", count: 0 };
+  return {
+    count,
+    html: `<div class="learn-path" data-learn-path hidden>
+    <p class="learn-path__lede">The notes in reading order, grouped into stages from the way in to the deep ones. The number on each note is its place on the learning path.</p>
+    ${stages.join("\n")}
+    </div>`,
+  };
+}
+
 export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise<string> {
   const notes = collections[0]!;                     // the "/notes" collection above
   const dated = await sortedNoteEntries();
@@ -985,6 +1036,8 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       var rest = form.querySelector("[data-tags-rest]");
       var moreBtn = form.querySelector("[data-tags-more]");
       var empty = list.parentNode.querySelector("[data-feed-empty]");
+      var pathEl = list.parentNode.querySelector("[data-learn-path]");
+      var sortBox = form.querySelector(".notes-sort");
 
       // the flagship stays pinned to the top in BOTH New and Top — float any data-pinned card to
       // the front after whatever sort ran, so "Top" (by score) can't bury it.
@@ -1020,6 +1073,22 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked:not([name="level"])'));
         var wanted = boxes.map(function (b) { return b.value; });
         var q = (search && search.value || "").trim().toLowerCase();
+        // The Learn tab swaps the feed for the path: the stages in reading order. Sorting and the tag
+        // filters make no sense there (the order is the point), so they step aside, and the search
+        // box still narrows the notes it lists.
+        var inPath = audience === "path";
+        if (pathEl) {
+          pathEl.hidden = !inPath;
+          Array.prototype.forEach.call(pathEl.querySelectorAll("[data-learn-card]"), function (c) {
+            c.hidden = !(q === "" || (c.textContent || "").toLowerCase().indexOf(q) !== -1);
+          });
+          Array.prototype.forEach.call(pathEl.querySelectorAll("[data-learn-stage]"), function (st) {
+            st.hidden = !st.querySelector("[data-learn-card]:not([hidden])");
+          });
+        }
+        if (paths) paths.hidden = inPath;
+        if (sortBox) sortBox.hidden = inPath;
+        if (tagFilters) tagFilters.hidden = inPath;
         cards.forEach(function (card) {
           var tags = (card.getAttribute("data-tags") || "").split(" ");
           var tagOk = wanted.length === 0 || wanted.some(function (t) { return tags.indexOf(t) !== -1; });
@@ -1128,11 +1197,13 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     })();
   </script>`;
 
+  const learnPath = learnPathSection(entries);
   const deskTrigger = `<button class="btn notes-toolbar__ai" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ See what's new</button>`;
   const body = `<h1 class="masthead">Notes</h1>
     <form class="notes-toolbar" data-feed-controls hidden>
       <div class="notes-audience" role="radiogroup" aria-label="Show notes for">
         <label class="notes-audience__tab"><input type="radio" name="audience" value="" checked><span>All</span><span class="notes-audience__n">${entries.length}</span></label>
+        ${learnPath.count ? `<label class="notes-audience__tab"><input type="radio" name="audience" value="path"><span>Learn</span><span class="notes-audience__n">${learnPath.count}</span></label>` : ""}
         ${NOTE_AUDIENCES.map((a) => `<label class="notes-audience__tab"><input type="radio" name="audience" value="${a.id}"><span>${a.label}</span><span class="notes-audience__n">${entries.filter((e) => e.audience.includes(a.id)).length}</span></label>`).join("\n        ")}
       </div>
       <div class="notes-toolbar__bar">
@@ -1155,6 +1226,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     <ul class="note-feed">
 ${cards}
     </ul>
+    ${learnPath.html}
     ${island}`;
 
   return shellChrome(inject, injectHead)({

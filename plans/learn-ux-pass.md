@@ -107,3 +107,22 @@ behind the previous and next buttons, and no place labels are drawn, so you cann
 Do section 1 and section 3 first, since they fix confusion and cost little. Section 2 next, as one
 pass through the phone styles. Section 4 last, because it changes how the map feels and needs the
 most looking at on a real device. Each section can ship on its own.
+
+## 6. Added on 2026-11-27: three more asks
+
+- [x] The side panel overlaps the map. Folding and unfolding it must not move the map, because the
+  panel is a card lying over it. Today the view's centre is offset by half the panel's width, so each
+  fold slides the whole map sideways.
+- [x] A badge shows the runes collected under it, as the pixel rune with its name, and the runes of
+  that region not yet collected, greyed, with an "n of m" count.
+- [x] A Learn tab on /notes for readers who do not want the quest map. It groups and orders the notes
+  the way the map's path does: stage by stage, in walking order, with the same quest numbers. It lists
+  published notes only, since drafts are not public. The tab beside it already named "Learning to
+  build" filters by audience and does not order anything, so the two names sit close together.
+
+Done on 2026-11-27. Notes on how it was read: the Learn tab sits second, right after All, because on a
+phone the tab strip scrolls sideways and a tab at the end is out of sight. It lists 14 published notes
+in stages 2 to 6; the Harbor stage holds only drafts, so it does not appear, and the numbers still say
+"Quest 8 of 21" as the map does. The page does not link to /learn, which is deliberately unadvertised.
+The badge lists the collected runes by name with their line and shows the rest as small faint tiles,
+because the Harbor alone teaches 28 and a full list of them made the badge a long scroll.

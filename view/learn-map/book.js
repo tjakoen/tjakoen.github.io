@@ -264,5 +264,5 @@
     if (!root || root.hidden) return; stopVoice(); S.playing = false; clearMarks(); root.hidden = true; document.body.style.overflow = ''; persist();
     if (typeof onBookClosed === 'function') onBookClosed(rest === true); opener?.focus?.();
   }
-  window.Book = { open, close };
+  window.Book = { open, close, drawRune, runeIndex };
 })();

@@ -2,6 +2,7 @@
 // Run from the repo root (dirSource("tjakoen.github.io/notes") is root-relative, like config.ts).
 import { test, expect } from "bun:test";
 import { readdir, unlink } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
 import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, listLatestEvents, listEventCalendarEvents, renderNotesFeedPage, listPortfolioNotes, listPortfolioContentRoutes, listPortfolioRawContentRoutes, listNoteCalendarEvents, buildPortfolioKnowledge, isPublishedStatus, FLAGSHIP_NOTE_SLUG, peopleEntries, readingEntries } from "./content.ts";
@@ -89,7 +90,8 @@ test("desk grounding is limited to notes, framework docs and authored facts", as
 });
 
 test("the /notes feed = the flagship pinned to the front of the date order — the tail stays newest-first (not alphabetical), and the explorer tree (listNoteRoutesByDate → /search.json) stays PURE date order", async () => {
-  const body = await renderNotesFeedPage();
+  // the feed only: the Learn tab's own list of the same notes, in path order, comes after it
+  const body = (await renderNotesFeedPage()).split('<div class="learn-path"')[0]!;
   const inPageOrder = [...body.matchAll(/note-card__title"><a href="(\/notes\/[a-z0-9._-]+)"/g)].map((m) => m[1]);
   const dateOrder = await listNoteRoutesByDate();
   // the tree/search order is unchanged (pure date) — the pin lives only in the feed page
@@ -229,4 +231,21 @@ test("a link to a DRAFT note points at its /drafts twin, a published one stays u
   expect(slugs.has("now")).toBe(false);
   expect(slugs.has("long")).toBe(true);
   expect(slugs.has("crlf")).toBe(true);
+});
+
+test("the Learn tab lists published notes in the learning path's order, numbered as the map numbers them, and no draft", async () => {
+  const { learnPathSection } = await import("./content.ts");
+  const quests = (JSON.parse(readFileSync(join(import.meta.dir, "..", "content", "quests", "index.json"), "utf8")) as { quests: { id: string; region: number; draft?: boolean }[] }).quests;
+  const { published } = await notesOnDisk();
+  const entries = published.map((slug) => ({ slug, title: slug, date: "", subtitle: "", summary: "", readingTime: "3 min", score: 3, tags: [], audience: [], level: "", sections: 1 }));
+  const { html, count } = learnPathSection(entries);
+  const wanted = quests.filter((q) => published.includes(q.id));
+  expect(count).toBe(wanted.length);
+  const seen = [...html.matchAll(/href="\/notes\/([a-z0-9-]+)"/g)].map((m) => m[1]);
+  expect(seen).toEqual(wanted.sort((a, b) => a.region - b.region).map((q) => q.id));
+  const nos = [...html.matchAll(/Quest (\d+) of/g)].map((m) => Number(m[1]));
+  expect(nos).toEqual([...nos].sort((a, b) => a - b));
+  for (const q of quests.filter((q) => !published.includes(q.id))) expect(html).not.toContain(`/notes/${q.id}"`);
+  // with no published note on the path there is no tab at all
+  expect(learnPathSection([]).count).toBe(0);
 });

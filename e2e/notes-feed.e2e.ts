@@ -237,3 +237,42 @@ test.describe("the /notes feed (no JS)", () => {
     await expect(page.locator("[data-feed-empty]")).toBeHidden();
   });
 });
+
+test.describe("the Learn tab on /notes", () => {
+  test("it groups the published notes by stage in the learning path's order, and leaves the feed controls out of the way", async ({ page }) => {
+    await page.goto("/notes");
+    const tab = page.locator('.notes-audience__tab:has(input[value="path"])');
+    await expect(tab).toContainText("Learn");
+    const path = page.locator("[data-learn-path]");
+    await expect(path).toBeHidden();
+    await tab.click();
+    await expect(path).toBeVisible();
+    // the feed steps aside, and so do the sort and tag controls that would contradict the order
+    await expect(page.locator(".note-card").first()).toBeHidden();
+    await expect(page.locator(".notes-sort")).toBeHidden();
+    // stages in ascending order, quest numbers ascending across the whole page, every note a real link
+    const stages = await page.locator(".learn-stage__h").evaluateAll((els) => els.map((e) => Number(/Stage (\d+)/.exec(e.textContent ?? "")![1])));
+    expect(stages.length).toBeGreaterThan(1);
+    expect(stages).toEqual([...stages].sort((a, b) => a - b));
+    const nos = await page.locator("[data-learn-card] .note-card__byline").evaluateAll((els) => els.map((e) => Number(/Quest (\d+) of/.exec(e.textContent ?? "")![1])));
+    expect(nos).toEqual([...nos].sort((a, b) => a - b));
+    for (const href of await page.locator("[data-learn-card] .note-card__title a").evaluateAll((els) => els.map((e) => e.getAttribute("href")))) expect(href).toMatch(/^\/notes\/[a-z0-9-]+$/);
+    // the tab's count is the number of notes it lists
+    await expect(tab.locator(".notes-audience__n")).toHaveText(String(nos.length));
+    // search narrows it, and an emptied stage disappears
+    await page.locator("[data-notes-search]").fill("zzzz-no-such-note");
+    await expect(page.locator("[data-learn-card]:visible")).toHaveCount(0);
+    await expect(page.locator("[data-learn-stage]:visible")).toHaveCount(0);
+    // back on All, the feed and its controls return and the path is gone
+    await page.locator("[data-notes-search]").fill("");
+    await page.locator('.notes-audience__tab:has(input[value=""])').click();
+    await expect(path).toBeHidden();
+    await expect(page.locator(".notes-sort")).toBeVisible();
+  });
+
+  test("?for=path opens on the Learn tab", async ({ page }) => {
+    await page.goto("/notes?for=path");
+    await expect(page.locator("[data-learn-path]")).toBeVisible();
+    await expect(page.locator('.notes-audience__tab:has(input[value="path"]) input')).toBeChecked();
+  });
+});

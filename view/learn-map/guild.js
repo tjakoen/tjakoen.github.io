@@ -102,6 +102,8 @@
 .gc__badges { display:grid; grid-template-columns:repeat(auto-fill,minmax(64px,1fr)); gap:.5rem; } .gc__badges button { display:grid; gap:.2rem; justify-items:center; padding:.3rem; font-size:.62rem; text-align:center; }
 .gc__badges canvas { width:44px; height:44px; image-rendering:pixelated; } .gc__badges .off { opacity:.55; }
 .gc__note { border:2px dashed var(--q-muted); padding:.4rem .6rem; font-size:.78rem; }
+.gc__badge .gc__runegrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:.5rem; } .gc__runegrid > div { display:grid; grid-template-columns:30px 1fr; gap:.4rem; align-items:center; font-size:.72rem; } .gc__badge .gc__runegrid canvas { width:30px; height:30px; border:2px solid var(--q-ink); background:var(--q-panel); } .gc__runegrid small { display:block; color:var(--q-muted); }
+.gc__runerest { display:flex; flex-wrap:wrap; gap:.3rem; } .gc__badge .gc__runerest canvas { width:22px; height:22px; border:2px solid var(--q-line); background:transparent; opacity:.5; } .gc__rest { font-size:.72rem; color:var(--q-muted); margin-top:.2rem; }
 .gc__skills { display:flex; gap:.35rem; flex-wrap:wrap; } .gc__skills span { border:2px solid var(--q-line); padding:.1rem .5rem; font:.7rem ui-monospace,monospace; }
 .gc__badge { display:flex; gap:1rem; align-items:flex-start; } .gc__badge canvas { width:112px; height:112px; image-rendering:pixelated; border:3px solid var(--q-ink); background:var(--q-paper); flex:0 0 auto; }
 .lvl { position:fixed; left:50%; top:14px; transform:translateX(-50%); z-index:80; display:flex; gap:.7rem; align-items:center; padding:.55rem 1.1rem; background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:4px 4px 0 var(--q-ink); font:700 .85rem ui-monospace,monospace; letter-spacing:.06em; text-transform:uppercase; animation:lvlpop .5s steps(5) 1; }
@@ -159,8 +161,8 @@
     return `<div class="gc__badge"><canvas width="64" height="64" aria-hidden="true"></canvas><div style="display:grid;gap:.5rem">
       <h3>Walks the ${esc(r.name)}</h3><small>${earned ? 'Earned' : 'Not earned yet'} · ${who}</small>
       <p style="margin:0"><strong>Criteria.</strong> Finish every stop and its trial in the ${qs.length} ${esc(r.name)} quest${qs.length === 1 ? '' : 's'}: ${stops} stops. ${done} of ${stops} done.</p>
-      <div><strong>Skills shown.</strong> The runes collected on the way.</div>
-      <div class="gc__skills">${skills.length ? skills.map((s) => '<span>' + s + '</span>').join('') : '<span>none collected yet</span>'}</div>
+      <div><strong>Runes collected.</strong> <span data-runecount>${skills.length ? skills.length + ' so far' : 'none yet'}</span></div>
+      <div class="gc__runes" data-runes><div class="gc__skills">${skills.length ? skills.map((s) => '<span>' + s + '</span>').join('') : '<span>none collected yet</span>'}</div></div>
       <div><strong>Evidence.</strong> ${bd.evidence ? '<a href="' + esc(bd.evidence) + '" target="_blank" rel="noopener noreferrer">' + esc(bd.evidence) + '</a>' : (foreign ? 'The holder has not linked a roadmap page.' : 'Add the link to your roadmap page on your guild card. Claude Academy badges belong on that page too.')}</div>
       <div class="gc__note">Self-reported. This page rebuilds from the holder's save link and is not a signed credential. The evidence is the roadmap page, so judge the work there.</div>
       ${foreign ? '' : '<div class="gc__row"><button class="primary" data-do="copylink">Copy badge link</button></div>'}</div></div>`;
@@ -169,6 +171,21 @@
     const d = openDialog(badgeBody(bd, r, foreign), 'Badge: Walks the ' + r.name);
     drawMedal(d.querySelector('.gc__badge canvas'), HUES[(r.n - 1) % HUES.length], regionDone(r.n, { progress: bd.progress, runes: bd.runes }));
     d.querySelector('[data-do=copylink]')?.addEventListener('click', (e) => { copy(location.origin + '/learn#badge=' + r.n + '.' + codeOf(bundle()), e.target, 'Link copied'); });
+    fillRunes(d, r, bd);
+  }
+  /* The runes under a badge: every rune the region teaches, drawn as its pixel, the collected ones in full and the others faint, so the badge shows what was gathered and what is left. The lessons say what the runes are, so they are read here; if one cannot be read the plain list of collected names stays. */
+  async function fillRunes(d, r, bd) {
+    const box = d.querySelector('[data-runes]'), count = d.querySelector('[data-runecount]'); if (!box || !window.Book) return;
+    const ids = [...new Set(regionQuests(r.n).flatMap((q) => (q.ls ? q.ls.map((x) => x[0]) : [q.lesson])).filter(Boolean))];
+    let lessons; try { lessons = await Promise.all(ids.map((id) => fetch('lessons/' + encodeURIComponent(id) + '.json').then((x) => x.json()))); } catch (e) { return; }
+    const all = lessons.flatMap((L) => L.stops.flatMap((s) => s.runes.map((u) => ({ key: L.id + ':' + u.id, id: u.id, quote: u.quote })))); if (!all.length || !box.isConnected) return;
+    const got = all.filter((u) => bd.runes[u.key]).length, ink = getComputedStyle(d).getPropertyValue('--q-ink').trim() || '#2b2b2b';
+    count.textContent = got + ' of ' + all.length;
+    const have = all.filter((u) => bd.runes[u.key]), rest = all.filter((u) => !bd.runes[u.key]);
+    box.innerHTML = (have.length ? '<div class="gc__runegrid">' + have.map((u) => `<div><canvas width="7" height="7" aria-hidden="true"></canvas><span>${esc(u.id.replace(/-/g, ' '))}<small>${esc(u.quote)}</small></span></div>`).join('') + '</div>' : '')
+      + (rest.length ? `<div class="gc__rest">Still to find: ${rest.length}</div><div class="gc__runerest" role="list">` + rest.map((u) => `<canvas width="7" height="7" role="listitem" aria-label="${esc(u.id.replace(/-/g, ' '))}, not collected yet" title="${esc(u.id.replace(/-/g, ' '))}"></canvas>`).join('') + '</div>' : '');
+    const draw = (sel, list) => box.querySelectorAll(sel).forEach((cv, i) => Book.drawRune(cv, Book.runeIndex(list[i].id), ink));
+    draw('.gc__runegrid canvas', have); draw('.gc__runerest canvas', rest);
   }
   function copy(text, btn, msg) {
     const done = () => { const old = btn.textContent; btn.textContent = msg; setTimeout(() => { btn.textContent = old; }, 1600); };

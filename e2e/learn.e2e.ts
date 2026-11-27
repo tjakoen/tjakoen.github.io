@@ -553,3 +553,44 @@ test("the book's tabs are Book, Log, Runes and Pack, each with a line saying wha
   await expect(book.locator(".bk__tabs")).not.toContainText("Codex");
   await expect(book).toContainText("Save and close");
 });
+
+test("a badge shows the runes collected under it, drawn as pixels, and the region's other runes faint with an n of m count", async ({ page }) => {
+  await page.goto("/learn");
+  let frame = await frameOf(page);
+  await resetGuild(frame);
+  const code = await frame.evaluate(() => {
+    const progress: Record<string, number[]> = {};
+    QUESTS.filter((q) => (q as Quest & { region: number }).region === 1).forEach((q) => { progress[q.id] = q.stops.map((_, i) => i); });
+    return Guild.codeOf({ v: 1, name: "Test Holder", seed: "ABC234", since: "2026-11", evidence: "", progress, runes: { "harbor:builders-not-coders": 1, "harbor:it-says-yes": 1 } });
+  });
+  await page.goto("/learn#badge=1." + code);
+  frame = await frameOf(page);
+  const grid = frame.locator(".gc .gc__runegrid");
+  await expect(grid).toBeVisible();
+  await expect(frame.locator(".gc [data-runecount]")).toHaveText(/^2 of \d+$/);
+  // the collected runes are named with their line, each at icon size and drawn as pixels
+  await expect(grid.locator("> div")).toHaveCount(2);
+  await expect(grid.locator("> div").first()).toContainText("builders not coders");
+  const size = await grid.locator("canvas").first().evaluate((cv: HTMLCanvasElement) => cv.getBoundingClientRect().width);
+  expect(size).toBeLessThanOrEqual(40);
+  const inked = await grid.locator("canvas").first().evaluate((cv: HTMLCanvasElement) => cv.getContext("2d")!.getImageData(0, 0, 7, 7).data.some((v, i) => i % 4 === 3 && v > 0));
+  expect(inked).toBe(true);
+  // the rest of the region's runes follow as small faint tiles, named for a screen reader
+  const rest = frame.locator(".gc .gc__runerest canvas");
+  expect(await rest.count()).toBeGreaterThan(0);
+  await expect(rest.first()).toHaveAttribute("aria-label", /not collected yet/);
+  await expect(frame.locator(".gc .gc__rest")).toContainText("Still to find");
+});
+
+test("folding and unfolding the side panel leaves the map where it is, because the panel lies over it", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  const view = () => frame.evaluate(() => { const o = (window as unknown as { origin(): { vx: number; vy: number; z: number } }).origin(); return [o.vx, o.vy, o.z]; });
+  const before = await view();
+  await frame.locator("#fold").click();
+  await expect(frame.locator("#panel")).toBeHidden();
+  expect(await view()).toEqual(before);
+  await frame.locator("#fold").click();
+  await expect(frame.locator("#panel")).toBeVisible();
+  expect(await view()).toEqual(before);
+});
