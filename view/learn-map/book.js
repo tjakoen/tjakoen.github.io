@@ -108,7 +108,7 @@
   function stopVoice() { token++; clearTimeout(timer); clearInterval(typer); }
 
   /* ---------- the book ---------- */
-  const S = { lesson: null, stop: 0, beat: 0, playing: false, speed: 1, tab: 'book', solo: false, quest: null };
+  const S = { ended: false, lesson: null, stop: 0, beat: 0, playing: false, speed: 1, tab: 'book', solo: false, quest: null };
   const ui = {};
   const stopOf = () => S.lesson.stops[S.stop], beatOf = () => stopOf().beats[S.beat];
   const questOf = (i) => { const s = S.lesson.stops[i]; return { id: s.note, local: S.lesson.stops.slice(0, i).filter((x) => x.note === s.note).length }; };
@@ -121,21 +121,21 @@
       <div class="leaf bk__leafnote"><div class="bk__note"></div></div>
       <div class="leaf bk__leafguide"><div class="bk__guide"></div><div class="bk__alt" hidden></div>
         <div class="controls bk__ctl"><div class="bk__prog"><div class="ribbonbar" aria-hidden="true"><i></i><u></u></div><div class="stops"><span class="bk__dots"></span><span class="bk__time"></span></div></div>
-          <div class="row"><div><button data-do="prevstop" aria-label="Previous stop">\u23ee</button> <button data-do="prev" aria-label="Previous line">\u25c0</button> <button data-do="play" class="primary" aria-label="Play">\u25b6 Play</button> <button data-do="next" aria-label="Next line">\u25b6\u25b6</button> <button data-do="nextstop" aria-label="Next stop">\u23ed</button></div>
+          <div class="row"><div><button data-do="prevstop" aria-label="Previous chapter" title="Previous chapter">\u23ee</button> <button data-do="prev" aria-label="Previous line" title="Previous line">\u25c0</button> <button data-do="play" class="primary" aria-label="Play">\u25b6 Play</button> <button data-do="replay" aria-label="Replay this chapter" hidden>\u21bb Replay</button> <button data-do="next" aria-label="Next line" title="Next line">\u25b6\u25b6</button> <button data-do="nextstop" aria-label="Next chapter" title="Next chapter">\u23ed</button></div>
             <div><button data-do="speed">1x</button> <button data-do="rest">Rest at campfire</button></div></div>
           </div></div>
       <div class="toast bk__toast" hidden></div></div>`;
     document.body.append(root);
     ['note', 'guide'].forEach((k) => (ui[k] = root.querySelector('.bk__' + k)));
     ui.crumb = root.querySelector('.bk__crumb'); ui.alt = root.querySelector('.bk__alt'); ui.sheet = root.querySelector('.bk__sheet'); ui.ctl = root.querySelector('.bk__ctl'); ui.toast = root.querySelector('.bk__toast');
-    ui.fill = root.querySelector('.ribbonbar i'); ui.flag = root.querySelector('.ribbonbar u'); ui.dots = root.querySelector('.bk__dots'); ui.time = root.querySelector('.bk__time'); ui.playBtn = root.querySelector('[data-do="play"]');
+    ui.fill = root.querySelector('.ribbonbar i'); ui.flag = root.querySelector('.ribbonbar u'); ui.dots = root.querySelector('.bk__dots'); ui.time = root.querySelector('.bk__time'); ui.playBtn = root.querySelector('[data-do="play"]'); ui.replayBtn = root.querySelector('[data-do="replay"]');
     root.querySelector('.bk__x').addEventListener('click', close); root.querySelector('.bk__shade').addEventListener('click', close);
     root.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(); } });
     root.querySelector('.bk__tabs').addEventListener('click', (e) => { const t = e.target.closest('[data-tab]'); if (t) setTab(t.dataset.tab); });
     root.querySelector('.bk__tabs').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { const t = e.target.closest('[data-tab]'); if (t) { e.preventDefault(); setTab(t.dataset.tab); } } });
     root.querySelector('.bk__pg').addEventListener('click', (e) => { const b = e.target.closest('[data-page]'); if (b) root.dataset.page = b.dataset.page; });
     root.querySelector('.bk__ctl').addEventListener('click', (e) => { const b = e.target.closest('[data-do]'); if (!b) return; const a = b.dataset.do;
-      if (a === 'play') toggle(); else if (a === 'next') step(1); else if (a === 'prev') step(-1); else if (a === 'nextstop') gotoStop(S.stop + 1); else if (a === 'prevstop') gotoStop(S.stop - 1);
+      if (a === 'replay') { resetEnd(); S.beat = 0; showBeat(); toggle(); } else if (a === 'play') toggle(); else if (a === 'next') step(1); else if (a === 'prev') step(-1); else if (a === 'nextstop') gotoStop(S.stop + 1); else if (a === 'prevstop') gotoStop(S.stop - 1);
       else if (a === 'speed') { const sp = [1, 1.15, 1.3, 0.9]; S.speed = sp[(sp.indexOf(S.speed) + 1) % sp.length]; b.textContent = S.speed + 'x'; if (S.playing) { stopVoice(); say(); } }
       else if (a === 'rest') close(true); });
     root.dataset.page = 'note';
@@ -181,7 +181,7 @@
     const s = stopOf(), b = beatOf(); light(b.section, b.quote); ui.guide.querySelector('.rune-card')?.remove(); markRunes(b);
     const el = ui.guide.querySelector('.say'); if (el && !S.playing) el.innerHTML = esc(b.text) + '<span class="caret">▌</span>';
     const hist = ui.guide.querySelector('.hist'); hist.innerHTML = s.beats.slice(Math.max(0, S.beat - 2), S.beat).map((x) => `<p class="fade">${esc(x.text)}</p>`).join('');
-    const total = s.beats.length, pct = Math.round((S.beat + 1) / total * 100); ui.fill.style.width = pct + '%'; ui.flag.style.left = pct + '%';
+    const total = s.beats.length, pct = Math.round((S.beat + 1) / total * 100); ui.fill.style.width = pct + '%'; ui.flag.style.left = 'calc(' + pct + '% - ' + Math.round(pct / 10) + 'px)';
     ui.time.textContent = '· line ' + (S.beat + 1) + ' of ' + total; ui.playBtn.textContent = S.playing ? '❚❚ Pause' : '▶ Play';
   }
 
@@ -204,23 +204,27 @@
   }
   async function gotoStop(i) {
     if (!S.lesson || i < 0 || i >= S.lesson.stops.length) return;
-    stopVoice(); S.playing = false; const prev = S.lesson.stops[S.stop]?.note, next = S.lesson.stops[i].note; S.stop = i; S.beat = 0;
+    stopVoice(); S.playing = false; resetEnd(); const prev = S.lesson.stops[S.stop]?.note, next = S.lesson.stops[i].note; S.stop = i; S.beat = 0;
     if (prev !== next || !ui.noteBody) await mountNote(next);
     renderStop(); if (S.playing) say();
   }
   function step(d) {
-    stopVoice(); const s = stopOf();
+    stopVoice(); const s = stopOf(); if (S.ended && d < 0) resetEnd();
     if (d > 0 && S.beat >= s.beats.length - 1) { endStop(); return; }
     if (d < 0 && S.beat === 0) { if (S.stop > 0) gotoStop(S.stop - 1); return; }
     S.beat += d; showBeat(); if (S.playing) say();
   }
+  /* The end of a chapter: the bar is full, so the main button becomes the way on. */
+  const lastStop = () => S.stop === S.lesson.stops.length - 1;
   function endStop() {
-    stopVoice(); S.playing = false; clearMarks(); ui.playBtn.textContent = '↻ Replay';
-    const el = ui.guide.querySelector('.say'); if (el) el.innerHTML = esc(S.stop === S.lesson.stops.length - 1 ? "That's the last stop. Tick your trial when you have done it, then rest at the campfire." : "That's the stop. Tick your trial when you have done it, then go on.") + '<span class="caret">▌</span>';
-    ui.fill.style.width = '100%'; ui.flag.style.left = '100%';
+    stopVoice(); S.playing = false; S.ended = true; clearMarks();
+    ui.playBtn.textContent = lastStop() ? '\u26fa Finish and rest' : 'Next chapter \u25b6'; ui.playBtn.classList.add('is-next'); ui.replayBtn.hidden = false;
+    const el = ui.guide.querySelector('.say'); if (el) el.innerHTML = esc(lastStop() ? "That's the last chapter. Tick your trial when you have done it, then finish and rest at the campfire." : "That's the chapter. Tick your trial when you have done it, then go on to the next chapter.") + '<span class="caret">▌</span>';
+    ui.fill.style.width = '100%'; ui.flag.style.left = 'calc(100% - 10px)';
   }
+  function resetEnd() { S.ended = false; ui.playBtn.classList.remove('is-next'); ui.replayBtn.hidden = true; }
   function toggle() {
-    if (ui.playBtn.textContent.includes('Replay')) { S.beat = 0; showBeat(); }
+    if (S.ended) { if (lastStop()) { close(true); return; } resetEnd(); gotoStop(S.stop + 1).then(() => { S.playing = true; ui.playBtn.textContent = '\u275a\u275a Pause'; say(); }); return; }
     if (S.playing) { S.playing = false; stopVoice(); ui.playBtn.textContent = '▶ Play'; typeOut(beatOf().text, 0); return; }
     S.playing = true; ui.playBtn.textContent = '❚❚ Pause'; say();
   }
@@ -229,7 +233,7 @@
   let opener = null;
   async function open(opts) {
     if (!root) build(); opener = document.activeElement; root.hidden = false; document.body.style.overflow = 'hidden';
-    S.solo = !!opts.solo; S.tab = 'book'; root.classList.toggle('bk--solo', S.solo); setTab('book'); S.playing = false; S.speed = 1; root.querySelector('[data-do="speed"]').textContent = '1x';
+    S.solo = !!opts.solo; S.ended = false; S.tab = 'book'; root.classList.toggle('bk--solo', S.solo); setTab('book'); S.playing = false; S.speed = 1; root.querySelector('[data-do="speed"]').textContent = '1x';
     if (S.solo) {
       S.lesson = null; ui.noteBody = null; ui.guide.innerHTML = ''; ui.crumb.textContent = (QUESTS.find((x) => x.id === opts.quest) || {}).title || ''; await mountNote(opts.quest); root.querySelector('.bk__x').focus(); return;
     }
