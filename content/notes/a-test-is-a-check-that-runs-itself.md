@@ -22,6 +22,8 @@ social: |
 
   A test is a check that runs itself. Here's the idea from scratch, and the one habit I'd wire in from day
   one:
+socialImage: "/media/notes/a-test-is-a-check-that-runs-itself-social.png"
+socialImageAlt: "A card from the Harbor path of Learn AI with me, titled A Test Is a Check That Runs Itself, with the line: Testing often gets skipped in school."
 ---
 
 Tests are the least glamorous rule I follow, and they do the most work. They're the seatbelt that lets me

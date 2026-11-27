@@ -21,6 +21,8 @@ social: |
   The fix is boring and it works: a plan in a file, small steps, one at a time, tick each off.
 
   Do it by hand first. Here's how:
+socialImage: "/media/notes/plan-it-then-build-from-the-plan-social.png"
+socialImageAlt: "A card from the Harbor path of Learn AI with me, titled Plan It, Then Build From the Plan, with the line: Two hours into an AI session, it has touched eleven files and you can't say which of your five asks"
 ---
 
 You're two hours into a session. The AI has changed eleven files, you asked for five things, and you

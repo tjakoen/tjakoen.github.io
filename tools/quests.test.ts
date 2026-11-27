@@ -43,10 +43,13 @@ describe("buildIndex", () => {
     expect(errors).toEqual([]);
     expect(quests.map((q) => [q.id, q.region, q.level, q.minutes])).toEqual([["a", 1, "intro", 10], ["b", 1, "deep", 7]]);
   });
-  test("a pin on a draft is an error, not a quest", () => {
-    const { quests, errors } = buildIndex(regions, load({ a: note(), b: note({ slug: "b", status: "DRAFT" }) }));
-    expect(quests.map((q) => q.id)).toEqual(["a"]);
-    expect(errors.join()).toContain("a draft never becomes a quest");
+  test("a pin on a draft is a quest flagged draft, and any other status is an error", () => {
+    const drafted = buildIndex(regions, load({ a: note(), b: note({ slug: "b", status: "DRAFT" }) }));
+    expect(drafted.errors).toEqual([]);
+    expect(drafted.quests.map((q) => [q.id, q.draft])).toEqual([["a", undefined], ["b", true]]);
+    const odd = buildIndex(regions, load({ a: note(), b: note({ slug: "b", status: "IDEA" }) }));
+    expect(odd.quests.map((q) => q.id)).toEqual(["a"]);
+    expect(odd.errors.join()).toContain("must be PUBLISHED or DRAFT");
   });
   test("a region that lists a note that does not exist is an error", () => {
     expect(buildIndex(regions, load({ a: note() })).errors.join()).toContain("b, which is not a note");
@@ -54,7 +57,7 @@ describe("buildIndex", () => {
 });
 
 describe("the real data", () => {
-  test("every note the regions list is published and places cleanly", () => {
+  test("every note the regions list is published or a draft, and places cleanly", () => {
     const { quests, errors } = buildIndex(loadRegions(), loadNote);
     expect(errors).toEqual([]);
     expect(quests.length).toBeGreaterThan(10);

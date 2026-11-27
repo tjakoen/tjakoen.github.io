@@ -170,7 +170,8 @@ test("the map walks the guided path: numbered in order, Continue follows it, and
   await page.goto("/learn");
   const frame = await frameOf(page);
   const path = await frame.evaluate(() => PATH.stages.flatMap((st) => st.quests));
-  expect(path.length).toBe(14);
+  expect(path.length).toBe(await frame.evaluate(() => QUESTS.length));
+  expect(path.length).toBe(21);
   const order = await frame.evaluate(() => QUESTS.map((q) => [q.id, q.order]));
   expect(order.map(([id]) => id)).toEqual(path);
   expect(order.map(([, n]) => n)).toEqual(path.map((_, i) => i + 1));
@@ -182,16 +183,39 @@ test("the map walks the guided path: numbered in order, Continue follows it, and
   // the path starts near the Harbor and ends on the Summit: the regions only ever go up along it, and You are here begins in the first one
   const regions = await frame.evaluate(() => QUESTS.map((q) => (q as unknown as { region: number }).region));
   expect(regions).toEqual(regions.toSorted((a, b) => a - b));
-  expect(regions[0]).toBe(2);
+  expect(regions[0]).toBe(1);
   expect(regions.at(-1)).toBe(6);
-  expect(await frame.evaluate(() => { const q = QUESTS.find((x) => x.id === YOUQ.id)! as unknown as { region: number }; return q.region; })).toBe(2);
+  expect(await frame.evaluate(() => { const q = QUESTS.find((x) => x.id === YOUQ.id)! as unknown as { region: number }; return q.region; })).toBe(1);
 
   // the panel says where a quest comes in the path
   await frame.evaluate((id) => (window as unknown as { selectQuest(i: string): void }).selectQuest(id), path[2]!);
-  await expect(frame.locator(".ribbon")).toHaveText("Stage 2 · Quest 3 of 14");
+  await expect(frame.locator(".ribbon")).toHaveText("Stage 1 · Quest 3 of 21 · Draft");
 
   // the plain list reads without the map, one section per stage, quests in path order
   const list = await frame.evaluate(() => [...document.querySelectorAll("#route > ol > li")].map((li) => [li.querySelector("h2")!.textContent, [...li.querySelectorAll(":scope > ol > li > h3")].map((h) => h.textContent)]));
-  expect(list.map(([h]) => h)).toEqual(["Stage 1: Harbor", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6"]);
-  expect(list.flatMap(([, titles]) => titles as string[]).length).toBe(14);
+  expect(list.map(([h]) => h)).toEqual(["Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6"]);
+  expect(list.flatMap(([, titles]) => titles as string[]).length).toBe(21);
+});
+
+test("Begin quest opens the book over the map: the note on the left, the Guide on the right, a line lights its quote, and the trial is saved", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.evaluate(() => localStorage.removeItem("learn.progress.v1"));
+  await frame.evaluate(() => { (window as unknown as { selectQuest(i: string): void }).selectQuest("start-here"); });
+  await frame.locator('[data-act="begin"]').click();
+  const book = frame.locator(".bk");
+  await expect(book).toBeVisible();
+  await expect(book.locator(".bk__note h3")).toContainText("Six Months In");
+  await expect(book.locator(".bk__guide .plate")).toContainText("the Guide");
+  await expect(book.locator("mark.hl")).toHaveText("I'm not an AI expert.");
+  // the line is the transcript, so it reads without sound
+  await expect(book.locator(".bk__guide .say")).toContainText("I'm not an expert");
+  await book.locator('[data-do="next"]').click();
+  await expect(book.locator("mark.hl")).toHaveText("This isn't a tutorial or a step-by-step guide.");
+  // the trial is self-reported and kept in this browser only
+  await book.locator(".trial input").check();
+  expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toContain('"start-here":[0]');
+  await page.keyboard.press("Escape");
+  await expect(book).toBeHidden();
+  await expect(frame.locator(".stopline[data-done]")).toHaveCount(1);
 });

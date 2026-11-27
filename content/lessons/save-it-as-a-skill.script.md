@@ -26,7 +26,7 @@ A skill is a saved set of instructions your agent can run when you ask. Academy 
 **Trial:** Name the prompts you have typed most in the last few notes.
 
 **Runes:**
-three-times | I don't write a skill until I've typed the thing three times by hand.
+a-skill-is-a-prompt-youve-earned | I don't write a skill until I've typed the thing three times by hand.
 
 ## Stop 2: Let your agent write it
 
@@ -50,7 +50,7 @@ Not every skill should run by itself. I run my audits by hand. My loop tells me 
 **Trial:** Pick the prompt you have typed most, or the roadmap entry one, ask your agent to turn it into a skill, edit it, save it in your project, and use it to add your next entry.
 
 **Runes:**
-one-job | I keep a skill to one job
+let-your-agent-write-it-then-you-edit-it | I keep a skill to one job
 
 ## Stop 3: When a skill earns a routine
 
@@ -84,5 +84,5 @@ And where I might be wrong. Three is my number, not a law. A pile of skills can 
 **Trial:** Write down one chore that is boring and checkable, such as checking that the links on your roadmap still open. Do not build the routine yet.
 
 **Runes:**
-routine-test | It has to be repeated, boring, and
-routine-ran | needs something that tells you when it didn
+when-a-skill-earns-a-routine | It has to be repeated, boring, and
+when-a-skill-earns-a-routine | needs something that tells you when it didn

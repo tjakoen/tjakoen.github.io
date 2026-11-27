@@ -37,6 +37,7 @@
     "social:card:old-fashioned": "bun tools/social-card-old-fashioned.ts",
     "social:card:vectorless": "bun tools/social-card-vectorless.ts",
     "social:card:same-reviewer": "bun tools/social-card-same-reviewer.ts",
+    "social:card:harbor": "bun tools/social-card-harbor.ts",
     "social:card:model-layer": "bun tools/social-card-model-layer.ts",
     "social:card:decision-model": "bun tools/social-card-decision-model.ts",
     "social:card:ten-times-zero": "bun tools/social-card-ten-times-zero.ts",

@@ -26,7 +26,7 @@ Goal, a list of small steps, and what done looks like for each one. Nothing in i
 **Trial:** For your portfolio, write the goal and two steps, each with a done line.
 
 **Runes:**
-small-steps | A list of small steps, in order.
+a-plan-is-a-list-you-can-tick-off | A list of small steps, in order.
 
 ## Stop 2: Talk about the stack first
 
@@ -60,8 +60,8 @@ Then I put the stack at the top of the plan, with the reason. If it's new to me,
 **Trial:** Describe your portfolio to your AI and ask what stack it would pick and why. Choose one you already know, and write it at the top of your plan. Then ask yourself: could I explain this and fix it if the AI weren't here tomorrow?
 
 **Runes:**
-stack-familiar | stick with what you're familiar with
-no-blind-stack | you risk not knowing what you're building
+talk-about-the-stack-first | stick with what you're familiar with
+talk-about-the-stack-first | you risk not knowing what you're building
 
 ## Stop 3: Draft it, edit it, one step at a time
 
@@ -119,4 +119,4 @@ Your turn is the whole loop in miniature. Plan with no code, edit it, save it, t
 **Trial:** Ask your AI for a plan for your portfolio with no code yet, edit it, save it in your project, then have it do step 1 only and check the result against the done line.
 
 **Runes:**
-lives-in-a-file | If the plan lives only in a chat, it dies when the session does.
+keep-it-where-it-survives | If the plan lives only in a chat, it dies when the session does.

@@ -219,6 +219,49 @@ button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-i
 pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height:1.55; background:var(--q-paper); }
 @media (max-width:860px) { .mapside .chips, .mapside .scale, .mapside .lbl small { display:none; } .mapside .search { width:calc(100% - 24px); } .place .scroll { position:static; } .gm .place { position:static; } .gm,.lesson,.cards,.tabs3,.model { grid-template-columns:1fr; } .gm .place { max-height:none; border-right:0; } .modalwrap { position:relative; inset:auto; width:auto; margin:1rem; } .dim{display:none} }
 
+/* a draft note on the map is marked, never hidden */
+.draftmark { font-size:.66rem; letter-spacing:.05em; text-transform:uppercase; color:inherit; border:1px solid currentColor; padding:0 .25rem; }
+/* the quest book: a modal over the map, drawn as an open book (book.js). Left page: the note. Right page: the Guide. */
+.bk { position:fixed; inset:0; z-index:100; display:grid; place-items:center; padding:2.5vh 2.5vw; }
+.bk[hidden] { display:none; }
+.bk__shade { position:absolute; inset:0; background:rgba(24,18,12,.58); }
+.bk__sheet { position:relative; width:min(1180px,100%); height:min(90vh,800px); display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:.6rem; background:var(--q-ground); border:3px solid var(--q-ink); box-shadow:6px 6px 0 var(--q-ink); padding:.75rem .85rem; color:var(--q-ink); }
+.bk__bar { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; }
+.bk__crumb { flex:1 1 320px; font:700 .68rem ui-monospace,monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--q-muted); min-width:0; }
+.bk .tb { display:flex; gap:.3rem; flex-wrap:wrap; } .bk .tb span { border:2px solid var(--q-ink); padding:.05rem .6rem; font:.72rem ui-monospace,monospace; background:var(--q-panel); }
+.bk .tb span[data-on] { background:var(--q-accent); color:var(--q-accent-ink); }
+.bk__tabs span { cursor:pointer; user-select:none; } .bk__tabs span:focus-visible, .bk button:focus-visible { outline:2px dashed var(--q-accent); outline-offset:2px; }
+.bk__x { font:700 1.1rem/1 ui-monospace,monospace; padding:.05rem .5rem; border:2px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
+.bk__pg { display:none; gap:.25rem; } .bk__pg button { padding:.05rem .5rem; font:.72rem ui-monospace,monospace; }
+.bk__tome { min-height:0; height:100%; grid-template-columns:1fr 1fr; }
+.bk .leaf { min-height:0; overflow:auto; }
+.bk__note { font:15px/1.68 Georgia,serif; padding:.9rem 1.1rem .9rem 2.6rem; scroll-behavior:auto; }
+.bk__text h3 { font-size:1.35rem; line-height:1.2; margin:.1rem 0 .9rem; font-family:Georgia,serif; color:var(--q-ink); }
+.bk__text h2 { font:700 1.05rem/1.3 Georgia,serif; margin:1.4rem 0 .5rem; }
+.bk__text h3 + p, .bk__text p { margin:0 0 .85rem; }
+.bk__text ul, .bk__text ol { margin:0 0 .85rem; padding-left:1.2rem; } .bk__text li { margin:.15rem 0; }
+.bk__text blockquote { margin:0 0 .85rem; padding:.1rem .8rem; border-left:3px solid var(--q-accent); color:var(--q-muted); }
+.bk__text pre { overflow:auto; padding:.6rem; border:2px solid var(--q-line); background:var(--q-paper); font-size:.8rem; line-height:1.45; }
+.bk__text code { font-size:.86em; } .bk__text a { color:var(--q-roof); }
+.bk__text svg, .bk__text img, .bk__text figure { max-width:100%; height:auto; } .bk__text hr { border:0; border-top:2px solid var(--q-line); margin:1.2rem 0; }
+.bk__text mark.hl { color:inherit; }
+.bk__text table { border-collapse:collapse; font-size:.85rem; } .bk__text td, .bk__text th { border:1px solid var(--q-line); padding:.2rem .45rem; }
+.bk__guide { font:.82rem/1.5 Georgia,serif; gap:.7rem; padding:.8rem; }
+.bk__guide .dlg .say { font-size:.95rem; line-height:1.55; min-height:5.8em; } .bk__guide .dlg .plate small { text-transform:none; letter-spacing:0; font-weight:400; }
+.bk__guide .hist p { font-size:.78rem; }
+.bk--nocap .say, .bk--nocap .hist { visibility:hidden; }
+.bk__alt { overflow:auto; min-height:0; } .bk__alt .mini { border:3px solid var(--q-ink); background:var(--q-paper); }
+.bk__ctl button { font:.74rem ui-monospace,monospace; padding:.25rem .55rem; border:2px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); cursor:pointer; }
+.bk__ctl button.primary, .bk__ctl button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); }
+.bk__dots { display:inline-flex; gap:.35rem; }
+.bk__toast { position:absolute; right:1.2rem; bottom:5.2rem; z-index:3; }
+.bk--solo .bk__tome { grid-template-columns:1fr; } .bk--solo .bk__guide, .bk--solo .bk__pg { display:none !important; }
+.bk--solo .bk__tome::before { display:none; }
+.bk--solo .bk__note { padding-left:1.4rem; }
+@media (max-width:860px) { .bk { padding:0; } .bk__sheet { height:100dvh; width:100%; border-width:0; box-shadow:none; padding-bottom:4.6rem; } .bk__ctl .row { flex-wrap:wrap; gap:.4rem; }
+  .bk__pg { display:flex; } .bk__tome { grid-template-columns:1fr; } .bk__tome::before { display:none; }
+  .bk[data-page="note"] .bk__guide { display:none; } .bk[data-page="guide"] .bk__note { display:none; } .bk--solo .bk__note { display:block !important; } }
+@media (prefers-reduced-motion: reduce) { .bk * { transition:none !important; animation:none !important; } }
 /* 7. lesson card on a note */
 .notepage { padding:1.1rem 1.4rem 1.4rem; display:grid; gap:.8rem; }
 .notepage .crumb { font:.72rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
@@ -440,8 +483,58 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 <h1>Learn AI with me</h1>
 <p>This is the guided path, in the order to read it: the stages, the quests in each and the stops in each quest. The interactive map needs JavaScript.</p>
 <ol>
-<li><h2>Stage 1: Harbor</h2>
-<p>Start here: the basics, outside this site. <a href="https://academy.claude.com">Claude Academy</a>.</p></li>
+<li><h2>Stage 1</h2>
+<p>7 quests, about 38 min of reading. Start with <a href="https://academy.claude.com">Claude Academy</a>, outside this site.</p>
+<ol>
+<li><h3>I'm Six Months In, Not an Expert, and I Built This Whole Path With AI</h3>
+<p>Intro · 7 min · 2 stops</p>
+<ol>
+<li>Before you set off</li>
+<li>How the path works</li>
+</ol></li>
+<li><h3>Your AI Is the Teammate Who Never Asks Questions</h3>
+<p>Intro · 7 min · 2 stops</p>
+<ol>
+<li>The teammate who never asks questions</li>
+<li>Brief it, and stay the orchestrator</li>
+</ol></li>
+<li><h3>Have the AI Draw It Before It Builds It</h3>
+<p>Intro · 6 min · 3 stops</p>
+<ol>
+<li>The sentence that costs the most</li>
+<li>Six drawings, one question each</li>
+<li>Let the AI hold the pen</li>
+</ol></li>
+<li><h3>Plan It, Then Build From the Plan</h3>
+<p>Intro · 6 min · 4 stops</p>
+<ol>
+<li>A list you can tick off</li>
+<li>Talk about the stack first</li>
+<li>Draft it, edit it, one step at a time</li>
+<li>Keep it where it survives</li>
+</ol></li>
+<li><h3>The AI Says It's Done. Make It Prove It.</h3>
+<p>Intro · 4 min · 3 stops</p>
+<ol>
+<li>Done is a claim</li>
+<li>Run it, then ask fresh eyes</li>
+<li>Write down what it keeps missing</li>
+</ol></li>
+<li><h3>A Test Is a Check That Runs Itself</h3>
+<p>Intro · 3 min · 3 stops</p>
+<ol>
+<li>The seatbelt</li>
+<li>Two kinds, by name</li>
+<li>Make the AI write them</li>
+</ol></li>
+<li><h3>The Third Time You Type It, Save It</h3>
+<p>Intro · 5 min · 3 stops</p>
+<ol>
+<li>A prompt you have earned</li>
+<li>Let your agent write it</li>
+<li>When a skill earns a routine</li>
+</ol></li>
+</ol></li>
 <li><h2>Stage 2</h2>
 <p>3 quests, about 47 min of reading.</p>
 <ol>
@@ -622,11 +715,18 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 <div class="attrib2">Map data ©2026 the notes</div>
 <div class="toast2" id="toast" hidden></div>
 <!--qm-path-->
-<script type="application/json" id="qm-path">{"stages":[{"n":2,"quests":["ten-times-zero","loop-setup","plan-big-type-small"]},{"n":3,"quests":["necessity-and-the-model-layer","build-the-floor"]},{"n":4,"quests":["show-them-the-board","move-bugs-left"]},{"n":5,"quests":["one-loop-every-repo","watch-its-hands","whitepaper-one-vocabulary"]},{"n":6,"quests":["one-loop-three-harnesses","the-check-that-never-ran","how-the-model-layer-works","the-reviewer-that-learned-to-be-wrong"]}]}</script>
+<script type="application/json" id="qm-path">{"stages":[{"n":1,"quests":["start-here","ai-teammate-never-asks-questions","draw-it-before-the-ai-builds-it","plan-it-then-build-from-the-plan","make-it-check-its-own-work","a-test-is-a-check-that-runs-itself","save-it-as-a-skill"]},{"n":2,"quests":["ten-times-zero","loop-setup","plan-big-type-small"]},{"n":3,"quests":["necessity-and-the-model-layer","build-the-floor"]},{"n":4,"quests":["show-them-the-board","move-bugs-left"]},{"n":5,"quests":["one-loop-every-repo","watch-its-hands","whitepaper-one-vocabulary"]},{"n":6,"quests":["one-loop-three-harnesses","the-check-that-never-ran","how-the-model-layer-works","the-reviewer-that-learned-to-be-wrong"]}]}</script>
 <!--/qm-path-->
 <script type="application/json" id="qm-data">
 {
 "quests":[
+{"id":"start-here","region":1,"title":"I'm Six Months In, Not an Expert, and I Built This Whole Path With AI","short":"Start here","level":"intro","aud":["learn"],"min":7,"pos":[0,0],"stops":["Before you set off","How the path works"],"learn":["Who I am, in case we haven't met","Why I started over","Who this is for"],"draft":true,"lesson":"harbor","li":[0,1]},
+{"id":"ai-teammate-never-asks-questions","region":1,"title":"Your AI Is the Teammate Who Never Asks Questions","short":"The teammate","level":"intro","aud":["learn"],"min":7,"pos":[0,0],"stops":["The teammate who never asks questions","Brief it, and stay the orchestrator"],"learn":["I'm terrible at multitasking, and I'm lazy on purpose","It says yes to everything","It can't think for you"],"draft":true,"lesson":"harbor","li":[2,3]},
+{"id":"draw-it-before-the-ai-builds-it","region":1,"title":"Have the AI Draw It Before It Builds It","short":"Draw it","level":"intro","aud":["learn"],"min":6,"pos":[0,0],"stops":["The sentence that costs the most","Six drawings, one question each","Let the AI hold the pen"],"learn":["Why drawing matters more now","Six drawings, one question each","Let the AI hold the pen"],"draft":true,"lesson":"draw-it-before-the-ai-builds-it","li":[0,1,2]},
+{"id":"plan-it-then-build-from-the-plan","region":1,"title":"Plan It, Then Build From the Plan","short":"Plan it","level":"intro","aud":["learn"],"min":6,"pos":[0,0],"stops":["A list you can tick off","Talk about the stack first","Draft it, edit it, one step at a time","Keep it where it survives"],"learn":["A plan is a list you can tick off","Talk about the stack first","Let the AI draft it, then you edit it"],"draft":true,"lesson":"plan-it-then-build-from-the-plan","li":[0,1,2,3]},
+{"id":"make-it-check-its-own-work","region":1,"title":"The AI Says It's Done. Make It Prove It.","short":"Check it","level":"intro","aud":["learn"],"min":4,"pos":[0,0],"stops":["Done is a claim","Run it, then ask fresh eyes","Write down what it keeps missing"],"learn":["Done is a claim, not a result","Make it show you the evidence","Run it yourself"],"draft":true,"lesson":"make-it-check-its-own-work","li":[0,1,2]},
+{"id":"a-test-is-a-check-that-runs-itself","region":1,"title":"A Test Is a Check That Runs Itself","short":"Tests","level":"intro","aud":["learn"],"min":3,"pos":[0,0],"stops":["The seatbelt","Two kinds, by name","Make the AI write them"],"learn":["It's the check you already do","Two kinds worth knowing by name","Make the AI write them as it builds"],"draft":true,"lesson":"a-test-is-a-check-that-runs-itself","li":[0,1,2]},
+{"id":"save-it-as-a-skill","region":1,"title":"The Third Time You Type It, Save It","short":"Skills","level":"intro","aud":["learn"],"min":5,"pos":[0,0],"stops":["A prompt you have earned","Let your agent write it","When a skill earns a routine"],"learn":["A skill is a prompt you've earned","Let your agent write it, then you edit it","Keep judgment manual"],"draft":true,"lesson":"save-it-as-a-skill","li":[0,1,2]},
 {"id":"one-loop-every-repo","region":2,"title":"I Was Shipping Faster Than I Could Understand It","short":"The one loop","level":"deep","aud":["build"],"min":10,"pos":[50,98],"stops":["The week I couldn't explain my own work","The first thing I fixed was where the plan lives","One heartbeat, and it fires while I'm already working","What I am honest about"],"learn":["The week I couldn't explain my own work","First, an honest look at what I was doing wrong","So I stopped building features and read"]},
 {"id":"one-loop-three-harnesses","region":2,"title":"The Loop Outlives the Model.","short":"Outlives the model","level":"deep","aud":["build"],"min":11,"pos":[60,84],"stops":["The day one of them ran out","What the loop actually is","The model is a routing decision","A week with one to five projects"],"learn":["The day one of them ran out","The loop was the thing I had not written down","What the loop actually is"]},
 {"id":"loop-setup","region":2,"title":"Set Up the Loop With One Prompt","short":"One-prompt setup","level":"intro","aud":["learn","build"],"min":12,"pos":[74,92],"stops":["Start with the prompt","Your standards are the contract you write","Step four: the guards, when they earn it"],"learn":["Start with the prompt","What the loop is","Your standards are the contract you write"]},
@@ -643,15 +743,15 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 {"id":"build-the-floor","region":6,"title":"Everybody Wants the Agent. Somebody Has to Build the Floor.","short":"Build the floor","level":"intro","aud":["lead","build"],"min":39,"pos":[162,42],"stops":["The part everybody skips","The roadmap","The floor has a shape, and it is worth naming","Stage zero: instrument, and make one repository legible","Stage one: extract the skills","Stage two: get them used, and score what happens","Stage four: the loop","Six ways these systems fail without telling you","Your scaffolding has an expiry date"],"learn":["The part everybody skips","The floor is the variable, and it is measurable","The roadmap"]}
 ],
 "regions":[
-{"n":1,"name":"Harbor","c":[28,126],"pin":[28,118],"lbl":[28,138],"scene":"harbor","sub":"Start here: the basics, outside this site","blurb":"No notes here on purpose. The first stop points out to Claude Academy for the basics, then the trail heads into the forest."},
+{"n":1,"name":"Harbor","c":[28,126],"pin":[28,118],"lbl":[28,138],"scene":"harbor","sub":"Start here: the basics, outside this site","blurb":"The on-ramp. Seven short notes with a voice lesson each, then the trail heads into the forest. Claude Academy, outside this site, comes first."},
 {"n":2,"name":"Loop Forest","c":[62,92],"pin":[62,78],"lbl":[62,100],"scene":"forest","sub":"The loop: plan, run, check, repeat","blurb":"How I run AI work as a loop instead of a clever prompt."},
 {"n":3,"name":"Model Mines","c":[104,124],"pin":[104,106],"lbl":[104,136],"scene":"mines","sub":"Models, limits and cost","blurb":"Which model for which job, and what happens when you run out."},
 {"n":4,"name":"Guild Hall","c":[146,92],"pin":[146,76],"lbl":[146,108],"scene":"hall","sub":"Leading and reviewing AI work","blurb":"Getting a team to use AI well, and a reviewer that learned to be wrong."},
 {"n":5,"name":"GRAIN Keep","c":[92,52],"pin":[92,34],"lbl":[92,64],"scene":"keep","sub":"Designing for AI","blurb":"A design system an AI can operate, and why."},
 {"n":6,"name":"Summit","c":[150,34],"pin":[150,12],"lbl":[150,46],"scene":"summit","sub":"The capstone","blurb":"The two notes everything else leads to."}
 ],
-"done":["one-loop-every-repo","one-loop-three-harnesses"],
-"partial":{"loop-setup":[0]},
+"done":[],
+"partial":{},
 "routes":{
 "2":[[[48,11],[54,12],[58,15],[61,19],[63,24],[65,26],[68,28],[74,29],[81,30],[87,34],[90,38]],[[90,38],[89,43],[85,46],[80,50],[76,52],[72,55],[68,57],[63,59],[58,60],[53,60],[48,59]],[[48,59],[43,59],[38,59],[32,60],[25,60],[19,58],[16,54],[16,49],[18,45],[21,41],[22,38]],[[22,38],[20,35],[18,31],[17,27],[18,22],[21,19],[26,16],[31,14],[36,13],[42,11],[48,11]]],
 "3":[[[65,66],[65,56],[65,46],[65,36]],[[65,44],[46,44],[26,44],[26,24]],[[65,66],[65,50],[65,36],[85,36],[105,36],[105,22],[90,18],[74,18],[60,18]]],
@@ -660,7 +760,7 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 "6":[[[26,62],[58,54],[28,46],[56,38],[32,30],[50,22],[42,14]],[[42,14],[50,22],[32,30],[56,38],[28,46],[58,54],[26,62]]]
 },
 "spec":{
-"1":{"cx":26,"cy":126,"W":88,"H":56,"q":[],"slots":[],"lights":[[16,17],[84,25],[37,41]],"fires":[2],"flags":[[51,6]]},
+"1":{"cx":26,"cy":126,"W":88,"H":56,"q":[[51,4],[71,14],[73,33],[57,47],[33,45],[21,28],[29,10]],"slots":[[57,5],[74,19],[71,38],[51,48],[29,42],[21,23],[34,7]],"lights":[[16,17],[84,25],[37,41]],"fires":[2],"flags":[[51,6]]},
 "2":{"cx":62,"cy":92,"W":96,"H":76,"q":[[48,11],[90,38],[48,59],[22,38]],"slots":[[48,11],[62,21],[72,28],[90,38],[79,50],[65,59],[48,59],[30,60],[16,51],[22,38],[17,25],[29,15]],"lights":[[48,38],[48,11],[65,26],[90,38],[72,55],[48,59],[19,58],[22,38],[21,19]],"fires":[0],"flags":[]},
 "3":{"cx":104,"cy":126,"W":130,"H":70,"q":[[65,62],[26,24],[84,6]],"slots":[[65,58],[65,46],[45,44],[26,40],[26,24],[85,38],[105,32],[105,20],[65,20]],"lights":[[65,54],[26,36],[104,28],[66,18]],"flags":[]},
 "4":{"cx":146,"cy":92,"W":108,"H":76,"q":[[24,42],[62,42],[54,30]],"slots":[[54,30],[24,42],[62,42],[54,56],[16,26],[90,26],[16,60],[90,60],[36,62]],"lights":[[44,31],[64,31],[54,50],[24,36]],"flags":[[54,2]]},
@@ -827,7 +927,12 @@ const LEVEL={intro:1,intermediate:2,deep:3}, CLASS={learn:'Learner',build:'Build
 QUESTS.forEach(q=>{ q.lv=LEVEL[q.level]||1; q.xp=25*q.min+100*q.stops.length; q.cls=q.aud.map(a=>CLASS[a]||a).join(', '); q.done=DONE.has(q.id); });
 /* Progress is per stop. The saved progress here is a sample: two quests finished and one stop of the third. In the real build it comes from the guild card's save. */
 const PARTIAL=DATA.partial, PROG={};
-QUESTS.forEach(q=>{ PROG[q.id]=new Set(DONE.has(q.id)?q.stops.map((_,i)=>i):(PARTIAL[q.id]||[])); });
+/* Progress is the reader's own, kept in this browser and nowhere else (self-reported, so only the reader can be fooled). The lesson book
+   writes the same key when a stop is finished. A quest's stop j is its j-th stop; the lesson book maps that to the lesson's own numbering. */
+const SAVE_KEY='learn.progress.v1';
+function loadSaved(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY)||'{}'); }catch(e){ return {}; } }
+function persist(){ try{ const o={}; QUESTS.forEach(q=>{ if(PROG[q.id].size) o[q.id]=[...PROG[q.id]].sort((a,b)=>a-b); }); localStorage.setItem(SAVE_KEY,JSON.stringify(o)); }catch(e){} }
+QUESTS.forEach(q=>{ const saved=loadSaved()[q.id]||[]; PROG[q.id]=new Set(DONE.has(q.id)?q.stops.map((_,i)=>i):[...(PARTIAL[q.id]||[]),...saved].filter(i=>i<q.stops.length)); });
 function refreshProgress(){ QUESTS.forEach(q=>{ q.done=PROG[q.id].size>=q.stops.length; }); }
 refreshProgress();
 const byReg=n=>QUESTS.filter(q=>q.region===n);
@@ -871,7 +976,7 @@ let YOUQ={id:'',i:0};
 function placeYou(){ const nx=QUESTS.find(q=>!q.done)||QUESTS[QUESTS.length-1]; let i=0; while(i<nx.stops.length-1&&PROG[nx.id].has(i)) i++; YOUQ={id:nx.id,i}; const p=stopPos(nx,Math.min(i,8)); YOU[0]=p[0]; YOU[1]=p[1]; }
 function where(){ selectStop(YOUQ.id,YOUQ.i); }
 function youWalk(){ const el=document.querySelector('.you'); if(el){ el.classList.add('walk'); setTimeout(()=>el.classList.remove('walk'),950); } }
-function markDone(){ if(sel.t!=='stop') return; const set=PROG[sel.id]; if(set.has(sel.i)) set.delete(sel.i); else set.add(sel.i); refreshProgress(); placeYou(); youWalk(); renderPanel(); draw(); toast(set.has(sel.i)?'Stop '+(sel.i+1)+' marked as done. You moved on.':'Stop '+(sel.i+1)+' is open again.'); }
+function markDone(){ if(sel.t!=='stop') return; const set=PROG[sel.id]; if(set.has(sel.i)) set.delete(sel.i); else set.add(sel.i); refreshProgress(); persist(); placeYou(); youWalk(); renderPanel(); draw(); toast(set.has(sel.i)?'Stop '+(sel.i+1)+' marked as done. You moved on.':'Stop '+(sel.i+1)+' is open again.'); }
 const routeOf=qq=>{ const r=ROUTES[qq.region]; return r&&r[byReg(qq.region).indexOf(qq)]; };
 function alongRoute(rt,f){ let L=0; const seg=[]; for(let i=0;i<rt.length-1;i++){ const d=Math.hypot(rt[i+1][0]-rt[i][0],rt[i+1][1]-rt[i][1]); seg.push(d); L+=d; } let s=L*f; for(let i=0;i<seg.length;i++){ if(s<=seg[i]||i===seg.length-1){ const k=seg[i]?Math.min(1,s/seg[i]):0; return [rt[i][0]+(rt[i+1][0]-rt[i][0])*k,rt[i][1]+(rt[i+1][1]-rt[i][1])*k]; } s-=seg[i]; } return rt[0]; }
 const stopPos=(qq,i)=>{ const rt=routeOf(qq); const n=Math.min(qq.stops.length,9); if(!rt) return qq.pos; const [x,y]=alongRoute(rt,n===1?.5:.04+.92*i/(n-1)); return sceneM(qq.region,x,y); };
@@ -1214,20 +1319,20 @@ function renderPanel(){
     h=sceneHead('harbor')+`<div class="pc-body"><h3>Learn AI with me</h3><div class="sub">${QUESTS.length} quests · 6 regions · about ${hours} hours of reading</div>
       <p style="margin:0;font:.86rem/1.55 Georgia,serif">A guided path through what I have actually built and learned, in my own notes and the sources I used. Pick a region, or zoom in and wander.</p>
       <div class="row"><button class="primary" data-act="start">&#9654; Start at the Harbor</button><button data-act="cont">Continue</button></div>
-      <div><strong>The path</strong> <span class="sub">${PATH.stages.length} stages, in the order to read them</span></div>${PATH.stages.map(st=>{ const qs=st.quests.map(id=>QUESTS.find(x=>x.id===id)); return `<div class="sub" style="margin-top:.35rem">Stage ${st.n} · ${qs.length} quests · about ${qs.reduce((t,x)=>t+x.min,0)} min</div>`+qs.map(x=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${x.order}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops</small></span><span class="go">&#9654;</span></button>`).join(''); }).join('')}
+      <div><strong>The path</strong> <span class="sub">${PATH.stages.length} stages, in the order to read them</span></div>${PATH.stages.map(st=>{ const qs=st.quests.map(id=>QUESTS.find(x=>x.id===id)); return `<div class="sub" style="margin-top:.35rem">Stage ${st.n} · ${qs.length} quests · about ${qs.reduce((t,x)=>t+x.min,0)} min</div>`+qs.map(x=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${x.order}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops${x.draft?' \u00b7 <b class="draftmark">Draft</b>':''}</small></span><span class="go">&#9654;</span></button>`).join(''); }).join('')}
       <div><strong>Regions</strong> <span class="sub">where the quests sit on the island</span></div>${REG.slice(1).map(r=>{ const qs=byReg(r.n), d=qs.filter(x=>x.done).length; return `<button class="rowbtn" data-r="${r.n}"><span class="n">${r.n}</span><span>${r.name}<small>${r.sub} · ${d}/${qs.length} done</small></span><span class="go">&#9654;</span></button>`; }).join('')}
       <div class="sub">${dn} of ${QUESTS.length} quests done. Drag to pan, scroll or +/- to zoom, Esc to return here.</div></div>`; }
   else if(sel.t==='region'){ const r=REG[sel.id-1], qs=byReg(r.n);
     h=pnav('All regions','data-act="home"',r.name,neighbours())+sceneHead(r.scene)+`<div class="pc-body"><h3>${r.name}</h3><div class="sub">${r.sub}</div><p style="margin:0;font:.86rem/1.55 Georgia,serif">${r.blurb}</p>
-      ${r.n===1?'<div class="row"><button class="primary" data-act="academy">Open Claude Academy \u2197</button><button data-act="ferry">Ferry to the Guild Hall</button></div>':''}<div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${x.order}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops${x.id===YOUQ.id?' \u00b7 <b class="here">You are here</b>':''}</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}</div>`; }
+      ${r.n===1?'<div class="row"><button class="primary" data-act="academy">Open Claude Academy \u2197</button><button data-act="ferry">Ferry to the Guild Hall</button></div>':''}<div><strong>Route</strong> <span class="sub">${qs.length} quests · about ${qs.reduce((a,x)=>a+x.min,0)} min of reading</span></div>${qs.map((x,i)=>`<button class="rowbtn" data-q="${x.id}" ${x.done?'data-done':''}><span class="n">${x.order}</span><span>${x.title}<small>Lv ${x.lv} ${x.level} · ${x.min} min · ${x.stops.length} stops${x.draft?' \u00b7 <b class="draftmark">Draft</b>':''}${x.id===YOUQ.id?' \u00b7 <b class="here">You are here</b>':''}</small></span><span class="go">&#9654;</span></button>`).join('')||'<div class="sub">Outside this site: Claude Academy, for the basics.</div>'}</div>`; }
   else { const qq=QUESTS.find(x=>x.id===sel.id), r=REG[qq.region-1];
-    h=(sel.t==='stop'?pnav(qq.short,`data-q="${qq.id}"`,`${qq.short} › Stop ${sel.i+1}`,neighbours()):pnav(r.name,`data-r="${r.n}"`,`${r.name} › ${qq.short}`,neighbours()))+sceneHead(r.scene,40)+`<div class="pc-body"><span class="ribbon">Stage ${qq.stage} · Quest ${qq.order} of ${QUESTS.length}</span><h3>${qq.title}</h3>
+    h=(sel.t==='stop'?pnav(qq.short,`data-q="${qq.id}"`,`${qq.short} › Stop ${sel.i+1}`,neighbours()):pnav(r.name,`data-r="${r.n}"`,`${r.name} › ${qq.short}`,neighbours()))+sceneHead(r.scene,40)+`<div class="pc-body"><span class="ribbon">Stage ${qq.stage} · Quest ${qq.order} of ${QUESTS.length}${qq.draft?' · Draft':''}</span><h3>${qq.title}</h3>
       <div class="row"><span class="chip">Class: ${qq.cls}</span><span class="chip">Level: ${qq.level}</span></div>
       <div class="stats"><div class="stat"><small>Quest level</small><strong>Lv ${qq.lv}</strong></div><div class="stat"><small>Experience</small><strong>+${qq.xp.toLocaleString()} XP</strong></div><div class="stat"><small>Reading</small><strong>~${qq.min} min</strong></div></div>
       <div><strong>It covers</strong><ul style="margin:.2rem 0 0;padding-left:1rem">${qq.learn.map(l=>`<li>${l}</li>`).join('')}</ul></div>
       <div class="stopbox"><div class="stopbox__h"><strong>${qq.stops.length} stops</strong><span class="sub">in lesson order, along the route</span></div>${qq.stops.map((st,j)=>`<div class="stopline" data-s="${j}" ${sel.t==='stop'&&sel.i===j?'data-sel':''} ${PROG[qq.id].has(j)?'data-done':''}><span class="sn">${PROG[qq.id].has(j)?'\u2713':j+1}</span><span>${st}</span>${(qq.id===YOUQ.id&&j===YOUQ.i)?'<b class="here">You are here</b>':''}</div>`).join('')}</div>
       <div class="row">${sel.t==='stop'?`<button data-act="done">${PROG[qq.id].has(sel.i)?'Undo: open again':'Mark stop '+(sel.i+1)+' as done'}</button>`:''}${(qq.id===YOUQ.id&&(sel.t==='quest'||sel.i===YOUQ.i))?'':'<button data-act="where">\u25CE Where I am</button>'}</div>
-      <div class="row"><button class="primary" data-act="begin">Begin quest</button><button data-act="note">Read the note only</button></div></div>`; }
+      <div class="row"><button class="primary" data-act="begin">${sel.t==='stop'?'Begin this stop':'Begin quest'}</button><button data-act="note">Read the note only</button></div></div>`; }
   panel.innerHTML=h+footer(); panel.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind));
 }
 panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],[data-act],[data-s],[data-nav]'); if(!b) return; e.preventDefault();
@@ -1238,11 +1343,20 @@ panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],
   else if(b.dataset.act==='home') home();
   else if(b.dataset.act==='clear'){ q=''; document.getElementById('q').value=''; renderPanel(); }
   else if(b.dataset.act==='start'){ selectRegion(1); }
-  else if(b.dataset.act==='academy'){ toast('Opens Claude Academy in a new tab (URL to confirm before launch)'); }
+  else if(b.dataset.act==='academy'){ window.open('https://academy.claude.com','_blank','noopener'); }
   else if(b.dataset.act==='ferry'){ selectRegion(4); }
   else if(b.dataset.act==='cont'||b.dataset.act==='where') where();
   else if(b.dataset.act==='done') markDone();
-  else if(b.dataset.act==='begin'||b.dataset.act==='note'){ toast(b.dataset.act==='begin'?'Opens the note with the quest book (lesson mode)':'Opens the note on its own'); } });
+  else if(b.dataset.act==='begin'||b.dataset.act==='note') openQuest(sel.id,b.dataset.act==='begin',sel.t==='stop'?sel.i:-1); });
+/* Where a quest opens. The note is fetched from its own page and shown in the book. A note that is still a draft lives at /drafts/<slug>, which sends
+   the reader on to /notes/<slug> once it publishes, so a link to it never has to change by hand. */
+const noteHref=qq=>(qq.draft?'/drafts/':'/notes/')+qq.id;
+function openQuest(id,lesson,stop){ const qq=QUESTS.find(x=>x.id===id);
+  if(lesson&&qq.lesson){ let j=stop>=0?stop:0; if(stop<0) while(j<qq.stops.length-1&&PROG[qq.id].has(j)) j++; Book.open({lesson:qq.lesson,stop:qq.li[j]}); return; }
+  if(lesson) toast('This note has no lesson yet. Opening the note.');
+  Book.open({quest:id,solo:true}); }
+/* The book (book.js) calls this when it closes, so the map shows the stops the reader finished. */
+function onBookClosed(rest){ QUESTS.forEach(q=>{ const saved=loadSaved()[q.id]||[]; PROG[q.id]=new Set(saved.filter(i=>i<q.stops.length)); }); refreshProgress(); placeYou(); renderPanel(); draw(); if(rest) toast('Progress saved. Rest well.'); }
 function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2400); }
 document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; renderPanel(); });
 document.getElementById('fold').addEventListener('click',()=>{ collapsed=!collapsed; panel.hidden=collapsed; document.getElementById('fold').textContent=collapsed?'▶':'◀'; draw(); });
@@ -1315,5 +1429,6 @@ addEventListener('hashchange',applyHash);
 window.qmReady=reskin().then(()=>{ resize(); setMotion(motion); applyHash(); });
 
 </script>
+<script src="book.js"></script>
 </body>
 </html>

@@ -21,6 +21,8 @@ social: |
   you.
 
   And once a skill is boring and checkable, a routine can run it for you. Here's how I decide:
+socialImage: "/media/notes/save-it-as-a-skill-social.png"
+socialImageAlt: "A card from the Harbor path of Learn AI with me, titled The Third Time You Type It, Save It, with the line: The third time you type the same prompt, stop and save it."
 ---
 
 I noticed some time this autumn that I had a catchphrase, and I was saying it to a machine. "Are we clean

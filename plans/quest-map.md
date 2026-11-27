@@ -279,9 +279,9 @@ This is the part that keeps the map alive without hand editing.
 - [ ] Badge link that rebuilds the card from the hash, with the self-reported notice on the page.
 - [ ] Path badges as their own kind of badge, separate from the HAU course badges: a new collection under its own prefix, its own medallion in the quest palette and its own criteria page. Earned by finishing a region's trials, with the runes collected shown as its skills.
 - [ ] Lesson card on each note that has a lesson, linking the note to its lesson and back (see quest-lessons).
-- [ ] Lesson mode: the sidebar becomes the quest book. A sidecar file per lesson holds segments, cues, rune ids, the plain-words digest and the trial. The notes themselves are untouched.
+- [x] Lesson mode, built in draft form 2026-11-27 as a modal book over the map (the note on the left page, the Guide and transcript on the right), not a sidebar. Lesson data is view/learn-map/lessons/<id>.json from content/lessons. Cues with real audio are still to come, and the voice is a temporary browser voice (plans/harbor-curriculum.md, The voice).
 - [ ] Wire the quest UI to GRAIN tokens and verify every flavor and scheme pair for contrast.
-- [ ] Concept highlight in the note, driven through the GRAIN surface and verb registry, not a back channel.
+- [~] Concept highlight in the note: lit inside the book by section id and quote, a client-side reader of MILL's ids, no back channel. Not yet through the GRAIN verb registry.
 - [ ] Motion layer: waves, torches, flags, people and boats, paused during pan and zoom, off under reduced motion, with a Motion button and a Layers option for each kind.
 - [ ] Reduced motion, captions, keyboard path and contrast checked in both themes.
 - [ ] First recording for one quest, to prove the book end to end before recording the rest.
