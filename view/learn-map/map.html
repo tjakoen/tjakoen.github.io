@@ -387,7 +387,7 @@ body { margin:0; background:var(--q-water); }
 #over .lbl.quest { font-size:.66rem; letter-spacing:.04em; max-width:130px; white-space:normal; line-height:1.15; }
 #over .lbl.quest[data-done] { opacity:.8; }
 #over .lbl.faint { opacity:.6; }
-.col { position:fixed; left:12px; top:12px; bottom:100px; width:360px; display:grid; grid-template-rows:auto minmax(0,1fr); gap:10px; pointer-events:none; z-index:5; }
+.col { position:fixed; left:12px; top:12px; bottom:40px; width:360px; display:grid; grid-template-rows:auto minmax(0,1fr); gap:10px; pointer-events:none; z-index:5; }
 .col > * { pointer-events:auto; }
 .searchbar { background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); display:flex; gap:.5rem; align-items:center; padding:.3rem .5rem; }
 .searchbar input { flex:1; border:0; background:transparent; font:inherit; color:var(--q-ink); outline:none; min-width:0; }
@@ -453,11 +453,11 @@ body { margin:0; background:var(--q-water); }
 .ctl .stack button { border:0; box-shadow:none; width:38px; height:36px; padding:0; font-weight:700; font-size:1.1rem; }
 .ctl .stack button + button { border-top:2px solid var(--q-line); }
 .ctl .single { width:44px; height:42px; padding:0; }
-.zbar { position:fixed; left:12px; bottom:14px; display:flex; gap:.6rem; align-items:flex-end; z-index:5; }
+.zbar { position:fixed; right:70px; bottom:30px; display:flex; flex-direction:row-reverse; gap:.6rem; align-items:flex-end; z-index:5; } /* right of the panel, beside the zoom buttons, so the left stays free for the panel */
 .zbar .scale { font-size:.7rem; }
 .zbar button.tile { padding:0; cursor:pointer; }
 .zbar button.tile:focus-visible { outline:3px solid var(--q-accent); outline-offset:2px; }
-.layerpop { position:absolute; left:0; bottom:calc(100% + 8px); width:230px; display:grid; gap:.45rem; padding:.6rem .7rem .7rem; background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font-size:.76rem; z-index:6; }
+.layerpop { position:absolute; right:0; bottom:calc(100% + 8px); width:230px; display:grid; gap:.45rem; padding:.6rem .7rem .7rem; background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font-size:.76rem; z-index:6; }
 .layerpop[hidden] { display:none; }
 .lp-h { font:700 .62rem/1 ui-monospace,"SF Mono",Menlo,monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--q-muted); }
 .lp-types { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
@@ -1445,5 +1445,6 @@ window.qmReady=reskin().then(()=>{ resize(); setMotion(motion); applyHash(); });
 
 </script>
 <script src="book.js"></script>
+<script src="guild.js"></script>
 </body>
 </html>

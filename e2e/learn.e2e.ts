@@ -6,6 +6,9 @@ import AxeBuilder from "@axe-core/playwright";
 type Quest = { id: string; stops: string[]; order: number; stage: number; done: boolean };
 declare const QUESTS: Quest[];
 declare const sel: { t: string; id?: string; i?: number };
+declare const PROG: Record<string, Set<number>>;
+declare function persist(): void;
+declare const Guild: { xp(): number; codeOf(b: unknown): string; bundle(): unknown };
 
 const frameOf = async (page: Page) => {
   const handle = await page.locator("#learn-frame").elementHandle();
@@ -218,4 +221,57 @@ test("Begin quest opens the book over the map: the note on the left, the Guide o
   await page.keyboard.press("Escape");
   await expect(book).toBeHidden();
   await expect(frame.locator(".stopline[data-done]")).toHaveCount(1);
+});
+
+const resetGuild = (frame: Awaited<ReturnType<typeof frameOf>>) =>
+  frame.evaluate(() => { for (const k of ["learn.progress.v1", "learn.runes.v1", "learn.guild.v1"]) localStorage.removeItem(k); });
+
+test("the guild HUD counts XP from the trials ticked and shows the level", async ({ page }) => {
+  await page.goto("/learn");
+  let frame = await frameOf(page);
+  await resetGuild(frame);
+  await page.reload();
+  frame = await frameOf(page);
+  await expect(frame.locator(".gh__lv")).toHaveText("Lv 1 · Newcomer");
+  await frame.evaluate(() => { for (let i = 0; i < 2; i++) PROG["start-here"].add(i); persist(); });
+  await expect.poll(() => frame.evaluate(() => Guild.xp())).toBe(200);
+  await expect(frame.locator(".gh__lv")).toHaveText("Lv 2 · Apprentice");
+  await expect(frame.locator(".lvl")).toContainText("Newcomer");
+  await expect(frame.locator(".lvl")).toHaveAttribute("role", "status");
+});
+
+test("the guild card saves a code, loads it back, and refuses a bad one", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await resetGuild(frame);
+  await frame.evaluate(() => { PROG["start-here"].add(0); persist(); });
+  const code = await frame.evaluate(() => Guild.codeOf(Guild.bundle()));
+  await frame.evaluate(() => { PROG["start-here"].clear(); persist(); });
+  await frame.locator(".gh").click();
+  await frame.locator('[data-f="code"]').fill("not a code");
+  await frame.locator('[data-do="loadcode"]').click();
+  await expect(frame.locator("[data-msg]")).toContainText("did not load");
+  await frame.locator('[data-f="code"]').fill(code);
+  await frame.locator('[data-do="loadcode"]').click();
+  expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toContain('"start-here":[0]');
+});
+
+test("a badge link rebuilds the badge page from the code alone, with the evidence link and no claim of a credential", async ({ page }) => {
+  await page.goto("/learn");
+  let frame = await frameOf(page);
+  await resetGuild(frame);
+  const code = await frame.evaluate(() => {
+    const progress: Record<string, number[]> = {};
+    QUESTS.filter((q) => (q as Quest & { region: number }).region === 1).forEach((q) => { progress[q.id] = q.stops.map((_, i) => i); });
+    return Guild.codeOf({ v: 1, name: "Test Holder", seed: "ABC234", since: "2026-11", evidence: "https://example.com/roadmap", progress, runes: {} });
+  });
+  await page.goto("/learn#badge=1." + code);
+  frame = await frameOf(page);
+  const badge = frame.locator(".gc");
+  await expect(badge.locator("h3")).toHaveText("Walks the Harbor");
+  await expect(badge).toContainText("Earned · Test Holder");
+  await expect(badge.locator('a[href="https://example.com/roadmap"]')).toHaveAttribute("rel", /noopener/);
+  await expect(badge).toContainText("not a signed credential");
+  // looking at someone else's badge never writes to this browser's own progress
+  expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toBeNull();
 });
