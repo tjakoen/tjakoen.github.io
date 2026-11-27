@@ -644,3 +644,74 @@ test.describe("on a phone, fingers and the lesson header", () => {
     await expect(note).toHaveAttribute("aria-pressed", "false");
   });
 });
+
+const settle = (page: Page) => page.waitForTimeout(900);
+
+test("zooming by hand stops at Landmark, a chosen stop goes to Stops, and zooming out from there works", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  const zoom = () => frame.evaluate(() => V.z);
+  for (let i = 0; i < 6; i++) { await frame.locator("#zin").click({ force: true }); await settle(page); }
+  expect(await zoom()).toBe(4);
+  await expect(frame.locator("#zname")).toHaveText("Landmark");
+  await expect(frame.locator("#zin")).toBeDisabled();
+  // the plus key and a double tap go through the same step, so they stop there too
+  await page.keyboard.press("+"); await settle(page);
+  expect(await zoom()).toBe(4);
+  // choosing a stop is the way into Stops, and the plus button is still off there
+  await frame.evaluate(() => { selectStop("ten-times-zero", 0); });
+  await page.waitForTimeout(1200);
+  expect(await zoom()).toBe(6);
+  await expect(frame.locator("#zname")).toHaveText("Stops");
+  await expect(frame.locator("#zin")).toBeDisabled();
+  await frame.locator("#zout").click(); await settle(page);
+  expect(await zoom()).toBe(4);
+  await expect(frame.locator("#zin")).toBeDisabled();
+  await frame.locator("#zout").click(); await settle(page);
+  expect(await zoom()).toBe(3);
+  await expect(frame.locator("#zin")).toBeEnabled();
+});
+
+test("close in, a card names the region under the view, and it is gone when zoomed out", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await expect(frame.locator("#wherelbl")).toBeHidden();
+  await frame.evaluate(() => { selectQuest("ten-times-zero"); });
+  await page.waitForTimeout(1200);
+  await expect(frame.locator("#wherelbl")).toBeVisible();
+  await expect(frame.locator("#wherelbl")).toHaveText("Loop Forest");
+  await frame.locator("#zout").click(); await settle(page); await frame.locator("#zout").click(); await settle(page);
+  await expect(frame.locator("#wherelbl")).toBeHidden();
+});
+
+test.describe("on a phone, close in", () => {
+  test.use({ viewport: { width: 375, height: 812 }, hasTouch: true });
+
+  test("no pin is drawn under a control, the chips fold away, and the search is its icon until it is tapped", async ({ page }) => {
+    await page.goto("/learn");
+    const frame = await frameOf(page);
+    await expect(frame.locator(".chipsbar")).toBeVisible();
+    await frame.evaluate(() => { selectQuest("ten-times-zero"); document.body.removeAttribute("data-pm"); });
+    await page.waitForTimeout(1300);
+    expect(await frame.evaluate(() => V.z)).toBe(4);
+    // the chips and the search field step aside to give the map room
+    await expect(frame.locator(".chipsbar")).toBeHidden();
+    await expect(frame.locator("#q")).toBeHidden();
+    await expect(frame.locator(".searchbar .qgo")).toBeVisible();
+    // no visible pin or card has its centre under a control
+    const covered = await frame.evaluate(() => {
+      const ctl = [".ctl", ".mnav", ".topright", ".zbar", ".searchbar", ".chipsbar"].map((q) => document.querySelector(q)).filter((e): e is Element => !!e && getComputedStyle(e).display !== "none" && getComputedStyle(e).visibility !== "hidden").map((e) => e.getBoundingClientRect());
+      return [...document.querySelectorAll<HTMLElement>("#over .hit, #over .lbl")].filter((e) => getComputedStyle(e).visibility !== "hidden").filter((e) => {
+        const r = e.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        return ctl.some((c) => cx > c.left && cx < c.right && cy > c.top && cy < c.bottom);
+      }).map((e) => (e.getAttribute("aria-label") || e.textContent || "").slice(0, 30));
+    });
+    expect(covered).toEqual([]);
+    // a tap opens the field, ready to type; leaving it empty folds it away again
+    await frame.locator(".searchbar .qgo").click();
+    await expect(frame.locator("#q")).toBeVisible();
+    await expect(frame.locator("#q")).toBeFocused();
+    await frame.locator("#q").blur();
+    await expect(frame.locator("#q")).toBeHidden();
+  });
+});

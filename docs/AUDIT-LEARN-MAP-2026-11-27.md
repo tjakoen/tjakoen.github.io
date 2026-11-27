@@ -36,3 +36,28 @@ This audit covers the learn map at /learn, its quest book, and the new guild car
 ## Where I might be wrong
 
 The thresholds that choose a zoom level after a pinch are a nearest-level rule I did not tune by hand on a device. If a pinch feels sticky or too eager on a real phone, that rule in the map's finishPinch function is the place to look.
+
+## User experience pass, same day
+
+A second pass, driven by a review of the first minute, the phone controls and how close the map zooms. The plan is plans/learn-ux-pass.md, and every change below has an e2e test in e2e/learn.e2e.ts or e2e/notes-feed.e2e.ts.
+
+### What changed
+
+1. **The first minute.** Start now opens lesson one. Continue shows only once a stop is finished. The Harbor page no longer leads with a button that leaves the site, and the ferry says what it skips. The quest sheet's main button reads Begin quest, then Next: stop N, then Read it again.
+2. **Vocabulary.** The Codex tab is Runes, because the old name sat too close to a well known product. Rest at campfire is Save and close. Class is For. Log, Runes and Pack each say what they hold.
+3. **Phone controls.** Every control on the map, the guide and the book measures at least 44 px each way, which a test checks. The numbered pins are left out on purpose, since 44 px pins would cover each other. The lesson header is two rows, about 110 px, and the Note and Guide switch shows which side is open.
+4. **Zoom.** Zooming by hand stops at Landmark. Stops is reached by choosing a stop. Close in, a small card names the region, no pin is drawn under a control, and on a phone the chips fold away and the search shrinks to its icon until tapped.
+5. **The side panel overlaps the map.** Folding it no longer slides the map sideways.
+6. **Badges** show the runes collected, and the ones still to find.
+7. **The notes page** has an AI roadmap tab: the same stages in the same order as the map, a jump bar by stage, and a button into the map.
+
+### What I did not measure
+
+- A real phone. All of this is headless Chromium with phone emulation, so touch feel, real frame rate and the pinch gesture are unchecked.
+- The quest-complete and level-up screens, keyboard-only use, a screen reader, dark themes and landscape.
+- Whether 44 px chips and buttons feel too heavy on a small phone. They look chunky in screenshots, and that is a judgment call for a person with a device.
+- At Landmark on desktop the guide panel still covers about a third of the map. It can be folded, and folding no longer moves the map, but I did not change its width.
+
+### Where I might be wrong
+
+The region card picks the region whose centre is nearest the middle of the view, which can name a neighbour when the view sits on a border. The rule that hides pins under controls tests the pin's centre against each control's box, so a pin whose edge pokes out from under a button can still show.

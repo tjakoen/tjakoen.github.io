@@ -523,6 +523,9 @@ body { margin:0; background:var(--q-water); }
   .mnav .mmid { background:var(--q-accent); color:var(--q-accent-ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .mnav svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
 }
+.wherelbl { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:5; pointer-events:none; padding:.25rem .7rem; background:var(--q-panel); color:var(--q-ink); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font:700 .74rem ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase; }
+.wherelbl[hidden] { display:none; }
+.ctl .stack button:disabled { opacity:.4; cursor:default; }
 /* The map and its guide on a phone: the same 44 px floor on every control. */
 @media (max-width:799px) {
   .pfoot .step { width:44px; height:44px; }
@@ -534,6 +537,13 @@ body { margin:0; background:var(--q-water); }
   .ctl .single, .ctl .stack button, .topright #settings { width:44px; height:44px; }
   .chipsbar .chip { min-height:44px; min-width:44px; display:inline-flex; align-items:center; justify-content:center; }
   /* the chip row scrolls sideways, so its right edge fades to say there is more */
+  /* Close in, the map needs the room: the filter chips go, the search shrinks to its icon until it is tapped, and the zoom buttons move up. */
+  body:is([data-zoom="4"],[data-zoom="6"]) .chipsbar { display:none; }
+  body:is([data-zoom="4"],[data-zoom="6"]):not([data-sopen]) .searchbar { width:fit-content; }
+  body:is([data-zoom="4"],[data-zoom="6"]):not([data-sopen]) .searchbar input { display:none; }
+  body:is([data-zoom="4"],[data-zoom="6"]) .ctl { top:64px; }
+  .wherelbl { top:64px; bottom:auto; left:8px; transform:none; }
+  body:is([data-zoom="4"],[data-zoom="6"]):not([data-sopen]) .wherelbl { top:64px; }
   .chipsbar { -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent); mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent); }
 }
 /* Without JavaScript the plain route list is the page; with it, the map is, and the list stays in the file for crawlers and the no-script case. */
@@ -772,6 +782,7 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 <div class="attrib2">Map data ©2026 the notes</div>
 <div class="pscrim" id="pscrim"></div><button class="pclose" id="pclose" aria-label="Close the panel">&times;</button>
 <nav class="mnav" id="mnav" aria-label="Move around the map"><button id="mprev" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button id="mopen" class="mmid"><span id="mlbl">Open the guide</span></button><button id="mnext" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></nav>
+<div class="wherelbl" id="wherelbl" hidden aria-hidden="true"></div>
 <div class="toast2" id="toast" hidden></div>
 <!--qm-path-->
 <script type="application/json" id="qm-path">{"stages":[{"n":1,"quests":["start-here","ai-teammate-never-asks-questions","draw-it-before-the-ai-builds-it","plan-it-then-build-from-the-plan","make-it-check-its-own-work","a-test-is-a-check-that-runs-itself","save-it-as-a-skill"]},{"n":2,"quests":["ten-times-zero","loop-setup","plan-big-type-small"]},{"n":3,"quests":["necessity-and-the-model-layer","build-the-floor"]},{"n":4,"quests":["show-them-the-board","move-bugs-left"]},{"n":5,"quests":["one-loop-every-repo","watch-its-hands","whitepaper-one-vocabulary"]},{"n":6,"quests":["one-loop-three-harnesses","the-check-that-never-ran","how-the-model-layer-works","the-reviewer-that-learned-to-be-wrong"]}]}</script>
@@ -1303,10 +1314,17 @@ function paint(tick){
 function writeDom(o){ const {items,vx,vy,z,zp}=o;
   syncOverlay(items,vx,vy,z,zp);
   document.getElementById('zname').textContent=ZNAME[z];
+  document.body.dataset.zoom=z; document.getElementById('zin').disabled=!browseLV().some(l=>l>V.z);
+  /* Close in, the island's labels are gone, so one small card names the region the view is over. */
+  const wl=document.getElementById('wherelbl'); if(z>=4){ let best=REG[0], bd=1e9; REG.forEach(r=>{ if(!r.c) return; const d=Math.hypot(r.c[0]-V.cx,r.c[1]-V.cy); if(d<bd){ bd=d; best=r; } }); if(wl.textContent!==best.name) wl.textContent=best.name; wl.hidden=false; } else wl.hidden=true;
   document.querySelectorAll('.zlevels i').forEach((e,i)=>{ e.hidden=i>=LV.length; e.toggleAttribute('data-on',i<=LV.indexOf(z)); });
 }
 const els=new Map();
-function syncOverlay(items,vx,vy,z,zp){ const keep=new Set();
+/* A pin that would sit under one of the controls is hidden, rather than drawn half covered by a button. The rectangles are read again only when the screen, the modal or the zoom changes. */
+let ctlKey='', ctlRects=[];
+function controlRects(z){ const key=innerWidth+'x'+innerHeight+':'+z+':'+('pm' in document.body.dataset)+':'+('sopen' in document.body.dataset); if(key===ctlKey) return ctlRects; ctlKey=key;
+  ctlRects=['.ctl','.mnav','.topright','.zbar','.searchbar','.chipsbar'].map(q=>document.querySelector(q)).filter(e=>e&&getComputedStyle(e).display!=='none'&&getComputedStyle(e).visibility!=='hidden').map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.height); return ctlRects; }
+function syncOverlay(items,vx,vy,z,zp){ const keep=new Set(), cr=controlRects(z);
   over.style.setProperty('--ps', wide()?(z>=4?'30px':'22px'):(z>=4?'38px':'32px')); /* a finger needs a bigger pin than a pointer does */ // pins are smaller while zoomed out, full size once you are close
   items.forEach(it=>{ keep.add(it.key); let e=els.get(it.key);
     if(!e){ if(it.kind==='you'){ e=document.createElement('div'); e.className='you'; e.innerHTML='<canvas width="16" height="20" aria-hidden="true"></canvas><span>You</span>'; e.title='You are here: next up on the route'; }
@@ -1315,6 +1333,7 @@ function syncOverlay(items,vx,vy,z,zp){ const keep=new Set();
       else { e=document.createElement('div'); e.className='lbl '+(it.cls||''); e.innerHTML=it.text+(it.sub?'<small>'+it.sub+'</small>':''); if(it.done) e.dataset.done=1; }
       over.appendChild(e); els.set(it.key,e); }
     e._act=it.act; const sx=Math.round((it.wx-vx)*z)*S, sy=Math.round((it.wy-vy)*z)*S; if(e._x!==sx){ e._x=sx; e.style.left=sx+'px'; } if(e._y!==sy){ e._y=sy; e.style.top=sy+'px'; }
+    if(it.kind!=='you'){ const m=it.cls&&it.cls.includes('region box')?80:18, under=cr.some(r=>sx>r.left-m&&sx<r.right+m&&sy>r.top-18&&sy<r.bottom+18); if(under!==!!e._under){ e._under=under; e.style.visibility=under?'hidden':''; } }
     if(it.kind==='you'){ const yq=QUESTS.find(x=>x.id===YOUQ.id); e.title='You are here: stop '+(YOUQ.i+1)+' of '+(yq?yq.short:''); drawYou(e.firstChild); e.style.left=(sx-28)+'px'; }
     if(it.kind==='hit'||it.kind==='mark'){ const t=it.state==='done'?'\u2713':String(it.n), pn=e.firstChild; if(pn.textContent!==t) pn.textContent=t; if(e.dataset.state!==it.state) e.dataset.state=it.state; if(it.selected){ if(!e.dataset.selected) e.dataset.selected=1; } else if(e.dataset.selected) delete e.dataset.selected; if(it.off){ if(!e.dataset.off) e.dataset.off=1; } else if(e.dataset.off) delete e.dataset.off; if(it.stop){ if(!e.dataset.sk) e.dataset.sk=1; } else if(e.dataset.sk) delete e.dataset.sk;
       /* The name card shows only on hover or focus, or while the pin is selected. A click opens it in the panel. */
@@ -1337,7 +1356,10 @@ function clampV(){ if(!CW){ V.cx=Math.max(-70,Math.min(WW+70,V.cx)); V.cy=Math.m
 let zt=0;
 function tweenScale(from,to,ox,oy,dur){ if(matchMedia('(prefers-reduced-motion: reduce)').matches) dur=0; stage.style.willChange='transform'; stage.style.transition='none'; stage.style.transformOrigin=ox+'px '+oy+'px'; stage.style.transform=from===1?'none':'scale('+from+')'; void stage.offsetWidth; stage.style.transition='transform '+dur+'ms cubic-bezier(.33,1,.68,1)'; stage.style.transform=to===1?'none':'scale('+to+')'; clearTimeout(tweenScale._w); tweenScale._w=setTimeout(()=>{ if(stage.style.transform==='none') stage.style.willChange='auto'; },dur+80); }
 function endTween(){ clearTimeout(zt); stage.style.transition='none'; stage.style.transform='none'; stage.style.willChange='auto'; }
-function stepZoom(dir,ax,ay){ ax=ax??innerWidth/2; ay=ay??innerHeight/2; const i=LV.indexOf(V.z), j=Math.max(0,Math.min(LV.length-1,i+dir)); if(j===i) return; const z0=V.z, z1=LV[j]; cancelAnimationFrame(anim); endTween();
+/* Zooming by hand stops at Landmark. The Stops level, where one map pixel is about ten screen pixels, is reached by choosing a stop, and zooming out from it works as usual. */
+const BROWSE_MAX=4;
+const browseLV=()=>V.z>BROWSE_MAX?LV:LV.filter(z=>z<=BROWSE_MAX);
+function stepZoom(dir,ax,ay){ ax=ax??innerWidth/2; ay=ay??innerHeight/2; const L=browseLV(), i=L.indexOf(V.z), j=Math.max(0,Math.min(L.length-1,i+dir)); if(j===i) return; const z0=V.z, z1=L[j]; cancelAnimationFrame(anim); endTween();
   if(z1<z0){ setZ(z1,ax,ay); clampV(); draw(); tweenScale(z0/z1,1,ax,ay,260); } else { tweenScale(1,z1/z0,ax,ay,240); zt=setTimeout(()=>{ endTween(); setZ(z1,ax,ay); clampV(); draw(); },matchMedia('(prefers-reduced-motion: reduce)').matches?0:245); } }
 function flyTo(cx,cy,z){ cancelAnimationFrame(anim); endTween(); const f={...V}, t0=performance.now(), dur=z!==f.z?640:480, p=pads(), ox=innerWidth/2+p.l/2, oy=innerHeight/2-p.b/2, zin=z>f.z;
   if(zin) tweenScale(1,z/f.z,ox,oy,dur); else if(z<f.z){ V.z=z; tweenScale(f.z/z,1,ox,oy,dur); }
@@ -1355,7 +1377,7 @@ stage.addEventListener('pointermove',e=>{ if(!tp.has(e.pointerId)) return; tp.se
   const t=tspan(); pinch.r=Math.max(.25,Math.min(6,t.d/pinch.d0)); pinch.dx=t.mx-pinch.sx; pinch.dy=t.my-pinch.sy; stage.style.transform='translate('+pinch.dx+'px,'+pinch.dy+'px) scale('+pinch.r+')'; },true);
 function finishPinch(){ const {r,dx,dy,sx,sy}=pinch; pinch=null; lastPinch=performance.now(); const mx=sx+dx, my=sy+dy;
   endTween(); V.cx-=dx/(V.z*S); V.cy-=dy/(V.z*S); clampV();
-  const z0=V.z, want=z0*r, z1=LV.reduce((b,z)=>Math.abs(Math.log(z/want))<Math.abs(Math.log(b/want))?z:b,LV[0]);
+  const z0=V.z, want=z0*r, L=browseLV(), z1=L.reduce((b,z)=>Math.abs(Math.log(z/want))<Math.abs(Math.log(b/want))?z:b,L[0]);
   if(z1!==z0){ setZ(z1,mx,my); clampV(); }
   draw(); tweenScale(z1===z0?r:r/(z1/z0),1,mx,my,180); }
 const tpEnd=e=>{ if(!tp.delete(e.pointerId)) return; if(pinch&&tp.size<2) finishPinch(); };
@@ -1465,6 +1487,10 @@ lbtn.onclick=()=>{ const o=lpop.hidden; lpop.hidden=!o; lbtn.setAttribute('aria-
 document.addEventListener('pointerdown',e=>{ if(!lpop.hidden&&!e.target.closest('.zbar')){ lpop.hidden=true; lbtn.setAttribute('aria-expanded','false'); } });
 lpop.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; lpop.querySelectorAll('[data-view]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); document.body.dataset.view=view; lpop.dataset.view=view; if(view==='path') fctx.clearRect(0,0,fx.width,fx.height); draw(); drawSoon(); });
 lpop.querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{ LAYERS[c.dataset.layer]=c.checked; draw(); });
+/* On a phone, close in, the search is only its icon. Tapping it opens the field and focuses it; leaving the field empty folds it away again. */
+const compactSearch=()=>!wide()&&+document.body.dataset.zoom>=4&&!('sopen' in document.body.dataset);
+document.querySelector('.searchbar').addEventListener('click',e=>{ if(!compactSearch()) return; e.preventDefault(); e.stopPropagation(); document.body.dataset.sopen=''; document.getElementById('q').focus(); },true);
+document.getElementById('q').addEventListener('blur',()=>{ if(!document.getElementById('q').value.trim()) delete document.body.dataset.sopen; });
 document.getElementById('zin').onclick=()=>stepZoom(1); document.getElementById('zout').onclick=()=>stepZoom(-1);
 document.getElementById('me').onclick=()=>where();
 const root=document.documentElement;

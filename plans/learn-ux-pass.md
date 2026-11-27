@@ -1,6 +1,6 @@
 ---
 id: learn-ux-pass
-status: doing
+status: done
 track: learning
 depends: [quest-map]
 touches: [view/learn-map/map.html, view/learn-map/book.js, view/learn-map/guild.js, view/unlisted/learn.html, e2e/learn.e2e.ts, scripts/learn-command.js, docs/AUDIT-LEARN-MAP-2026-11-27.md]
@@ -85,26 +85,31 @@ four or five pins. On a phone at Landmark the search bar, chips, zoom buttons, p
 bottom bar cover about a third of the screen, the dimmed pins from other regions sit half hidden
 behind the previous and next buttons, and no place labels are drawn, so you cannot tell where you are.
 
-- [ ] Choose the level a link flies to. A region goes to Regions, a quest goes to Landmark framed so
+- [x] Choose the level a link flies to. A region goes to Regions, a quest goes to Landmark framed so
   all of its stops are in view, and only a single stop goes to Stops.
-- [ ] Stop the plus button stepping straight into Stops. Reach Stops by selecting a stop, and let
+- [x] Stop the plus button stepping straight into Stops. Reach Stops by selecting a stop, and let
   the plus button end at Landmark.
-- [ ] On a phone at Landmark and closer, collapse the search bar and chips into one small button so
+- [x] On a phone at Landmark and closer, collapse the search bar and chips into one small button so
   the map gets the room back.
-- [ ] Hide pins that fall under the controls (previous and next, zoom stack) instead of drawing them
+- [x] Hide pins that fall under the controls (previous and next, zoom stack) instead of drawing them
   half covered, and make the dimmed pins from other regions clearly dimmed or hidden.
-- [ ] Draw the region name at Landmark so there is always one label on screen.
-- [ ] At Regions on desktop, keep the Unmapped note and the right-hand edge clear of the zoom stack.
+- [x] Draw the region name at Landmark so there is always one label on screen.
+- [x] At Regions on desktop, keep the Unmapped note and the right-hand edge clear of the zoom stack.
+
+Done on 2026-11-27. A region link already flew to Regions, a quest to Landmark and a stop to Stops, so
+that item needed no change. The plus button, the plus key, a double tap and a pinch now stop at
+Landmark. The Unmapped note at Regions clears the zoom buttons because pins and cards under a control
+are hidden, which also covers the half-hidden pins from other regions.
 
 ## 5. Check it
 
-- [ ] Update e2e/learn.e2e.ts and scripts/learn-command.test.js for the new Start, Continue and Runes
+- [x] Update e2e/learn.e2e.ts and scripts/learn-command.test.js for the new Start, Continue and Runes
   behavior, and add tests for the 44 px floor on the phone controls.
-- [ ] Screenshot desktop and phone at each zoom level, before and after, and look at them. The site
+- [x] Screenshot desktop and phone at each zoom level, before and after, and look at them. The site
   rule is that a rendered change is shown before it is called done.
-- [ ] Run the gates from the repository root: bun run check, bun test, and the Playwright suite with
+- [x] Run the gates from the repository root: bun run check, bun test, and the Playwright suite with
   image comparisons skipped (the visual baselines are macOS only).
-- [ ] Add a dated note to docs/AUDIT-LEARN-MAP-2026-11-27.md, or a new audit, saying what changed and
+- [x] Add a dated note to docs/AUDIT-LEARN-MAP-2026-11-27.md, or a new audit, saying what changed and
   what is still unmeasured: a real phone, the quest-complete and level-up states, keyboard and
   screen reader use, dark themes and landscape.
 
