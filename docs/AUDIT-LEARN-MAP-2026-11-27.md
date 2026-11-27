@@ -61,3 +61,11 @@ A second pass, driven by a review of the first minute, the phone controls and ho
 ### Where I might be wrong
 
 The region card picks the region whose centre is nearest the middle of the view, which can name a neighbour when the view sits on a border. The rule that hides pins under controls tests the pin's centre against each control's box, so a pin whose edge pokes out from under a button can still show.
+
+### Gates, run on the branch after it was rebased onto the rewritten main
+
+- bun run check: clean.
+- bun test: 1135 pass, 0 fail.
+- The whole Playwright suite with image comparisons skipped (the visual baselines are macOS only): 766 pass, 1 fail. The failure is the deck test "a browser without inline PDF support can open the deck from its fallback". It fails the same way on a clean main, because this container's Chromium supports inline PDF and so hides the fallback link the test expects. It is not caused by this branch.
+- The learn and notes specs, which cover everything above, pass in full.
+
