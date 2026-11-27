@@ -2,7 +2,9 @@
 # Committed by `pantry init --kit`. Gives a cloud session the standards that a local session gets
 # from the owner's machine. Silent when the standards are already mounted as skills.
 set -uo pipefail
-root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+# The repository this script lives in, not the session's cwd: a multi-repo cloud session starts in a
+# parent folder that is not a repository, and the user-level hook calls this script from there.
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)" || root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 # On the owner's machine the machine-level checklist already reports; stay silent there.
 [ "${CLAUDE_CODE_REMOTE:-}" != true ] && [ -f "$HOME/.claude/tools/session-checklist.sh" ] && exit 0
 # The full checklist lives in agent-config. When a cloud session has it checked out beside this
