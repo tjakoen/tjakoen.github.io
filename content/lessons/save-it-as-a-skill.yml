@@ -1,0 +1,48 @@
+id: save-it-as-a-skill
+note: save-it-as-a-skill
+title: The third time you type it, save it
+summary: In three short stops I show you when a prompt has earned a skill, how to have your agent write it and edit it yourself, and when a skill is boring and checkable enough to run as a routine, with the judgment work kept for you.
+audio: /media/lessons/save-it-as-a-skill.m4a
+stops:
+- title: A prompt you have earned
+  note: save-it-as-a-skill
+  from: intro
+  to: a-skill-is-a-prompt-youve-earned
+  runes:
+  - id: three-times
+    section: a-skill-is-a-prompt-youve-earned
+    quote: I don't write a skill until I've typed the thing three times by hand.
+  trial: Name the prompts you have typed most in the last few notes.
+  digest:
+  - A skill is a saved prompt.
+  - I wait until I have typed it three times by hand, then I know what it should say.
+  - Every correction I give twice is a line to add.
+- title: Let your agent write it
+  note: save-it-as-a-skill
+  from: let-your-agent-write-it-then-you-edit-it
+  to: keep-judgment-manual
+  runes:
+  - id: one-job
+    section: let-your-agent-write-it-then-you-edit-it
+    quote: I keep a skill to one job
+  trial: Pick the prompt you have typed most, or the roadmap entry one, ask your agent to turn it into a skill, edit it, save it in your project, and use it to add your next entry.
+  digest:
+  - Ask your agent to turn a session that worked into a skill, then edit it.
+  - One job per skill, saved in the project.
+  - Keep judgment work, like audits, manual.
+- title: When a skill earns a routine
+  note: save-it-as-a-skill
+  from: when-a-skill-earns-a-routine
+  to: your-turn
+  runes:
+  - id: routine-test
+    section: when-a-skill-earns-a-routine
+    quote: It has to be repeated, boring, and
+  - id: routine-ran
+    section: when-a-skill-earns-a-routine
+    quote: needs something that tells you when it didn
+  trial: Write down one chore that is boring and checkable, such as checking that the links on your roadmap still open. Do not build the routine yet.
+  digest:
+  - A routine runs a skill on a schedule.
+  - Build one only for work that is repeated, boring and checkable.
+  - Never schedule judgment, and make something tell you when a routine did not run.

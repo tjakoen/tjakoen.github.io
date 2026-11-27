@@ -1,0 +1,46 @@
+id: a-test-is-a-check-that-runs-itself
+note: a-test-is-a-check-that-runs-itself
+title: A test is a check that runs itself
+summary: In three short stops I show you what a test is from scratch, the two kinds worth knowing by name, and the one habit I would wire in from the start, which is having the AI write the tests as it builds.
+audio: /media/lessons/a-test-is-a-check-that-runs-itself.m4a
+stops:
+- title: The seatbelt
+  note: a-test-is-a-check-that-runs-itself
+  from: intro
+  to: its-the-check-you-already-do
+  runes:
+  - id: seatbelt
+    section: intro
+    quote: They're the seatbelt that lets me drive fast.
+  trial: Name one check you do by hand every time you change something in your portfolio.
+  digest:
+  - A test is the check you already do by hand, written down so a machine runs it.
+  - It says pass or fail, and a fail tells you where to look.
+- title: Two kinds, by name
+  note: a-test-is-a-check-that-runs-itself
+  from: two-kinds-worth-knowing-by-name
+  to: two-kinds-worth-knowing-by-name
+  runes:
+  - id: two-kinds
+    section: two-kinds-worth-knowing-by-name
+    quote: it checks one small piece on its own
+  trial: Ask your agent what the usual way to test your stack is, and how to run the tests.
+  digest:
+  - A unit test checks one small piece, an end-to-end test drives the whole app like a user.
+  - Every stack has a standard way to test, so ask your agent.
+- title: Make the AI write them
+  note: a-test-is-a-check-that-runs-itself
+  from: make-the-ai-write-them-as-it-builds
+  to: your-turn
+  runes:
+  - id: ai-writes-the-tests
+    section: make-the-ai-write-them-as-it-builds
+    quote: the AI writes the tests as it builds
+  - id: tests-are-memory
+    section: make-the-ai-write-them-as-it-builds
+    quote: The tests are a memory that runs.
+  trial: Ask your AI to add a test for one done line in your plan, show it failing first, then passing, and explain what it proves.
+  digest:
+  - Tell the AI to write tests as it builds, one for each done line.
+  - Ask to see each new test fail before it passes.
+  - Skip them for a throwaway experiment, add them when it matters.
