@@ -283,6 +283,19 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
   .bk__pg { display:flex; grid-column:1 / -1; padding:.3rem 0; } .bk__ctl button, .bk__pg button, .bk .tb span { min-height:36px; } .bk__bar { grid-template-columns:1fr; } .bk__crumb { padding-bottom:.3rem; } .bk__sheet::before { display:none; }
   .bk[data-page="note"] .bk__leafguide { display:none; } .bk[data-page="guide"] .bk__leafnote { display:none; } .bk--solo .bk__leafnote { display:flex !important; } }
 @media (prefers-reduced-motion: reduce) { .bk * { transition:none !important; animation:none !important; } }
+/* The book on a phone: a 44 px floor on every control, and a header of two rows, not four. Row one is where you are (the stop and its count) with the Note and Guide switch beside it; row two is the tabs and the close button. */
+@media (max-width:860px) {
+  .bk__ctl button, .bk__pg button, .bk .tb span, .bk__x { min-height:44px; min-width:44px; }
+  .bk__x { width:44px; height:44px; padding:0; }
+  .bk__bar { grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"crumb pg" "right right"; }
+  .bk__crumb { grid-area:crumb; padding:0 .4rem .3rem 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; align-self:center; }
+  .bk__pg { grid-area:pg; grid-column:auto; padding:0 0 .3rem; align-self:center; }
+  .bk__right { grid-area:right; }
+  .bk__where { display:none; }
+  /* a link inside the note: the line is about 16 px tall, so its tap area is stretched up and down without moving the text */
+  .bk__note a { padding:.9rem .4rem; margin:0 -.4rem; }
+  .bk__pg button[aria-pressed="true"] { background:var(--q-accent); color:var(--q-accent-ink); font-weight:700; }
+}
 /* 7. lesson card on a note */
 .notepage { padding:1.1rem 1.4rem 1.4rem; display:grid; gap:.8rem; }
 .notepage .crumb { font:.72rem ui-monospace,monospace; color:var(--q-muted); letter-spacing:.06em; text-transform:uppercase; }
@@ -509,6 +522,19 @@ body { margin:0; background:var(--q-water); }
   .mnav button:disabled { opacity:.45; box-shadow:none; }
   .mnav .mmid { background:var(--q-accent); color:var(--q-accent-ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .mnav svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+}
+/* The map and its guide on a phone: the same 44 px floor on every control. */
+@media (max-width:799px) {
+  .pfoot .step { width:44px; height:44px; }
+  .pnav button, .pcta button, .pc-body .row button { min-height:44px; }
+  .stopline { min-height:44px; }
+  body[data-pm] .pclose { width:44px; height:44px; }
+  .searchbar { padding:.2rem .4rem; }
+  .searchbar .qgo, .searchbar #fold { width:44px; height:44px; }
+  .ctl .single, .ctl .stack button, .topright #settings { width:44px; height:44px; }
+  .chipsbar .chip { min-height:44px; min-width:44px; display:inline-flex; align-items:center; justify-content:center; }
+  /* the chip row scrolls sideways, so its right edge fades to say there is more */
+  .chipsbar { -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent); mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent); }
 }
 /* Without JavaScript the plain route list is the page; with it, the map is, and the list stays in the file for crawlers and the no-script case. */
 html.js .route { display:none; }

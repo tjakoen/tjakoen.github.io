@@ -594,3 +594,53 @@ test("folding and unfolding the side panel leaves the map where it is, because t
   await expect(frame.locator("#panel")).toBeVisible();
   expect(await view()).toEqual(before);
 });
+
+test.describe("on a phone, fingers and the lesson header", () => {
+  test.use({ viewport: { width: 375, height: 812 }, hasTouch: true });
+
+  const tooSmall = (frame: Awaited<ReturnType<typeof frameOf>>, selector: string) =>
+    frame.evaluate((sel) => [...document.querySelectorAll<HTMLElement>(sel)]
+      .filter((e) => e.offsetParent && getComputedStyle(e).visibility !== "hidden")
+      .map((e) => { const r = e.getBoundingClientRect(); return { name: (e.getAttribute("aria-label") || e.textContent || "").trim().slice(0, 30), w: Math.round(r.width), h: Math.round(r.height) }; })
+      .filter((x) => x.w < 44 || x.h < 44), selector);
+
+  test("every control on the map and in the guide is at least 44 px each way (the numbered pins on the map itself are left out)", async ({ page }) => {
+    await page.goto("/learn");
+    const frame = await frameOf(page);
+    const map = ".ctl button, #settings, .chipsbar .chip, .searchbar button, #mprev, #mnext, #mopen";
+    expect(await tooSmall(frame, map)).toEqual([]);
+    await frame.locator("#mopen").click();
+    await frame.evaluate(() => { selectQuest("ten-times-zero"); });
+    await expect(frame.locator("#panel .pcta")).toBeVisible();
+    const guide = "#panel button, #panel .stopline, #panel .pfoot .step, .pclose";
+    expect(await tooSmall(frame, guide)).toEqual([]);
+  });
+
+  test("the lesson book has 44 px controls, a two-row header that starts the text high, and a Note and Guide switch that shows its side", async ({ page }) => {
+    await page.goto("/learn#quest=ten-times-zero");
+    const frame = await frameOf(page);
+    await frame.locator('[data-act="begin"], #mopen').first().waitFor();
+    await frame.evaluate(() => { (window as unknown as { openQuest(i: string, l: boolean, s: number): void }).openQuest("ten-times-zero", true, 0); });
+    const book = frame.locator(".bk");
+    await expect(book).toBeVisible();
+    expect(await tooSmall(frame, ".bk button, .bk .tb span, .bk__note a")).toEqual([]);
+    // the stop and its count on one line, with the region and quest left off
+    const crumb = book.locator(".bk__crumb");
+    await expect(crumb).toContainText("Stop 1 of 6");
+    await expect(crumb.locator(".bk__where")).toBeHidden();
+    const rows = await frame.evaluate(() => {
+      const q = (s: string) => document.querySelector(s)!.getBoundingClientRect();
+      return { sheetTop: q(".bk__sheet").top, noteTop: q(".bk__leafnote").top, crumb: q(".bk__crumb"), tabs: q(".bk__tabs"), pg: q(".bk__pg") };
+    });
+    expect(rows.noteTop - rows.sheetTop).toBeLessThan(125);
+    expect(rows.crumb.height).toBeLessThan(44 + 12);                 // one line, not two
+    expect(Math.abs(rows.crumb.top - rows.pg.top)).toBeLessThan(20);  // the switch sits beside it
+    expect(rows.tabs.top).toBeGreaterThan(rows.crumb.top);
+    // the switch says which side is showing
+    const note = book.locator('.bk__pg [data-page="note"]'), guide = book.locator('.bk__pg [data-page="guide"]');
+    await expect(note).toHaveAttribute("aria-pressed", "true");
+    await guide.click();
+    await expect(guide).toHaveAttribute("aria-pressed", "true");
+    await expect(note).toHaveAttribute("aria-pressed", "false");
+  });
+});

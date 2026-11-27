@@ -152,12 +152,13 @@
     root.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(); } });
     root.querySelector('.bk__tabs').addEventListener('click', (e) => { const t = e.target.closest('[data-tab]'); if (t) setTab(t.dataset.tab); });
     root.querySelector('.bk__tabs').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { const t = e.target.closest('[data-tab]'); if (t) { e.preventDefault(); setTab(t.dataset.tab); } } });
-    root.querySelector('.bk__pg').addEventListener('click', (e) => { const b = e.target.closest('[data-page]'); if (b) root.dataset.page = b.dataset.page; });
+    const showPage = (k) => { root.dataset.page = k; root.querySelectorAll('.bk__pg [data-page]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.page === k))); };
+    root.querySelector('.bk__pg').addEventListener('click', (e) => { const b = e.target.closest('[data-page]'); if (b) showPage(b.dataset.page); });
     root.querySelector('.bk__ctl').addEventListener('click', (e) => { const b = e.target.closest('[data-do]'); if (!b) return; const a = b.dataset.do;
       if (a === 'replay') { resetEnd(); S.beat = 0; showBeat(); toggle(); } else if (a === 'play') toggle(); else if (a === 'next') step(1); else if (a === 'prev') step(-1); else if (a === 'nextstop') gotoStop(S.stop + 1); else if (a === 'prevstop') gotoStop(S.stop - 1);
       else if (a === 'speed') { const sp = [1, 1.15, 1.3, 0.9]; S.speed = sp[(sp.indexOf(S.speed) + 1) % sp.length]; b.textContent = S.speed + 'x'; if (S.playing) { stopVoice(); say(); } }
       else if (a === 'rest') close(true); });
-    root.dataset.page = 'note';
+    showPage('note');
   }
 
   function setTab(t) {
@@ -206,7 +207,7 @@
 
   function renderStop() {
     const s = stopOf(), q = questOf(S.stop), qq = QUESTS.find((x) => x.id === q.id), r = qq ? REG[qq.region - 1] : null;
-    ui.crumb.textContent = (r ? r.name + ' · ' : '') + (qq ? 'Quest ' + qq.order + ' · ' : '') + 'Stop ' + (S.stop + 1) + ' of ' + S.lesson.stops.length + ' · ' + s.title;
+    ui.crumb.innerHTML = '<span class="bk__where">' + esc((r ? r.name + ' · ' : '') + (qq ? 'Quest ' + qq.order + ' · ' : '')) + '</span>' + esc('Stop ' + (S.stop + 1) + ' of ' + S.lesson.stops.length + ' · ' + s.title);
     ui.guide.innerHTML = `<h4>Chapter ${S.stop + 1} · The Guide speaks</h4><div class="dlg"><canvas width="24" height="24"></canvas><div><div class="plate">Tjakoen, the Guide</div><div class="say"></div></div><span class="adv">▼</span></div><div class="hist"></div>
       <div class="bk__after"><h4>In plain words</h4><ul>${s.digest.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>
       <div class="trial"><h4>Trial</h4><span>${esc(s.trial)}</span><label><input type="checkbox" ${doneStop(S.stop) ? 'checked' : ''}> Mark trial done · +100 XP</label></div></div>`;

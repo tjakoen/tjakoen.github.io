@@ -46,16 +46,22 @@ again" when it is finished. Class is relabelled For ("For: Learner, Builder") ra
 
 The goal: every control on a phone is at least 44 by 44, and the lesson text starts high on the screen.
 
-- [ ] Raise to 44 px: the first, previous, next and last quest buttons (now 34 by 30), the stop
+- [x] Raise to 44 px: the first, previous, next and last quest buttons (now 34 by 30), the stop
   numbers (33 by 33), Close the book (31 by 23), the guide panel's back and close row, and the
   playback row in the book (play, skip, speed).
-- [ ] Give the source links inside a lesson vertical padding so they are at least 44 px tall to tap
+- [x] Give the source links inside a lesson vertical padding so they are at least 44 px tall to tap
   (they are 16 px now), without changing how they read.
-- [ ] Merge the lesson header. Show the stop name and a "1 of 6" counter on one line instead of
+- [x] Merge the lesson header. Show the stop name and a "1 of 6" counter on one line instead of
   "LOOP FOREST, QUEST 8, STOP 1 OF 6, I WAS THE ZERO", and fold the Note and Guide switch into the
   tab row. The reading area should start above 120 px, not about 180.
-- [ ] Let the filter chips scroll sideways on a phone with a fade at the edge, so "Not started" is
+- [x] Let the filter chips scroll sideways on a phone with a fade at the edge, so "Not started" is
   not cut off.
+
+Done on 2026-11-27. Every control on the phone map, guide panel and lesson book now measures at least
+44 px each way in a test. The numbered pins on the map itself are left out on purpose: they sit close
+together and 44 px pins would cover each other. The lesson header is two rows, about 110 px, and the
+Note and Guide switch now shows which side is open. The filter chips scroll sideways with a fade on the
+right edge rather than wrapping.
 
 ## 3. Vocabulary
 
