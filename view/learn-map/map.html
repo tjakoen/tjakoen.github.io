@@ -401,7 +401,7 @@ body { margin:0; background:var(--q-water); }
 .searchbar .qgo svg { width:18px; height:18px; image-rendering:pixelated; }
 .searchbar .qgo:hover, .searchbar .qgo:focus-visible { background:var(--q-accent); color:var(--q-accent-ink); }
 .searchbar .qgo:hover svg path:last-child, .searchbar .qgo:focus-visible svg path:last-child { fill:var(--q-accent-ink); }
-.panelcard { background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); overflow:auto; align-self:start; max-height:100%; }
+.panelcard { --pfoot-h:47px; /* the height of the previous and next footer, so the pinned action bar sits just above it */ background:var(--q-panel); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); overflow:auto; align-self:start; max-height:100%; }
 .panelcard[hidden] { display:none; }
 .pnav { position:sticky; top:0; z-index:3; display:flex; align-items:center; gap:.6rem; padding:.45rem .6rem; background:var(--q-panel); border-bottom:3px solid var(--q-ink); }
 .pnav .back { display:inline-flex; align-items:center; gap:.35rem; flex:none; padding:.3rem .65rem .3rem .45rem; border:2px solid var(--q-ink); background:var(--q-paper); color:var(--q-ink); font:inherit; font-weight:700; font-size:.8rem; line-height:1.1; cursor:pointer; box-shadow:2px 2px 0 var(--q-ink); max-width:60%; }
