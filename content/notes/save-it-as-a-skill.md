@@ -76,8 +76,9 @@ to be in the room for it.
 
 ## When a skill earns a routine
 
-A routine, sometimes called a scheduled loop, runs a skill on a timer or when something happens, with you
-nowhere in sight. Your agent can show you how yours does it. The test for whether one is worth building is
+A routine runs a skill on a timer or when something happens, with you nowhere in sight. Skills are called
+skills everywhere, but routines go by different names: a scheduled task in some harnesses, a cron job you
+set up yourself in others. It's the same idea, so ask your agent how yours does it. The test for whether one is worth building is
 the same as for a skill, with one more clause. It has to be repeated, boring, and **checkable**, so you can
 tell it worked without reading its mind.
 
