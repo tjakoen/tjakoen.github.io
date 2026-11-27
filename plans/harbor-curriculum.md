@@ -141,3 +141,31 @@ them in All, and show them individually under the Learning to build tab.
 - [ ] Atomic design with GRAIN as the worked example: still to decide whether it is its own note (it is teased in note 2 as coming later)
 - [ ] The outside links in note 2 were found by search and not opened. Check each one before the note is published.
 - [ ] Per-note scripts: each note ships with a script. Short notes share a lesson (the Harbor lesson holds Start Here and note 1), because a lesson needs three to six stops.
+
+## Revised Harbor order (proposal, 2026-11-27)
+
+Raised in conversation: the plan had no note on planning or on making the AI check its work, and the
+loop does both automatically, which a beginner cannot yet have. Early on they have to do both by hand,
+and the manual habit is also what justifies a reusable skill later.
+
+| # | Note | One idea | Status |
+|---|---|---|---|
+| 0 | Start Here | Who I am, who this is for, how the path works | drafted |
+| 1 | The teammate who never asks questions | Your AI guesses, so you brief it: goal, done, leave alone | drafted |
+| 2 | Have the AI draw it before it builds it | The AI draws, you agree, save the plan in the project | drafted, revised |
+| 3 | Plan it, then build from the plan | A written plan with steps the AI works through and you tick off. Planning by hand before a loop does it for you. | proposed |
+| 4 | Make it check its own work | A manual audit: ask the AI to check the result against your brief and your drawing, run it, read the diff, then have a fresh session review it. Why checking in the same session flatters the work. | proposed |
+| 5 | The third time you type it, save it | Once you have typed the same plan or audit prompt a few times, it becomes a skill. The skill is justified by repetition you already did by hand. | proposed |
+| 6 | The words you will hear | A plain glossary walk | proposed |
+| 7 | From a chat window to your first loop | Chat to a harness with a plan file and one check | proposed |
+| 8 | Catch the idea, then loop it | Phone note to plan to build | proposed |
+| 9 | Build your own, do not copy mine | Close the Harbor | proposed |
+| later | Atomic design with GRAIN as the example; the fundamentals you still own | | to decide |
+
+Notes 3 to 5 are one arc: plan by hand, audit by hand, then automate the repeat as a skill. They hand off
+to existing notes: Set Up the Loop With One Prompt (the loop does it for you), The Check That Never Ran
+and The Reviewer That Learned to Be Wrong (why checks need checking).
+
+Open assumption to confirm: that readers have already met skills in the Claude Academy lessons. I have not
+checked what that course covers, so note 5 must either say what a skill is in two lines or link to where
+the Academy explains it.
