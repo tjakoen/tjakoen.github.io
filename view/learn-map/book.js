@@ -129,18 +129,18 @@
 
   function build() {
     root = h('div', 'bk'); root.hidden = true; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Quest book');
-    root.innerHTML = `<div class="bk__shade"></div><div class="bk__sheet">
-      <div class="bk__bar"><div class="bk__crumb"></div><div class="tb bk__tabs" role="tablist"><span data-tab="book" data-on role="tab" tabindex="0">Book</span><span data-tab="log" role="tab" tabindex="0">Log</span><span data-tab="codex" role="tab" tabindex="0">Codex</span><span data-tab="pack" role="tab" tabindex="0">Pack</span></div><div class="bk__pg"><button data-page="note">Note</button><button data-page="guide">Guide</button></div><button class="bk__x" aria-label="Close the book">×</button></div>
-      <div class="tome bk__tome"><div class="leaf bk__note"></div><div class="leaf bk__guide"></div></div>
-      <div class="bk__alt" hidden></div>
-      <div class="controls bk__ctl"><div class="ribbonbar" aria-hidden="true"><i></i><u></u></div>
-        <div class="row"><div><button data-do="prevstop" aria-label="Previous stop">⏮</button> <button data-do="prev" aria-label="Previous line">◀</button> <button data-do="play" class="primary" aria-label="Play">▶ Play</button> <button data-do="next" aria-label="Next line">▶▶</button> <button data-do="nextstop" aria-label="Next stop">⏭</button></div>
-          <div><button data-do="speed">1x</button> <button data-do="captions" aria-pressed="true">Captions</button> <button data-do="rest">Rest at campfire</button></div></div>
-        <div class="stops"><span>Stops</span><span class="bk__dots"></span><span class="bk__time"></span></div></div>
+    root.innerHTML = `<div class="bk__shade"></div><div class="bk__sheet tome">
+      <div class="bk__bar"><div class="bk__crumb"></div><div class="tb bk__tabs" role="tablist"><span data-tab="book" data-on role="tab" tabindex="0">Book</span><span data-tab="log" role="tab" tabindex="0">Log</span><span data-tab="codex" role="tab" tabindex="0">Codex</span><span data-tab="pack" role="tab" tabindex="0">Pack</span></div><div class="bk__pg"><button data-page="note">Note</button><button data-page="guide">Guide</button></div><button class="bk__x" aria-label="Close the book">\u00d7</button></div>
+      <div class="leaf bk__leafnote"><div class="bk__note"></div></div>
+      <div class="leaf bk__leafguide"><div class="bk__guide"></div><div class="bk__alt" hidden></div>
+        <div class="controls bk__ctl"><div class="ribbonbar" aria-hidden="true"><i></i><u></u></div>
+          <div class="row"><div><button data-do="prevstop" aria-label="Previous stop">\u23ee</button> <button data-do="prev" aria-label="Previous line">\u25c0</button> <button data-do="play" class="primary" aria-label="Play">\u25b6 Play</button> <button data-do="next" aria-label="Next line">\u25b6\u25b6</button> <button data-do="nextstop" aria-label="Next stop">\u23ed</button></div>
+            <div><button data-do="speed">1x</button> <button data-do="captions" aria-pressed="true">Captions</button> <button data-do="rest">Rest at campfire</button></div></div>
+          <div class="stops"><span>Stops</span><span class="bk__dots"></span><span class="bk__time"></span></div></div></div>
       <div class="toast bk__toast" hidden></div></div>`;
     document.body.append(root);
     ['note', 'guide'].forEach((k) => (ui[k] = root.querySelector('.bk__' + k)));
-    ui.crumb = root.querySelector('.bk__crumb'); ui.alt = root.querySelector('.bk__alt'); ui.tome = root.querySelector('.bk__tome'); ui.ctl = root.querySelector('.bk__ctl'); ui.toast = root.querySelector('.bk__toast');
+    ui.crumb = root.querySelector('.bk__crumb'); ui.alt = root.querySelector('.bk__alt'); ui.sheet = root.querySelector('.bk__sheet'); ui.ctl = root.querySelector('.bk__ctl'); ui.toast = root.querySelector('.bk__toast');
     ui.fill = root.querySelector('.ribbonbar i'); ui.flag = root.querySelector('.ribbonbar u'); ui.dots = root.querySelector('.bk__dots'); ui.time = root.querySelector('.bk__time'); ui.playBtn = root.querySelector('[data-do="play"]');
     root.querySelector('.bk__x').addEventListener('click', close); root.querySelector('.bk__shade').addEventListener('click', close);
     root.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(); } });
@@ -157,7 +157,7 @@
 
   function setTab(t) {
     S.tab = t; root.querySelectorAll('[data-tab]').forEach((x) => x.toggleAttribute('data-on', x.dataset.tab === t));
-    const book = t === 'book'; ui.tome.hidden = !book; ui.ctl.hidden = !book || S.solo; ui.alt.hidden = book; if (!book) renderAlt(t);
+    const book = t === 'book'; ui.guide.hidden = !book; ui.alt.hidden = book; ui.ctl.hidden = S.solo; if (!book) renderAlt(t);
   }
   function renderAlt(t) {
     const L = S.lesson; if (!L) { ui.alt.innerHTML = ''; return; }
@@ -245,7 +245,7 @@
     if (!root) build(); opener = document.activeElement; root.hidden = false; document.body.style.overflow = 'hidden';
     S.solo = !!opts.solo; S.tab = 'book'; root.classList.toggle('bk--solo', S.solo); setTab('book'); S.playing = false; S.speed = 1; root.querySelector('[data-do="speed"]').textContent = '1x';
     if (S.solo) {
-      S.lesson = null; ui.noteBody = null; ui.guide.innerHTML = ''; ui.crumb.textContent = (QUESTS.find((x) => x.id === opts.quest) || {}).title || ''; ui.ctl.hidden = true; await mountNote(opts.quest); root.querySelector('.bk__x').focus(); return;
+      S.lesson = null; ui.noteBody = null; ui.guide.innerHTML = ''; ui.crumb.textContent = (QUESTS.find((x) => x.id === opts.quest) || {}).title || ''; await mountNote(opts.quest); root.querySelector('.bk__x').focus(); return;
     }
     try { S.lesson = await (await fetch('lessons/' + encodeURIComponent(opts.lesson) + '.json')).json(); } catch (e) { toast('This lesson could not be loaded.'); return; }
     S.stop = Math.min(opts.stop || 0, S.lesson.stops.length - 1); S.beat = 0; ui.noteBody = null;
