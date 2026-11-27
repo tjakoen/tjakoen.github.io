@@ -1,45 +1,61 @@
 id: make-it-check-its-own-work
 note: make-it-check-its-own-work
 title: The AI says it is done. Make it prove it.
-summary: In three short stops I show you how to check an AI's work by hand before you have a loop that does it for you. Ask for evidence, run it yourself, hand it to a fresh session, and write down what it keeps missing.
+summary: In four short stops I show you how to check an AI's work by hand before you have a loop that does it for you. Ask for evidence, let tests do the checking, run it yourself, hand it to a fresh session, and write down what it keeps missing.
 audio: /media/lessons/make-it-check-its-own-work.m4a
 stops:
-  - title: Done is a claim
-    note: make-it-check-its-own-work
-    from: intro
-    to: make-it-show-you-the-evidence
-    runes:
-      - id: done-is-a-claim
-        section: done-is-a-claim-not-a-result
-        quote: They're what you check against.
-    trial: Take the last thing your AI called finished and ask it to show evidence for each done line.
-    digest:
-      - Done is a claim, not a result.
-      - The brief, the drawing and the plan are what you check against.
-      - Ask for evidence you can see for each done line.
-  - title: Run it, then ask fresh eyes
-    note: make-it-check-its-own-work
-    from: run-it-yourself
-    to: then-ask-a-fresh-pair-of-eyes
-    runes:
-      - id: fresh-eyes
-        section: then-ask-a-fresh-pair-of-eyes
-        quote: the session that built something is the worst judge of it
-    trial: Run your last piece of work yourself, then open a new session and ask it to review the brief, plan and changes.
-    digest:
-      - Use it yourself like a user, and read the list of changed files.
-      - Give a fresh session the brief, plan and changes and ask it to find problems.
-      - That is my experience, not a measurement. Test it on something small.
-  - title: Write down what it keeps missing
-    note: make-it-check-its-own-work
-    from: write-down-what-it-keeps-missing
-    to: try-this
-    runes:
-      - id: accountable
-        section: checking-is-not-proof
-        quote: You're still the person accountable
-    trial: Ask for evidence, run it yourself, review it in a fresh session, and write down anything the review found that the first session missed.
-    digest:
-      - When you catch the same miss twice, write it in the file your sessions read.
-      - Do the checks by hand first, so you learn which ones are worth automating.
-      - You are still accountable for what ships.
+- title: Done is a claim
+  note: make-it-check-its-own-work
+  from: intro
+  to: make-it-show-you-the-evidence
+  runes:
+  - id: done-is-a-claim
+    section: done-is-a-claim-not-a-result
+    quote: They're what you check against.
+  trial: Take the last thing your AI called finished and ask it to show evidence for each done line.
+  digest:
+  - Done is a claim, not a result.
+  - The brief, the drawing and the plan are what you check against.
+  - Ask for evidence you can see for each done line.
+- title: Let tests do the checking
+  note: make-it-check-its-own-work
+  from: let-tests-do-the-checking
+  to: let-tests-do-the-checking
+  runes:
+  - id: ai-writes-the-tests
+    section: let-tests-do-the-checking
+    quote: the AI writes the tests as it builds
+  - id: tests-are-memory
+    section: let-tests-do-the-checking
+    quote: The tests are a memory that runs.
+  trial: Ask your AI to add a test for one done line in your plan, and to explain what the test proves.
+  digest:
+  - A unit test checks one small piece. An end-to-end test drives the whole app like a user.
+  - Every stack has a standard way to test, so ask your agent.
+  - Tell the AI to write tests as it builds, one for each done line.
+- title: Run it, then ask fresh eyes
+  note: make-it-check-its-own-work
+  from: run-it-yourself
+  to: then-ask-a-fresh-pair-of-eyes
+  runes:
+  - id: fresh-eyes
+    section: then-ask-a-fresh-pair-of-eyes
+    quote: the session that built something is the worst judge of it
+  trial: Run your last piece of work yourself, then open a new session and ask it to review the brief, plan and changes.
+  digest:
+  - Use it yourself like a user, and read the list of changed files.
+  - Give a fresh session the brief, plan and changes and ask it to find problems.
+  - That is my experience, not a measurement. Test it on something small.
+- title: Write down what it keeps missing
+  note: make-it-check-its-own-work
+  from: write-down-what-it-keeps-missing
+  to: try-this
+  runes:
+  - id: accountable
+    section: checking-is-not-proof
+    quote: You're still the person accountable
+  trial: Ask for evidence, run it yourself, review it in a fresh session, and write down anything the review found that the first session missed.
+  digest:
+  - When you catch the same miss twice, write it in the file your sessions read.
+  - Do the checks by hand first, so you learn which ones are worth automating.
+  - You are still accountable for what ships.

@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~4 min"
+readingTime: "~5 min"
 tags: [ai, workflow, teaching]
 summary: >
   A plan is a short checklist in a file, with a goal, small steps and what done looks like for each. Have
@@ -39,6 +39,7 @@ can tell when it's finished.
 
 ```text
 Goal: a study planner where a student can add tasks and mark them done.
+Stack: plain HTML, CSS and JavaScript, because I already know them.
 
 1. Show a list of tasks on the home page.
    Done: I can see three sample tasks when I open it.
@@ -52,9 +53,30 @@ That's the whole thing. Nothing in it is code. It's your brief, cut into pieces 
 can check each one with your own eyes. If you've done the last two notes, you already have most of the
 parts: the brief gives you the goal, and the drawing tells you what the steps should cover.
 
+## Talk about the stack first
+
+Before the plan has any steps, have a short conversation with your AI about what you'll build it with.
+That's the stack: the language, the framework, and the tools. Say what you want to make and ask: "What are
+the usual ways to build this? What would you pick, and why?"
+
+There are many ways to build the same thing. A mobile app might be Flutter or React Native. A website
+might be plain HTML, CSS and JavaScript, which is what I use, or a framework, or even PHP. Most of them
+work. So start from the popular, common ones. There's more written about them, more people have solved
+your problem on them, and in my experience the AI is steadier on them too.
+
+My advice is the same as it's always been: stick with what you're familiar with. And avoid agentic coding
+in a language or framework you have no experience with at all. That sounds backwards, because the AI makes
+anything feel easy. But if you can't read what it wrote, you can't tell whether it's right, and you risk
+not knowing what you're building. If you want to learn a new stack, learn it the slow way first, with the
+AI as your teacher and a small throwaway project, and build the real thing once you can follow along.
+
+Then write the choice into the plan, as a line at the top, with the reason. If the stack is new to you,
+that goes in too: add a step to learn the basics before the first feature. The plan should be honest
+about what you know.
+
 ## Let the AI draft it, then you edit it
 
-You don't need to write this from scratch. Give your AI the brief and the drawing and ask for a plan:
+You don't need to write this from scratch. Give your AI the brief, the drawing and your stack choice and ask for a plan:
 "Don't write any code yet. Break this into small steps, each with what done looks like." Many tools have
 a planning mode that does exactly this. Ask your agent whether yours does.
 
@@ -101,8 +123,9 @@ that you and the AI always have the same one.
 
 ## Try this
 
-Take the brief and the drawing you made. Ask your AI for a plan with small steps and a done line for
-each, with no code yet. Edit it: split one step, cut one, and fix the order. Save it in your project.
+Take the brief and the drawing you made. First talk through the stack with your AI, and pick one you know.
+Then ask for a plan with small steps and a done line for each, with no code yet. Edit it: split one
+step, cut one, and fix the order. Save it in your project.
 Then tell it, "Do step 1 only, and stop," and check the result against the done line before you let it
 go on.
 

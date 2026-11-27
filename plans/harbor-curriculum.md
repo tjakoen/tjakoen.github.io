@@ -180,3 +180,15 @@ the Academy explains it.
 - [x] Note 4 drafted: content/notes/make-it-check-its-own-work.md with a three-stop lesson and script. Manual audit: evidence for each done line, run it yourself, a fresh session reviews, write down what it keeps missing. Hands off to the loop.
 - [x] PROOF (/proof) and PANTRY (/pantry) are linked from notes 3 and 4 as things built for myself, never required. Show Them the Board is linked as the build-your-own story. Pantry Beside the Work is still a DRAFT note, so it is not linked from the path yet.
 - [ ] Next: note 5, the third time you type it, save it as a skill
+
+## Decisions, 2026-11-27 (tests and stack)
+
+- Note 4 now teaches unit tests and end-to-end tests by name, links out (Fowler's Practical Test Pyramid,
+  freeCodeCamp's e2e tutorial, Playwright), and says every language and framework has a standard way to
+  test. The wired-in habit: tell the AI to write the tests as it builds, one per done line, so it stays
+  accountable to its own definition of done and the next session has tests to run. Lesson went to four stops.
+- Note 3 now has a Talk about the stack first section: ask the AI for the usual options, prefer popular
+  stacks, stick with what you know (mobile may be Flutter or React Native, web may be vanilla or even PHP),
+  never do agentic coding in a stack you have no experience with, and write the choice and its reason at the
+  top of the plan. Lesson went to four stops.
+- Outside links in note 4 came from search and have not been opened. Check them before publishing.
