@@ -102,3 +102,31 @@ usage runs out (exists); how to make it sound like you (exists).
 - [ ] Link the glossary from the path
 - [ ] Decide whether the path needs a student track and a lead track
 - [ ] Add each landed note to docs/CONTENT-BACKLOG.md
+
+## Keeping the notes page uncluttered (proposal, 2026-11-27)
+
+What exists today: /notes already has audience tabs (How I build, How I lead, Learning to build), a level
+filter (Start here, Deep dive), tag chips, New and Top sorting, search, and the flagship pinned first. With
+about nine more short notes the feed grows from 38 to about 47, and the Harbor notes would sit between
+unrelated posts by date.
+
+Options, cheapest first:
+
+1. **No code.** Mark every Harbor note audience learn and level intro, and send readers to the Learning to
+   build tab. Costs nothing, but the notes still appear in the All feed in date order.
+2. **A series field (recommended).** Add series and seriesOrder to the frontmatter. The feed shows one card for
+   the whole series ("The Harbor: nine short notes, start here") that opens an ordered list. Each note gets a
+   previous and next link. Notes stay at their own addresses, so /learn links and old links do not move.
+3. **Derive it from the quest map.** regions.json already orders the notes, so a note listed there could
+   count as a path note. Rejected for now: it makes the feed depend on quest data, and the map is meant to
+   consume notes, not shape them.
+
+Open: does a series card replace its notes in the All tab, or only collapse them? Recommendation: collapse
+them in All, and show them individually under the Learning to build tab.
+
+## Progress
+
+- [x] Introduction drafted as content/notes/start-here.md (DRAFT, 2026-11-27)
+- [ ] Introduction still owes: a social card image, the path figure, and four claims only the author can
+  confirm (see the list in the conversation)
+- [ ] Decide the notes page option above
