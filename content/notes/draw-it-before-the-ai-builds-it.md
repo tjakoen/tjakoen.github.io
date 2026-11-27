@@ -1,27 +1,26 @@
 ---
-title: "Draw It Before the AI Builds It"
+title: "Have the AI Draw It Before It Builds It"
 audience: [learn]
 level: intro
-subtitle: "The most expensive sentence in building with AI is 'that's not what I meant', said after four hundred lines. Six old drawings find that gap while it's still cheap."
+subtitle: "You don't have to draw it yourself. The AI is good at it. What you need is one drawing, written down, that you and the AI have both read and agreed on, before it builds."
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~6 min"
+readingTime: "~7 min"
 tags: [ai, workflow, teaching, design]
 summary: >
-  Drawing before you build matters more with AI, because you didn't type the code and so you know it less.
-  This note is a map of six drawings, each answering one question: use case diagram (who does what),
-  data flow diagram (where information goes), ERD (what it remembers), wireframe (what is on each
-  screen), mockup (how it looks) and design system (the reusable parts). Draw badly, on paper, then
-  make your AI ask you questions about it. Each one links out to a good explanation.
+  Before the AI builds anything, get a drawing you both agree on. You don't have to draw it: the AI is
+  very good at it, so describe the idea and let it draw. This note is a map of six drawings (use case,
+  data flow, ERD, wireframe, mockup, design system), each answering one question, with links to learn
+  them properly. The key is a common, documented understanding of the plan, saved in the project.
 social: |
   The most expensive sentence in building with AI: "that's not what I meant."
 
   Usually said after four hundred lines.
 
-  Six old drawings find that gap while it's still cheap. A map of what each one is for, and where to
-  learn it properly:
+  You don't have to draw the plan yourself. The AI is good at it. What you need is one drawing you
+  both agree on, saved in the project, before anything gets built:
 ---
 
 Here's a sentence I've said more times than I like to admit. "That's not what I meant." I say it to an
@@ -39,13 +38,19 @@ lives and which screen leads to which, because your fingers were there. When the
 the result without the walk. You know the system less than you think you do.
 
 A drawing is the walk you skipped. It's a map you hold, so you can tell whether what came back matches
-what you meant. And it's something you can hand to the AI, which is far better than another paragraph
-of description.
+what you meant.
+
+Here's the good news, and it's the main point of this note. You don't have to draw it. The AI is very
+good at drawing these. Describe what you want in plain words and it will produce the diagram in
+seconds. What matters is not who held the pen. It's that you and the AI end up with the same picture of
+the plan, written down where both of you can read it. A shared, documented understanding is the goal.
+The drawing is just the cheapest way to get one.
 
 I'm not going to teach these properly here. People have written excellent explanations of every one of
 them, and I'll link to some. What I can give you is what each one is for, so you can tell which one to
-reach for. They're the basics of software engineering, and you may have met a few in class. The AI
-part is just that they pay off more now.
+ask for. They're the basics of software engineering, and you may have met a few in class. You don't
+need to be good at drawing them. You need to know they exist, so you can ask for the right one and
+tell whether what comes back is right.
 
 > *Figure: the six drawings in a line, each with the one question it answers. Use case: who does what.
 > Data flow: where does information go. ERD: what does it remember. Wireframe: what is on each screen.
@@ -94,25 +99,38 @@ idea underneath it is Brad Frost's [atomic design](https://atomicdesign.bradfros
 combine into bigger ones.
 
 You won't need all six for everything. A one-page script needs none. A small app might need the first
-and the last. Reach for the one that answers the question you can't currently answer.
+and the last. Reach for the one that answers the question you can't currently answer, and ask your AI to
+draw it.
 
-## Draw badly, on purpose
+## Let the AI hold the pen
 
-Use paper. Use a whiteboard. Use a napkin. A good-looking diagram is a trap, because it's a reason not
-to change it. You want one you're happy to cross out.
+Start from the brief you wrote in the last note. Paste it in and ask for the drawing you want: "Draw a
+use case diagram for this." Ask it to write the diagram as Mermaid, a plain-text way of describing
+diagrams that GitHub and a lot of other tools turn into a picture. The AI is good at that format, and a
+text file is something you can save, compare and change.
 
-Then give it to the AI. Take a photo and attach it, or describe it in words and ask the AI to draw it
-back to you as a diagram. Either way, you'll catch things. The version it draws back is its
-understanding of your idea, and the gaps show up as boxes you didn't expect.
+For a wireframe, ask for a plain HTML page made of gray boxes that you can open in a browser. For an
+ERD, ask for the tables and how they connect. If you do prefer to sketch on paper, go ahead, and send a
+photo. It can read it. Either way, the AI draws and you decide.
 
-One honest limit, and it's a real one. A drawing is only worth keeping while it matches the code. A
-diagram drawn once and never touched is wrong by the third change, and a wrong diagram is worse than
-none, because people trust it. Keep them small. Update them, or throw them away.
+Then read it, and correct it. That's the job. "No, a teacher isn't a type of student. Make them
+separate." "There's no admin, remove it." The corrections are cheap because nothing has been built yet,
+and every one of them is a gap between what you meant and what it assumed. If you can't tell whether a
+box is right, ask it to explain that box. A plausible-looking drawing can still be wrong, so read it.
+
+When you both agree, save it in the project, in a file next to your brief. That's the step that
+matters. The AI forgets everything between sessions, as you saw last time, so a drawing in the chat
+disappears. A drawing in the project is a plan every future session reads, and you read, and anyone
+who joins reads. A common, written-down understanding is what stops "that's not what I meant."
+
+One honest limit. A drawing is only worth keeping while it matches the code. A diagram made once and
+never touched is wrong by the third change, and a wrong diagram is worse than none, because people
+trust it. Keep them small. Ask the AI to update them when the plan changes, or throw them away.
 
 ## Make the teammate ask questions
 
 This is where the last note comes back. Your AI never asks questions on its own, but you can make it.
-Once you have a drawing, ask: "Here's my diagram. What's missing? What would a user need that I haven't
+Once you have a drawing, ask: "Here's the diagram. What's missing? What would a user need that I haven't
 shown? Ask me five questions before you build anything."
 
 That turns a teammate who guesses into one who checks. You're not teaching it. You're borrowing its
@@ -120,14 +138,16 @@ patience for the dull questions you'd skip.
 
 ## Try this
 
-Take the small thing from your brief in the last note. On paper, draw a use case diagram with one
-figure and three ovals: one person, three things they can do. It should take about five minutes. Photo
-it, give it to your AI, and ask what's missing.
+Take the small thing from your brief in the last note. Give the brief to your AI and ask for a use case
+diagram as Mermaid. It should have one or two people and a few things they can do. Read it, fix one
+thing you disagree with, and then ask it what's missing. Save the result in your project next to the
+brief.
 
-If your answer to "what's missing" is something you hadn't thought of, that's the whole point of the
-exercise. Tell me what it found.
+If your answer to "what's missing" is something you hadn't thought of, that's the exercise working. Tell
+me what it found.
 
-The AI will build whatever you describe. The drawing is how you find out what you were describing.
+The AI will build whatever you describe. The drawing is how the two of you find out what you were
+describing.
 
 ---
 

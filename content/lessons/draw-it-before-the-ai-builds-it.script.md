@@ -21,12 +21,18 @@ highlight: why-drawing-matters-more-now | You know the system less than you thin
 
 That's the honest bit. The AI hands you a result and you feel like you understand it. Draw it, and you find out how much of that feeling was real.
 
-**Digest:** The AI builds what you described, and what you described had holes. When you don't type the code you miss the walk through it. A drawing is that walk, and a map you can hand to the AI.
+**Beat 4**
+highlight: why-drawing-matters-more-now | You don't have to draw it.
+
+And here's the good news. You don't have to draw it. The AI is very good at drawing. Describe the idea in plain words and it hands you the diagram in seconds. What matters isn't who held the pen. It's that you and the AI end up with the same picture of the plan, written down.
+
+**Digest:** The AI builds what you described, and what you described had holes. When you don't type the code you miss the walk through it. A drawing is that walk. You don't have to draw it, because the AI will, and what matters is a shared, written-down picture of the plan.
 
 **Trial:** Think of the last time you said that's not what I meant. Write down what you hadn't decided yet.
 
 **Runes:**
 the-walk-you-skipped | A drawing is the walk you skipped.
+shared-picture | A shared, documented understanding is the goal.
 
 ## Stop 2: Six drawings, one question each
 
@@ -58,7 +64,7 @@ The design system is the reusable parts. I built one, GRAIN, and I'll tell you a
 **Beat 6**
 highlight: six-drawings-one-question-each | Reach for the one that answers the question
 
-You won't need all six. Pick the one that answers the question you can't answer yet. Every one of them has a good tutorial, and they're linked in the note. I'm not trying to teach them. I'm telling you which one to look up.
+You won't need all six. Pick the one that answers the question you can't answer yet. Then ask the AI to draw it. Every one of them has a good tutorial, linked in the note. I'm not teaching them. I'm telling you which one to ask for.
 
 **Digest:** Use case, who does what. Data flow, where information goes. ERD, what it remembers. Wireframe, what's on each screen. Mockup, how it looks. Design system, the reusable parts. You won't need all six.
 
@@ -67,32 +73,37 @@ You won't need all six. Pick the one that answers the question you can't answer 
 **Runes:**
 one-question-each | Reach for the one that answers the question
 
-## Stop 3: Draw badly, then make it ask
+## Stop 3: Let the AI hold the pen
 
 **Beat 1**
-highlight: draw-badly-on-purpose | A good-looking diagram is a trap
+highlight: let-the-ai-hold-the-pen | Draw a use case diagram for this.
 
-Draw on paper, and draw badly. A pretty diagram is a reason not to change it. You want one you're happy to cross out.
+Take the brief from the last lesson, paste it in, and say this. Ask for the diagram in Mermaid, which is a plain-text way of describing diagrams. Text matters, because you can save it, compare it and change it. A pen drawing you can't.
 
 **Beat 2**
-highlight: draw-badly-on-purpose | wrong by the third change
+highlight: let-the-ai-hold-the-pen | Then read it, and correct it. That's the job.
 
-And be honest about how long it lasts. A drawing is only worth keeping while it matches the code. After a few changes it's wrong, and a wrong diagram is worse than none. Keep them small, and update them or throw them away.
+This is your part. The AI draws, you decide. Say "no, a teacher isn't a kind of student, make them separate." Each correction costs nothing now, and each one is a gap between what you meant and what it assumed. And if you can't tell whether a box is right, ask it to explain that box.
 
 **Beat 3**
-highlight: make-the-teammate-ask-questions | Ask me five questions before you build anything.
+highlight: let-the-ai-hold-the-pen | When you both agree, save it in the project
 
-Now the trick from the last lesson. Your AI won't ask questions on its own, but you can make it. Hand it the drawing and say this. It turns a teammate who guesses into one who checks.
+Now the step that matters. Save the drawing in the project, next to your brief. The AI forgets between sessions, so a drawing in the chat is gone tomorrow. A drawing in the project is a plan every session reads. Common, written-down understanding. That's what stops "that's not what I meant."
 
 **Beat 4**
-highlight: try-this | one figure and three ovals
+highlight: make-the-teammate-ask-questions | Ask me five questions before you build anything.
 
-Your trial. One figure, three ovals, five minutes, on paper. Photograph it, give it to your AI, and ask what's missing. If the answer surprises you, that's the exercise working.
+And then the trick from the first lesson. Hand it the drawing and say this. It turns a teammate who guesses into one who checks.
 
-**Digest:** Draw on paper, badly, so you're happy to cross it out. A drawing is only worth keeping while it matches the code. Ask your AI what's missing, and ask it to question you before it builds.
+**Beat 5**
+highlight: try-this | fix one thing you disagree with
 
-**Trial:** Draw a use case diagram with one figure and three ovals on paper, photograph it, give it to your AI, and ask what's missing.
+Your trial. Give your AI the brief, ask for a use case diagram, and read it. Fix one thing you disagree with. Ask what's missing. Then save it next to the brief. If the answer surprises you, the exercise worked.
+
+**Digest:** Describe it and let the AI draw it, ideally in text it can update. Read it and correct it. Save the agreed drawing in the project, so every session works from the same plan.
+
+**Trial:** Give your AI your brief and ask for a use case diagram as Mermaid. Read it, fix one thing, ask what's missing, then save it next to the brief.
 
 **Runes:**
-draw-badly | You want one you're happy to cross out.
+save-it | A common, written-down understanding
 make-it-ask | Ask me five questions before you build anything.
