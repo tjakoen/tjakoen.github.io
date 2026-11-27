@@ -8,7 +8,8 @@
   <meta name="robots" content="noindex, nofollow">
   <style>
     /* The map is the page: it fills the main column under the tabs. */
-    body[data-screen="learn"] .app-shell__main { padding: 0; display: flex; flex-direction: column; min-height: 0; }
+    /* On a phone the shell's bottom bar is fixed over the page, so the map stops above it and nothing sits behind the bar. */
+    body[data-screen="learn"] .app-shell__main { padding: 0 0 var(--mobile-nav-h, 0px); display: flex; flex-direction: column; min-height: 0; }
     /* The hidden terminal still holds its grid row, so give that row back to the map. */
     body[data-screen="learn"] .app-shell { grid-template-rows: auto auto minmax(0, 1fr) 0 auto; }
     .learn__frame { flex: 1 1 auto; min-height: 0; width: 100%; border: 0; display: block; }

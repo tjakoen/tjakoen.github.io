@@ -274,8 +274,8 @@ pre { margin:0; padding:1rem 1.2rem; overflow:auto; font-size:.8rem; line-height
 .bk__toast { position:absolute; right:1.4rem; bottom:5.6rem; z-index:4; }
 .bk--solo .bk__sheet { grid-template-columns:1fr; } .bk--solo .bk__leafguide, .bk--solo .bk__pg, .bk--solo .bk__tabs { display:none !important; }
 .bk--solo .bk__sheet::before { display:none; } .bk--solo .bk__note { padding-left:1.4rem; }
-@media (max-width:860px) { .bk { padding:0; } .bk__sheet { height:100dvh; width:100%; border-width:0; box-shadow:none; grid-template-columns:1fr; padding-bottom:4.6rem; }
-  .bk__pg { display:flex; grid-column:1 / -1; padding:.3rem 0; } .bk__bar { grid-template-columns:1fr; } .bk__crumb { padding-bottom:.3rem; } .bk__sheet::before { display:none; }
+@media (max-width:860px) { .bk { padding:0; } .bk__sheet { height:100dvh; width:100%; border-width:0; box-shadow:none; grid-template-columns:1fr; padding-bottom:10px; }
+  .bk__pg { display:flex; grid-column:1 / -1; padding:.3rem 0; } .bk__ctl button, .bk__pg button, .bk .tb span { min-height:36px; } .bk__bar { grid-template-columns:1fr; } .bk__crumb { padding-bottom:.3rem; } .bk__sheet::before { display:none; }
   .bk[data-page="note"] .bk__leafguide { display:none; } .bk[data-page="guide"] .bk__leafnote { display:none; } .bk--solo .bk__leafnote { display:flex !important; } }
 @media (prefers-reduced-motion: reduce) { .bk * { transition:none !important; animation:none !important; } }
 /* 7. lesson card on a note */
@@ -476,13 +476,28 @@ body { margin:0; background:var(--q-water); }
 .toast2 { position:fixed; left:50%; bottom:28px; transform:translateX(-50%); background:var(--q-accent); color:var(--q-accent-ink); border:3px solid var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); padding:.3rem .8rem; font-weight:700; z-index:9; }
 .toast2[hidden] { display:none; }
 .results { display:grid; gap:.3rem; }
+.mnav, .pscrim, .pclose { display:none; }
 @media (max-width:799px) {
-  .col { right:8px; left:8px; width:auto; bottom:auto; top:8px; }
-  .panelcard { position:fixed; left:0; right:0; bottom:0; max-height:44vh; border-width:3px 0 0; box-shadow:none; }
-  .chipsbar { left:8px; top:64px; max-width:calc(100vw - 16px); }
-  .topright { top:auto; bottom:calc(44vh + 12px); right:8px; } .topright { left:8px; right:auto; } .setpanel { top:auto; bottom:50px; right:auto; left:0; align-items:flex-start; }
-  .ctl { bottom:calc(44vh + 64px); right:8px; }
+  .col { right:8px; left:8px; width:auto; bottom:auto; top:8px; display:block; }
+  #fold { display:none; }
+  .chipsbar { left:8px; right:8px; top:62px; max-width:none; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; padding:0 2px 6px; }
+  .chipsbar .chip { flex:0 0 auto; }
+  .ctl { top:112px; bottom:auto; right:8px; }
+  .topright { top:auto; bottom:72px; left:8px; right:auto; } .setpanel { top:auto; bottom:50px; right:auto; left:0; align-items:flex-start; }
+  .gh .xpbar { display:none; } .gh .gh__t { min-width:0; }
   .zbar { display:none; } .attrib2 { display:none; }
+  /* the guide is a modal sheet; the map keeps its own previous and next */
+  .panelcard { display:none; }
+  body[data-pm] .panelcard { display:block; position:fixed; left:0; right:0; bottom:0; top:max(56px,11vh); max-height:none; align-self:auto; border-width:3px 0 0; border-radius:14px 14px 0 0; box-shadow:0 -6px 0 rgba(0,0,0,.25); overflow:auto; z-index:8; padding-top:0; }
+  body[data-pm] .pscrim { display:block; position:fixed; inset:0; background:rgba(20,12,6,.5); z-index:4; }
+  body[data-pm] .pclose { display:block; position:fixed; right:10px; top:calc(max(56px,11vh) + 8px); z-index:9; width:40px; height:40px; font:700 1.3rem ui-monospace,monospace; border:3px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); box-shadow:2px 2px 0 var(--q-ink); cursor:pointer; }
+  body[data-pm] :is(.chipsbar,.ctl,.topright,.mnav) { visibility:hidden; }
+  body[data-pm] .searchbar { visibility:hidden; }
+  .mnav { display:grid; grid-template-columns:52px 1fr 52px; gap:8px; position:fixed; left:8px; right:8px; bottom:8px; z-index:6; }
+  .mnav button { height:48px; border:3px solid var(--q-ink); background:var(--q-panel); color:var(--q-ink); box-shadow:3px 3px 0 var(--q-ink); font:700 .78rem ui-monospace,monospace; cursor:pointer; padding:0 .5rem; }
+  .mnav button:disabled { opacity:.45; box-shadow:none; }
+  .mnav .mmid { background:var(--q-accent); color:var(--q-accent-ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .mnav svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
 }
 /* Without JavaScript the plain route list is the page; with it, the map is, and the list stays in the file for crawlers and the no-script case. */
 html.js .route { display:none; }
@@ -727,8 +742,10 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
     <label><input type="checkbox" data-layer="air" checked> Birds and smoke</label>
     <label><input type="checkbox" data-layer="waves" checked> Waves and sparkle</label>
   </div>
-</div><div class="scale"><strong id="zname">World</strong><div class="zlevels"><i data-on></i><i></i><i></i><i></i></div></div></div>
+</div><div class="scale"><strong id="zname">World</strong><div class="zlevels"><i data-on></i><i></i><i></i><i></i><i></i></div></div></div>
 <div class="attrib2">Map data ©2026 the notes</div>
+<div class="pscrim" id="pscrim"></div><button class="pclose" id="pclose" aria-label="Close the panel">&times;</button>
+<nav class="mnav" id="mnav" aria-label="Move around the map"><button id="mprev" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button id="mopen" class="mmid"><span id="mlbl">Open the guide</span></button><button id="mnext" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></nav>
 <div class="toast2" id="toast" hidden></div>
 <!--qm-path-->
 <script type="application/json" id="qm-path">{"stages":[{"n":1,"quests":["start-here","ai-teammate-never-asks-questions","draw-it-before-the-ai-builds-it","plan-it-then-build-from-the-plan","make-it-check-its-own-work","a-test-is-a-check-that-runs-itself","save-it-as-a-skill"]},{"n":2,"quests":["ten-times-zero","loop-setup","plan-big-type-small"]},{"n":3,"quests":["necessity-and-the-model-layer","build-the-floor"]},{"n":4,"quests":["show-them-the-board","move-bugs-left"]},{"n":5,"quests":["one-loop-every-repo","watch-its-hands","whitepaper-one-vocabulary"]},{"n":6,"quests":["one-loop-three-harnesses","the-check-that-never-ran","how-the-model-layer-works","the-reviewer-that-learned-to-be-wrong"]}]}</script>
@@ -957,14 +974,16 @@ const byReg=n=>QUESTS.filter(q=>q.region===n);
 /* S is how many screen pixels one art pixel covers. It stays a whole number so the pixels stay crisp, and it grows on very large screens
    so the backing canvas never passes about 1280 by 800 art pixels, however big the window is. */
 const CAP_W=1280, CAP_H=800; let S=2; const scaleFor=(w,h)=>Math.max(2,Math.ceil(w/CAP_W),Math.ceil(h/CAP_H));
-const LV=[2,3,4,6], LNAME=['World','Regions','Landmark','Stops'];
+let LV=[2,3,4,6]; const ZNAME={1:'Overview',2:'World',3:'Regions',4:'Landmark',6:'Stops'};
+/* A small screen gets one more level out: at the World level a phone shows only half the island, so Overview fits all of it. */
+function refreshLV(){ LV=(CW&&CW<=260)?[1,2,3,4,6]:[2,3,4,6]; if(!LV.includes(V.z)) V.z=LV.reduce((b,z)=>Math.abs(z-V.z)<Math.abs(b-V.z)?z:b,LV[0]); }
 let V={cx:104,cy:84,z:2}, sel={t:'none'}, collapsed=false, filter='All', q='';
 const cv=document.getElementById('map'), ctx=cv.getContext('2d'), over=document.getElementById('over'), fx=document.getElementById('fx'), fctx=fx.getContext('2d');
 let CW=0,CH=0;
 const wide=()=>innerWidth>=800;
-function pads(){ if(collapsed) return {l:0,b:0}; return wide()?{l:384,b:0}:{l:0,b:Math.round(innerHeight*.44)}; }
+function pads(){ if(collapsed||!wide()) return {l:0,b:0}; return {l:384,b:0}; } /* on a phone the map takes the whole screen and the panel is a modal */
 function origin(){ const p=pads(), z=V.z; let vx=V.cx-(CW/2+p.l/2/S)/z, vy=V.cy-(CH/2-p.b/2/S)/z; vx=Math.round(vx*z)/z; vy=Math.round(vy*z)/z; return {vx,vy,z}; }
-function resize(){ S=scaleFor(innerWidth,innerHeight); CW=Math.ceil(innerWidth/S); CH=Math.ceil(innerHeight/S); cv.width=CW; cv.height=CH; cv.style.width=CW*S+'px'; cv.style.height=CH*S+'px'; fx.width=CW; fx.height=CH; fx.style.width=CW*S+'px'; fx.style.height=CH*S+'px'; draw(); }
+function resize(){ S=scaleFor(innerWidth,innerHeight); CW=Math.ceil(innerWidth/S); CH=Math.ceil(innerHeight/S); cv.width=CW; cv.height=CH; cv.style.width=CW*S+'px'; cv.style.height=CH*S+'px'; fx.width=CW; fx.height=CH; fx.style.width=CW*S+'px'; fx.style.height=CH*S+'px'; refreshLV(); draw(); syncPhone(); }
 
 const CHIPREG={Loop:2,Models:3,Leading:4,Design:5};
 function regionOk(n){ if(filter==='All') return true; if(CHIPREG[filter]) return CHIPREG[filter]===n; if(filter==='Not started') return byReg(n).some(x=>!x.done); return true; }
@@ -1252,12 +1271,12 @@ function paint(tick){
 }
 function writeDom(o){ const {items,vx,vy,z,zp}=o;
   syncOverlay(items,vx,vy,z,zp);
-  document.getElementById('zname').textContent=LNAME[LV.indexOf(z)];
-  document.querySelectorAll('.zlevels i').forEach((e,i)=>e.toggleAttribute('data-on',i<=LV.indexOf(z)));
+  document.getElementById('zname').textContent=ZNAME[z];
+  document.querySelectorAll('.zlevels i').forEach((e,i)=>{ e.hidden=i>=LV.length; e.toggleAttribute('data-on',i<=LV.indexOf(z)); });
 }
 const els=new Map();
 function syncOverlay(items,vx,vy,z,zp){ const keep=new Set();
-  over.style.setProperty('--ps', z>=4?'30px':'22px'); // pins are smaller while zoomed out, full size once you are close
+  over.style.setProperty('--ps', wide()?(z>=4?'30px':'22px'):(z>=4?'38px':'32px')); /* a finger needs a bigger pin than a pointer does */ // pins are smaller while zoomed out, full size once you are close
   items.forEach(it=>{ keep.add(it.key); let e=els.get(it.key);
     if(!e){ if(it.kind==='you'){ e=document.createElement('div'); e.className='you'; e.innerHTML='<canvas width="16" height="20" aria-hidden="true"></canvas><span>You</span>'; e.title='You are here: next up on the route'; }
       else if(it.kind==='mark'||it.kind==='hit'){ e=document.createElement(it.kind==='hit'?'button':'div'); e.className=it.kind==='hit'?'hit':'hit mark'; e.innerHTML='<span class="pn"></span><span class="tagc" aria-hidden="true"></span>';
@@ -1296,6 +1315,21 @@ const stage=document.getElementById('stage'); let drag=null;
 stage.addEventListener('pointerdown',e=>{ if(e.target.closest('.col,.ctl,.topright,.chipsbar,.zbar')) return; cancelAnimationFrame(anim); drag={x:e.clientX,y:e.clientY,moved:false}; stage.setPointerCapture(e.pointerId); stage.classList.add('drag'); });
 stage.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; if(Math.abs(dx)+Math.abs(dy)>2) drag.moved=true; drag.x=e.clientX; drag.y=e.clientY; V.cx-=dx/(V.z*S); V.cy-=dy/(V.z*S); clampV(); drawSoon(); });
 stage.addEventListener('pointerup',e=>{ drag=null; stage.classList.remove('drag'); });
+/* Pinch: two fingers scale the stage live, and on release the view settles on the nearest zoom level, because the pixel art only stays crisp at whole levels. */
+const tp=new Map(); let pinch=null, lastPinch=0;
+const tspan=()=>{ const [a,b]=[...tp.values()]; return {d:Math.hypot(a.x-b.x,a.y-b.y)||1,mx:(a.x+b.x)/2,my:(a.y+b.y)/2}; };
+stage.addEventListener('pointerdown',e=>{ if(e.pointerType!=='touch') return; tp.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(tp.size===2){ drag=null; stage.classList.remove('drag'); cancelAnimationFrame(anim); endTween(); const t=tspan(); pinch={d0:t.d,sx:t.mx,sy:t.my,r:1,dx:0,dy:0}; stage.style.willChange='transform'; stage.style.transition='none'; stage.style.transformOrigin=t.mx+'px '+t.my+'px'; } },true);
+stage.addEventListener('pointermove',e=>{ if(!tp.has(e.pointerId)) return; tp.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(!pinch||tp.size<2) return;
+  const t=tspan(); pinch.r=Math.max(.25,Math.min(6,t.d/pinch.d0)); pinch.dx=t.mx-pinch.sx; pinch.dy=t.my-pinch.sy; stage.style.transform='translate('+pinch.dx+'px,'+pinch.dy+'px) scale('+pinch.r+')'; },true);
+function finishPinch(){ const {r,dx,dy,sx,sy}=pinch; pinch=null; lastPinch=performance.now(); const mx=sx+dx, my=sy+dy;
+  endTween(); V.cx-=dx/(V.z*S); V.cy-=dy/(V.z*S); clampV();
+  const z0=V.z, want=z0*r, z1=LV.reduce((b,z)=>Math.abs(Math.log(z/want))<Math.abs(Math.log(b/want))?z:b,LV[0]);
+  if(z1!==z0){ setZ(z1,mx,my); clampV(); }
+  draw(); tweenScale(z1===z0?r:r/(z1/z0),1,mx,my,180); }
+const tpEnd=e=>{ if(!tp.delete(e.pointerId)) return; if(pinch&&tp.size<2) finishPinch(); };
+stage.addEventListener('pointerup',tpEnd,true); stage.addEventListener('pointercancel',tpEnd,true);
+stage.addEventListener('click',e=>{ if(performance.now()-lastPinch<350){ e.stopPropagation(); e.preventDefault(); } },true);
 let wheelT=0; stage.addEventListener('wheel',e=>{ e.preventDefault(); const now=performance.now(); if(now-wheelT<160) return; wheelT=now; stepZoom(e.deltaY<0?1:-1,e.clientX,e.clientY); },{passive:false});
 stage.addEventListener('dblclick',e=>{ if(e.target.closest('.hit')) return; stepZoom(1,e.clientX,e.clientY); });
 addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return; const st=60/(V.z*S)*S; if(e.key==='ArrowLeft') V.cx-=st/ S/ 1; else if(e.key==='ArrowRight') V.cx+=st/S; else if(e.key==='ArrowUp') V.cy-=st/S; else if(e.key==='ArrowDown') V.cy+=st/S; else if(e.key==='+'||e.key==='=') stepZoom(1); else if(e.key==='-') stepZoom(-1); else if(e.key==='Escape') goBack(); else if(e.key==='[') stepBy(-1); else if(e.key===']') stepBy(1); else return; e.preventDefault(); clampV(); draw(); });
@@ -1303,7 +1337,7 @@ addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT'||e.target.tagName=
 /* ===== selection and the place panel ===== */
 const panel=document.getElementById('panel');
 function openPanel(){ if(collapsed){ collapsed=false; panel.hidden=false; document.getElementById('fold').textContent='\u25C0'; } }
-function home(){ sel={t:'none'}; openPanel(); renderPanel(); flyTo(104,84,2); }
+function home(){ sel={t:'none'}; openPanel(); renderPanel(); flyTo(104,84,LV[0]); }
 function selectRegion(n){ sel={t:'region',id:n}; const r=REG[n-1]; openPanel(); renderPanel(); flyTo(r.c[0],r.c[1],3); }
 function selectQuest(id){ sel={t:'quest',id}; const qq=QUESTS.find(x=>x.id===id); openPanel(); renderPanel(); flyTo(qq.pos[0],qq.pos[1]+6,4); }
 function selectStop(id,i){ sel={t:'stop',id,i}; const qq=QUESTS.find(x=>x.id===id), p=stopPos(qq,i); openPanel(); renderPanel(); flyTo(p[0],p[1],6); }
@@ -1325,6 +1359,15 @@ function neighbours(){ if(sel.t==='region'){ const a=REG[sel.id-2], b=REG[sel.id
   return null; }
 function stepBy(d){ const nb=neighbours(); if(!nb) return; const o=d<0?nb.prev:nb.next; if(!o) return; const m=o.a.match(/data-(\w)="([^"]+)"/); if(m[1]==='r') selectRegion(+m[2]); else if(m[1]==='q') selectQuest(m[2]); else selectStop(sel.id,+m[2]); }
 function goBack(){ if(q.trim()){ q=''; document.getElementById('q').value=''; renderPanel(); } else if(sel.t==='stop') selectQuest(sel.id); else if(sel.t==='quest') selectRegion(QUESTS.find(x=>x.id===sel.id).region); else if(sel.t==='region') home(); }
+let pm=false, navStep=false; /* pm: the panel modal is open on a phone */
+function setPM(v){ pm=v; document.body.toggleAttribute('data-pm',v); if(!v&&motion&&!raf) raf=requestAnimationFrame(fxLoop); }
+function syncPhone(){ const ph=!wide();
+  if(!ph){ if(pm) setPM(false); return; }
+  if(q.trim()||(sel.t!=='none'&&!navStep)) setPM(true);
+  const sq=seq(), lbl=document.getElementById('mlbl'), pv=document.getElementById('mprev'), nx=document.getElementById('mnext');
+  if(!sq||q.trim()){ lbl.textContent=sel.t==='none'?'Open the guide':'Open'; pv.disabled=nx.disabled=true; return; }
+  const name=sel.t==='region'?REG[sel.id-1].name:sel.t==='quest'?QUESTS.find(x=>x.id===sel.id).short:'Stop '+(sel.i+1);
+  lbl.textContent=sq.kind.charAt(0).toUpperCase()+sq.kind.slice(1,-1)+' '+(sq.i+1)+' of '+sq.n+' · '+name; pv.disabled=sq.i<=0; nx.disabled=sq.i>=sq.n-1; }
 function renderPanel(){
   const dn=QUESTS.filter(x=>x.done).length;
   let h='';
@@ -1348,7 +1391,7 @@ function renderPanel(){
       <div class="stopbox"><div class="stopbox__h"><strong>${qq.stops.length} stops</strong><span class="sub">in lesson order, along the route</span></div>${qq.stops.map((st,j)=>`<div class="stopline" data-s="${j}" ${sel.t==='stop'&&sel.i===j?'data-sel':''} ${PROG[qq.id].has(j)?'data-done':''}><span class="sn">${PROG[qq.id].has(j)?'\u2713':j+1}</span><span>${st}</span>${(qq.id===YOUQ.id&&j===YOUQ.i)?'<b class="here">You are here</b>':''}</div>`).join('')}</div>
       <div class="row">${sel.t==='stop'?`<button data-act="done">${PROG[qq.id].has(sel.i)?'Undo: open again':'Mark stop '+(sel.i+1)+' as done'}</button>`:''}${(qq.id===YOUQ.id&&(sel.t==='quest'||sel.i===YOUQ.i))?'':'<button data-act="where">\u25CE Where I am</button>'}</div>
       <div class="row"><button class="primary" data-act="begin">${sel.t==='stop'?'Begin this stop':'Begin quest'}</button><button data-act="note">Read the note only</button></div></div>`; }
-  panel.innerHTML=h+footer(); panel.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind));
+  panel.innerHTML=h+footer(); panel.querySelectorAll('canvas.scene').forEach(c=>scene(c,c.dataset.kind)); syncPhone();
 }
 panel.addEventListener('click',e=>{ const b=e.target.closest('[data-q],[data-r],[data-act],[data-s],[data-nav]'); if(!b) return; e.preventDefault();
   if(b.dataset.nav){ const sq=seq(); if(!sq||b.disabled) return; const j={first:0,prev:sq.i-1,next:sq.i+1,last:sq.n-1}[b.dataset.nav]; if(j>=0&&j<sq.n&&j!==sq.i) sq.go(j); return; }
@@ -1371,9 +1414,12 @@ function openQuest(id,lesson,stop){ const qq=QUESTS.find(x=>x.id===id);
   if(lesson) toast('This note has no lesson yet. Opening the note.');
   Book.open({quest:id,solo:true}); }
 /* The book (book.js) calls this when it closes, so the map shows the stops the reader finished. */
-function onBookClosed(rest){ QUESTS.forEach(q=>{ const saved=loadSaved()[q.id]||[]; PROG[q.id]=new Set(saved.filter(i=>i<q.stops.length)); }); refreshProgress(); placeYou(); renderPanel(); draw(); if(rest) toast('Progress saved. Rest well.'); }
+function onBookClosed(rest){ if(motion&&!raf) raf=requestAnimationFrame(fxLoop);  QUESTS.forEach(q=>{ const saved=loadSaved()[q.id]||[]; PROG[q.id]=new Set(saved.filter(i=>i<q.stops.length)); }); refreshProgress(); placeYou(); renderPanel(); draw(); if(rest) toast('Progress saved. Rest well.'); }
 function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2400); }
 document.getElementById('q').addEventListener('input',e=>{ q=e.target.value; renderPanel(); });
+document.getElementById('pclose').addEventListener('click',()=>setPM(false)); document.getElementById('pscrim').addEventListener('click',()=>setPM(false));
+document.getElementById('mopen').addEventListener('click',()=>setPM(true));
+document.getElementById('mprev').addEventListener('click',()=>{ navStep=true; stepBy(-1); navStep=false; }); document.getElementById('mnext').addEventListener('click',()=>{ navStep=true; stepBy(1); navStep=false; });
 document.getElementById('fold').addEventListener('click',()=>{ collapsed=!collapsed; panel.hidden=collapsed; document.getElementById('fold').textContent=collapsed?'▶':'◀'; draw(); });
 document.querySelectorAll('.chipsbar .chip').forEach(c=>c.addEventListener('click',()=>{ filter=c.textContent; document.querySelectorAll('.chipsbar .chip').forEach(x=>x.toggleAttribute('data-on',x===c)); if(CHIPREG[filter]) selectRegion(CHIPREG[filter]); else if(sel.t!=='none'||V.z!==2) home(); else draw(); drawSoon(); }));
 const lbtn=document.getElementById('layers'), lpop=document.getElementById('layerpop');
@@ -1429,7 +1475,9 @@ function fxFrame(t){
   else for(const n in SPEC) if((FADE[n]||0)>.6) SPEC[n].flags.forEach(([x,y])=>{ const [wx,wy]=sceneM(+n,x,y); for(let i=0;i<5;i++){ const o=(((f+i)%4<2)?0:1)+(i>2?1:0); px(wx+i,wy+o,P.flag); } });
   fctx.globalAlpha=1;
 }
-function fxLoop(now){ raf=0; if(!motion||document.hidden) return; if(now-lastT>=160){ lastT=now; draw(true); fxFrame(now); } raf=requestAnimationFrame(fxLoop); }
+/* The ambient animation (water, torches, flags) repaints about six times a second. It rests while the tab is hidden and while a modal covers the map. */
+const covered=()=>document.body.hasAttribute('data-pm')||!!document.querySelector('.bk:not([hidden])');
+function fxLoop(now){ raf=0; if(!motion||document.hidden||covered()) return; if(now-lastT>=160){ lastT=now; draw(true); fxFrame(now); } raf=requestAnimationFrame(fxLoop); }
 function setMotion(on){ motion=on; mbtn.setAttribute('aria-pressed',String(on)); if(on){ if(!raf) raf=requestAnimationFrame(fxLoop); } else { cancelAnimationFrame(raf); raf=0; fctx.clearRect(0,0,fx.width,fx.height); } }
 mbtn.onclick=()=>setMotion(!motion);
 reduce.addEventListener('change',e=>setMotion(!e.matches));
@@ -1441,7 +1489,7 @@ function applyHash(){ const m=/^#(quest|stop)=([a-z0-9-]+)(?:\.([1-9][0-9]*))?$/
   const qq=QUESTS.find(x=>x.id===m[2]); if(!qq) return;
   if(m[1]==='stop'&&m[3]&&+m[3]<=qq.stops.length) selectStop(qq.id,+m[3]-1); else selectQuest(qq.id); }
 addEventListener('hashchange',applyHash);
-window.qmReady=reskin().then(()=>{ resize(); setMotion(motion); applyHash(); });
+window.qmReady=reskin().then(()=>{ resize(); if(LV[0]===1&&!location.hash){ V.z=1; V.cx=100; V.cy=80; clampV(); draw(); } setMotion(motion); applyHash(); });
 
 </script>
 <script src="book.js"></script>

@@ -7,6 +7,8 @@ type Quest = { id: string; stops: string[]; order: number; stage: number; done: 
 declare const QUESTS: Quest[];
 declare const sel: { t: string; id?: string; i?: number };
 declare const PROG: Record<string, Set<number>>;
+declare const V: { z: number };
+declare function selectRegion(n: number): void;
 declare function persist(): void;
 declare const Guild: { xp(): number; codeOf(b: unknown): string; bundle(): unknown };
 
@@ -274,4 +276,57 @@ test("a badge link rebuilds the badge page from the code alone, with the evidenc
   await expect(badge).toContainText("not a signed credential");
   // looking at someone else's badge never writes to this browser's own progress
   expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toBeNull();
+});
+
+test.describe("on a phone", () => {
+  test.use({ viewport: { width: 375, height: 812 }, hasTouch: true });
+
+  test("the map takes the screen above the shell's bottom bar, with one more zoom level out and the panel as a modal", async ({ page }) => {
+    await page.goto("/learn");
+    const frame = await frameOf(page);
+    // nothing of the map sits behind the shell's bottom bar
+    const gap = await page.evaluate(() => {
+      const f = document.getElementById("learn-frame")!.getBoundingClientRect(), nav = document.querySelector(".mobile-nav")!.getBoundingClientRect();
+      return nav.top - f.bottom;
+    });
+    expect(gap).toBeGreaterThanOrEqual(-1);
+    // the whole island fits at the first view, one level out from World
+    expect(await frame.evaluate(() => V.z)).toBe(1);
+    await expect(frame.locator("#zname")).toHaveText("Overview");
+    // the guide is closed until asked for, and the map carries its own previous and next
+    await expect(frame.locator("#panel")).toBeHidden();
+    await expect(frame.locator("#mnav")).toBeVisible();
+    await frame.locator("#mopen").click();
+    await expect(frame.locator("#panel")).toBeVisible();
+    await frame.locator("#pclose").click();
+    await expect(frame.locator("#panel")).toBeHidden();
+    await frame.evaluate(() => { selectRegion(2); });
+    await frame.locator("#pclose").click();
+    await expect(frame.locator("#mlbl")).toHaveText(/Region 2 of 6/);
+    await frame.locator("#mnext").click();
+    await expect(frame.locator("#mlbl")).toHaveText(/Region 3 of 6/);
+    await expect(frame.locator("#panel")).toBeHidden();
+  });
+
+  test("two fingers pinch the map onto the nearest zoom level, and pinching in goes back out", async ({ page }) => {
+    await page.goto("/learn");
+    const frame = await frameOf(page);
+    const z = () => frame.evaluate(() => V.z);
+    await frame.evaluate(async () => {
+      const st = document.getElementById("stage")!;
+      const fire = (t: string, id: number, x: number, y: number) => st.dispatchEvent(new PointerEvent(t, { pointerId: id, pointerType: "touch", clientX: x, clientY: y, bubbles: true }));
+      fire("pointerdown", 1, 150, 300); fire("pointerdown", 2, 230, 300);
+      for (let i = 1; i <= 10; i++) { fire("pointermove", 1, 150 - i * 6, 300); fire("pointermove", 2, 230 + i * 6, 300); await new Promise((r) => setTimeout(r, 16)); }
+      fire("pointerup", 2, 290, 300); fire("pointerup", 1, 90, 300);
+    });
+    await expect.poll(z).toBe(3);
+    await frame.evaluate(async () => {
+      const st = document.getElementById("stage")!;
+      const fire = (t: string, id: number, x: number, y: number) => st.dispatchEvent(new PointerEvent(t, { pointerId: id, pointerType: "touch", clientX: x, clientY: y, bubbles: true }));
+      fire("pointerdown", 1, 90, 300); fire("pointerdown", 2, 290, 300);
+      for (let i = 1; i <= 10; i++) { fire("pointermove", 1, 90 + i * 7, 300); fire("pointermove", 2, 290 - i * 7, 300); await new Promise((r) => setTimeout(r, 16)); }
+      fire("pointerup", 2, 220, 300); fire("pointerup", 1, 160, 300);
+    });
+    await expect.poll(z).toBe(1);
+  });
 });
