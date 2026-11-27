@@ -12,7 +12,7 @@ stops:
   - id: done-is-a-claim
     section: done-is-a-claim-not-a-result
     quote: They're what you check against.
-  trial: Take the last thing your AI called finished and ask it to show evidence for each done line.
+  trial: Take the last step your AI called finished on your portfolio and ask it to show evidence for each done line.
   digest:
   - Done is a claim, not a result.
   - The brief, the drawing and the plan are what you check against.
@@ -54,7 +54,7 @@ stops:
   - id: accountable
     section: checking-is-not-proof
     quote: You're still the person accountable
-  trial: Ask for evidence, run it yourself, review it in a fresh session, and write down anything the review found that the first session missed.
+  trial: Ask for evidence, run it yourself, review it in a fresh session, and write down anything the review found that the first session missed. Then add your first roadmap entry, in your own words.
   digest:
   - When you catch the same miss twice, write it in the file your sessions read.
   - Do the checks by hand first, so you learn which ones are worth automating.

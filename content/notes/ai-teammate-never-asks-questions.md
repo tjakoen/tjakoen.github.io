@@ -38,9 +38,9 @@ particular kind.
 ## It says yes to everything
 
 Ask a chat assistant for something vague and it doesn't push back. It picks an interpretation and
-runs. Say you ask for a login page. You get a login page, some invented rules about passwords, a
-decision about where users go afterward, and a tone of total confidence. Each of those was a choice,
-and none of them was yours.
+runs. Say you ask for "a portfolio site." You get a hero banner, a color scheme, a bio in the voice of a
+stranger, and a list of projects you never built, all delivered with total confidence. Each of those was
+a choice, and none of them was yours.
 
 A coding agent does the same thing, with more reach. Instead of one answer in a chat window, it can
 edit files, add packages and reorganize things you didn't mention. It isn't being sneaky. It filled
@@ -78,11 +78,10 @@ before you've spent an hour.
 **What not to touch.** The files, the packages or the behavior that must stay exactly as they are.
 This one feels optional until the first time an agent helpfully rewrites something that worked.
 
-Take the login page again. A brief might say: add a login form to the existing site, matching the
-current style. Done is a user can sign in with the test account and land on the home page, and a wrong
-password shows an error. Don't change the database, and don't add new packages.
-
-[A real example of a brief from your own work goes here, if you have one that went wrong without it.]
+Take the portfolio again. A brief might say: a one-page portfolio with a section that lists what I've
+learned about working with AI. Done is the page loads at my own address, the bio is in my words, and the
+roadmap shows one entry with a link to evidence. Don't write my bio, don't invent projects or skills, and
+don't add trackers or packages I didn't ask for.
 
 You'll notice nothing in the brief is code. It's the thinking, written down, and it's the part you can
 do at any level. A first-year with a clear brief will often get a better result than an expert with a
@@ -110,16 +109,14 @@ For now, the short version: the AI multiplies what you already bring.
 
 ## Try this
 
-Pick something small you've been meaning to build. A script, a page, a fix. Before you open any tool,
-write the three-part brief in a notes app: the goal, what done looks like, and what not to touch. Then
-give it to your AI and compare what you get with what you wrote.
+This is the first step of the project that runs through the Harbor, your portfolio. If you have one, brief
+the AI on adding an AI roadmap section to it. If not, brief it on a small starter page. Before you open any
+tool, write the three-part brief in a notes app: the goal, what done looks like, and what not to touch.
+Then give it to your AI and compare what you get with what you wrote.
 
 Don't worry about getting it right the first time. The brief is a draft, and when the result surprises
 you, the gap between what you wrote and what you got shows you exactly what you hadn't decided yet. That
 gap is the lesson.
-
-If you try it and something interesting happens, tell me. I'm still working out how to teach this, and
-the stories from people who tried are better than anything I could make up.
 
 Next time you're handed a group project, you'll know what the quiet teammate needed. A clearer brief,
 and someone willing to check the work.

@@ -58,13 +58,18 @@ highlight: what-youll-find-here | Claude Academy
 One thing before you cross. The free lessons at Claude Academy, academy dot claude dot com, give you the basics. Do those first. After that, what I show works with any harness. And if your setup misbehaves, you don't need to know why before you ask the AI to help you fix it. It sounds circular. It works.
 
 **Beat 4**
+highlight: what-youll-build-along-the-way | your portfolio
+
+There's a project running through the Harbor. Your portfolio. Got one, add to it. Don't, I'll give you a small starting skeleton on GitHub Pages. Its centerpiece is an AI roadmap page, one entry per lesson, in your own words. It's also a home for your certificates and badges, including your Claude Academy ones. The design and the words are yours. I guide, you fill in the blanks.
+
+**Beat 5**
 highlight: build-your-own-dont-copy-mine | copy what's useful, change the rest
 
 This is your permission slip. Take what's useful, change the rest, and show me what you made. My team did exactly that, and no two of their setups match. Yours will fit you better than mine ever could.
 
-**Digest:** Start at the Harbor, then cross to the mainland. Progress is self-reported. What I do works for me, so copy what's useful, change the rest, and show me what you make.
+**Digest:** Start at the Harbor, then cross to the mainland. You build your own portfolio along the way. Progress is self-reported. What I do works for me, so copy what's useful, change the rest, and show me what you make.
 
-**Trial:** Do the Claude Academy basics if you haven't, then write down one thing you'd like to build.
+**Trial:** Do the Claude Academy basics if you haven't, then decide: add to a portfolio you have, or start from the skeleton.
 
 **Runes:**
 build-your-own | copy what's useful, change the rest
@@ -79,7 +84,7 @@ Picture the group project teammate who says "got it" and asks nothing. They aren
 **Beat 2**
 highlight: it-says-yes-to-everything | Each of those was a choice
 
-Ask for a login page and count what comes back. Password rules. Where the user goes next. Choices you never made, delivered in a confident voice. That confidence is the risk.
+Ask for "a portfolio site" and count what comes back. A hero banner, a color scheme, a bio in a stranger's voice, projects you never built. Choices you never made, delivered in a confident voice. That confidence is the risk.
 
 **Beat 3**
 highlight: it-cant-think-for-you | capable junior developer
@@ -93,7 +98,7 @@ This is what you keep. What it is, what it's for, what the end looks like. Every
 
 **Digest:** An AI agent behaves like the group project teammate who says got it and asks nothing. It fills every gap with a guess. It can't think for you, so you keep the narrative.
 
-**Trial:** Ask your AI for something vague, like a login page, and list every choice it made that you didn't.
+**Trial:** Ask your AI for something vague, like "a portfolio site," and list every choice it made that you didn't.
 
 **Runes:**
 it-says-yes | Each of those was a choice
@@ -123,7 +128,7 @@ Your trial is the brief. Write it first, then run it, then compare. The gap betw
 
 **Digest:** A brief has three parts: the goal, what done looks like, and what not to touch. The AI forgets between sessions, so the brief has to live in a file. If you can't explain it, you adopted it, you didn't build it.
 
-**Trial:** Write the three-part brief for something small you want to build, give it to your AI, and compare what you get with what you wrote.
+**Trial:** Write the three-part brief for your portfolio, or its roadmap section, give it to your AI, and compare what you get with what you wrote.
 
 **Runes:**
 say-what-done-looks-like | What done looks like.

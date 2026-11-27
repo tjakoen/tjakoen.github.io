@@ -44,12 +44,12 @@ Use case diagram. Who uses it, and what can they do. Draw it before anything els
 **Beat 2**
 highlight: six-drawings-one-question-each | where does information go?
 
-Data flow. Where does information travel. It's the drawing that shows you data moving somewhere you didn't plan, which is easy to miss when you didn't write the code.
+Data flow. Where does information travel. It's the drawing that shows you data moving somewhere you didn't plan, which is easy to miss when you didn't write the code. A static portfolio can skip it.
 
 **Beat 3**
 highlight: six-drawings-one-question-each | what does it remember?
 
-The ERD. What does the thing remember, and how are those things related. Get this one wrong and you're rewriting your data later, not editing it.
+The ERD. What does the thing remember, and how are those things related. For your portfolio, an entry has a date, a title, what you learned, and a link. Get it wrong and you're rewriting your data later, not editing it.
 
 **Beat 4**
 highlight: six-drawings-one-question-each | Gray boxes.
@@ -68,7 +68,7 @@ You won't need all six. Pick the one that answers the question you can't answer 
 
 **Digest:** Use case, who does what. Data flow, where information goes. ERD, what it remembers. Wireframe, what's on each screen. Mockup, how it looks. Design system, the reusable parts. You won't need all six.
 
-**Trial:** Pick a small thing you want to build and name which one of the six answers the question you can't answer yet.
+**Trial:** Look at your portfolio brief and name which one of the six answers the question you can't answer yet. For a portfolio, a use case diagram and a wireframe are plenty.
 
 **Runes:**
 one-question-each | Reach for the one that answers the question
@@ -83,7 +83,7 @@ Take the brief from the last lesson, paste it in, and say this. Ask for the diag
 **Beat 2**
 highlight: let-the-ai-hold-the-pen | Then read it, and correct it. That's the job.
 
-This is your part. The AI draws, you decide. Say "no, a teacher isn't a kind of student, make them separate." Each correction costs nothing now, and each one is a gap between what you meant and what it assumed. And if you can't tell whether a box is right, ask it to explain that box.
+This is your part. The AI draws, you decide. Say "no, a visitor can't add entries, only I can." Each correction costs nothing now, and each one is a gap between what you meant and what it assumed. And if you can't tell whether a box is right, ask it to explain that box.
 
 **Beat 3**
 highlight: let-the-ai-hold-the-pen | When you both agree, save it in the project
@@ -102,7 +102,7 @@ Your trial. Give your AI the brief, ask for a use case diagram, and read it. Fix
 
 **Digest:** Describe it and let the AI draw it, ideally in text it can update. Read it and correct it. Save the agreed drawing in the project, so every session works from the same plan.
 
-**Trial:** Give your AI your brief and ask for a use case diagram as Mermaid. Read it, fix one thing, ask what's missing, then save it next to the brief.
+**Trial:** Give your AI your portfolio brief and ask for a use case diagram as Mermaid, then a gray-box wireframe of the roadmap page. Read them, fix one thing, ask what's missing, then save both next to the brief.
 
 **Runes:**
 save-it | A common, written-down understanding

@@ -36,9 +36,9 @@ shelf. The Claude Academy lessons cover the mechanics, and your agent can explai
 you ask. What I want to give you is the rule for when.
 
 **Don't write a skill until you've typed the thing three times by hand.** Before that, you're guessing
-what it should say. After that, you know, because you've seen what you kept correcting. The first two
-are probably already in front of you: the plan prompt from the planning note and the check prompt from the
-audit note. Every correction you give twice is a line waiting to go into the skill.
+what it should say. After that, you know, because you've seen what you kept correcting. The first
+candidates are probably already in front of you: the plan prompt, the check prompt, and adding a roadmap
+entry to your portfolio. Every correction you give twice is a line waiting to go into the skill.
 
 ## Let your agent write it, then you edit it
 
@@ -55,6 +55,10 @@ Steps: read the plan, and for each done line show evidence you can see,
 run the tests, list the files changed against the leave-alone list,
 and say anything you could not verify.
 ```
+
+A good one for your portfolio is adding a roadmap entry. The skill asks you what you learned, in your own
+words, adds the entry with a date and an evidence link, and checks the link opens. It doesn't write your
+words for you.
 
 Keep a skill to one job. Save it in the project, next to your brief and plan, so every session finds it.
 And as you catch new misses, add a line. That's how it gets better, and how it starts to sound like how
@@ -92,9 +96,10 @@ looking needs something that tells you when it didn't.
 
 ## Try this
 
-Pick the prompt you've typed most. Ask your agent to turn it into a skill, then edit it and save it in your
-project. Run it on something small. Then write down one chore you do over and over that's boring and
-checkable. Don't build the routine yet. Just notice that it's there.
+Pick the prompt you've typed most, or the roadmap entry one. Ask your agent to turn it into a skill, then
+edit it and save it in your project. Run it to add your next entry. Then write down one chore that's
+boring and checkable, such as checking that the links on your roadmap still open. Don't build the routine
+yet. Just notice that it's there.
 
 Your skills will look nothing like mine, and that's the point. Mine came from my repetition, and yours will
 come from yours. [Set Up the Loop With One Prompt](loop-setup.md) shows how I tie mine together once there

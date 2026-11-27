@@ -36,15 +36,15 @@ A short file with three parts: the goal, from your brief. A list of small steps,
 step, what done looks like.
 
 ```text
-Goal: a study planner where a student can add tasks and mark them done.
-Stack: plain HTML, CSS and JavaScript, because I already know them.
+Goal: a one-page portfolio with an AI roadmap that shows what I've learned.
+Stack: plain HTML, CSS and JavaScript on GitHub Pages, because I know them and it's free.
 
-1. Show a list of tasks on the home page.
-   Done: I can see three sample tasks when I open it.
-2. Add a form to create a task.
-   Done: a new task appears in the list.
-3. Add a checkbox to mark a task done.
-   Done: ticking it crosses the task out, and it stays crossed out after a refresh.
+1. A home page with my name and one sentence, in my words.
+   Done: it loads at my GitHub Pages address.
+2. A roadmap section with one entry.
+   Done: the entry shows a date, a title, what I learned, and a link that opens.
+3. A badges section.
+   Done: it shows one badge I earned, with a link to where I earned it.
 ```
 
 Nothing in it is code. It's your brief cut into pieces small enough to check with your own eyes. The
@@ -58,7 +58,9 @@ and why?"
 
 Many ways work. A mobile app might be Flutter or React Native. A website might be plain HTML, CSS and
 JavaScript, which is what I use, or a framework, or even PHP. Start from the popular ones. More has been
-written about them, and in my experience the AI is steadier on them too.
+written about them, and in my experience the AI is steadier on them too. For your portfolio, my suggestion
+is plain HTML, CSS and JavaScript on GitHub Pages: free, and nothing to build. If you already know
+something else, use that.
 
 My advice hasn't changed: stick with what you're familiar with. Avoid agentic coding in a language or
 framework you have no experience with at all. The AI makes anything feel easy, but if you can't read what
@@ -124,10 +126,10 @@ right. The point is that you and the AI always have the same one.
 
 ## Try this
 
-Take your brief and your drawing. Talk through the stack with your AI and pick one you know. Ask for a plan
-with small steps and a done line for each, no code yet. Split one step, cut one, fix the order, and save it
-in your project. Then tell it, "Do step 1 only, and stop," and check the result against the done line
-before you let it go on.
+Take the brief and drawings for your portfolio. Talk through the stack with your AI and pick one you know.
+Ask for a plan with small steps and a done line for each, no code yet. Split one step, cut one, fix the
+order, and save it in your project. Then tell it, "Do step 1 only, and stop," and check the result against
+the done line before you let it go on.
 
 Next time: what to do when the AI says it's finished.
 

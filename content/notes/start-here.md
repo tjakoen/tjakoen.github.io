@@ -10,10 +10,11 @@ date: 2026-11-27
 readingTime: "~6 min"
 tags: [ai, workflow, teaching]
 summary: >
-  A short welcome to the Learn path, and who I am if we have not met. I am about six months into working with AI every day, I am not an
-  expert, and most of this path was built in two days by talking to an AI. It is for students and juniors
+  A short welcome to the Learn path, and who I am if we have not met. I am about six months into working
+  with AI every day, I am not an expert, and most of this path was built in two days by talking to an AI. It is for students and juniors
   who already know some programming and want to build their own AI workflow. I share how I work, you try
-  things and make your own version, and the first step is the free Claude Academy lessons.
+  things and make your own version, the first step is the free Claude Academy lessons, and you build one
+  small project along the way: your portfolio, with an AI roadmap page.
 social: |
   I'm six months into working with AI every day and I am not an expert.
 
@@ -97,6 +98,20 @@ assumes you've done them. What I show works with any harness, from Claude Code t
 one isn't working the way you want, work with the AI to make it work. That's an honest answer even if you
 don't yet know what it means. You'll learn by doing it.
 
+## What you'll build along the way
+
+One small project runs through the Harbor: your portfolio. If you already have one, you'll add to it. If
+not, I'll give you a small starting skeleton, a single static page you can host free on GitHub Pages.
+[Link to the starter goes here once it exists.]
+
+Its centerpiece is an AI roadmap page: one entry per lesson, in your own words, about what you learned
+working with AI. It's also a home for your certificates and badges, including the Claude Academy ones you've
+earned, and a badge can point at the evidence on your roadmap.
+
+The design and the words are yours. I won't design it or write it for you. I'll guide, you fill in the
+blanks, and later we'll get into design systems so it can look like you. My starter and my stack are
+suggestions. Use anything you like.
+
 ## Build your own, don't copy mine
 
 What I do works for me. I'm not promising it works for you, and I'm not telling you this is the way.
@@ -116,8 +131,8 @@ me. I'd like to see it.
 
 ## It's moving fast, and that's the good part
 
-Six months in, the thing I'd tell you is that this moves absurdly fast, and that can be scary. It's
-also what makes it exciting. A student with an idea and an afternoon can build something real now.
+Six months in, this moves absurdly fast, and that can be scary. It's also what makes it exciting. A student
+with an idea and an afternoon can build something real now.
 
 It might also help your job search. When someone asks in an interview how you work with AI, you can go
 deep: what it did to your process, how it made you more accountable, what it did for quality. I can't

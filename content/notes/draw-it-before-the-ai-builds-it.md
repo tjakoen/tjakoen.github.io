@@ -56,27 +56,29 @@ comes back is right.
 ## Six drawings, one question each
 
 **Use case diagram: who uses it, and what can they do?** Stick figures on the left, ovals on the right,
-lines between them. The figures are people (or other systems) and the ovals are things they can do. Say
-you're building a study planner: a student can add a task and mark it done, and a teacher can view a
-class. Now you know you have two kinds of user, and that "teacher" might be a whole second app. Better to
-learn that on paper. [Lucidchart](https://www.lucidchart.com/pages/tutorial/uml-use-case-diagram) and
+lines between them. The figures are people (or other systems) and the ovals are things they can do. For your
+portfolio: a visitor, maybe a recruiter, reads your roadmap and opens the evidence links. You, the owner,
+add entries. Now you know there are two kinds of user, and that "owner adds entries" is a feature of its
+own. Better to learn that on paper. [Lucidchart](https://www.lucidchart.com/pages/tutorial/uml-use-case-diagram) and
 [TU Delft](https://cese.ewi.tudelft.nl/software-systems/part-2/tutorials/uml/use-case.html) have clear
 walkthroughs.
 
 **Data flow diagram: where does information go?** Boxes for the outside world, circles for what your
 system does, open boxes for where data rests, and arrows for data in motion. It asks who sends what to
-whom, and AI-built systems can quietly send data somewhere you didn't plan.
+whom, and AI-built systems can quietly send data somewhere you didn't plan. A static portfolio can skip
+this one. It earns its keep when data moves between systems.
 [IBM's guide](https://www.ibm.com/think/topics/data-flow-diagram) is a good place to start.
 
 **ERD, the entity relationship diagram: what does it remember?** The boxes are the things your system
-keeps, like students and tasks, and the lines say how they relate. One student has many tasks. A task
-belongs to one student. Change your mind about this halfway through and you're rewriting, not editing.
+keeps, like roadmap entries and badges, and the lines say how they relate. An entry has a date, a title,
+what you learned and an evidence link. A badge has a name, an issuer and a link. Change your mind about
+this halfway through and you're rewriting, not editing.
 [Atlassian](https://www.atlassian.com/work-management/project-management/entity-relationship-diagram)
 covers the idea, and [freeCodeCamp](https://www.freecodecamp.org/news/crows-foot-notation-relationship-symbols-and-how-to-read-diagrams/)
 explains the crow's foot lines.
 
 **Wireframe: what is on each screen, and where?** Gray boxes. No colors, no fonts, no polish. A box
-labeled "task list", a box labeled "add button". It makes you decide what each screen is for without
+labeled "roadmap list", a box labeled "badges". It makes you decide what each screen is for without
 anyone arguing about the shade of blue.
 
 **Mockup: how does it look?** A wireframe with real colors, type and spacing. It's the one you can show
@@ -90,8 +92,9 @@ named once and used everywhere, so the thousandth screen looks like the first. I
 gets its own note. The idea underneath it is Brad Frost's
 [atomic design](https://atomicdesign.bradfrost.com): small parts that combine into bigger ones.
 
-You won't need all six. A one-page script needs none, and a small app might need the first and the last.
-Reach for the one that answers the question you can't currently answer, and ask your AI to draw it.
+You won't need all six. For your portfolio, a use case diagram and a wireframe are plenty, and an ERD is
+nice once the roadmap grows. A bigger app would need more. Reach for the one that answers the question
+you can't currently answer, and ask your AI to draw it.
 
 ## Let the AI hold the pen
 
@@ -102,7 +105,7 @@ HTML page of gray boxes you can open in a browser. For an ERD, ask for the table
 you'd rather sketch on paper, go ahead and send a photo, since it can read it. Either way, the AI draws and
 you decide.
 
-Then read it, and correct it. That's the job. "No, a teacher isn't a type of student. Make them separate."
+Then read it, and correct it. That's the job. "No, a visitor can't add entries, only I can."
 "There's no admin, remove it." Corrections are cheap because nothing's been built yet, and each one is a
 gap between what you meant and what it assumed. If you can't tell whether a box is right, ask it to explain
 that box. A plausible drawing can still be wrong.
@@ -127,9 +130,10 @@ questions you'd skip.
 
 ## Try this
 
-Take the small thing from your brief. Ask your AI for a use case diagram as Mermaid, with one or two people
-and a few things they can do. Read it, fix one thing you disagree with, then ask it what's missing. Save
-the result next to the brief. If the answer to "what's missing" is something you hadn't thought of, the
+Take the brief for your portfolio. Ask your AI for a use case diagram as Mermaid, with one visitor, you as
+the owner, and a few things each can do. Read it, fix one thing you disagree with, then ask it what's
+missing. Then ask for a wireframe of the roadmap page as a plain HTML page of gray boxes. Save both next to
+the brief. If the answer to "what's missing" is something you hadn't thought of, the
 exercise worked. Tell me what it found.
 
 The AI will build whatever you describe. The drawing is how the two of you find out what you were

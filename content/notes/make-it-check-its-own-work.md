@@ -60,19 +60,21 @@ as a little program, so a machine can run it in a second, as often as you like, 
 Here's one. It's JavaScript, and yours will look different in another language, but the shape is the same.
 
 ```js
-test("marking a task done", () => {
-  const task = { title: "Read chapter 3", done: false };
-  markDone(task);
-  expect(task.done).toBe(true);
+test("newest roadmap entry shows first", () => {
+  const entries = [
+    { title: "Briefs", date: "2026-12-01" },
+    { title: "Plans", date: "2026-12-08" },
+  ];
+  expect(sortNewestFirst(entries)[0].title).toBe("Plans");
 });
 ```
 
-Make a task that isn't done, mark it done, check that it's done. Run the tests and the machine says pass or
+Make two entries, sort them, check the newest comes first. Run the tests and the machine says pass or
 fail, and a fail comes with a message like "expected true, received false" to tell you where to look.
 
 Two kinds are worth knowing by name. That one is a **unit test**: it checks one small piece on its own, and
 it runs in a blink, so you can have hundreds. An **end-to-end test**, or e2e test, drives the whole app the
-way a user would: open the page, add a task, tick it off, refresh, check it's still crossed out. It's
+way a user would: open your portfolio, find the roadmap, click an evidence link, check it opens. It's
 slower and there are fewer of them, but it's the closest thing to asking "does this really work?"
 Martin Fowler's [Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html)
 explains how the two fit together, [freeCodeCamp](https://www.freecodecamp.org/news/end-to-end-testing-tutorial/)
@@ -92,8 +94,8 @@ anything. Tests can still be wrong or too weak, and they're only as good as your
 
 ## Run it yourself
 
-Then do the part nobody can do for you. Open the thing and use it the way a user would: add a task, tick it
-off, refresh, see if it's still there. And ask for the list of files it touched and skim it against your
+Then do the part nobody can do for you. Open the thing and use it the way a user would: open your portfolio,
+scroll to the roadmap, click an evidence link, refresh. And ask for the list of files it touched and skim it against your
 leave-alone list. Reading a diff gets easier fast, and it's the skill I'd most encourage you to build
 while you're learning.
 
@@ -127,9 +129,12 @@ go back and ask.
 
 ## Try this
 
-Take the last thing your AI called finished. Ask for evidence for each done line and a test for one of
-them, then run it yourself. Open a new session, hand over the brief, the plan and the changes, and ask for
-a review. Write down anything the review found that the first session didn't.
+Take the last step your AI called finished on your portfolio. Ask for evidence for each done line and a
+test for one of them, then run it yourself. Open a new session, hand over the brief, the plan and the
+changes, and ask for a review. Write down anything the review found that the first session didn't.
+
+Then add your first roadmap entry, in your own words: what did you learn about briefing and checking? Write
+it yourself. The AI can fix your typos, but the words are yours.
 
 If it found something, you've seen why this matters. If it found nothing, you've earned a little more trust
 in that piece of work.

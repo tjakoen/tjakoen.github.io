@@ -234,3 +234,24 @@ writing in their own words what they learned, which is also evidence for a job i
   own real portfolio artifacts, which are more honest than an invented scenario.
 - The skeleton needs a home repo, which is an outward action and needs the author's go-ahead.
 - Rule, 2026-11-27: the loop is not introduced until the chat-to-loop note, so earlier Harbor notes only mention it in a clause and link out. Note 5's section on the loop noticing repeats was cut to a short paragraph linking I Kept Telling My AI the Same Thing.
+
+## Decisions, 2026-11-27 (the running project)
+
+1. **Do not use the author's own portfolio as the worked example.** It lives in his portfolio as it is. The
+   notes use a generic running project: the reader's own portfolio, with an AI roadmap page.
+2. **Badges are a pointer to evidence.** The portfolio is a home for AI certificates, including the Claude
+   Academy badges a reader already has, and a path badge can point at evidence on the roadmap page.
+   Self-reported still means unverifiable, so the page shows the work behind a claim.
+3. **The rewrite pass was done.** Start Here gained a What you will build along the way section. The invented
+   study planner and login page examples in notes 1 to 5 became the portfolio. Trials became project steps:
+   brief it, draw it (use case and a gray-box wireframe), plan it, check it and add roadmap entry one in
+   your own words, and save adding an entry as a skill, with a link check as the first routine candidate.
+   Scripts and lesson files updated and re-validated.
+4. **Content is the reader's.** The AI may fix typos in a roadmap entry, but the words are the reader's own,
+   and the starter skeleton is nearly unstyled so no two portfolios look alike. Design systems come later.
+5. **The starter skeleton does not exist yet.** Start Here carries a bracketed placeholder for its link.
+   Making it means a new repo (an outward action that needs the author's go-ahead), a single static page for
+   GitHub Pages, plus starting prompts from the existing stack.
+
+Open: the starter repo, the badge criteria pages, the Claude Academy badge naming (check what Academy actually
+issues before the note says anything specific), and a Harbor note on design systems.
