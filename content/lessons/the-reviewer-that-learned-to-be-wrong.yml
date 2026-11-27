@@ -1,54 +1,114 @@
 id: the-reviewer-that-learned-to-be-wrong
 note: the-reviewer-that-learned-to-be-wrong
-title: 
-summary: 
+title: The reviewer that learned to be wrong
+summary: "A pull request reviewer that keeps a log of every time it was wrong, and what it took to trust it: a question that started it, a loop that scores it, the other engines and the bill, the replays that prove a repair held, the one miss that reached production, and the numbers I can and cannot claim."
 audio: /media/lessons/the-reviewer-that-learned-to-be-wrong.m4a
-stops:
-  - title: ""
+stops: 
+  - title: Why not?
     note: the-reviewer-that-learned-to-be-wrong
     from: intro
     to: early-aug-why-not
-    words: 734
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: intro
+        section: intro
+        quote: it keeps a log of every time it was wrong
+      - id: early-aug-why-not
+        section: early-aug-why-not
+        quote: My name goes on the approval
+      - id: early-aug-why-not-2
+        section: early-aug-why-not
+        quote: make it into something I could trust
+    trial: "Name one AI tool whose output you still check line by line. Write one sentence answering why not, and one thing that would have to be true for you to stop checking."
+    digest: 
+      - "I was reading every word an AI reviewer wrote because I didn't trust it."
+      - "A one-line question, why not, turned that into a project to earn trust I could show."
+  - title: "A reviewer I had to babysit, and the day it started keeping score"
     note: the-reviewer-that-learned-to-be-wrong
     from: aug-14-it-started-as-a-reviewer-i-had-to-babysit
     to: sep-17-the-talk-was-the-old-version
-    words: 856
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: aug-14-it-started-as-a-reviewer-i-had-to-babysit
+        section: aug-14-it-started-as-a-reviewer-i-had-to-babysit
+        quote: annoying from day one
+      - id: aug-18-then-it-had-to-keep-score
+        section: aug-18-then-it-had-to-keep-score
+        quote: A reviewer does not get better by being prompted harder.
+      - id: sep-17-the-talk-was-the-old-version
+        section: sep-17-the-talk-was-the-old-version
+        quote: the sidebar itself was the board
+    trial: "Take the last five review comments you left or received. Mark each one fixed, answered, closed without a change, or ignored, and see which topic scores worst."
+    digest: 
+      - The first version needed watching and learned manners commit by commit.
+      - "From August 18 every comment was scored by what happened next, read per topic, and no change lands without my sign-off."
+  - title: "Other people, a second engine, and a bill"
     note: the-reviewer-that-learned-to-be-wrong
     from: sep-28-then-other-people-wanted-it
     to: oct-13-then-it-had-to-earn-its-keep
-    words: 818
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: sep-28-then-other-people-wanted-it
+        section: sep-28-then-other-people-wanted-it
+        quote: "the first release a teammate can set up, use and repair alone"
+      - id: oct-8-then-it-needed-a-second-engine
+        section: oct-8-then-it-needed-a-second-engine
+        quote: on the bad week I want a list and a button
+      - id: oct-13-then-it-had-to-earn-its-keep
+        section: oct-13-then-it-had-to-earn-its-keep
+        quote: "on results, not on taste"
+    trial: Pick one model choice in your own setup that you made on taste. Write the one result that would tell you whether a cheaper model could do it.
+    digest: 
+      - "The kit became installable by teammates, learned to build on their reviews, and hands work to Codex as my Claude use climbs."
+      - Model choices are trials judged on results.
+  - title: "Receipts, a map, and choosing what to look at"
     note: the-reviewer-that-learned-to-be-wrong
     from: oct-14-then-it-had-to-prove-its-repairs-held
     to: oct-26-then-it-had-to-decide-what-deserved-a-look
-    words: 629
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: oct-14-then-it-had-to-prove-its-repairs-held
+        section: oct-14-then-it-had-to-prove-its-repairs-held
+        quote: A replayed one is a receipt.
+      - id: oct-18-then-it-got-a-map-of-the-code
+        section: oct-18-then-it-got-a-map-of-the-code
+        quote: "hard blocks, not good intentions"
+      - id: oct-26-then-it-had-to-decide-what-deserved-a-look
+        section: oct-26-then-it-had-to-decide-what-deserved-a-look
+        quote: so the queue does not drown
+    trial: Find one bug fix you made recently because something was missed. Write down how you would replay the original check against the original commit to prove the fix would now catch it.
+    digest: 
+      - "Every repair is replayed on the exact commit it missed, so a fix is a receipt rather than a hope."
+      - "The kit now reads a sandboxed code graph, the epic's decisions and a capped stream of risky outside changes."
+  - title: "The one it let through, and how it works now"
     note: the-reviewer-that-learned-to-be-wrong
     from: oct-30-then-it-let-one-through
     to: nov-9-how-it-works-now
-    words: 768
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: oct-30-then-it-let-one-through
+        section: oct-30-then-it-let-one-through
+        quote: The reviewer had read that migration and said nothing.
+      - id: oct-30-then-it-let-one-through-2
+        section: oct-30-then-it-let-one-through
+        quote: what happens after the miss
+      - id: nov-9-how-it-works-now
+        section: nov-9-how-it-works-now
+        quote: A PASS from the kit means it has nothing left to say
+    trial: "Write down the last miss your own review process let through. Write the one rule that would have caught it, and which pull request you would replay it on."
+    digest: 
+      - "The kit passed one change that broke production, and the repair was replayed on the original commit and blocked it."
+      - "It reviews only in my working hours, and approval never leaves my hands."
+  - title: "What the team felt, what I got back, and what I haven't shown"
     note: the-reviewer-that-learned-to-be-wrong
     from: what-the-team-felt-and-what-i-got-back
     to: what-i-have-not-shown
-    words: 528
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: what-the-team-felt-and-what-i-got-back
+        section: what-the-team-felt-and-what-i-got-back
+        quote: "It is a before and after, not an experiment."
+      - id: what-the-team-felt-and-what-i-got-back-2
+        section: what-the-team-felt-and-what-i-got-back
+        quote: gave back the part only I can do
+      - id: what-i-have-not-shown
+        section: what-i-have-not-shown
+        quote: I have not shown that the kit makes the codebase better.
+    trial: "Pull the open and first-review times for your team's last twenty pull requests. Work out how long the slowest one in four waited, and write it down as your baseline."
+    digest: 
+      - "The worst-case wait for a first review fell from most of a day to about three hours, as a before and after, not an experiment."
+      - "The hours I got back went to my team, and better code is still unproven."

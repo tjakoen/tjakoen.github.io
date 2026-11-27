@@ -73,6 +73,44 @@ measurement, so test it on something small. The same idea sits behind the AI cod
 team, told in [Seven Hundred Commits to Teach a Reviewer It Was
 Wrong](the-reviewer-that-learned-to-be-wrong.md). For now, a new chat is all you need.
 
+<svg viewBox="0 0 420 380" width="100%" role="img"
+     aria-label="From done to proven. The AI says done. You ask for the evidence for each done line. You run it yourself as a user would. A fresh session that did not write the code reviews it. You write down what it keeps missing, in the file where the brief lives."
+     style="display:block;width:100%;max-width:400px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-check" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="70" y="14" width="280" height="46" rx="6"/>
+    <rect x="70" y="84" width="280" height="46" rx="6"/>
+    <rect x="70" y="154" width="280" height="46" rx="6"/>
+    <rect x="70" y="294" width="280" height="46" rx="6"/>
+  </g>
+  <g style="fill:var(--color-fg);stroke:var(--color-fg)">
+    <rect x="70" y="224" width="280" height="46" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="210" y1="60" x2="210" y2="84" marker-end="url(#fl-check)"/>
+    <line x1="210" y1="130" x2="210" y2="154" marker-end="url(#fl-check)"/>
+    <line x1="210" y1="200" x2="210" y2="224" marker-end="url(#fl-check)"/>
+    <line x1="210" y1="270" x2="210" y2="294" marker-end="url(#fl-check)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="210.0" y="41.5" style="fill:var(--color-fg)">The AI says it is done</text>
+    <text x="210.0" y="103.0" style="fill:var(--color-fg)">Ask for the evidence</text>
+    <text x="210.0" y="120.0" style="fill:var(--color-fg)">for each done line</text>
+    <text x="210.0" y="173.0" style="fill:var(--color-fg)">Run it yourself,</text>
+    <text x="210.0" y="190.0" style="fill:var(--color-fg)">the way a user would</text>
+    <text x="210.0" y="243.0" style="fill:var(--color-bg)">A fresh session reviews it</text>
+    <text x="210.0" y="260.0" style="fill:var(--color-bg)">(it did not write the code)</text>
+    <text x="210.0" y="313.0" style="fill:var(--color-fg)">Write down what it</text>
+    <text x="210.0" y="330.0" style="fill:var(--color-fg)">keeps missing, in the brief file</text>
+  </g>
+</svg>
+
+*Done is a claim until the evidence, your own run and a cold reader have all had a turn.*
+
 ## Write down what it keeps missing
 
 Sooner or later you catch the same miss twice: an empty list it never handles, a debugging line it leaves

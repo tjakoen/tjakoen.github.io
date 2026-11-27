@@ -1,30 +1,63 @@
 id: loop-setup
 note: loop-setup
-title: 
-summary: 
+title: Set up the loop with one prompt
+summary: "I show how to set up the loop in one session, starting from one short prompt: what the five pieces are, why the standards are yours to write, and why the guards wait until they have earned a place."
 audio: /media/lessons/loop-setup.m4a
-stops:
-  - title: ""
+stops: 
+  - title: "One prompt, five pieces"
     note: loop-setup
     from: intro
     to: what-the-loop-is
-    words: 662
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: intro
+        section: intro
+        quote: The model is not in the contract. That is the point.
+      - id: start-with-the-prompt
+        section: start-with-the-prompt
+        quote: That is the loop as a settings project
+      - id: what-the-loop-is
+        section: what-the-loop-is
+        quote: The model can change; the contract stays.
+    trial: Paste the setup prompt into a fresh session at your repo root and check whether the answer fits on one screen and names a first step.
+    digest: 
+      - "The loop is five pieces: front door, plan, checklist, report, human gate."
+      - The model is not one of them.
+      - Start with one short prompt and expect a small answer.
+  - title: "The front door, the plan and the proof it loaded"
     note: loop-setup
     from: your-standards-are-the-contract-you-write
     to: step-three-the-checklist
-    words: 826
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: your-standards-are-the-contract-you-write
+        section: your-standards-are-the-contract-you-write
+        quote: A standard you did not write is a rule you cannot defend.
+      - id: step-two-the-plan-and-the-report
+        section: step-two-the-plan-and-the-report
+        quote: It is the sentence the session can finish.
+      - id: step-three-the-checklist
+        section: step-three-the-checklist
+        quote: "fix the row, not the output."
+    trial: "Open your repo's instruction file and check whether it answers the four questions: what the repo is, how to run the checks, where the plan lives, and what a session may not touch."
+    digest: 
+      - Write your own standards and link them from one front door file.
+      - "A plan needs a finish, a report needs its checks."
+      - "The checklist proves the loop loaded, and nobody edits its verdict."
+  - title: "Guards, adapters and the first run"
     note: loop-setup
     from: step-four-the-guards-when-they-earn-it
     to: the-turn
-    words: 963
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: step-four-the-guards-when-they-earn-it
+        section: step-four-the-guards-when-they-earn-it
+        quote: a rule with two implementations needs one test list
+      - id: step-five-the-adapter
+        section: step-five-the-adapter
+        quote: The adapter is the only part that changes per harness.
+      - id: the-first-run
+        section: the-first-run
+        quote: The first is boring. The second is why most people stop.
+    trial: "Write your human lane, the short list of paths only you touch, into your front door file."
+    digest: 
+      - Guards start as prose and become hooks when a mistake repeats.
+      - The adapter is the only part that changes per harness.
+      - "Run one small, checked session first, and keep the human gate."

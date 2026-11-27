@@ -32,6 +32,11 @@
      "text": "In case we haven't met. I manage engineers at Career Team, and I teach software engineering part-time at a university. Nine years in. Mostly that means reading other people's code and finding the problems politely. The AI part is the last six months. If you'd rather check who's talking before you trust them, my About page has the rest. I'd encourage that."
     },
     {
+     "section": "why-i-started-over",
+     "figure": "learning path as a line of six places",
+     "text": "Here's the shape of the whole path. The Harbor comes first, and it's the short on-ramp: the basics in plain words, plus Claude Academy outside this site. Then the mainland, in order of difficulty, ending at the deep technical notes. You don't have to walk all of it. The order is on purpose, so you meet the ideas before the deeper notes lean on them."
+    },
+    {
      "section": "who-this-is-for",
      "quote": "AI is a reason to learn them harder",
      "text": "You'll hear me assume you can code a little. That's on purpose. The AI doesn't replace that skill, it raises the stakes on it, because you're the one who has to notice when it's wrong."
@@ -124,6 +129,11 @@
      "text": "Ask for \"a portfolio site\" and count what comes back. A hero banner, a color scheme, a bio in a stranger's voice, projects you never built. Choices you never made, delivered in a confident voice. That confidence is the risk."
     },
     {
+     "section": "it-says-yes-to-everything",
+     "figure": "two paths from the same request",
+     "text": "Look at the two paths side by side. The same request goes in on both. On the left, nobody says where the gaps are, so the agent guesses, and you find the wrong result late. On the right, a short brief goes first, and what comes back is something you can check against what you wrote. The only thing that changed is what you handed over before it started."
+    },
+    {
      "section": "it-cant-think-for-you",
      "quote": "capable junior developer",
      "text": "Working with AI is a lot like mentoring, and I found I already knew how. It's a capable junior, or a student rushing through an activity to finish. Fast and willing, and it knows only what you told it."
@@ -163,6 +173,11 @@
      "section": "say-what-done-looks-like",
      "quote": "What done looks like.",
      "text": "Before I ask for anything, three lines: the goal, what done looks like, what to leave alone. The middle one is where people get stuck. If I can't say what done looks like, I've found something I haven't decided yet. Better to find that now."
+    },
+    {
+     "section": "say-what-done-looks-like",
+     "figure": "the brief has three parts",
+     "text": "Here are the three lines side by side. Nothing in them is code. The middle one is shaded because it's the one people get stuck on, and it tells you whether the task is ready to hand over at all. A first-year with a clear brief will often get a better result than an expert with a vague one."
     },
     {
      "section": "orchestrate-it-dont-just-vibe-it",

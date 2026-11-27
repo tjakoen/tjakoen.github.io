@@ -107,6 +107,45 @@ Left alone, the AI will run through every step and a few I didn't ask for. When 
 one thing against one line of done. If it's right, I tick it off and say "now step 2." If it's wrong, I
 catch it while the mistake is small.
 
+<svg viewBox="0 0 600 140" width="100%" role="img"
+     aria-label="Plan, build, tick. The plan lives in a file. You tell the AI to do step 1 only and stop, you check the result against that step&#x27;s done line, then you tick it off. Then you say now step 2, and the loop repeats."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-plan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="6" y="24" width="126" height="52" rx="6"/>
+    <rect x="162" y="24" width="126" height="52" rx="6"/>
+    <rect x="318" y="24" width="126" height="52" rx="6"/>
+  </g>
+  <g style="fill:var(--color-fg);stroke:var(--color-fg)">
+    <rect x="474" y="24" width="126" height="52" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="132" y1="50" x2="162" y2="50" marker-end="url(#fl-plan)"/>
+    <line x1="288" y1="50" x2="318" y2="50" marker-end="url(#fl-plan)"/>
+    <line x1="444" y1="50" x2="474" y2="50" marker-end="url(#fl-plan)"/>
+    <path d="M 552 76 L 552 104 L 288 104 L 288 78" marker-end="url(#fl-plan)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="69.0" y="46.0" style="fill:var(--color-fg)">The plan,</text>
+    <text x="69.0" y="63.0" style="fill:var(--color-fg)">in a file</text>
+    <text x="225.0" y="46.0" style="fill:var(--color-fg)">Do step 1 only,</text>
+    <text x="225.0" y="63.0" style="fill:var(--color-fg)">then stop</text>
+    <text x="381.0" y="46.0" style="fill:var(--color-fg)">Check it against</text>
+    <text x="381.0" y="63.0" style="fill:var(--color-fg)">its done line</text>
+    <text x="537.0" y="46.0" style="fill:var(--color-bg)">Tick it off</text>
+    <text x="537.0" y="63.0" style="fill:var(--color-bg)">in the file</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="420" y="98">now step 2</text>
+  </g>
+</svg>
+
+*One step at a time: do it, check it against its done line, tick it off, then the next.*
+
 ## Keep it where it survives
 
 I keep the plan in a file in the project, next to the brief and the drawing, and have the AI tick steps off

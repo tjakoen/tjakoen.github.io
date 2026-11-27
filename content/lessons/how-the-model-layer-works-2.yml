@@ -1,38 +1,78 @@
 id: how-the-model-layer-works-2
 note: how-the-model-layer-works
-title: 
-summary: 
+title: "How the model layer works, part two"
+summary: "The technical half of the model layer story, part two: why money waits for a typed approval, the limits on spawning, the work lane enforced three ways, how a check is graded, how to build your own, and what is still unproven."
 audio: /media/lessons/how-the-model-layer-works-2.m4a
-stops:
-  - title: ""
+stops: 
+  - title: "Money waits for me, and spawning has limits"
     note: how-the-model-layer-works
     from: the-paid-route-needs-my-typed-approval
     to: spawning-context-recovery-and-the-goldfish-gate
-    words: 1010
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: the-paid-route-needs-my-typed-approval
+        section: the-paid-route-needs-my-typed-approval
+        quote: "Only I can give an approval, and only on a terminal."
+      - id: the-paid-route-needs-my-typed-approval-2
+        section: the-paid-route-needs-my-typed-approval
+        quote: What holds the money is simple on purpose.
+      - id: spawning-context-recovery-and-the-goldfish-gate
+        section: spawning-context-recovery-and-the-goldfish-gate
+        quote: "The supervisor is code, not an agent."
+    trial: "Pick the one paid action in your own setup an agent could trigger today. Write down where the approval for it lives, and whether an agent could write that place itself."
+    digest: 
+      - "Paid calls are escalations that wait for an approval I type in a terminal, against a prepaid ceiling."
+      - "A code supervisor caps spawning, and three fresh goldfish review a risky plan before it moves."
+  - title: "The work lane, and the record"
     note: how-the-model-layer-works
     from: work-is-a-different-lane-enforced-three-ways
     to: what-gets-recorded-and-why-free-and-paid-sit-apart
-    words: 828
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: work-is-a-different-lane-enforced-three-ways
+        section: work-is-a-different-lane-enforced-three-ways
+        quote: so a mistake has to get past all three
+      - id: work-is-a-different-lane-enforced-three-ways-2
+        section: work-is-a-different-lane-enforced-three-ways
+        quote: An unidentified machine is the wrong place to guess
+      - id: what-gets-recorded-and-why-free-and-paid-sit-apart
+        section: what-gets-recorded-and-why-free-and-paid-sit-apart
+        quote: A layer that cannot report is a layer you cannot tune.
+    trial: "Write down what your setup does today if it can't tell whether a machine is a work machine. If the answer is that it allows everything, write the one rule that would make it fail closed."
+    digest: 
+      - "Work machines and work repositories use only company Claude and Codex, behind three guards whose constants live in code."
+      - "Every session and subagent writes one usage line, and free use is kept apart from paid."
+  - title: "Grade the check, then build your own"
     note: how-the-model-layer-works
     from: five-levels-and-what-a-pass-is-allowed-to-claim
     to: build-your-own
-    words: 666
-    runes: []
-    trial: ""
-    digest: []
-  - title: ""
+    runes: 
+      - id: five-levels-and-what-a-pass-is-allowed-to-claim
+        section: five-levels-and-what-a-pass-is-allowed-to-claim
+        quote: A file saying the guard exists is not a guard that works.
+      - id: build-your-own
+        section: build-your-own
+        quote: You do not need my code.
+      - id: build-your-own-2
+        section: build-your-own
+        quote: "Ask once, store the answer, and never default to yes."
+    trial: "Take one check in your own setup that reports green. Decide honestly which of the five levels its pass reaches, and write that level next to it."
+    digest: 
+      - "Every check is graded on five levels by what its pass actually proves, and configured alone counts for nothing."
+      - "The build list runs from a registry to a verifier, in order."
+  - title: "What I publish, what I keep, and what is still open"
     note: how-the-model-layer-works
     from: what-is-public-and-what-is-private
     to: the-turn
-    words: 888
-    runes: []
-    trial: ""
-    digest: []
+    runes: 
+      - id: what-is-public-and-what-is-private
+        section: what-is-public-and-what-is-private
+        quote: a contract you cannot read cannot be adopted
+      - id: what-is-proven-and-what-is-still-being-proven
+        section: what-is-proven-and-what-is-still-being-proven
+        quote: "Audit is not the same as use, so this is the line."
+      - id: the-turn
+        section: the-turn
+        quote: the part I use most turned out to be the record
+    trial: "Write two short lists for your own setup, what you could publish and what must stay private. Put one reason next to each private item."
+    digest: 
+      - "The standards are public and the wiring stays private, because it names my machines and my employer."
+      - "Much of the layer is audited but not yet met in real use, and it proves routing, not quality."

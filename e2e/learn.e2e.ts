@@ -409,3 +409,72 @@ test("when a chapter ends the main button becomes Next chapter, and the last cha
   for (let i = 0; i < 12; i++) { if ((await play.textContent())?.includes("Finish")) break; await book.locator('[data-do="next"]').click(); }
   await expect(play).toHaveText(/Finish and rest/);
 });
+
+test("a beat can light a figure: it is outlined, named for a screen reader, and let go on the next line", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.evaluate(() => localStorage.removeItem("learn.progress.v1"));
+  await frame.evaluate(() => { selectQuest("draw-it-before-the-ai-builds-it"); });
+  await frame.locator('[data-act="begin"]').click();
+  const book = frame.locator(".bk");
+  const lit = book.locator(".bk__text .hl-fig");
+  await expect(book.locator("mark.hl").first()).toBeVisible();
+  await expect(lit).toHaveCount(0);
+  for (let i = 0; i < 6 && (await lit.count()) === 0; i++) await book.locator('[data-do="next"]').click();
+  await expect(lit).toHaveCount(1);
+  await expect(lit).toBeVisible();
+  await expect(lit).toHaveAttribute("aria-current", "true");
+  await expect(lit).toHaveAttribute("aria-label", /six drawings/i);
+  expect(await lit.evaluate((el) => getComputedStyle(el).outlineStyle)).toBe("solid");
+  await expect(book.locator("mark.hl")).toHaveCount(0);
+  await book.locator('[data-do="next"]').click();
+  await expect(lit).toHaveCount(0);
+  await expect(book.locator("mark.hl").first()).toBeVisible();
+});
+
+test("a figure beat still lights its figure when the reader asks for reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.evaluate(() => localStorage.removeItem("learn.progress.v1"));
+  await frame.evaluate(() => { selectQuest("make-it-check-its-own-work"); });
+  await frame.locator('[data-act="begin"]').click();
+  const book = frame.locator(".bk");
+  await book.locator('[data-do="nextstop"]').click();
+  const lit = book.locator(".bk__text .hl-fig");
+  for (let i = 0; i < 8 && (await lit.count()) === 0; i++) await book.locator('[data-do="next"]').click();
+  await expect(lit).toBeVisible();
+  await expect(lit).toHaveAttribute("aria-label", /From done to proven/);
+});
+
+test("a converted lesson plays chapter by chapter: each line lights its quote, and Next chapter advances to the finish", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.evaluate(() => localStorage.removeItem("learn.progress.v1"));
+  await frame.evaluate(() => { selectQuest("plan-big-type-small"); });
+  await frame.locator('[data-act="begin"]').click();
+  const book = frame.locator(".bk");
+  const play = book.locator('[data-do="play"]');
+  await expect(book.locator(".bk__crumb")).toContainText("Stop 1 of 3");
+  for (const stop of [1, 2, 3]) {
+    await expect(book.locator(".bk__crumb")).toContainText(`Stop ${stop} of 3`);
+    await expect(book.locator("mark.hl").first()).toBeVisible();
+    for (let i = 0; i < 8; i++) { if (/Next chapter|Finish/.test((await play.textContent()) ?? "")) break; await book.locator('[data-do="next"]').click(); }
+    if (stop < 3) { await expect(play).toHaveText(/Next chapter/); await play.click(); }
+  }
+  await expect(play).toHaveText(/Finish and rest/);
+});
+
+test("a note whose lesson is cut in two parts opens at the first part and counts its stops on from there", async ({ page }) => {
+  await page.goto("/learn");
+  const frame = await frameOf(page);
+  await frame.evaluate(() => localStorage.removeItem("learn.progress.v1"));
+  const stops = await frame.evaluate(() => { selectQuest("build-the-floor"); return QUESTS.find((q) => q.id === "build-the-floor")!.stops.length; });
+  expect(stops).toBe(9);
+  await frame.locator('[data-act="begin"]').click();
+  const book = frame.locator(".bk");
+  await expect(book.locator(".bk__crumb")).toContainText("Stop 1 of 5");
+  await book.locator('[data-do="nextstop"]').click();
+  await book.locator(".trial input").check();
+  expect(await frame.evaluate(() => localStorage.getItem("learn.progress.v1"))).toContain('"build-the-floor":[1]');
+});
