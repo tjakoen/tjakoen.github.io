@@ -85,8 +85,12 @@ it goes: ticking steps off, adding anything new it discovers. Remember the forge
 plan lives only in a chat, it dies when the session does. In a file, tomorrow's session reads it and
 picks up at step 3, because it can see steps 1 and 2 are done.
 
-I keep mine as plain markdown files in a plans folder, each with a status at the top, and a board shows
-them all at once. You don't need a board. You need one file you can open and read in ten seconds.
+I keep mine as plain markdown files in a plans folder, each with a status at the top. A tool I built,
+[PROOF](/proof), turns that folder into a board, and [PANTRY](/pantry) is the app that keeps the board
+open beside my AI sessions, so the plan and I stay agreed on what's next. I built them for myself
+because I kept losing track, and they work for me. You don't need either one. You need one file you can
+open and read in ten seconds. If you want a board later, build a small one of your own. The juniors on
+my team each did, and [Show Them the Board](show-them-the-board.md) is that story.
 
 ## A plan is a guess
 
