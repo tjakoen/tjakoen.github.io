@@ -169,3 +169,12 @@ and The Reviewer That Learned to Be Wrong (why checks need checking).
 Open assumption to confirm: that readers have already met skills in the Claude Academy lessons. I have not
 checked what that course covers, so note 5 must either say what a skill is in two lines or link to where
 the Academy explains it.
+
+## Decisions, 2026-11-27 (later)
+
+- Claude Academy covers skills, routines, worktrees and similar tools, so Harbor notes may name one with a
+  clause of definition and tell the reader to ask their agent. No note spends words teaching them.
+  The note 5 assumption above is resolved: readers have met skills.
+- Note 3 drafted: content/notes/plan-it-then-build-from-the-plan.md (about 800 words, 4 minutes), with a
+  three-stop lesson and script. It ends by pointing to note 4 (checking its own work).
+- [ ] Next: note 4, make it check its own work
