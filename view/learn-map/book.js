@@ -133,10 +133,10 @@
       <div class="bk__bar"><div class="bk__crumb"></div><div class="tb bk__tabs" role="tablist"><span data-tab="book" data-on role="tab" tabindex="0">Book</span><span data-tab="log" role="tab" tabindex="0">Log</span><span data-tab="codex" role="tab" tabindex="0">Codex</span><span data-tab="pack" role="tab" tabindex="0">Pack</span></div><div class="bk__pg"><button data-page="note">Note</button><button data-page="guide">Guide</button></div><button class="bk__x" aria-label="Close the book">\u00d7</button></div>
       <div class="leaf bk__leafnote"><div class="bk__note"></div></div>
       <div class="leaf bk__leafguide"><div class="bk__guide"></div><div class="bk__alt" hidden></div>
-        <div class="controls bk__ctl"><div class="ribbonbar" aria-hidden="true"><i></i><u></u></div>
+        <div class="controls bk__ctl"><div class="bk__prog"><div class="ribbonbar" aria-hidden="true"><i></i><u></u></div><div class="stops"><span class="bk__dots"></span><span class="bk__time"></span></div></div>
           <div class="row"><div><button data-do="prevstop" aria-label="Previous stop">\u23ee</button> <button data-do="prev" aria-label="Previous line">\u25c0</button> <button data-do="play" class="primary" aria-label="Play">\u25b6 Play</button> <button data-do="next" aria-label="Next line">\u25b6\u25b6</button> <button data-do="nextstop" aria-label="Next stop">\u23ed</button></div>
             <div><button data-do="speed">1x</button> <button data-do="captions" aria-pressed="true">Captions</button> <button data-do="rest">Rest at campfire</button></div></div>
-          <div class="stops"><span>Stops</span><span class="bk__dots"></span><span class="bk__time"></span></div></div></div>
+          </div></div>
       <div class="toast bk__toast" hidden></div></div>`;
     document.body.append(root);
     ['note', 'guide'].forEach((k) => (ui[k] = root.querySelector('.bk__' + k)));
@@ -202,7 +202,7 @@
   function renderStop() {
     const s = stopOf(), q = questOf(S.stop), qq = QUESTS.find((x) => x.id === q.id), r = qq ? REG[qq.region - 1] : null;
     ui.crumb.textContent = (r ? r.name + ' · ' : '') + (qq ? 'Quest ' + qq.order + ' · ' : '') + 'Stop ' + (S.stop + 1) + ' of ' + S.lesson.stops.length + ' · ' + s.title;
-    ui.guide.innerHTML = `<h4>Chapter ${S.stop + 1} · The Guide speaks</h4><div class="dlg"><canvas width="24" height="24"></canvas><div><div class="plate">Tjakoen, the Guide <small>· temporary AI voice</small></div><div class="say"></div></div><span class="adv">▼</span></div><div class="hist"></div>
+    ui.guide.innerHTML = `<h4>Chapter ${S.stop + 1} · The Guide speaks</h4><div class="dlg"><canvas width="24" height="24"></canvas><div><div class="plate">Tjakoen, the Guide</div><div class="say"></div></div><span class="adv">▼</span></div><div class="hist"></div>
       <div class="bk__after"><h4>In plain words</h4><ul>${s.digest.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>
       <div class="trial"><h4>Trial</h4><span>${esc(s.trial)}</span><label><input type="checkbox" ${doneStop(S.stop) ? 'checked' : ''}> Mark trial done · +100 XP</label></div></div>`;
     drawGuide(ui.guide.querySelector('canvas')); ui.guide.classList.toggle('bk--nocap', !S.captions);
