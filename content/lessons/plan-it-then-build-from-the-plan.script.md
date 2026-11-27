@@ -60,11 +60,16 @@ highlight: keep-it-where-it-survives | If the plan lives only in a chat, it dies
 Remember the forgetful teammate. Put the plan in a file in the project, and have the AI tick it off as it goes. Tomorrow's session reads it and picks up at step three.
 
 **Beat 2**
+highlight: keep-it-where-it-survives | turns that folder into a board
+
+I keep my plans as markdown files, and a tool I built called PROOF turns that folder into a board. PANTRY keeps the board open beside my sessions. I built them for me, because I kept losing track. You don't need either. One file you can read in ten seconds is enough, and if you want a board later, build your own.
+
+**Beat 3**
 highlight: a-plan-is-a-guess | you and the AI always have the same one
 
 And be relaxed about it being wrong. It's a guess. Step two will want something you didn't see. Change the plan, tell the AI, update the file. The point isn't that the plan is right. It's that you both always have the same one.
 
-**Beat 3**
+**Beat 4**
 highlight: try-this | Do step 1 only, and stop,
 
 Your trial is the whole loop in miniature. Plan with no code, edit it, save it, then step one only, and check it against the done line. In the next lesson, we deal with what happens when the AI says it's finished.

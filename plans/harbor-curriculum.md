@@ -177,4 +177,6 @@ the Academy explains it.
   The note 5 assumption above is resolved: readers have met skills.
 - Note 3 drafted: content/notes/plan-it-then-build-from-the-plan.md (about 800 words, 4 minutes), with a
   three-stop lesson and script. It ends by pointing to note 4 (checking its own work).
-- [ ] Next: note 4, make it check its own work
+- [x] Note 4 drafted: content/notes/make-it-check-its-own-work.md with a three-stop lesson and script. Manual audit: evidence for each done line, run it yourself, a fresh session reviews, write down what it keeps missing. Hands off to the loop.
+- [x] PROOF (/proof) and PANTRY (/pantry) are linked from notes 3 and 4 as things built for myself, never required. Show Them the Board is linked as the build-your-own story. Pantry Beside the Work is still a DRAFT note, so it is not linked from the path yet.
+- [ ] Next: note 5, the third time you type it, save it as a skill
