@@ -1,0 +1,30 @@
+id: loop-setup
+note: loop-setup
+title: 
+summary: 
+audio: /media/lessons/loop-setup.m4a
+stops:
+  - title: ""
+    note: loop-setup
+    from: intro
+    to: what-the-loop-is
+    words: 662
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: loop-setup
+    from: your-standards-are-the-contract-you-write
+    to: step-three-the-checklist
+    words: 826
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: loop-setup
+    from: step-four-the-guards-when-they-earn-it
+    to: the-turn
+    words: 963
+    runes: []
+    trial: ""
+    digest: []

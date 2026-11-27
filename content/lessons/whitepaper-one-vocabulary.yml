@@ -1,0 +1,47 @@
+id: whitepaper-one-vocabulary
+note: whitepaper-one-vocabulary
+title: 
+summary: 
+audio: /media/lessons/whitepaper-one-vocabulary.m4a
+stops:
+  - title: ""
+    note: whitepaper-one-vocabulary
+    from: intro
+    to: 1-introduction
+    words: 1232
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: whitepaper-one-vocabulary
+    from: 2-the-approach-in-brief
+    to: 2-the-approach-in-brief
+    words: 545
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: whitepaper-one-vocabulary
+    from: 3-related-work-and-positioning
+    to: 3-related-work-and-positioning
+    words: 2201
+    reference: true
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: whitepaper-one-vocabulary
+    from: 4-contribution
+    to: 5-evaluation
+    words: 1081
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: whitepaper-one-vocabulary
+    from: 6-limitations-and-threats
+    to: 8-open-questions-next-research-pass
+    words: 829
+    runes: []
+    trial: ""
+    digest: []

@@ -1,0 +1,46 @@
+id: one-loop-three-harnesses
+note: one-loop-three-harnesses
+title: 
+summary: 
+audio: /media/lessons/one-loop-three-harnesses.m4a
+stops:
+  - title: ""
+    note: one-loop-three-harnesses
+    from: intro
+    to: the-loop-was-the-thing-i-had-not-written-down
+    words: 612
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: one-loop-three-harnesses
+    from: what-the-loop-actually-is
+    to: the-model-is-a-routing-decision
+    words: 1003
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: one-loop-three-harnesses
+    from: a-week-with-one-to-five-projects
+    to: the-part-i-keep
+    words: 853
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: the-check-that-never-ran
+    from: one-run-in-a-hundred-and-sixty-five-sessions
+    to: then-i-ran-it-myself-from-the-wrong-folder
+    words: 821
+    runes: []
+    trial: ""
+    digest: []
+  - title: ""
+    note: the-check-that-never-ran
+    from: why-the-wrong-answer-was-so-comfortable
+    to: what-it-says-now
+    words: 822
+    runes: []
+    trial: ""
+    digest: []
