@@ -1,32 +1,34 @@
 # The Harbor, part one: start here, then meet your teammate
 
-Status: DRAFT script for Tjakoen to read aloud and edit. Written from the notes Start Here and Your AI Is the Teammate Who Never Asks Questions; not yet read or checked by him. Written to be spoken: short sentences, no links, nothing that needs the page in front of you. About 15 minutes read at an easy pace.
+Status: DRAFT script for Tjakoen to read aloud and edit. Not yet read or checked by him.
+
+How this script works. The note stays open on the page while the recording plays. The script is not the note read aloud. Each beat is a short spoken line about one idea, and it names the phrase in the note that lights up while it plays. The line should add something the page does not say: why the idea matters, what it looks like in practice, or what to watch for. A reader who only listens should get the concepts. A reader who only reads should lose nothing.
+
+Format of a beat: a highlight line (section id, then a quote that must appear in that section of the note), then the spoken words. Aim for about 20 to 45 seconds a beat and about a minute and a half a stop, roughly 5 minutes in all.
 
 ## Stop 1: Before you set off
 
-Hi. I'm Tjakoen. Before we go anywhere, let me say what I'm not, because it saves us both some time.
+**Beat 1**
+highlight: intro | I'm not an AI expert.
 
-I'm not an AI expert. No doctorate, no research lab, no title that makes me an authority on any of this. About six months ago I started working with AI every day, and I haven't really stopped.
+Hi, I'm Tjakoen. Let me start with what I'm not. I'm not an expert. Six months of using this every day is my whole credential. So take everything here as one person's notes, not as rules.
 
-Here's the part that still surprises me. Most of this learning path, the map, the lessons, the notes in order, I built in about two days. I did it by talking to an AI, writing things down, and reading what came back before I let any of it ship. The polish took longer. But getting from an idea in my head to a working thing was faster than I would have believed a year ago.
+**Beat 2**
+highlight: intro | in about two days
 
-I want you to be able to do that too. That's the whole reason this exists.
+I mention the two days because it's the point, not a flex. If I can go from an idea to a working thing that fast, so can you. The rest of this path is how.
 
-So why start over? Because my earlier notes were written for people who already knew the words. I'd say harness, or loop, or session, as if everybody had been in the room when I learned them. I wasn't trying to shut anyone out. But I could feel it happening. If you were new, the first note on this site was a wall. I teach part-time and I mentor for a living, so I know what a wall looks like on someone's face. This is a short ramp in front of it.
+**Beat 3**
+highlight: who-this-is-for | AI is a reason to learn them harder
 
-Who is it for? Probably you're in your third or fourth year of school, or you're a junior just starting out. You use ChatGPT, or something like it. You've never set up your own AI workflow, and you're not sure where you'd begin.
+You'll hear me assume you can code a little. That's on purpose. The AI doesn't replace that skill. It raises the stakes on it, because you're the one who has to notice when it's wrong.
 
-I'm assuming you know some programming. Front end, back end, the usual web stack. I'm not going to teach that here. It belongs to your classes and to practice, and you should keep learning it while you listen to this. AI is a reason to learn it harder, not a way to skip it. If you can't read the code it hands you, you can't tell when it's wrong, and telling when it's wrong turns out to be most of the job.
+**Beat 4**
+highlight: builders-not-coders | You can hand the bricklaying to an AI.
 
-One idea I keep coming back to. I care about builders more than coders.
+Here's the idea I keep coming back to. Architect and bricklayer. The AI lays bricks, fast. You decide what the building is. If you remember one line from this stop, make it that one.
 
-What I always enjoyed about programming was never the typing. It was building. Taking something that didn't exist, deciding what it should be, and watching it stand up. The code was how I got there.
-
-So I'd like you to see yourself as a builder. Think of an architect and a bricklayer. Both matter. The architect decides what the building is, where the weight goes, and what would make it fall over. You can hand the bricklaying to an AI. You can't hand it the drawing, because it can't think for you.
-
-I won't promise this makes you employable, or fast, or finished. It's a way of looking at the work. The rest is practice.
-
-**Digest:** I'm six months in and not an expert, and I built most of this path in about two days with an AI. It assumes you can program a little. You can hand the AI the bricklaying, but not the drawing.
+**Digest:** I'm six months in and not an expert. The path assumes you can program a little. You can hand the AI the bricklaying, but not the drawing.
 
 **Trial:** Write one sentence on whether you see yourself as a builder or a coder right now, and why.
 
@@ -35,25 +37,25 @@ builders-not-coders | You can hand the bricklaying to an AI.
 
 ## Stop 2: How the path works
 
-Now, how this works.
+**Beat 1**
+highlight: what-youll-find-here | That's where it sticks.
 
-You're at the Harbor. It's an island of its own, with short notes on the basics. After that you cross to the mainland, where the notes run from easy to deep. Each note is cut into short stops. Each stop is a short recording, like this one. And each one ends with a small thing to try, about five minutes. Do the thing. That's where it sticks.
+Every stop ends with a small thing to try, about five minutes. Skipping it is the most common way to learn nothing. Do the thing.
 
-Your progress saves to a file you keep. And it's self-reported. Nothing here can check that you did the work. So the only person you can fool is yourself.
+**Beat 2**
+highlight: what-youll-find-here | It's self-reported
 
-Before any of it, one stop outside this site. The free lessons at Claude Academy cover the basics of working with Claude. The address is academy dot claude dot com. This path assumes you've done them. What I show works with any harness, from Claude Code to Codex to DeepSeek. And if one isn't working the way you want, work with the AI to make it work. I know that sounds strange if you don't yet know what it means. You'll learn what it means by doing it.
+Nothing here checks your work. I think that's the honest way to do it. It also means the only person you can fool is you.
 
-Now the part I care about most. What I do works for me. I'm not promising it works for you, and I'm not telling you this is the way. I'm not the one writing the standards. I'm one of the people reading what others do, working out what fits, and now sharing what I landed on.
+**Beat 3**
+highlight: what-youll-find-here | Claude Academy
 
-I showed my team what I was doing. Most of the juniors now have their own dashboard, built with Claude, for managing their work. No two look alike. It's a bit messy and it isn't standard. That's fine. Team standards are a later job. What matters right now is that each of them built something that fits how they think, which is why they keep using it.
+One thing before you cross. The free lessons at Claude Academy, academy dot claude dot com, give you the basics. Do those first. After that, what I show works with any harness. And if your setup misbehaves, you don't need to know why before you ask the AI to help you fix it. It sounds circular. It works.
 
-I think everyone ends up with a personal relationship with agentic coding, and it has to be yours. So copy what's useful, change the rest, and ask your AI to explain anything you don't follow. That's the cheap trick here. It's very good at teaching you what other people built. And if you make something, tell me. I'd like to see it.
+**Beat 4**
+highlight: build-your-own-dont-copy-mine | copy what's useful, change the rest
 
-One more honest thing. This moves absurdly fast, and that can be scary. It's also what makes it exciting. A student with an idea and an afternoon can build something real now. And it may help your job search. If someone asks in an interview how you work with AI, you can go deep. What it did to your process. How it made you more accountable. What it did for quality. I can't promise that gets anyone hired. I can say it's the direction I see things going.
-
-Keep your phone close. When an idea shows up, write it down right away, then hand it to your AI to plan. I'll show you how I do that later.
-
-I'm still learning this. You can be better at it than I am, and you probably will be, if you keep going. I just started a little earlier.
+This is your permission slip. Take what's useful, change the rest, and show me what you made. My team did exactly that, and no two of their setups match. Yours will fit you better than mine ever could.
 
 **Digest:** Start at the Harbor, then cross to the mainland. Progress is self-reported. What I do works for me, so copy what's useful, change the rest, and show me what you make.
 
@@ -64,21 +66,25 @@ build-your-own | copy what's useful, change the rest
 
 ## Stop 3: The teammate who never asks questions
 
-You know the teammate. Every group project has one. You explain the task, they nod, they say "got it", and they ask nothing. Three days later they hand in something polished and confident and slightly about a different assignment.
+**Beat 1**
+highlight: intro | You know the teammate.
 
-That teammate isn't lazy. They just didn't want to look lost, so they guessed. And you didn't find out until it was too late to guess again.
+Picture the group project teammate who says "got it" and asks nothing. They aren't lazy. They guessed so they wouldn't look lost. That's your AI.
 
-I work with that teammate every day now, and it's the AI. It's very fast, it's very capable, and it will almost never tell you it doesn't understand. Once I saw it that way, most of my early frustration made sense. I'd been treating it like a search box. It behaves a lot more like a teammate, and a particular kind.
+**Beat 2**
+highlight: it-says-yes-to-everything | Each of those was a choice
 
-Ask a chat assistant for something vague and it doesn't push back. It picks an interpretation and runs. Say you ask for a login page. You get a login page, some invented rules about passwords, a decision about where users go afterward, and a tone of total confidence. Each of those was a choice. None of them was yours.
+Ask for a login page and count what comes back. Password rules. Where the user goes next. Choices you never made, delivered in a confident voice. That confidence is the risk.
 
-A coding agent does the same thing, with more reach. Instead of one answer in a chat window, it can edit files, add packages, and reorganize things you didn't mention. It isn't being sneaky. It filled every gap with a guess, because nobody told it where the gaps were.
+**Beat 3**
+highlight: it-cant-think-for-you | capable junior developer
 
-I've told my own team for a while that an AI agent is like a capable junior developer. Fast, willing, and in need of direction. A junior doesn't know what you're building or why, what you'd consider finished, or which parts of the project are fragile. They know what you told them.
+On my team I say it's like a capable junior. Fast and willing, and it knows only what you told it. It doesn't know what you're building, or what you'd call finished, or which part of the project is fragile.
 
-So the thing you can't hand over is the thinking about what to build. I call that the narrative. What this is, what it's for, and what the end looks like. If you don't control the narrative, the AI writes one, and it's usually a generic one. It works, and it could belong to anyone.
+**Beat 4**
+highlight: it-cant-think-for-you | the thinking about what to build
 
-I wouldn't call that bad news. It's the part I like. The typing goes to the AI, and you keep the part that was always the fun bit, deciding what the thing should be.
+This is what you keep. What it is, what it's for, what the end looks like. Everything else is typing, and typing is the part you can hand over.
 
 **Digest:** An AI agent behaves like the group project teammate who says got it and asks nothing. It fills every gap with a guess. It can't think for you, so you keep the narrative.
 
@@ -90,27 +96,25 @@ you-keep-the-narrative | the thinking about what to build
 
 ## Stop 4: Brief it, then check it
 
-So here's the habit. Before you ask for anything, write a brief. Three parts. It's short enough to write on your phone.
+**Beat 1**
+highlight: say-what-done-looks-like | What done looks like.
 
-One. The goal. What this is and why it exists, in a sentence or two. Not a spec.
+Three lines before you ask for anything: the goal, what done looks like, what to leave alone. The middle one is where people get stuck. If you can't say what done looks like, you've found something you haven't decided yet. Better to find that now.
 
-Two. What done looks like. What you'll see when it works. A page that loads. A command that prints a number. A test that passes. If you can't say it, the task isn't ready, and that's useful to find out before you've spent an hour.
+**Beat 2**
+highlight: it-forgets-everything | A human teammate remembers yesterday.
 
-Three. What not to touch. The files, the packages, or the behavior that must stay exactly as they are. This one feels optional until the first time an agent helpfully rewrites something that worked.
+The AI doesn't. Close the session and it starts blank. So the brief goes in a file, where it can read it every time. Writing it down isn't paperwork. It's how you give a forgetful teammate a memory.
 
-Back to the login page. A brief might say: add a login form to the existing site, matching the current style. Done is a user can sign in with the test account and land on the home page, and a wrong password shows an error. Don't change the database, and don't add new packages.
+**Beat 3**
+highlight: check-it-like-a-teammates-work | Can you explain why it works?
 
-Notice there's no code in that. It's the thinking, written down. It's the part you can do at any level. A first-year with a clear brief will often get a better result than an expert with a vague one.
+Then check the work. If you can't explain it, you adopted it, you didn't build it. Adopting is fine for a day. Just know which one you did.
 
-Now the thing that makes the teammate idea break down. A human teammate remembers yesterday. The AI doesn't. Close the session and the next one starts blank. It doesn't know your project, your preferences, or what you decided last Tuesday.
+**Beat 4**
+highlight: try-this | write the three-part brief
 
-So the brief can't live in your head, or in a chat you'll never scroll back to. It has to live in a file the agent can read every time. I'll show you how later. For now, hold this idea: writing things down isn't paperwork. It's how you give a forgetful teammate a memory.
-
-And then check the work, the way you would a teammate's. Does it do what done said it would do? Did it touch anything on the leave-alone list? Can you explain why it works? That last one matters more than it sounds. If you can't explain it, you didn't build it. You adopted it.
-
-Here's your trial. Pick something small you've been meaning to build. Before you open any tool, write the three-part brief. Then give it to your AI and compare what you get with what you wrote. Don't worry about getting it right the first time. When the result surprises you, the gap between what you wrote and what you got shows you exactly what you hadn't decided yet. That gap is the lesson.
-
-Next time you're handed a group project, you'll know what the quiet teammate needed. A clearer brief, and someone willing to check the work.
+Your trial is the brief. Write it first, then run it, then compare. The gap between what you wrote and what you got is the lesson.
 
 **Digest:** A brief has three parts: the goal, what done looks like, and what not to touch. The AI forgets between sessions, so the brief has to live in a file. If you can't explain it, you adopted it, you didn't build it.
 
