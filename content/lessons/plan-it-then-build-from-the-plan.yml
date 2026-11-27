@@ -48,6 +48,7 @@ stops:
   trial: Ask your AI for a plan for your portfolio with no code yet. Split one step, cut one, then tell it to do step 1 only and stop.
   digest:
   - Have the AI draft the plan, then edit it yourself. A step too big to explain in a sentence needs splitting.
+  - Use what your harness already has. Claude Code and Codex both have a planning mode and a goal feature, so ask your agent how yours works.
   - Build one step at a time and check each against its done line.
 - title: Keep it where it survives
   note: plan-it-then-build-from-the-plan

@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~5 min"
+readingTime: "~6 min"
 tags: [ai, workflow, teaching]
 summary: >
   A plan is a short checklist in a file, with a goal, small steps and what done looks like for each. Have
@@ -47,7 +47,8 @@ Stack: plain HTML, CSS and JavaScript on GitHub Pages, because I know them and i
    Done: it shows one badge I earned, with a link to where I earned it.
 ```
 
-Nothing in it is code. It's your brief cut into pieces small enough to check with your own eyes. The
+Nothing in it is code. It's your brief cut into pieces small enough to check with your own eyes. If you've
+ever been handed a ticket with acceptance criteria, it's the same thing. The
 brief gives you the goal, and the drawing tells you what the steps should cover.
 
 ## Talk about the stack first
@@ -93,10 +94,23 @@ Don't write the plan from scratch. Give your AI the brief, the drawing and your 
 "Don't write any code yet. Break this into small steps, each with what done looks like." Many tools have a
 planning mode for exactly this, so ask your agent whether yours does.
 
-Then read it like a teammate's proposal. Is a step too big? Is the order wrong? Is something missing, or
-something there you didn't ask for? The AI is guessing at your intentions, so the edit is where your
-judgment goes in. A good step is small enough to explain in a sentence. "Build the backend" isn't a step,
-it's a project, so ask for it to be split.
+Then read it like a teammate's proposal. Is a step too big, the order wrong, something missing, something
+there you didn't ask for? The AI is guessing at your intentions, so the edit is where your judgment goes
+in. A good step is small enough to explain in a sentence. "Build the backend" is a project, so ask for it
+to be split.
+
+## Use what your harness already has
+
+Your harness probably has tools for this already. Claude Code and Codex both have a planning mode, where
+the agent looks around and proposes a plan before it touches a file. Both also have a goal feature: you
+state the condition that means done, and the agent keeps working across turns until it's met. As I
+understand it, planning mode is for when the finish line is fuzzy, and a goal is for after, when you know
+it. Your done lines are exactly what a goal wants. The names and switches differ, so ask your agent how
+yours works, and check the docs, such as Codex's page on
+[following goals](https://developers.openai.com/codex/use-cases/follow-goals).
+
+Use what your harness gives you before you build your own. If you work with more than one harness, make
+your standards aware of what each can do, so each session reaches for its own tools. More on that later.
 
 ## One step at a time
 
@@ -121,8 +135,8 @@ each did, and [Show Them the Board](show-them-the-board.md) is that story.
 ## A plan is a guess
 
 It'll be wrong somewhere. Step 2 needs something you didn't see coming, or you change your mind after step
-1. That's fine. Tell the AI the plan has changed and update the file. The point isn't that the plan is
-right. The point is that you and the AI always have the same one.
+1. That's fine. Tell the AI and update the file. The point isn't that the plan is right. The point is that
+you and the AI always have the same one.
 
 ## Try this
 

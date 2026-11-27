@@ -7,7 +7,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-27
-readingTime: "~5 min"
+readingTime: "~6 min"
 tags: [ai, workflow, teaching]
 summary: >
   An AI agent works like the group project teammate who never asks questions: it says yes, guesses at
@@ -30,10 +30,17 @@ slightly about a different assignment.
 That teammate isn't lazy. They just didn't want to look lost, so they guessed. And you didn't find out
 until it was too late to guess again.
 
-I work with that teammate every day now, and it's the AI. It's very fast, it's very capable, and it
-will almost never tell you it doesn't understand. Once I saw it that way, most of my early frustration
-made sense. I'd been treating it like a search box. It behaves a lot more like a teammate, and a
-particular kind.
+I work with that teammate every day now, and it's the AI. It's very fast, very capable, and it will almost
+never tell you it doesn't understand. Once I saw it that way, my early frustration made sense. I'd been
+treating it like a search box. It behaves a lot more like a teammate.
+
+## I'm terrible at multitasking, and I'm lazy on purpose
+
+I'm terrible at multitasking, and I strive to be lazy. There's an old saying that a lazy programmer is an
+effective one, because they put their energy into making their own life easier. That's me. I want to do
+the most while doing the least, and spend what's left on the part I enjoy, which is building. That's why
+I made an agentic workflow, and why I've kept working on my AI loop for six months. Most of what's in
+this path is me trying to be lazier, more carefully.
 
 ## It says yes to everything
 
@@ -42,9 +49,9 @@ runs. Say you ask for "a portfolio site." You get a hero banner, a color scheme,
 stranger, and a list of projects you never built, all delivered with total confidence. Each of those was
 a choice, and none of them was yours.
 
-A coding agent does the same thing, with more reach. Instead of one answer in a chat window, it can
-edit files, add packages and reorganize things you didn't mention. It isn't being sneaky. It filled
-every gap with a guess, because nobody told it where the gaps were.
+A coding agent does the same thing with more reach: it can edit files, add packages and reorganize
+things you didn't mention. It isn't being sneaky. It filled every gap with a guess, because nobody told it
+where the gaps were.
 
 > *Figure: two paths from the same request. Left: a vague request, the agent guesses, a confident
 > wrong result, found late. Right: a short brief, the agent works inside it, a result you can check
@@ -52,17 +59,19 @@ every gap with a guess, because nobody told it where the gaps were.
 
 ## It can't think for you
 
-I've told my own team for a while that an AI agent is like a capable junior developer. Fast, willing,
-and in need of direction. A junior doesn't know what you're building or why, what you'd consider
-finished, or which parts of the project are fragile. They know what you told them.
+Working with an AI is a lot like mentoring. I run a team and I teach students, and I found I already knew
+how to do this. An AI agent is like a capable junior developer, or a student rushing through an activity
+just to finish: fast, willing, and in need of direction. They don't know what you're building or why, what
+you'd consider finished, or which parts of the project are fragile. They know what you told them. I wrote
+the longer version in [Ten Times Zero](ten-times-zero.md#a-decade-of-rehearsal-billed-as-management).
 
 So the thing you can't hand over is the thinking about what to build. That's the part I'd call the
 narrative: what this is, what it's for, and what the end looks like. If you don't control the
 narrative, the AI writes one, and it's usually a generic one. You'll recognize it from the shape of
 the result. It works, and it could belong to anyone.
 
-I wouldn't say this is bad news. It's the part I like. The typing goes to the AI, and you keep the part
-that was always the fun bit, deciding what the thing should be.
+That's not bad news. The typing goes to the AI, and you keep the fun part, deciding what the thing should
+be.
 
 ## Say what done looks like
 
