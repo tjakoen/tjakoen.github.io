@@ -6,6 +6,8 @@ subtitle: "Done is a claim, not a result. Early on, you check by hand: ask for e
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
+series: harbor
+seriesOrder: 6
 date: 2026-11-27
 readingTime: "~4 min"
 tags: [ai, workflow, teaching]

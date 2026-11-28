@@ -6,6 +6,8 @@ subtitle: "Two hours in, the AI has touched eleven files and you can't say which
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
+series: harbor
+seriesOrder: 5
 date: 2026-11-27
 readingTime: "~6 min"
 tags: [ai, workflow, teaching]

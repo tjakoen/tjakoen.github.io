@@ -1,6 +1,6 @@
 ---
 id: harbor-curriculum
-status: todo
+status: in-progress
 track: learning
 depends: [quest-map, quest-lessons]
 touches: [content/notes, content/quests/regions.json, content/lessons/harbor.script.md, docs/CONTENT-BACKLOG.md]
@@ -15,7 +15,7 @@ actually want (students and juniors in their third or fourth year, who use ChatG
 their own AI loop) has no gentle way in. This plan gives the Harbor its own short notes, so the path
 starts where they are.
 
-Status of this file: a first plan from a brainstorm on 2026-11-27. Nothing below is written yet. The
+Status of this file: a first plan from a brainstorm on 2026-11-27, updated 2026-11-28 once the owner answered the open questions and thirteen notes were drafted. The
 decisions that are made live in [plans/decisions/2026-11-27-harbor-gets-notes.md](decisions/2026-11-27-harbor-gets-notes.md).
 Everything marked proposal is a suggestion, not a decision.
 
@@ -132,7 +132,7 @@ them in All, and show them individually under the Learning to build tab.
 - [ ] Decide the notes page option above
 - [x] Note 1 drafted as content/notes/ai-teammate-never-asks-questions.md (DRAFT, 2026-11-27)
 - [x] Harbor lesson file and spoken script written for both drafts (content/lessons/harbor.yml and harbor.script.md, four stops). Replaces the earlier placeholder script, which was written before the notes existed.
-- [ ] Both notes still owe a social card image and a drawn figure, and the contract test cap on drafts without a card (7) is now exceeded
+- [x] Social cards exist for every Harbor note (2026-11-28 check: the seven drafts the contract test counts without a card are other notes, not Harbor ones). Both notes already carry a drawn figure.
 - [ ] Every new Harbor note ships with its script and lesson stops in the same pass (decided 2026-11-27: the script is a companion of the note, written from it)
 - [ ] Next drafts: note 2 (know what done looks like first, may fold into note 1), then the drawing map
 - [x] Script format decided 2026-11-27: a script is a short concept narration, not the note read aloud. Each stop is three or four beats, each beat is one idea in about 20 to 45 seconds, and each beat names the section and the quote in the note that lights up while it plays. Narration adds the why or the practice and does not repeat the page. About 1.5 minutes a stop. The harbor script was rewritten to this format. Cues and timestamps come later, once the recordings exist.
@@ -400,3 +400,36 @@ way it fails a quote that is not in the note. The format is also written in the 
 - The guild card, 2026-11-27 (author): XP is 100 for each trial ticked and 25 for each rune collected. The levels are Newcomer, Apprentice at 200, Journeyman at 600, Adept at 1,200 and Master at 2,400, which are first guesses to retune once real readers have a few stops behind them. A small HUD at the top right shows the adventurer, the level and the XP bar, and opens the guild card with the character, the region badges, a name, the evidence link, and save and load by file or by code. A level-up banner fires only when a new top level is reached. The region badge page lists the runes collected there as its skills and points to the reader's own roadmap page as the evidence, where Claude Academy badges also live. A badge link carries the save code after the # and is self-reported, never a signed credential. The code is view/learn-map/guild.js.
 - Map layout, 2026-11-27 (author): the Layers tile moved to the right beside the zoom buttons, and the left panel now runs nearly to the bottom. The quest and stop pins wait for the Landmark zoom, where the detailed map fades in.
 - Still open on the character: the adventurer on the card and the You marker on the map are drawn separately and do not match yet.
+
+## Decisions, 2026-11-28
+
+The owner answered the open questions in one pass.
+
+- **Notes 6 to 9 go ahead**, as drafted: the words you will hear, from a chat window to your first loop,
+  catch the idea then loop it, build your own and do not copy mine.
+- **Atomic design is its own note**, with a conventional example from Brad Frost. Drafted as
+  small-parts-big-screens: his search form (a label, an input and a button) becomes a header organism, then
+  GRAIN's own atoms, molecules and organisms folders as the worked example. It sits right after the drawing note.
+- **The fundamentals note goes ahead**: the-fundamentals-you-still-own, on reading a diff, git, code a stranger
+  can follow and tests, with an outside link for each. It sits after the testing note.
+- **Testing is already its own note** (a-test-is-a-check-that-runs-itself), so the split was done earlier.
+- **One map, two halves.** The first half of the path (Harbor, Loop Forest, Model Mines) is for students and
+  builders, and the second (Guild Hall, GRAIN Keep, Summit) is for leads and senior readers. Not two tracks.
+- **The notes page uses a series field** (option 2 above), and the All tab collapses a series to one card while
+  the Learning to build tab shows each note. Built in src/content.ts, with tests in src/series.test.ts.
+
+## Progress, 2026-11-28
+
+- [x] Note 6 drafted: content/notes/the-words-you-will-hear.md, with a three-stop lesson and script.
+- [x] Note 7 drafted: content/notes/from-a-chat-window-to-your-first-loop.md, with a three-stop lesson and script.
+- [x] Note 8 drafted: content/notes/catch-the-idea-then-loop-it.md, with a three-stop lesson and script.
+- [x] Note 9 drafted: content/notes/build-your-own-do-not-copy-mine.md, with a three-stop lesson and script. It closes the Harbor and says where the road splits.
+- [x] Atomic design drafted: content/notes/small-parts-big-screens.md, with a three-stop lesson and script.
+- [x] Fundamentals drafted: content/notes/the-fundamentals-you-still-own.md, with a three-stop lesson and script.
+- [x] regions.json lists all thirteen Harbor notes, the quest map and the lesson files are regenerated, and every note has a social card.
+- [x] The outside links in notes 2 and 4 were opened. Eleven of twelve work from here. The TU Delft use case tutorial could not be reached from the cloud session, so it was replaced with Visual Paradigm's. Lucidchart and the Codex goals page block curl but open in a browser.
+- [x] Series field built: series and seriesOrder in frontmatter, the collapsed feed card, and previous and next links on each note. It only shows in the feed once the notes are published.
+- [x] The glossary is linked from the path, in the words note.
+- [ ] The notes still owe a read-aloud by the author, who flips each from DRAFT. Personal claims in the new drafts are kept to what the older notes already say, and the run report names what needs his eyes.
+- [ ] Recordings for the six new lessons. The scripts are drafts and carry no cues or timestamps yet.
+- [ ] Build the Floor sits in Model Mines but is written for leads. Whether to move it to the Guild Hall is open.

@@ -526,7 +526,7 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 <p>This is the guided path, in the order to read it: the stages, the quests in each and the stops in each quest. The interactive map needs JavaScript.</p>
 <ol>
 <li><h2>Stage 1</h2>
-<p>7 quests, about 38 min of reading. Start with <a href="https://academy.claude.com">Claude Academy</a>, outside this site.</p>
+<p>13 quests, about 66 min of reading. Start with <a href="https://academy.claude.com">Claude Academy</a>, outside this site.</p>
 <ol>
 <li><h3>I'm Six Months In, Not an Expert, and I Built This Whole Path With AI</h3>
 <p>Intro · 7 min · 2 stops</p>
@@ -546,6 +546,13 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 <li>The sentence that costs the most</li>
 <li>Six drawings, one question each</li>
 <li>Let the AI hold the pen</li>
+</ol></li>
+<li><h3>Small Parts, Big Screens: Atomic Design in Plain Words</h3>
+<p>Intro · 6 min · 3 stops</p>
+<ol>
+<li>Five words from a chemistry class</li>
+<li>Why it helps an AI do the typing</li>
+<li>Borrow the question, not my files</li>
 </ol></li>
 <li><h3>Plan It, Then Build From the Plan</h3>
 <p>Intro · 6 min · 4 stops</p>
@@ -569,12 +576,47 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 <li>Two kinds, by name</li>
 <li>Make the AI write them</li>
 </ol></li>
+<li><h3>The Fundamentals You Still Own</h3>
+<p>Intro · 6 min · 3 stops</p>
+<ol>
+<li>Your job turns into reading</li>
+<li>Undo, and code a stranger can read</li>
+<li>Tests, and what you still own</li>
+</ol></li>
 <li><h3>The Third Time You Type It, Save It</h3>
 <p>Intro · 5 min · 3 stops</p>
 <ol>
 <li>A prompt you have earned</li>
 <li>Let your agent write it</li>
 <li>When a skill earns a routine</li>
+</ol></li>
+<li><h3>The Words You Will Hear</h3>
+<p>Intro · 4 min · 3 stops</p>
+<ol>
+<li>What answers you</li>
+<li>What lets it work on your project</li>
+<li>When a word is missing</li>
+</ol></li>
+<li><h3>From a Chat Window to Your First Loop</h3>
+<p>Intro · 4 min · 3 stops</p>
+<ol>
+<li>What a project changes</li>
+<li>Three small files and one check</li>
+<li>Any harness, and when to add more</li>
+</ol></li>
+<li><h3>Catch the Idea, Then Loop It</h3>
+<p>Intro · 4 min · 3 stops</p>
+<ol>
+<li>Catch it in one line</li>
+<li>A catch is not a brief</li>
+<li>Most ideas stay in the inbox</li>
+</ol></li>
+<li><h3>Build Your Own, Don't Copy Mine</h3>
+<p>Intro · 4 min · 3 stops</p>
+<ol>
+<li>Why copying goes wrong</li>
+<li>What you hold, and changing it</li>
+<li>The road splits here</li>
 </ol></li>
 </ol></li>
 <li><h2>Stage 2</h2>
@@ -748,7 +790,7 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 <nav class="mnav" id="mnav" aria-label="Move around the map"><button id="mprev" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button id="mopen" class="mmid"><span id="mlbl">Open the guide</span></button><button id="mnext" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></nav>
 <div class="toast2" id="toast" hidden></div>
 <!--qm-path-->
-<script type="application/json" id="qm-path">{"stages":[{"n":1,"quests":["start-here","ai-teammate-never-asks-questions","draw-it-before-the-ai-builds-it","plan-it-then-build-from-the-plan","make-it-check-its-own-work","a-test-is-a-check-that-runs-itself","save-it-as-a-skill"]},{"n":2,"quests":["ten-times-zero","loop-setup","plan-big-type-small"]},{"n":3,"quests":["necessity-and-the-model-layer","build-the-floor"]},{"n":4,"quests":["show-them-the-board","move-bugs-left"]},{"n":5,"quests":["one-loop-every-repo","watch-its-hands","whitepaper-one-vocabulary"]},{"n":6,"quests":["one-loop-three-harnesses","the-check-that-never-ran","how-the-model-layer-works","the-reviewer-that-learned-to-be-wrong"]}]}</script>
+<script type="application/json" id="qm-path">{"stages":[{"n":1,"quests":["start-here","ai-teammate-never-asks-questions","draw-it-before-the-ai-builds-it","small-parts-big-screens","plan-it-then-build-from-the-plan","make-it-check-its-own-work","a-test-is-a-check-that-runs-itself","the-fundamentals-you-still-own","save-it-as-a-skill","the-words-you-will-hear","from-a-chat-window-to-your-first-loop","catch-the-idea-then-loop-it","build-your-own-do-not-copy-mine"]},{"n":2,"quests":["ten-times-zero","loop-setup","plan-big-type-small"]},{"n":3,"quests":["necessity-and-the-model-layer","build-the-floor"]},{"n":4,"quests":["show-them-the-board","move-bugs-left"]},{"n":5,"quests":["one-loop-every-repo","watch-its-hands","whitepaper-one-vocabulary"]},{"n":6,"quests":["one-loop-three-harnesses","the-check-that-never-ran","how-the-model-layer-works","the-reviewer-that-learned-to-be-wrong"]}]}</script>
 <!--/qm-path-->
 <script type="application/json" id="qm-data">
 {
@@ -756,10 +798,16 @@ html:not(.js), html:not(.js) body { height:auto; overflow:auto; background:var(-
 {"id":"start-here","region":1,"title":"I'm Six Months In, Not an Expert, and I Built This Whole Path With AI","short":"Start here","level":"intro","aud":["learn"],"min":7,"pos":[0,0],"stops":["Before you set off","How the path works"],"learn":["Who I am, in case we haven't met","Why I started over","Who this is for"],"draft":true,"lesson":"harbor","li":[0,1]},
 {"id":"ai-teammate-never-asks-questions","region":1,"title":"Your AI Is the Teammate Who Never Asks Questions","short":"The teammate","level":"intro","aud":["learn"],"min":7,"pos":[0,0],"stops":["The teammate who never asks questions","Brief it, and stay the orchestrator"],"learn":["I'm terrible at multitasking, and I'm lazy on purpose","It says yes to everything","It can't think for you"],"draft":true,"lesson":"harbor","li":[2,3]},
 {"id":"draw-it-before-the-ai-builds-it","region":1,"title":"Have the AI Draw It Before It Builds It","short":"Draw it","level":"intro","aud":["learn"],"min":6,"pos":[0,0],"stops":["The sentence that costs the most","Six drawings, one question each","Let the AI hold the pen"],"learn":["Why drawing matters more now","Six drawings, one question each","Let the AI hold the pen"],"draft":true,"lesson":"draw-it-before-the-ai-builds-it","li":[0,1,2]},
+{"id":"small-parts-big-screens","region":1,"title":"Small Parts, Big Screens: Atomic Design in Plain Words","short":"Small parts","level":"intro","aud":["learn"],"min":6,"pos":[0,0],"stops":["Five words from a chemistry class","Why it helps an AI do the typing","Borrow the question, not my files"],"learn":["The chemistry class","Why this helps when an AI does the typing","What it looks like in my own system"],"draft":true,"lesson":"small-parts-big-screens","li":[0,1,2]},
 {"id":"plan-it-then-build-from-the-plan","region":1,"title":"Plan It, Then Build From the Plan","short":"Plan it","level":"intro","aud":["learn"],"min":6,"pos":[0,0],"stops":["A list you can tick off","Talk about the stack first","Draft it, edit it, one step at a time","Keep it where it survives"],"learn":["A plan is a list you can tick off","Talk about the stack first","Let the AI draft it, then you edit it"],"draft":true,"lesson":"plan-it-then-build-from-the-plan","li":[0,1,2,3]},
 {"id":"make-it-check-its-own-work","region":1,"title":"The AI Says It's Done. Make It Prove It.","short":"Check it","level":"intro","aud":["learn"],"min":4,"pos":[0,0],"stops":["Done is a claim","Run it, then ask fresh eyes","Write down what it keeps missing"],"learn":["Done is a claim, not a result","Make it show you the evidence","Run it yourself"],"draft":true,"lesson":"make-it-check-its-own-work","li":[0,1,2]},
 {"id":"a-test-is-a-check-that-runs-itself","region":1,"title":"A Test Is a Check That Runs Itself","short":"Tests","level":"intro","aud":["learn"],"min":3,"pos":[0,0],"stops":["The seatbelt","Two kinds, by name","Make the AI write them"],"learn":["It's the check you already do","Two kinds worth knowing by name","Make the AI write them as it builds"],"draft":true,"lesson":"a-test-is-a-check-that-runs-itself","li":[0,1,2]},
+{"id":"the-fundamentals-you-still-own","region":1,"title":"The Fundamentals You Still Own","short":"Fundamentals","level":"intro","aud":["learn"],"min":6,"pos":[0,0],"stops":["Your job turns into reading","Undo, and code a stranger can read","Tests, and what you still own"],"learn":["Reading a diff","Git, so every step can be undone","Code a stranger can follow"],"draft":true,"lesson":"the-fundamentals-you-still-own","li":[0,1,2]},
 {"id":"save-it-as-a-skill","region":1,"title":"The Third Time You Type It, Save It","short":"Skills","level":"intro","aud":["learn"],"min":5,"pos":[0,0],"stops":["A prompt you have earned","Let your agent write it","When a skill earns a routine"],"learn":["A skill is a prompt you've earned","Let your agent write it, then you edit it","Keep judgment manual"],"draft":true,"lesson":"save-it-as-a-skill","li":[0,1,2]},
+{"id":"the-words-you-will-hear","region":1,"title":"The Words You Will Hear","short":"The words","level":"intro","aud":["learn"],"min":4,"pos":[0,0],"stops":["What answers you","What lets it work on your project","When a word is missing"],"learn":["The bottom layer: what answers you","The middle layer: what lets it work on your project","The top layer: what you set up around it"],"draft":true,"lesson":"the-words-you-will-hear","li":[0,1,2]},
+{"id":"from-a-chat-window-to-your-first-loop","region":1,"title":"From a Chat Window to Your First Loop","short":"First loop","level":"intro","aud":["learn"],"min":4,"pos":[0,0],"stops":["What a project changes","Three small files and one check","Any harness, and when to add more"],"learn":["What changes when it's in your project","Three small files and one check","Any harness works"],"draft":true,"lesson":"from-a-chat-window-to-your-first-loop","li":[0,1,2]},
+{"id":"catch-the-idea-then-loop-it","region":1,"title":"Catch the Idea, Then Loop It","short":"Catch the idea","level":"intro","aud":["learn"],"min":4,"pos":[0,0],"stops":["Catch it in one line","A catch is not a brief","Most ideas stay in the inbox"],"learn":["Catch it in one line","Then don't build from the line","Most ideas should stay in the inbox"],"draft":true,"lesson":"catch-the-idea-then-loop-it","li":[0,1,2]},
+{"id":"build-your-own-do-not-copy-mine","region":1,"title":"Build Your Own, Don't Copy Mine","short":"Build your own","level":"intro","aud":["learn"],"min":4,"pos":[0,0],"stops":["Why copying goes wrong","What you hold, and changing it","The road splits here"],"learn":["Why copying mine goes wrong","What you should have by now","Now change it"],"draft":true,"lesson":"build-your-own-do-not-copy-mine","li":[0,1,2]},
 {"id":"one-loop-every-repo","region":2,"title":"I Was Shipping Faster Than I Could Understand It","short":"The one loop","level":"deep","aud":["build"],"min":10,"pos":[50,98],"stops":["The week I could not explain my own work","A plan in a file, and a heartbeat at the desk","The contract, and the correction"],"learn":["The week I couldn't explain my own work","First, an honest look at what I was doing wrong","So I stopped building features and read"],"lesson":"one-loop-every-repo","li":[0,1,2]},
 {"id":"one-loop-three-harnesses","region":2,"title":"The Loop Outlives the Model.","short":"Outlives the model","level":"deep","aud":["build"],"min":11,"pos":[60,84],"stops":["The day Claude ran out","The model is a route","The line I do not cross"],"learn":["The day one of them ran out","The loop was the thing I had not written down","What the loop actually is"],"lesson":"one-loop-three-harnesses","li":[0,1,2]},
 {"id":"loop-setup","region":2,"title":"Set Up the Loop With One Prompt","short":"One-prompt setup","level":"intro","aud":["learn","build"],"min":12,"pos":[74,92],"stops":["One prompt, five pieces","The front door, the plan and the proof it loaded","Guards, adapters and the first run"],"learn":["Start with the prompt","What the loop is","Your standards are the contract you write"],"lesson":"loop-setup","li":[0,1,2]},

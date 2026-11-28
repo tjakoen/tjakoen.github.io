@@ -1,0 +1,54 @@
+id: from-a-chat-window-to-your-first-loop
+note: from-a-chat-window-to-your-first-loop
+title: From a chat window to your first loop
+summary: In three short stops I show you what changes when an AI works inside your project, the three small files and one check that make your first loop, and why any harness will do.
+audio: /media/lessons/from-a-chat-window-to-your-first-loop.m4a
+stops:
+- title: What a project changes
+  note: from-a-chat-window-to-your-first-loop
+  from: intro
+  to: what-changes-when-its-in-your-project
+  runes:
+  - id: courier
+    section: intro
+    quote: you're the courier between the chat and your files
+  - id: project-memory
+    section: what-changes-when-its-in-your-project
+    quote: the project becomes the memory
+  trial: Describe in one line what you paste into a chat window today that a harness could simply read from your project.
+  digest:
+  - In a chat window you are the courier between the chat and your files.
+  - A harness opens in your project folder, so nothing needs pasting.
+  - The session still forgets, so the project becomes the memory.
+- title: Three small files and one check
+  note: from-a-chat-window-to-your-first-loop
+  from: three-small-files-and-one-check
+  to: three-small-files-and-one-check
+  runes:
+  - id: front-door
+    section: three-small-files-and-one-check
+    quote: One short file at the top of your project that the agent reads first.
+  - id: loop-order
+    section: three-small-files-and-one-check
+    quote: The loop itself is the order you use them in.
+  trial: Open a harness in your portfolio folder, ask it to write a front-door file from what it can see, then edit that file until it is true.
+  digest:
+  - A front-door file is one short file the agent reads first.
+  - The plan file is the one from the plan note, and one check is a single command that says whether the project still works.
+  - "The loop is the order you use them in: read, build one step, check, write down what happened."
+- title: Any harness, and when to add more
+  note: from-a-chat-window-to-your-first-loop
+  from: any-harness-works
+  to: your-turn
+  runes:
+  - id: make-it-work
+    section: any-harness-works
+    quote: Work with the agent to make it work.
+  - id: five-files
+    section: when-you-want-the-full-version
+    quote: A loop with five files you use beats one with twenty you don't.
+  trial: "Run one full pass in your portfolio folder: read, build one step, check, write down what happened. Then list what you would add and leave it out."
+  digest:
+  - The same three files work in any harness, with a different name here and there.
+  - If something does not work, work with the agent to make it work.
+  - Resist installing more. A loop with five files you use beats one with twenty you do not.

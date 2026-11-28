@@ -6,6 +6,8 @@ subtitle: "Every group project has one: the teammate who says got it to everythi
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
+series: harbor
+seriesOrder: 2
 date: 2026-11-27
 readingTime: "~7 min"
 tags: [ai, workflow, teaching]

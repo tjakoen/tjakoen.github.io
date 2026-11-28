@@ -6,6 +6,8 @@ subtitle: "You've now typed the same plan prompt and the same audit prompt more 
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
+series: harbor
+seriesOrder: 9
 date: 2026-11-27
 readingTime: "~5 min"
 tags: [ai, workflow, teaching]

@@ -302,6 +302,11 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       ? renderNoteCredits(frontmatter) : "";
     // …and a way onward. A note used to end at its footer with nothing but the dock to leave by.
     const whereNext = kind === "entry" && collection.prefix === "/notes" && slug ? renderNoteNext(slug) : "";
+    // …and, for a note in a series, the way to the one before it and the one after it.
+    const noteSeries = kind === "entry" && isNoteCollection(collection.prefix) && frontmatter && slug ? readSeries(frontmatter) : null;
+    const seriesNav = noteSeries
+      ? renderSeriesNav(noteSeries.id, slug!, seriesMembersOf(noteSeries.id, allSeriesNotes(), collection.prefix === DRAFTS_PREFIX))
+      : "";
     // A draft says so at the top of its own page, and its index says what the section is, because a
     // link to either can be forwarded to someone who has no idea the note is unfinished.
     const draftFlag = collection.prefix !== DRAFTS_PREFIX ? ""
@@ -331,7 +336,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
       title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}${markdownHead}${articleHead}`,
-      board: `${draftFlag}${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${changelog}${credits}${whereNext}${videoCard}${gallery}${shareBlock}${shareDialog}${copyScript}`,
+      board: `${draftFlag}${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${changelog}${credits}${seriesNav}${whereNext}${videoCard}${gallery}${shareBlock}${shareDialog}${copyScript}`,
     });
   };
 }
@@ -839,6 +844,9 @@ export interface NoteFeedEntry {
   audience: string[];
   level: string;
   sections: number;
+  /** The series the note belongs to, and its place in it. Empty when it is a note on its own. */
+  series: string;
+  seriesOrder: number;
 }
 // Memoized. The note corpus is read and parsed from disk in here, and one page render asks for it
 // two or three times over (the Recent feed, the calendar merge, the sitemap allowlist). The files do
@@ -873,6 +881,8 @@ async function computeSortedNoteEntries(): Promise<NoteFeedEntry[]> {
         : typeof fm.audience === "string" ? [fm.audience] : [],
       level: fm.level === "deep" ? "deep" : fm.level === "intro" ? "intro" : "",
       sections: (body.match(/^## /gm) ?? []).length,
+      series: readSeries(fm)?.id ?? "",
+      seriesOrder: readSeries(fm)?.order ?? 0,
     });
   }
   entries.sort((a, b) => a.date === b.date ? a.slug.localeCompare(b.slug)
@@ -891,6 +901,98 @@ async function computeSortedNoteEntries(): Promise<NoteFeedEntry[]> {
  *  note's own `readingTime` frontmatter, never a vote count (the vote glyph says so via its
  *  `title`). "N sections" is a real count of `## ` headings in the note's body, standing in for
  *  a comment count and linking straight into the entry. */
+// ---- series: one card for a run of short notes, and a way through them --------------------------
+// A note joins a series with two frontmatter keys:
+//
+//   series: harbor
+//   seriesOrder: 3
+//
+// The feed shows the whole series as ONE card in the All tab (no filter, no search), so twelve short
+// notes do not bury the rest of the feed, and shows each note on its own everywhere else, including
+// the Learning to build tab. Every note in a series also carries previous and next links. Notes keep
+// their own addresses, so no link to one moves. The series is declared here, in the feed's own code,
+// and never derived from the quest map: the map consumes notes, it does not shape them.
+export const NOTE_SERIES: Readonly<Record<string, { title: string; blurb: string }>> = {
+  harbor: {
+    title: "The Harbor",
+    blurb: "The on-ramp to the learning path: short notes on the basics, in order, for someone who has used a chat assistant and never built their own loop.",
+  },
+};
+
+/** A note's series and its place in it, or null when the keys are absent or name no known series. */
+export function readSeries(fm: Record<string, unknown>): { id: string; order: number } | null {
+  const id = typeof fm.series === "string" ? fm.series.trim() : "";
+  const order = Number(fm.seriesOrder);
+  if (!id || !Object.hasOwn(NOTE_SERIES, id) || !Number.isInteger(order) || order < 1) return null;
+  return { id, order };
+}
+
+export interface SeriesMember { slug: string; title: string; order: number; published: boolean; minutes: number; date: string; audience: string[]; tags: string[] }
+
+/** The members of one series in reading order. A draft is a member too, so the notes can be
+ *  walked before they are published, but a published note's links only ever lead to published ones. */
+export function seriesMembersOf(id: string, all: (SeriesMember & { series: string })[], includeDrafts: boolean): SeriesMember[] {
+  return all
+    .filter((m) => m.series === id && (includeDrafts || m.published))
+    .toSorted((a, b) => a.order - b.order);
+}
+
+let seriesCache: (SeriesMember & { series: string })[] | null = null;
+function allSeriesNotes(): (SeriesMember & { series: string })[] {
+  if (seriesCache) return seriesCache;
+  const out: (SeriesMember & { series: string })[] = [];
+  for (const file of readdirSync(NOTES_DIR)) {
+    if (!file.endsWith(".md")) continue;
+    const { data } = parseFrontmatter(readFileSync(join(NOTES_DIR, file), "utf8"));
+    const series = readSeries(data);
+    if (!series) continue;
+    const slug = file.slice(0, -3);
+    out.push({
+      slug, series: series.id, order: series.order, published: isPublishedStatus(data.status),
+      title: typeof data.title === "string" ? data.title : slug,
+      minutes: Number(String(data.readingTime ?? "").match(/\d+/)?.[0] ?? 0),
+      date: typeof data.date === "string" ? data.date : "",
+      audience: Array.isArray(data.audience) ? data.audience.map(String) : typeof data.audience === "string" ? [data.audience] : [],
+      tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
+    });
+  }
+  return (seriesCache = out);
+}
+
+const seriesHref = (m: SeriesMember) => `${m.published ? "/notes" : DRAFTS_PREFIX}/${m.slug}`;
+
+/** The previous and next links at the foot of a note that belongs to a series. */
+export function renderSeriesNav(id: string, slug: string, members: SeriesMember[]): string {
+  const meta = NOTE_SERIES[id];
+  const at = members.findIndex((m) => m.slug === slug);
+  if (!meta || at < 0 || members.length < 2) return "";
+  const link = (m: SeriesMember | undefined, label: string, dir: string) => m
+    ? `<a class="series-nav__link" data-dir="${dir}" href="${escapeHtml(seriesHref(m))}" rel="${dir}"><span class="series-nav__label">${label}</span><span class="series-nav__title">${escapeHtml(m.title)}</span></a>`
+    : `<span class="series-nav__link series-nav__link--end" data-dir="${dir}"></span>`;
+  return `<nav class="series-nav" aria-label="${escapeHtml(meta.title)}"><p class="series-nav__where">${escapeHtml(meta.title)}, note ${at + 1} of ${members.length}</p><div class="series-nav__links">${link(members[at - 1], "← Previous", "prev")}${link(members[at + 1], "Next →", "next")}</div></nav>`;
+}
+
+/** The feed's collapsed card for a series. Hidden until the feed's island is live and the reader
+ *  is looking at the unfiltered All tab, so with no JS every note simply shows on its own. */
+export function renderSeriesCard(id: string, members: SeriesMember[]): string {
+  const meta = NOTE_SERIES[id];
+  if (!meta || members.length < 2) return "";
+  const minutes = members.reduce((n, m) => n + m.minutes, 0);
+  const newest = members.reduce((d, m) => (m.date > d ? m.date : d), "");
+  const tags = [...new Set(members.flatMap((m) => m.tags))];
+  const audience = [...new Set(members.flatMap((m) => m.audience))];
+  const list = members.map((m) => `<li><a href="${escapeHtml(seriesHref(m))}">${escapeHtml(m.title)}</a></li>`).join("");
+  return `<li class="note-card note-card--series" data-surface="series:${escapeHtml(id)}" data-series-card="${escapeHtml(id)}" hidden data-date="${escapeHtml(newest)}" data-score="${minutes}" data-tags="${escapeHtml(tags.join(" "))}" data-audience="${escapeHtml(audience.join(" "))}" data-level="intro">
+        <div class="note-card__vote" title="${minutes} minutes in all"><span class="note-card__score">${minutes}</span><span class="note-card__unit">min</span><span class="visually-hidden"> minutes in all</span></div>
+        <div class="note-card__main">
+          <p class="note-card__byline"><span class="note-card__level" data-level="intro">Start here</span> · A series of ${members.length} short notes</p>
+          <h2 class="note-card__title"><a href="${escapeHtml(seriesHref(members[0]!))}">${escapeHtml(meta.title)}</a></h2>
+          <p class="note-card__summary">${escapeHtml(meta.blurb)}</p>
+          <details class="note-series__list"><summary>All ${members.length} notes, in order</summary><ol>${list}</ol></details>
+        </div>
+      </li>`;
+}
+
 /** The flagship note, PINNED to the top of the /notes feed (owner ask 2026-07-17). Pinned in the
  *  FEED only: sortedNoteEntries stays date-ordered so the Welcome "Recent" list and the sidebar
  *  tree keep showing genuinely-recent notes first. */
@@ -934,7 +1036,10 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       `<button type="button" class="notes-tags__more" data-tags-more aria-expanded="false">+${restTags.length} more</button>`
     : "";
 
-  const cardRows = entries.map((e) => {
+  // A series with two or more published notes gets one collapsed card, placed where its newest note is.
+  const allSeries = allSeriesNotes();
+  const seriesSeen = new Set<string>();
+  const cardRows = entries.flatMap((e) => {
     const slug = escapeHtml(e.slug);
     const date = escapeHtml(e.date);
     const time = e.date ? `<time datetime="${date}">${date}</time>` : "";
@@ -946,7 +1051,11 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     const levelTag = e.level === "intro" ? `<span class="note-card__level" data-level="intro">Start here</span> · `
       : e.level === "deep" ? `<span class="note-card__level" data-level="deep">Deep dive</span> · ` : "";
     const pinTag = pinned ? `<span class="note-card__pin">📌 Pinned</span> · ` : "";
-    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}" data-audience="${escapeHtml(e.audience.join(" "))}" data-level="${e.level}">
+    const members = e.series ? seriesMembersOf(e.series, allSeries, false) : [];
+    const inSeries = members.length >= 2;
+    const seriesCard = inSeries && !seriesSeen.has(e.series) ? renderSeriesCard(e.series, members) : "";
+    if (inSeries) seriesSeen.add(e.series);
+    const card = `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""}${inSeries ? ` data-series="${escapeHtml(e.series)}"` : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}" data-audience="${escapeHtml(e.audience.join(" "))}" data-level="${e.level}">
         <div class="note-card__vote" title="${e.score} minute read"><span class="note-card__score">${e.score}</span><span class="note-card__unit">min</span><span class="visually-hidden"> minute read</span></div>
         <div class="note-card__main">
           <p class="note-card__byline">${pinTag}${levelTag}${byline}</p>
@@ -956,6 +1065,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
             <a class="note-card__sections" href="/notes/${slug}">${e.sections} sections</a></p>
         </div>
       </li>`;
+    return seriesCard ? [seriesCard, card] : [card];
   });
   const paths = `<li class="notes-paths">
       <nav aria-label="Explore the work behind the notes">
@@ -1020,7 +1130,11 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked:not([name="level"])'));
         var wanted = boxes.map(function (b) { return b.value; });
         var q = (search && search.value || "").trim().toLowerCase();
+        // A series shows as ONE card in the unfiltered All tab, and as its own notes everywhere else.
+        var collapsed = audience === "" && level === "" && wanted.length === 0 && q === "";
         cards.forEach(function (card) {
+          if (card.hasAttribute("data-series-card")) { card.hidden = !collapsed; return; }
+          if (collapsed && card.hasAttribute("data-series")) { card.hidden = true; return; }
           var tags = (card.getAttribute("data-tags") || "").split(" ");
           var tagOk = wanted.length === 0 || wanted.some(function (t) { return tags.indexOf(t) !== -1; });
           var textOk = q === "" || (card.textContent || "").toLowerCase().indexOf(q) !== -1;
@@ -1038,6 +1152,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       // and a tag with none there is hidden (unless it is checked, so a reader can still uncheck it).
       function recountTags(audience) {
         var inTab = cards.filter(function (card) {
+          if (card.hasAttribute("data-series-card")) return false;
           return audience === "" || (card.getAttribute("data-audience") || "").split(" ").indexOf(audience) !== -1;
         });
         Array.prototype.forEach.call(form.querySelectorAll(".notes-tag"), function (chip) {
@@ -1120,6 +1235,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       if (search) search.addEventListener("input", function () { applyFilters(); });
 
       applyQueryTags();
+      applyFilters();   // settles the series cards for the tab the page opened on
       // Keep the familiar chip row on desktop. On phones, the disclosure stays closed until a
       // reader asks for it, so the first essay is not buried under the filter controls.
       if (tagFilters && window.matchMedia && window.matchMedia("(min-width: 40.001rem)").matches) tagFilters.open = true;

@@ -1,0 +1,141 @@
+{
+ "id": "small-parts-big-screens",
+ "title": "Small parts, big screens",
+ "summary": "In three short stops I give you Brad Frost's five words for building an interface, show why they let you tell an AI what to reuse, and send you to sort your own page into them without building a design system.",
+ "audio": "/media/lessons/small-parts-big-screens.m4a",
+ "stops": [
+  {
+   "title": "Five words from a chemistry class",
+   "note": "small-parts-big-screens",
+   "from": "intro",
+   "to": "the-chemistry-class",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "By the fortieth you have forty buttons",
+     "text": "Here is the problem. Ask an AI for a button, then ask again next week in a new session, and you get a different button. It has no memory of the first. By the fortieth you have forty of them, and one bug to fix forty times. That is not carelessness. It is a teammate nobody told where the parts live."
+    },
+    {
+     "section": "the-chemistry-class",
+     "quote": "every website is made from the same short list of HTML elements",
+     "text": "Brad Frost is a designer who wrote a free book on this. He went looking for a deliberate order to build interfaces in, and remembered his chemistry class. Atoms make molecules, molecules make organisms. His point is that every website uses the same short list of HTML elements, so interfaces can be built the same way."
+    },
+    {
+     "section": "the-chemistry-class",
+     "quote": "A label, an input and a button become a search form",
+     "text": "Hold on to one example. On their own, a label, an input and a button do nothing. Put them together and you have something that searches. That is a molecule. Put that search form in a header with a logo and a navigation and you have an organism."
+    },
+    {
+     "section": "the-chemistry-class",
+     "figure": "Atomic design in five levels",
+     "text": "The five levels run from atoms to pages. Frost is clear that this is a way of thinking and not a procedure. You do not walk through it in order, you use it to ask what the parts are."
+    }
+   ],
+   "runes": [
+    {
+     "id": "forty-buttons",
+     "section": "intro",
+     "quote": "By the fortieth you have forty buttons"
+    },
+    {
+     "id": "search-form",
+     "section": "the-chemistry-class",
+     "quote": "A label, an input and a button become a search form"
+    }
+   ],
+   "trial": "Name the atoms in one page you use every day, such as a button, a field and a link.",
+   "digest": [
+    "Ask an AI for a button ten times and you own ten buttons.",
+    "Brad Frost named five levels: atoms, molecules, organisms, templates and pages.",
+    "A label, an input and a button become a search form, and that is a molecule."
+   ]
+  },
+  {
+   "title": "Why it helps an AI do the typing",
+   "note": "small-parts-big-screens",
+   "from": "why-this-helps-when-an-ai-does-the-typing",
+   "to": "what-it-looks-like-in-my-own-system",
+   "beats": [
+    {
+     "section": "why-this-helps-when-an-ai-does-the-typing",
+     "quote": "Use the existing button atom",
+     "text": "An instruction with a level in it is harder to misread. Use the existing button atom tells the agent where the part lives. Add a button tells it nothing, and you get a new one."
+    },
+    {
+     "section": "why-this-helps-when-an-ai-does-the-typing",
+     "quote": "you fix the atom",
+     "text": "The second habit is about fixing. When something is wrong everywhere, you fix the atom, and every molecule and organism built from it is fixed. A new color is an atom, a new field is a molecule, a new section is an organism."
+    },
+    {
+     "section": "what-it-looks-like-in-my-own-system",
+     "quote": "each one lives in exactly one of them",
+     "text": "This is how my own design system, GRAIN, is laid out. Its components sit in folders called atoms, molecules and organisms, and each one lives in exactly one. A stat tile is built from atoms. A dashboard is built from stat tiles."
+    },
+    {
+     "section": "what-it-looks-like-in-my-own-system",
+     "quote": "The atoms stay simple, the molecules carry the meaning, and the organisms just arrange them.",
+     "text": "There is a rule in there that shows why the levels matter. The atom that sets the text face knows nothing about who wrote the text. A molecule, like a message bubble, is what marks itself as written by the AI. The organisms just arrange the result."
+    }
+   ],
+   "runes": [
+    {
+     "id": "name-the-level",
+     "section": "why-this-helps-when-an-ai-does-the-typing",
+     "quote": "Use the existing button atom"
+    },
+    {
+     "id": "one-level",
+     "section": "what-it-looks-like-in-my-own-system",
+     "quote": "each one lives in exactly one of them"
+    }
+   ],
+   "trial": "Ask your AI to name the level of three things on your portfolio and say which one it would fix first if the color changed.",
+   "digest": [
+    "Name the level and your instruction has a place in it.",
+    "Fix an atom and everything built from it is fixed too.",
+    "In GRAIN each component lives in exactly one of the atoms, molecules and organisms folders."
+   ]
+  },
+  {
+   "title": "Borrow the question, not my files",
+   "note": "small-parts-big-screens",
+   "from": "you-dont-need-a-design-system-yet",
+   "to": "your-turn",
+   "beats": [
+    {
+     "section": "you-dont-need-a-design-system-yet",
+     "quote": "ask what the atoms are",
+     "text": "I am not telling you to build a design system. For one portfolio page it would be a lot of ceremony. Borrow the question. Ask what the atoms are, a date, a title, a link. What the molecule is, one roadmap entry. And what the organism is, the list."
+    },
+    {
+     "section": "you-dont-need-a-design-system-yet",
+     "quote": "make the entry once",
+     "text": "Then tell your AI to make the entry once and use it for every row. That sentence alone saves you the forty buttons."
+    },
+    {
+     "section": "your-turn",
+     "quote": "The five levels are a way of talking, and a blurry one.",
+     "text": "And where I might be wrong. People argue about whether something is a molecule or an organism, and for a small project the argument costs more than it saves. Use the words while they make your instructions clearer. Drop them the day they do not."
+    }
+   ],
+   "runes": [
+    {
+     "id": "ask-the-atoms",
+     "section": "you-dont-need-a-design-system-yet",
+     "quote": "ask what the atoms are"
+    },
+    {
+     "id": "blurry",
+     "section": "your-turn",
+     "quote": "The five levels are a way of talking, and a blurry one."
+    }
+   ],
+   "trial": "Ask your AI to label your roadmap wireframe in the five levels, fix one thing you disagree with, then have it build one roadmap entry as a single reusable piece.",
+   "digest": [
+    "You do not need a design system yet. Borrow the question.",
+    "Ask what the atoms, the molecule and the organism of your page are.",
+    "The five levels are a blurry way of talking. Drop them the day they stop helping."
+   ]
+  }
+ ]
+}

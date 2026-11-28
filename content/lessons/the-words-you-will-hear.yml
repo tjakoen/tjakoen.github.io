@@ -1,0 +1,54 @@
+id: the-words-you-will-hear
+note: the-words-you-will-hear
+title: The words you will hear
+summary: In three short stops I walk the eleven words my older notes used without explaining them, in the order they stack from the model up to the loop, and tell you what to do when a word is missing.
+audio: /media/lessons/the-words-you-will-hear.m4a
+stops:
+- title: What answers you
+  note: the-words-you-will-hear
+  from: intro
+  to: the-bottom-layer-what-answers-you
+  runes:
+  - id: not-your-fault
+    section: intro
+    quote: that's my fault and not yours
+  - id: context
+    section: the-bottom-layer-what-answers-you
+    quote: Everything the model can see right now
+  trial: Pick the word from this stop you would find hardest to explain to a friend, and write your own one-line version.
+  digest:
+  - A model only answers. It has no memory of you and no access to your files.
+  - A prompt is what you send it, and tokens are the pieces it reads and writes in.
+  - Context is everything the model can see right now, and it has a size limit.
+- title: What lets it work on your project
+  note: the-words-you-will-hear
+  from: the-middle-layer-what-lets-it-work-on-your-project
+  to: the-top-layer-what-you-set-up-around-it
+  runes:
+  - id: harness
+    section: the-middle-layer-what-lets-it-work-on-your-project
+    quote: The model thinks, and the harness is the hands.
+  - id: standard
+    section: the-top-layer-what-you-set-up-around-it
+    quote: It's the contract you write for your own project
+  trial: Ask your AI to name which harness and which model you are talking to right now, and where your project keeps its plan.
+  digest:
+  - A harness wraps a model so it can read files, edit them and run commands.
+  - An agent is a model in a harness working through a task. A session is one run of it, and it forgets afterwards.
+  - The plan, the skills and the standards are what you set up around it.
+- title: When a word is missing
+  note: the-words-you-will-hear
+  from: where-the-longer-list-lives
+  to: your-turn
+  runes:
+  - id: ask-the-agent
+    section: where-the-longer-list-lives
+    quote: Explain this term as if I were new
+  - id: redraw
+    section: your-turn
+    quote: Treat the list as a map for getting started, and expect to redraw it.
+  trial: Pick the three words you would find hardest to explain, ask your AI to explain each using your portfolio as the example, then write your own one-line version in your roadmap.
+  digest:
+  - There is a longer glossary, and some entries are specific to my setup.
+  - When a word is missing, ask your agent to explain it as if you were new.
+  - These are one person's definitions. Believe your tool when it disagrees.

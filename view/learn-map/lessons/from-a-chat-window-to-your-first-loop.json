@@ -1,0 +1,141 @@
+{
+ "id": "from-a-chat-window-to-your-first-loop",
+ "title": "From a chat window to your first loop",
+ "summary": "In three short stops I show you what changes when an AI works inside your project, the three small files and one check that make your first loop, and why any harness will do.",
+ "audio": "/media/lessons/from-a-chat-window-to-your-first-loop.m4a",
+ "stops": [
+  {
+   "title": "What a project changes",
+   "note": "from-a-chat-window-to-your-first-loop",
+   "from": "intro",
+   "to": "what-changes-when-its-in-your-project",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "you're the courier between the chat and your files",
+     "text": "If you use a chat assistant today, you know the rhythm. Paste code, ask, copy the answer back by hand. It works, but you are the only part that remembers anything, and you are the courier between the chat and your files."
+    },
+    {
+     "section": "what-changes-when-its-in-your-project",
+     "quote": "Nothing needs to be pasted.",
+     "text": "A harness opens in your project folder. It reads what is there, makes changes, runs commands. Nothing needs to be pasted, and your plan is a file the agent opens instead of a paragraph you retype."
+    },
+    {
+     "section": "what-changes-when-its-in-your-project",
+     "quote": "the project becomes the memory",
+     "text": "The harness does not fix the forgetting. It gives you somewhere to put what should not be forgotten. So the project becomes the memory, and the loop is the habit of keeping it up to date."
+    }
+   ],
+   "runes": [
+    {
+     "id": "courier",
+     "section": "intro",
+     "quote": "you're the courier between the chat and your files"
+    },
+    {
+     "id": "project-memory",
+     "section": "what-changes-when-its-in-your-project",
+     "quote": "the project becomes the memory"
+    }
+   ],
+   "trial": "Describe in one line what you paste into a chat window today that a harness could simply read from your project.",
+   "digest": [
+    "In a chat window you are the courier between the chat and your files.",
+    "A harness opens in your project folder, so nothing needs pasting.",
+    "The session still forgets, so the project becomes the memory."
+   ]
+  },
+  {
+   "title": "Three small files and one check",
+   "note": "from-a-chat-window-to-your-first-loop",
+   "from": "three-small-files-and-one-check",
+   "to": "three-small-files-and-one-check",
+   "beats": [
+    {
+     "section": "three-small-files-and-one-check",
+     "quote": "One short file at the top of your project that the agent reads first.",
+     "text": "Three small files, then. First, a front door: one short file the agent reads first. It says what the project is, how to run it, and the rules you care about. When the agent does something you did not want, you add a line."
+    },
+    {
+     "section": "three-small-files-and-one-check",
+     "quote": "One check.",
+     "text": "Second, the plan from the plan note. Third, one check, a single command that says whether the project still works. Pick one, and put it in the front door so the agent runs it without being asked."
+    },
+    {
+     "section": "three-small-files-and-one-check",
+     "quote": "The loop itself is the order you use them in.",
+     "text": "The loop is the order you use them in. Read the front door and the plan, build one step, run the check, write down what happened, close the session. The next one picks up from the file."
+    },
+    {
+     "section": "three-small-files-and-one-check",
+     "figure": "The smallest loop",
+     "text": "That is the whole shape. It is boring on purpose, because a boring loop is one you will actually run."
+    }
+   ],
+   "runes": [
+    {
+     "id": "front-door",
+     "section": "three-small-files-and-one-check",
+     "quote": "One short file at the top of your project that the agent reads first."
+    },
+    {
+     "id": "loop-order",
+     "section": "three-small-files-and-one-check",
+     "quote": "The loop itself is the order you use them in."
+    }
+   ],
+   "trial": "Open a harness in your portfolio folder, ask it to write a front-door file from what it can see, then edit that file until it is true.",
+   "digest": [
+    "A front-door file is one short file the agent reads first.",
+    "The plan file is the one from the plan note, and one check is a single command that says whether the project still works.",
+    "The loop is the order you use them in: read, build one step, check, write down what happened."
+   ]
+  },
+  {
+   "title": "Any harness, and when to add more",
+   "note": "from-a-chat-window-to-your-first-loop",
+   "from": "any-harness-works",
+   "to": "your-turn",
+   "beats": [
+    {
+     "section": "any-harness-works",
+     "quote": "Work with the agent to make it work.",
+     "text": "I use Claude, Codex and DeepSeek, and the same three files work in all of them. If you are not sure what file yours reads, ask it. And if something does not work, do not read it as you doing it wrong. Work with the agent to make it work."
+    },
+    {
+     "section": "when-you-want-the-full-version",
+     "quote": "Set Up the Loop With One Prompt",
+     "text": "When you want more, there is a note that sets up the whole loop with one prompt, with a checklist, a report and a second reader. It is for people who have run the small version a few times and felt where it runs out."
+    },
+    {
+     "section": "when-you-want-the-full-version",
+     "quote": "A loop with five files you use beats one with twenty you don't.",
+     "text": "Until then, resist installing more. A loop with five files you use beats one with twenty you do not."
+    },
+    {
+     "section": "your-turn",
+     "quote": "If you're writing more plan than code for a week",
+     "text": "And where I might be wrong. A loop makes it easy to feel organized while building nothing. If you are writing more plan than code for a week, that is the signal to stop and build."
+    }
+   ],
+   "runes": [
+    {
+     "id": "make-it-work",
+     "section": "any-harness-works",
+     "quote": "Work with the agent to make it work."
+    },
+    {
+     "id": "five-files",
+     "section": "when-you-want-the-full-version",
+     "quote": "A loop with five files you use beats one with twenty you don't."
+    }
+   ],
+   "trial": "Run one full pass in your portfolio folder: read, build one step, check, write down what happened. Then list what you would add and leave it out.",
+   "digest": [
+    "The same three files work in any harness, with a different name here and there.",
+    "If something does not work, work with the agent to make it work.",
+    "Resist installing more. A loop with five files you use beats one with twenty you do not."
+   ]
+  }
+ ]
+}

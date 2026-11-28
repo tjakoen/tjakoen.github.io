@@ -219,3 +219,30 @@
     display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
   }
 }
+
+/* ---- series: one collapsed card for a run of short notes, and the links through them -------------
+   The card is a note card with a disclosure for its notes in order. It is `hidden` until the feed's
+   island decides the reader is on the unfiltered All tab (content.ts renderSeriesCard). The nav sits
+   at the foot of each note in the series (renderSeriesNav). Tokens only. */
+.note-card--series[hidden] { display: none; }
+.note-series__list { margin: var(--space-3) 0 0; font-size: var(--text-sm); }
+.note-series__list > summary { width: fit-content; color: var(--color-accent); cursor: pointer; }
+.note-series__list ol { margin: var(--space-2) 0 0; padding-left: var(--space-5); display: grid; gap: var(--space-1); }
+.note-series__list a { color: var(--color-fg); }
+
+.series-nav { margin: var(--space-6) 0 var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-line); }
+.series-nav__where { margin: 0 0 var(--space-3); font-size: var(--text-xs); color: var(--color-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.series-nav__links { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.series-nav__link {
+  display: flex; flex-direction: column; gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-line); border-radius: var(--radius-md);
+  color: var(--color-fg); text-decoration: none;
+}
+.series-nav__link[data-dir="next"] { text-align: right; }
+.series-nav__link:hover { border-color: var(--color-fg); }
+.series-nav__link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.series-nav__link--end { border: 0; padding: 0; }
+.series-nav__label { font-size: var(--text-xs); color: var(--color-muted); }
+.series-nav__title { font-size: var(--text-sm); }
+@media (max-width: 40rem) { .series-nav__links { grid-template-columns: 1fr; } .series-nav__link[data-dir="next"] { text-align: left; } }

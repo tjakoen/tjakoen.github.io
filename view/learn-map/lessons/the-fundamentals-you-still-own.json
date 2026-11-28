@@ -1,0 +1,136 @@
+{
+ "id": "the-fundamentals-you-still-own",
+ "title": "The fundamentals you still own",
+ "summary": "In three short stops I tell you why reading becomes your job when an AI types, which four fundamentals matter more because of it, and the one small thing to practice for each, with a good teacher to send you to.",
+ "audio": "/media/lessons/the-fundamentals-you-still-own.m4a",
+ "stops": [
+  {
+   "title": "Your job turns into reading",
+   "note": "the-fundamentals-you-still-own",
+   "from": "intro",
+   "to": "reading-a-diff",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "my job is to say yes, no, or not like that",
+     "text": "Here is what I did not see coming. I expected to write less and think the same amount. Instead I read more than ever. Every step the agent takes comes back as a pile of changes, and my job is to say yes, no, or not like that."
+    },
+    {
+     "section": "reading-a-diff",
+     "quote": "Look hardest at what was deleted",
+     "text": "A diff is the list of changes: these lines out, these lines in. If you cannot read one, you are approving on trust. Read the files before the lines, ask what each change is for, and look hardest at what was deleted, because that is where quiet damage hides."
+    },
+    {
+     "section": "reading-a-diff",
+     "quote": "what to look for in a code review",
+     "text": "Google publishes a short list of what a reviewer looks for. It was written for people reviewing people. It works on an agent too, and that is the version that matters now."
+    }
+   ],
+   "runes": [
+    {
+     "id": "yes-no-not-like-that",
+     "section": "intro",
+     "quote": "my job is to say yes, no, or not like that"
+    },
+    {
+     "id": "deleted-lines",
+     "section": "reading-a-diff",
+     "quote": "Look hardest at what was deleted"
+    }
+   ],
+   "trial": "After your next small change, ask your AI to explain the diff line by line, then find one line it glossed over and ask about that one.",
+   "digest": [
+    "When an AI types, you read more than you write.",
+    "A diff is the list of changes, and approving one you cannot read is approving on trust.",
+    "Read the files, ask what each change is for, and look hardest at what was deleted."
+   ]
+  },
+  {
+   "title": "Undo, and code a stranger can read",
+   "note": "the-fundamentals-you-still-own",
+   "from": "git-so-every-step-can-be-undone",
+   "to": "code-a-stranger-can-follow",
+   "beats": [
+    {
+     "section": "git-so-every-step-can-be-undone",
+     "quote": "If your last commit is clean, a bad session costs you nothing.",
+     "text": "Git is an undo button that goes back days instead of seconds. It matters more with an agent, because an agent changes many files at once and can be confidently wrong about all of them. If your last commit is clean, a bad session costs you nothing."
+    },
+    {
+     "section": "git-so-every-step-can-be-undone",
+     "quote": "small commits",
+     "text": "The habit that does the most work is small commits, one per step of your plan. When one goes wrong, throw it away and ask again with a better brief, instead of patching it."
+    },
+    {
+     "section": "code-a-stranger-can-follow",
+     "quote": "A new session never remembers why you did a thing",
+     "text": "The next reader of your code is a stranger. It might be a teammate, or the AI in a fresh session, or you in three months. A new session never remembers why you did a thing, so the code itself has to say. Clear names and small functions. You ask for that now, and you check that you got it."
+    }
+   ],
+   "runes": [
+    {
+     "id": "clean-commit",
+     "section": "git-so-every-step-can-be-undone",
+     "quote": "If your last commit is clean, a bad session costs you nothing."
+    },
+    {
+     "id": "stranger",
+     "section": "code-a-stranger-can-follow",
+     "quote": "A new session never remembers why you did a thing"
+    }
+   ],
+   "trial": "Commit before the next step of your plan. When a step goes wrong, throw it away and ask again with a better brief.",
+   "digest": [
+    "Git is an undo button that goes back days.",
+    "Commit small, one per plan step, with a message that says what it did.",
+    "Write code a stranger can follow, because the next session is a stranger."
+   ]
+  },
+  {
+   "title": "Tests, and what you still own",
+   "note": "the-fundamentals-you-still-own",
+   "from": "tests-so-done-means-something",
+   "to": "your-turn",
+   "beats": [
+    {
+     "section": "tests-so-done-means-something",
+     "quote": "A diff can look perfect and break something three files away",
+     "text": "You met tests in the last note, so here is only where they sit. Reading the diff tells you what changed. A test tells you whether the thing still works. A diff can look perfect and break something three files away, and a test can pass while testing the wrong thing. Neither is enough alone."
+    },
+    {
+     "section": "tests-so-done-means-something",
+     "figure": "The review loop",
+     "text": "The whole routine fits in one loop. The AI changes something, you read the diff, the tests run, and you commit if it passes. If it fails, or the diff looks wrong, you throw it away and ask again."
+    },
+    {
+     "section": "what-im-not-saying",
+     "quote": "Could I explain this, and fix it, if the AI weren't here tomorrow?",
+     "text": "You do not need to master all four before you begin. You learn them by using them, and the AI is a patient tutor for each. The question I keep coming back to is the one from the plan note. Could I explain this, and fix it, if the AI were not here tomorrow? These four are how you keep saying yes."
+    },
+    {
+     "section": "your-turn",
+     "quote": "Pick the one that",
+     "text": "And where I might be wrong. A different person would give you five or six. Pick the one that would hurt most to be missing, and start there."
+    }
+   ],
+   "runes": [
+    {
+     "id": "diff-and-test",
+     "section": "tests-so-done-means-something",
+     "quote": "A diff can look perfect and break something three files away"
+    },
+    {
+     "id": "explain-and-fix",
+     "section": "what-im-not-saying",
+     "quote": "Could I explain this, and fix it, if the AI weren't here tomorrow?"
+    }
+   ],
+   "trial": "Ask your AI for one small change, then do the whole routine by hand: commit first, read the diff yourself, run the tests, and note what you caught.",
+   "digest": [
+    "A diff tells you what changed. A test tells you whether it still works. You want both.",
+    "Skipping the fundamentals does not make you faster. It makes you someone who cannot finish or fix things.",
+    "Could I explain this, and fix it, if the AI were not here tomorrow?"
+   ]
+  }
+ ]
+}

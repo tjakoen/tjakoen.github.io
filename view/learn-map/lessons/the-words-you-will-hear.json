@@ -1,0 +1,136 @@
+{
+ "id": "the-words-you-will-hear",
+ "title": "The words you will hear",
+ "summary": "In three short stops I walk the eleven words my older notes used without explaining them, in the order they stack from the model up to the loop, and tell you what to do when a word is missing.",
+ "audio": "/media/lessons/the-words-you-will-hear.m4a",
+ "stops": [
+  {
+   "title": "What answers you",
+   "note": "the-words-you-will-hear",
+   "from": "intro",
+   "to": "the-bottom-layer-what-answers-you",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "that's my fault and not yours",
+     "text": "I used these words for months before I wrote any of them down. My older notes say harness and loop and session as if you were in the room when I learned them. If a word has been going past you, that is my fault and not yours."
+    },
+    {
+     "section": "the-bottom-layer-what-answers-you",
+     "quote": "It has no memory of you and no access to your files.",
+     "text": "Start at the bottom. The model is the AI itself. It reads text and writes text. It has no memory of you and no access to your files. It only answers. What you send it is a prompt, and it reads in tokens, small pieces a bit smaller than a word."
+    },
+    {
+     "section": "the-bottom-layer-what-answers-you",
+     "quote": "Everything the model can see right now",
+     "text": "Context is everything the model can see right now. It has a size limit, and when you fill it the model starts losing the early parts. That is why a long session goes wrong, and why a fresh session often works better."
+    }
+   ],
+   "runes": [
+    {
+     "id": "not-your-fault",
+     "section": "intro",
+     "quote": "that's my fault and not yours"
+    },
+    {
+     "id": "context",
+     "section": "the-bottom-layer-what-answers-you",
+     "quote": "Everything the model can see right now"
+    }
+   ],
+   "trial": "Pick the word from this stop you would find hardest to explain to a friend, and write your own one-line version.",
+   "digest": [
+    "A model only answers. It has no memory of you and no access to your files.",
+    "A prompt is what you send it, and tokens are the pieces it reads and writes in.",
+    "Context is everything the model can see right now, and it has a size limit."
+   ]
+  },
+  {
+   "title": "What lets it work on your project",
+   "note": "the-words-you-will-hear",
+   "from": "the-middle-layer-what-lets-it-work-on-your-project",
+   "to": "the-top-layer-what-you-set-up-around-it",
+   "beats": [
+    {
+     "section": "the-middle-layer-what-lets-it-work-on-your-project",
+     "quote": "The model thinks, and the harness is the hands.",
+     "text": "The middle layer is what lets it work on your project. A harness wraps the model so it can read your files, edit them and run commands. The model thinks, and the harness is the hands. A model inside a harness, working through a task, is an agent."
+    },
+    {
+     "section": "the-middle-layer-what-lets-it-work-on-your-project",
+     "quote": "It forgets everything afterwards",
+     "text": "A session is one run of an agent. It forgets everything afterwards, so whatever you want to keep has to live in the project. That one fact explains most of the rest of this path."
+    },
+    {
+     "section": "the-top-layer-what-you-set-up-around-it",
+     "quote": "It's the contract you write for your own project",
+     "text": "The top layer is yours. A plan, a skill, and a standard, which is a written rule the agent reads before it works. It is the contract you write for your own project, and the part that sounds like you. The loop is the workflow around all of it."
+    },
+    {
+     "section": "the-top-layer-what-you-set-up-around-it",
+     "figure": "How the words stack",
+     "text": "Here is how they stack. You give a prompt to an agent. The agent is a model inside a harness. And your project, the plan, the skills and the standards, is what the agent reads each session."
+    }
+   ],
+   "runes": [
+    {
+     "id": "harness",
+     "section": "the-middle-layer-what-lets-it-work-on-your-project",
+     "quote": "The model thinks, and the harness is the hands."
+    },
+    {
+     "id": "standard",
+     "section": "the-top-layer-what-you-set-up-around-it",
+     "quote": "It's the contract you write for your own project"
+    }
+   ],
+   "trial": "Ask your AI to name which harness and which model you are talking to right now, and where your project keeps its plan.",
+   "digest": [
+    "A harness wraps a model so it can read files, edit them and run commands.",
+    "An agent is a model in a harness working through a task. A session is one run of it, and it forgets afterwards.",
+    "The plan, the skills and the standards are what you set up around it."
+   ]
+  },
+  {
+   "title": "When a word is missing",
+   "note": "the-words-you-will-hear",
+   "from": "where-the-longer-list-lives",
+   "to": "your-turn",
+   "beats": [
+    {
+     "section": "where-the-longer-list-lives",
+     "quote": "the glossary",
+     "text": "There are more words than these. I keep a glossary that my own agents read before they write anything, and some entries are about my setup, so skip those."
+    },
+    {
+     "section": "where-the-longer-list-lives",
+     "quote": "Explain this term as if I were new",
+     "text": "When you hit a word that is on neither list, do what I do. Ask your agent to explain this term as if you were new, and to say where it shows up in your project. It is very good at that."
+    },
+    {
+     "section": "your-turn",
+     "quote": "Treat the list as a map for getting started, and expect to redraw it.",
+     "text": "And where I might be wrong. These are one person's definitions from daily use, and the field renames things every few months. Treat the list as a map for getting started, and expect to redraw it."
+    }
+   ],
+   "runes": [
+    {
+     "id": "ask-the-agent",
+     "section": "where-the-longer-list-lives",
+     "quote": "Explain this term as if I were new"
+    },
+    {
+     "id": "redraw",
+     "section": "your-turn",
+     "quote": "Treat the list as a map for getting started, and expect to redraw it."
+    }
+   ],
+   "trial": "Pick the three words you would find hardest to explain, ask your AI to explain each using your portfolio as the example, then write your own one-line version in your roadmap.",
+   "digest": [
+    "There is a longer glossary, and some entries are specific to my setup.",
+    "When a word is missing, ask your agent to explain it as if you were new.",
+    "These are one person's definitions. Believe your tool when it disagrees."
+   ]
+  }
+ ]
+}
