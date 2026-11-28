@@ -13,6 +13,7 @@ plans: []
 gates: ["bun run check | clean", "bun test | 1146 pass, 0 fail, 2 skip", "bun tools/lint-gate.ts | level, 4592 flags against a baseline of 4592"]
 diffstat: three files, one commit
 unpushed: "0 | pushed with the commit"
+consulted: none
 doctor: standards skills not synced on the cloud machine, published copies used
 verifiedBy: nobody yet
 ---
@@ -39,10 +40,10 @@ is NOT the release yet, see below), at 1440 by 900:
 
 ## What was not done
 
-- **This does not work in production until grain is released.** The portfolio pins grain 0.1.39 from npm,
-  which has no desk stage. Until a grain release that includes it is published and the dependency is
-  bumped, the guard keeps this commit inert. Publishing is yours to do. The test above used a local copy
-  of the files inside node_modules, which is untracked.
+- **Release.** Grain 0.1.40 (the desk stage) was published to npm from the merged grain PR, and the
+  dependency is bumped to ^0.1.40 in this change. The checks above were first run against a local copy of
+  the files, then re-run against the real installed 0.1.40: stage built, button showed, zoom out and
+  back worked, no console errors.
 - **Playwright e2e and the visual suite were not run**, and the visual baselines are macOS-specific.
   A wrapper element now sits between body and the shell, so a spec that selects the shell as a direct
   child of body would break. The one such rule in the portfolio's CSS was changed to a descendant selector.
