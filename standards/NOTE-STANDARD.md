@@ -57,6 +57,8 @@ social: |
   Ready-to-post copy. Every note has it, with the image and alt text below.
 socialImage: "/media/notes/example-social.png"
 socialImageAlt: "What the card shows."
+series: harbor           # optional, a series named in src/content.ts NOTE_SERIES
+seriesOrder: 3           # optional, whole number from 1, required with series
 updated: 2026-11-12      # optional, only after a major change (see below)
 changelog:               # optional, newest first, one line per major change
   - "2026-11-12 | What changed, in a sentence a returning reader can act on."
@@ -73,6 +75,7 @@ changelog:               # optional, newest first, one line per major change
 | `date` | ISO date | The write/update day. |
 | `readingTime` | Honest estimate | `"~N min"`, measured at 220 words per minute over the prose only (frontmatter, code, markup and link URLs do not count). `bun tools/reading-time.ts --check` holds every note to it, and the number is not decoration: the feed's "Longest" sort reads it. |
 | `tags` | Topics | Required. Lowercase, real, ~3–6. Reuse existing tags where they fit. They become the keywords in the note's JSON-LD. |
+| series, seriesOrder | A run of short notes read in order | Optional, and both or neither. The series is declared in the feed's own code (NOTE_SERIES in src/content.ts), never derived from the quest map. In the feed's All tab a series with two or more published notes shows as one card that opens an ordered list. Every other view, the Learning to build tab included, shows each note on its own. Each note in the series ends with previous and next links, and a draft's links reach the other drafts. Orders run 1 to n with no gaps, and a test holds the Harbor's order to the quest map's. |
 | `summary` | The TL;DR, the listing text and the meta description | Required. A real answer in his voice, about 60 words or fewer, with the answer in the first sentence. The note page shows it under the masthead with a TL;DR label, so it is the first text a reader or an assistant meets. This is the AEO payload; treat it as first-class. Notes written before 2026-11-27 run longer, with a median near 100 words, and are being shortened as they are touched. |
 | `social` | Ready-to-post copy | Required, except on a technical companion whose main note's post already points to it; mark that note `companion: true` so the check can tell the exception from an omission. A short post, not the summary. The page renders it at the bottom with the canonical link. |
 | `socialImage` | Social image path | Required wherever `social` is. Supply a 1200×1200 PNG the reader can download and attach to the post, or an animated GIF when the post needs motion. A list posts several; do not list the same picture twice, still and moving. |

@@ -24,7 +24,7 @@ test.describe("the /notes feed (JS on)", () => {
 
     // every card is a real note surface (the reasoner's travel target, notes-demo.e2e.ts)
     const surfaces = await cards.evaluateAll((els) => els.map((el) => el.getAttribute("data-surface")));
-    for (const s of surfaces) expect(s).toMatch(/^note:[a-z0-9-]+$/);
+    for (const s of surfaces) expect(s).toMatch(/^(note|series):[a-z0-9-]+$/);
 
     await expect(page.locator("[data-ai-run]")).toBeVisible();
   });

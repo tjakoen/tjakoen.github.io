@@ -3248,7 +3248,7 @@
       "title": "NOTE-STANDARD.md — the note / blog-post standard",
       "summary": "How a note is put together - frontmatter, structure, the sign-off footer, plus a reusable drafting prompt.",
       "when": "Read this BEFORE creating or finishing any file under content/notes: a blog post, a note, the whitepaper. It owns the artifact (the frontmatter block, the stakes-first opener, the figure requirement, the exact sign-off footer, where the file lives); VOICE owns how the words read, so the two are read together, not instead of each other. Don't skip because the note is only a draft or because you already know the voice - a note missing its frontmatter, its figure, or its footer is unfinished no matter how well it reads.",
-      "lines": 293,
+      "lines": 296,
       "lead": {
         "lines": [
           14,
@@ -3278,7 +3278,7 @@
           "anchor": "frontmatter-template",
           "lines": [
             39,
-            106
+            109
           ],
           "summary": "Every note opens with this block.",
           "refs": [],
@@ -3288,8 +3288,8 @@
               "heading": "What the page does with the frontmatter for machines",
               "anchor": "what-the-page-does-with-the-frontmatter-for-machines",
               "lines": [
-                83,
-                90
+                86,
+                93
               ],
               "summary": "A note page is built so that an assistant reading it, in a browser sidebar or by fetching the address, gets the short answer and clean text without a special prompt.",
               "refs": []
@@ -3299,8 +3299,8 @@
               "heading": "Edited notes and the changelog",
               "anchor": "edited-notes-and-the-changelog",
               "lines": [
-                92,
-                106
+                95,
+                109
               ],
               "summary": "date is the day a note was first published and it stays put, so the feed keeps its order and a reader's memory of when they read a piece still holds.",
               "refs": []
@@ -3312,8 +3312,8 @@
           "heading": "Structure",
           "anchor": "structure",
           "lines": [
-            108,
-            132
+            111,
+            135
           ],
           "summary": "Every note ships with social post copy, a 1200×1200 image (or an animated GIF) and the image's alt text, made in the same pass as the note.",
           "refs": [],
@@ -3323,8 +3323,8 @@
               "heading": "The share block",
               "anchor": "the-share-block",
               "lines": [
-                110,
-                132
+                113,
+                135
               ],
               "summary": "Every note ships with social post copy, a 1200×1200 image (or an animated GIF) and the image's alt text, made in the same pass as the note.",
               "refs": [
@@ -3340,8 +3340,8 @@
           "heading": "Two kinds of note, and picking the wrong one is expensive",
           "anchor": "two-kinds-of-note-and-picking-the-wrong-one-is-expensive",
           "lines": [
-            134,
-            165
+            137,
+            168
           ],
           "summary": "Everything above this section describes the personal note, and for years that was the only kind this standard had.",
           "refs": []
@@ -3351,8 +3351,8 @@
           "heading": "What a guide owes on top of everything above",
           "anchor": "what-a-guide-owes-on-top-of-everything-above",
           "lines": [
-            167,
-            208
+            170,
+            211
           ],
           "summary": "Derived from a comparison pass against Addy Osmani's blog run on 2026-08-18, which is the closest public writing to what these guides are trying to be.",
           "refs": [
@@ -3366,8 +3366,8 @@
               "heading": "The pair pattern, when a guide runs long",
               "anchor": "the-pair-pattern-when-a-guide-runs-long",
               "lines": [
-                197,
-                208
+                200,
+                211
               ],
               "summary": "Practitioner blogs in this genre run 1,500 to 3,000 words, and a guide with a real plan in it will not.",
               "refs": []
@@ -3379,8 +3379,8 @@
           "heading": "The footer (bottom of every note)",
           "anchor": "the-footer-bottom-of-every-note",
           "lines": [
-            210,
-            230
+            213,
+            233
           ],
           "summary": "The sign-off speaks only to the content's authorship, the same way a repo footer speaks to the code's.",
           "refs": [
@@ -3394,8 +3394,8 @@
           "heading": "Guardrails (this repo is public)",
           "anchor": "guardrails-this-repo-is-public",
           "lines": [
-            232,
-            244
+            235,
+            247
           ],
           "summary": "Non-negotiable, and they precede voice, a specific being real doesn't make it publishable: No em-dashes, no backticks in prose.",
           "refs": [
@@ -3409,8 +3409,8 @@
           "heading": "The prompt (paste into Claude Code to draft or finish a note)",
           "anchor": "the-prompt-paste-into-claude-code-to-draft-or-finish-a-note",
           "lines": [
-            246,
-            293
+            249,
+            296
           ],
           "summary": "A projection of how these notes already get made.",
           "refs": []
