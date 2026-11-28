@@ -12,8 +12,8 @@
   const RUNE_KEY = 'learn.runes.v1';
   const RUNES = ['0110110|1001001|1000001|0100010|0010100|0001000|0001000', '0001000|0011100|0101010|1001001|0001000|0001000|0001000', '1111111|1000001|1011101|1010101|1011101|1000001|1111111', '0100010|0100010|0111110|0000100|0001000|0010000|0100000', '1001001|0101010|0011100|1111111|0011100|0101010|1001001', '0011100|0100010|1000001|1000001|1000001|0100010|0011100', '1110000|0010000|0011100|0000100|0000111|0000001|0000001', '0001000|0001000|1111111|0001000|0001000|1111111|0001000'];
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const read = (k) => { try { return JSON.parse(localStorage.getItem(k) || '{}'); } catch (e) { return {}; } };
-  const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode: progress is simply not kept */ } };
+  const read = (k) => { try { return JSON.parse(localStorage.getItem(k) || '{}'); } catch { return {}; } };
+  const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode: progress is simply not kept */ } };
   /* One shape for both sides of a comparison: straight quotes, single spaces, no non-breaking spaces. */
   const squash = (s) => s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/ /g, ' ').replace(/\s+/g, ' ');
   const h = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; };
@@ -219,7 +219,7 @@
   async function mountNote(slug) {
     ui.note.innerHTML = '<p class="sub">Opening the note…</p>';
     try { const box = (await loadNote(slug)).cloneNode(true); ui.note.replaceChildren(box); ui.noteBody = box; ui.note.scrollTop = 0; }
-    catch (e) { ui.noteBody = null; ui.note.innerHTML = `<p>The note could not be opened here. <a href="${noteHref(QUESTS.find((x) => x.id === slug) || { id: slug })}" target="_blank" rel="noopener">Open it on its own.</a></p>`; }
+    catch { ui.noteBody = null; ui.note.innerHTML = `<p>The note could not be opened here. <a href="${noteHref(QUESTS.find((x) => x.id === slug) || { id: slug })}" target="_blank" rel="noopener">Open it on its own.</a></p>`; }
   }
   async function gotoStop(i) {
     if (!S.lesson || i < 0 || i >= S.lesson.stops.length) return;
@@ -256,7 +256,7 @@
     if (S.solo) {
       S.lesson = null; ui.noteBody = null; ui.guide.innerHTML = ''; ui.crumb.textContent = (QUESTS.find((x) => x.id === opts.quest) || {}).title || ''; await mountNote(opts.quest); root.querySelector('.bk__x').focus(); return;
     }
-    try { S.lesson = await (await fetch('lessons/' + encodeURIComponent(opts.lesson) + '.json')).json(); } catch (e) { toast('This lesson could not be loaded.'); return; }
+    try { S.lesson = await (await fetch('lessons/' + encodeURIComponent(opts.lesson) + '.json')).json(); } catch { toast('This lesson could not be loaded.'); return; }
     S.stop = Math.min(opts.stop || 0, S.lesson.stops.length - 1); S.beat = 0; ui.noteBody = null;
     await mountNote(S.lesson.stops[S.stop].note); renderStop(); ui.playBtn.focus();
   }

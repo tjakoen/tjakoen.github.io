@@ -16,8 +16,8 @@
   const OUT = '#2b1d12', GLOW = '#fff2b0';
 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const read = (k) => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; } };
-  const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } };
+  const read = (k) => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch { return {}; } };
+  const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage may be blocked */ } };
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const h = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 
@@ -25,8 +25,9 @@
   const randSeed = () => Array.from({ length: 6 }, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random() * 32)]).join('');
   let G = read(GUILD_KEY);
   if (!G.seed) { G.seed = randSeed(); G.since = new Date().toISOString().slice(0, 7); write(GUILD_KEY, G); }
+  // oxlint-disable-next-line no-control-regex -- stripping control characters from a typed name is the point of this pattern
   const cleanName = (s) => String(s || '').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 24);
-  const cleanUrl = (s) => { s = String(s || '').trim().slice(0, 300); try { const u = new URL(s); return /^https?:$/.test(u.protocol) ? u.href : ''; } catch (e) { return ''; } };
+  const cleanUrl = (s) => { s = String(s || '').trim().slice(0, 300); try { const u = new URL(s); return /^https?:$/.test(u.protocol) ? u.href : ''; } catch { return ''; } };
 
   /* ---------- counting: XP is the trials ticked and the runes collected, nothing else ---------- */
   function stateNow() {
@@ -67,7 +68,7 @@
   const unb64 = (c) => new TextDecoder().decode(Uint8Array.from(atob(c.replace(/-/g, '+').replace(/_/g, '/')), (ch) => ch.charCodeAt(0)));
   function bundle() { const st = stateNow(); return { v: 1, name: G.name || '', seed: G.seed, since: G.since || '', evidence: G.evidence || '', progress: st.progress, runes: st.runes }; }
   function parseBundle(text) {
-    let o; try { o = JSON.parse(text); } catch (e) { return null; }
+    let o; try { o = JSON.parse(text); } catch { return null; }
     if (!o || o.v !== 1 || typeof o.progress !== 'object' || typeof o.runes !== 'object') return null;
     const progress = {}; QUESTS.forEach((q) => { const a = o.progress[q.id]; if (Array.isArray(a)) { const ok = [...new Set(a.filter((i) => Number.isInteger(i) && i >= 0 && i < q.stops.length))]; if (ok.length) progress[q.id] = ok.sort((x, y) => x - y); } });
     const runes = {}; Object.keys(o.runes).slice(0, 200).forEach((k) => { if (/^[a-z0-9-]{1,80}:[a-z0-9-]{1,80}$/.test(k)) runes[k] = 1; });
@@ -75,7 +76,7 @@
     return { v: 1, name: cleanName(o.name), seed, since, evidence: cleanUrl(o.evidence), progress, runes };
   }
   const codeOf = (bd) => b64(JSON.stringify(bd));
-  const bundleFromCode = (code) => { try { return parseBundle(unb64(String(code).trim())); } catch (e) { return null; } };
+  const bundleFromCode = (code) => { try { return parseBundle(unb64(String(code).trim())); } catch { return null; } };
   function applyBundle(bd) {
     QUESTS.forEach((q) => { PROG[q.id] = new Set(bd.progress[q.id] || []); });
     persist(); write(RUNE_KEY, bd.runes); G = { name: bd.name, seed: bd.seed, since: bd.since, evidence: bd.evidence, lv: levelOf(xpOf(bd)).n }; write(GUILD_KEY, G);
