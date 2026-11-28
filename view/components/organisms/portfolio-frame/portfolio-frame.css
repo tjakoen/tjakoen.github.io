@@ -22,7 +22,23 @@ body.app-window-backdrop { overflow: hidden; }
 body.app-window-backdrop[data-viewport="tablet"] { --shell-viewport-w: 56rem; }
 body.app-window-backdrop[data-viewport="mobile"] { padding-block: 0; }
 @container shell-frame (width > 640px) {
-  .app-window-backdrop > .app-shell.app-window { margin-inline: var(--frame-gutter); }
+  /* a descendant, not a child: the desk stage wraps the window inside <body> */
+  .app-window-backdrop .app-shell.app-window { margin-inline: var(--frame-gutter); }
+}
+
+/* THE DESK STAGE. The shell owns the scroll here, so the stage adds no box to the flat layout
+   (display: contents). Staged, the page takes over what <body> does for the window, the backdrop
+   colour and the gutter, so the screen shows the same picture it did before the zoom. */
+.desk-stage { --ds-flat-page: contents; }
+/* the button is hidden until the stage script has run (it sets the flag), so an install without the
+   script, or a blocked request, never shows a control that does nothing */
+html:not([data-desk-stage-support="on"]) [data-desk-stage-toggle] { display: none; }
+.desk-stage:not([data-view="flat"]) .desk-stage__page {
+  box-sizing: border-box; background: color-mix(in srgb, var(--ink) 12%, var(--paper));
+  padding: var(--frame-gutter, clamp(var(--space-2), 2vh, var(--space-6)));
+  --frame-gutter: clamp(var(--space-2), 2vh, var(--space-6));
+  container: shell-frame / inline-size;   /* the shell's breakpoints query this, and the page is now the screen */
+  overflow: hidden;
 }
 
 /* the brand (owner, 2026-07-06): a full-width row at the top of the RAIL — the same height as the
