@@ -94,7 +94,17 @@ e2e/learn.e2e.ts: 33 passed
 e2e/notes-feed.e2e.ts and e2e/desk-notes-filter.e2e.ts: 17 passed
 ```
 
-The full Playwright suite (752 tests) was started and had not finished when this was committed. Its result is added below once it has.
+The full Playwright suite, run after the last code change:
+
+```
+  1 failed
+    e2e/terminal.e2e.ts:529:3 › the interactive terminal (third client of the one door) › restore puts the mounds somewhere else
+  751 passed (20.5m)
+```
+
+The one failure is the ant nest test that expects the mounds to land somewhere new, which depends on random
+placement. This change touches nothing in the nest or the terminal. Run alone it passed twice in a row, so I
+read it as flaky and did not change it.
 
 ## What changed
 
