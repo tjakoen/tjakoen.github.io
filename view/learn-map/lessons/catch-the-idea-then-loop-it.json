@@ -1,0 +1,131 @@
+{
+ "id": "catch-the-idea-then-loop-it",
+ "title": "Catch the idea, then loop it",
+ "summary": "In three short stops I show you how to catch an idea in one line, why a catch is not yet a brief, and why most ideas should stay in the inbox.",
+ "audio": "/media/lessons/catch-the-idea-then-loop-it.m4a",
+ "stops": [
+  {
+   "title": "Catch it in one line",
+   "note": "catch-the-idea-then-loop-it",
+   "from": "intro",
+   "to": "catch-it-in-one-line",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "Most of them vanish.",
+     "text": "Once an AI does the typing, ideas arrive faster than you can build them. A thing that took a month takes an evening, so every annoyance becomes a project. Most of them vanish. You tell yourself you will remember, and then it is Thursday."
+    },
+    {
+     "section": "catch-it-in-one-line",
+     "quote": "Keep the inbox ugly and the lines short.",
+     "text": "Keep the inbox somewhere you can reach from anywhere. A notes app on your phone, or a plain text file that syncs to it. Use whichever you will actually open, and keep it ugly and the lines short."
+    },
+    {
+     "section": "catch-it-in-one-line",
+     "quote": "A catch that takes longer than ten seconds won't get done on the bus.",
+     "text": "The fix is one inbox you can reach from anywhere, and one line per idea. What it is, and the problem it solves if you know. Do not design it. A catch that takes longer than ten seconds will not get done on the bus."
+    }
+   ],
+   "runes": [
+    {
+     "id": "vanish",
+     "section": "intro",
+     "quote": "Most of them vanish."
+    },
+    {
+     "id": "ten-seconds",
+     "section": "catch-it-in-one-line",
+     "quote": "A catch that takes longer than ten seconds won't get done on the bus."
+    }
+   ],
+   "trial": "For one day, write every idea down in one line, wherever you catch it, without judging any of them.",
+   "digest": [
+    "Cheap building means more ideas than evenings, and most vanish.",
+    "Keep one inbox you can reach from anywhere, and write one line per idea.",
+    "Do not design it yet. A catch longer than ten seconds will not get done."
+   ]
+  },
+  {
+   "title": "A catch is not a brief",
+   "note": "catch-the-idea-then-loop-it",
+   "from": "then-dont-build-from-the-line",
+   "to": "then-dont-build-from-the-line",
+   "beats": [
+    {
+     "section": "then-dont-build-from-the-line",
+     "quote": "The line in your inbox is a catch, not a brief.",
+     "text": "Here is the mistake a cheap build tempts you into. The line in your inbox is a catch, not a brief. Paste it straight into an agent and you get something confident and a little beside the point. You get the teammate from the first note."
+    },
+    {
+     "section": "then-dont-build-from-the-line",
+     "quote": "ask it to interview you, one question at a time",
+     "text": "So there is a step in between, and it is the one people skip. Pick one idea and turn it into the three-part brief. Ask your AI to interview you, one question at a time, until the brief is complete. Then you edit it, because that is where your judgment goes in."
+    },
+    {
+     "section": "then-dont-build-from-the-line",
+     "figure": "From an idea to a built thing",
+     "text": "From there you know the path. Draw what needs drawing, write a plan with a done line per step, and build one step at a time. The inbox feeds the brief, the brief feeds the plan, and the plan feeds the loop."
+    }
+   ],
+   "runes": [
+    {
+     "id": "catch-not-brief",
+     "section": "then-dont-build-from-the-line",
+     "quote": "The line in your inbox is a catch, not a brief."
+    },
+    {
+     "id": "interview",
+     "section": "then-dont-build-from-the-line",
+     "quote": "ask it to interview you, one question at a time"
+    }
+   ],
+   "trial": "Pick the idea that surprised you most and ask your AI to interview you into a three-part brief. Change one line and save it next to your plan.",
+   "digest": [
+    "The line in your inbox is a catch, not a brief.",
+    "Pick one idea and ask your AI to interview you, one question at a time, until the brief is complete.",
+    "The inbox feeds the brief, the brief feeds the plan, and the plan feeds the loop."
+   ]
+  },
+  {
+   "title": "Most ideas stay in the inbox",
+   "note": "catch-the-idea-then-loop-it",
+   "from": "most-ideas-should-stay-in-the-inbox",
+   "to": "your-turn",
+   "beats": [
+    {
+     "section": "most-ideas-should-stay-in-the-inbox",
+     "quote": "most of your ideas should never get built",
+     "text": "An inbox that only grows is a guilt pile, so here is the hard part. Most of your ideas should never get built. Look at the list a week later and a lot of them already look smaller. That is the inbox working. Let them die cheaply."
+    },
+    {
+     "section": "most-ideas-should-stay-in-the-inbox",
+     "quote": "one active project at a time",
+     "text": "One rule worth trying: one active project at a time, with one next step you could start in ten minutes. Everything else waits. When you are tempted by a second thing, add a line instead."
+    },
+    {
+     "section": "your-turn",
+     "quote": "a beautiful inbox and nothing shipped",
+     "text": "And where I might be wrong. A tidy capture habit can turn into procrastination, a beautiful inbox and nothing shipped. And some ideas are better chased the minute they show up. Find the number of projects that does not leave you feeling behind."
+    }
+   ],
+   "runes": [
+    {
+     "id": "never-built",
+     "section": "most-ideas-should-stay-in-the-inbox",
+     "quote": "most of your ideas should never get built"
+    },
+    {
+     "id": "one-project",
+     "section": "most-ideas-should-stay-in-the-inbox",
+     "quote": "one active project at a time"
+    }
+   ],
+   "trial": "Keep the inbox going for a week, then delete the ideas that already look smaller, and tell me which one you were glad to delete.",
+   "digest": [
+    "An inbox that only grows is a guilt pile.",
+    "Most of your ideas should never get built, so let them die cheaply.",
+    "Try one active project at a time. When you are tempted by a second, add a line instead."
+   ]
+  }
+ ]
+}

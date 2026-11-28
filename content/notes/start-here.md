@@ -6,6 +6,8 @@ subtitle: "A guided path for students and juniors who use a chat assistant and h
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
+series: harbor
+seriesOrder: 1
 date: 2026-11-27
 readingTime: "~7 min"
 tags: [ai, workflow, teaching]
@@ -132,6 +134,10 @@ The path starts at the Harbor, an island of its own, with short notes on the bas
 cross to the mainland, where the notes run from easy to deep. Each note is cut into short stops. Each
 stop is a short recording and ends with a small thing to try, about five minutes, which I call your turn.
 Do it, or do something different. Either way, that's where it sticks.
+
+The path reads in two halves. The first is for students and builders, and the second is for people who
+lead teams or work at senior level. It's one map, so cross over whenever you like. The last Harbor note
+says more about where the road splits.
 
 Your progress saves to a file you keep. It's self-reported, which means nothing here can check that
 you did the work, so the only person you can fool is yourself.

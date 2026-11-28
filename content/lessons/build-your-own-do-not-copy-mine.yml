@@ -1,0 +1,54 @@
+id: build-your-own-do-not-copy-mine
+note: build-your-own-do-not-copy-mine
+title: Build your own, don't copy mine
+summary: In three short stops I tell you why copying my setup goes wrong, list what you should be holding at the end of the Harbor, and show how the rest of the path splits between students and people who lead.
+audio: /media/lessons/build-your-own-do-not-copy-mine.m4a
+stops:
+- title: Why copying goes wrong
+  note: build-your-own-do-not-copy-mine
+  from: intro
+  to: why-copying-mine-goes-wrong
+  runes:
+  - id: works-for-me
+    section: intro
+    quote: what I do works for me
+  - id: no-two
+    section: why-copying-mine-goes-wrong
+    quote: no two look alike
+  trial: Pick one file or habit from this path you were tempted to copy, and write down why it fits you, or does not.
+  digest:
+  - What I do works for me, and I am not promising it works for you.
+  - Copied files give you rules for problems you do not have.
+  - My juniors each built their own dashboard and no two look alike.
+- title: What you hold, and changing it
+  note: build-your-own-do-not-copy-mine
+  from: what-you-should-have-by-now
+  to: now-change-it
+  runes:
+  - id: built-the-kit
+    section: what-you-should-have-by-now
+    quote: you've built the whole kit once
+  - id: break-it
+    section: now-change-it
+    quote: Take one thing from this path and break it on purpose.
+  trial: Change one thing from this path until it cannot be mistaken for mine, and write one line in your roadmap about why.
+  digest:
+  - By now you hold a portfolio, a brief, a drawing, a plan, checks, a skill, a front door and an inbox.
+  - If you are missing one, go back for it.
+  - Break one thing on purpose, change it until it is yours, then share it.
+- title: The road splits here
+  note: build-your-own-do-not-copy-mine
+  from: the-road-splits-here
+  to: your-turn
+  runes:
+  - id: first-half
+    section: the-road-splits-here
+    quote: The first half is for students and builders.
+  - id: second-half
+    section: the-road-splits-here
+    quote: The second half is written for people who lead teams or work at senior level.
+  trial: Decide which half you are walking next, and say why. Then do the change-it step and send me the link.
+  digest:
+  - "The first half is for students and builders: Loop Forest and Model Mines."
+  - "The second half is for people who lead teams or work at senior level: Guild Hall, GRAIN Keep and the Summit."
+  - You do not need permission to skip ahead. The map is a suggestion.

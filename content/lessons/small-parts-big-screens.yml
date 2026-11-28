@@ -1,0 +1,54 @@
+id: small-parts-big-screens
+note: small-parts-big-screens
+title: Small parts, big screens
+summary: In three short stops I give you Brad Frost's five words for building an interface, show why they let you tell an AI what to reuse, and send you to sort your own page into them without building a design system.
+audio: /media/lessons/small-parts-big-screens.m4a
+stops:
+- title: Five words from a chemistry class
+  note: small-parts-big-screens
+  from: intro
+  to: the-chemistry-class
+  runes:
+  - id: forty-buttons
+    section: intro
+    quote: By the fortieth you have forty buttons
+  - id: search-form
+    section: the-chemistry-class
+    quote: A label, an input and a button become a search form
+  trial: Name the atoms in one page you use every day, such as a button, a field and a link.
+  digest:
+  - Ask an AI for a button ten times and you own ten buttons.
+  - "Brad Frost named five levels: atoms, molecules, organisms, templates and pages."
+  - A label, an input and a button become a search form, and that is a molecule.
+- title: Why it helps an AI do the typing
+  note: small-parts-big-screens
+  from: why-this-helps-when-an-ai-does-the-typing
+  to: what-it-looks-like-in-my-own-system
+  runes:
+  - id: name-the-level
+    section: why-this-helps-when-an-ai-does-the-typing
+    quote: Use the existing button atom
+  - id: one-level
+    section: what-it-looks-like-in-my-own-system
+    quote: each one lives in exactly one of them
+  trial: Ask your AI to name the level of three things on your portfolio and say which one it would fix first if the color changed.
+  digest:
+  - Name the level and your instruction has a place in it.
+  - Fix an atom and everything built from it is fixed too.
+  - In GRAIN each component lives in exactly one of the atoms, molecules and organisms folders.
+- title: Borrow the question, not my files
+  note: small-parts-big-screens
+  from: you-dont-need-a-design-system-yet
+  to: your-turn
+  runes:
+  - id: ask-the-atoms
+    section: you-dont-need-a-design-system-yet
+    quote: ask what the atoms are
+  - id: blurry
+    section: your-turn
+    quote: The five levels are a way of talking, and a blurry one.
+  trial: Ask your AI to label your roadmap wireframe in the five levels, fix one thing you disagree with, then have it build one roadmap entry as a single reusable piece.
+  digest:
+  - You do not need a design system yet. Borrow the question.
+  - Ask what the atoms, the molecule and the organism of your page are.
+  - The five levels are a blurry way of talking. Drop them the day they stop helping.

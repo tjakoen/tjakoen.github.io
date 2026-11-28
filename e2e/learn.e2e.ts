@@ -180,7 +180,7 @@ test("the map walks the guided path: numbered in order, Continue follows it, and
   const frame = await frameOf(page);
   const path = await frame.evaluate(() => PATH.stages.flatMap((st) => st.quests));
   expect(path.length).toBe(await frame.evaluate(() => QUESTS.length));
-  expect(path.length).toBe(21);
+  expect(path.length).toBe(27);
   const order = await frame.evaluate(() => QUESTS.map((q) => [q.id, q.order]));
   expect(order.map(([id]) => id)).toEqual(path);
   expect(order.map(([, n]) => n)).toEqual(path.map((_, i) => i + 1));
@@ -198,12 +198,12 @@ test("the map walks the guided path: numbered in order, Continue follows it, and
 
   // the panel says where a quest comes in the path
   await frame.evaluate((id) => (window as unknown as { selectQuest(i: string): void }).selectQuest(id), path[2]!);
-  await expect(frame.locator(".ribbon")).toHaveText("Stage 1 · Quest 3 of 21 · Draft");
+  await expect(frame.locator(".ribbon")).toHaveText("Stage 1 · Quest 3 of 27 · Draft");
 
   // the plain list reads without the map, one section per stage, quests in path order
   const list = await frame.evaluate(() => [...document.querySelectorAll("#route > ol > li")].map((li) => [li.querySelector("h2")!.textContent, [...li.querySelectorAll(":scope > ol > li > h3")].map((h) => h.textContent)]));
   expect(list.map(([h]) => h)).toEqual(["Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6"]);
-  expect(list.flatMap(([, titles]) => titles as string[]).length).toBe(21);
+  expect(list.flatMap(([, titles]) => titles as string[]).length).toBe(27);
 });
 
 test("Begin quest opens the book over the map: the note on the left, the Guide on the right, a line lights its quote, and the trial is saved", async ({ page }) => {

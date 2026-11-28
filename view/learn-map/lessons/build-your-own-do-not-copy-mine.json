@@ -1,0 +1,131 @@
+{
+ "id": "build-your-own-do-not-copy-mine",
+ "title": "Build your own, don't copy mine",
+ "summary": "In three short stops I tell you why copying my setup goes wrong, list what you should be holding at the end of the Harbor, and show how the rest of the path splits between students and people who lead.",
+ "audio": "/media/lessons/build-your-own-do-not-copy-mine.m4a",
+ "stops": [
+  {
+   "title": "Why copying goes wrong",
+   "note": "build-your-own-do-not-copy-mine",
+   "from": "intro",
+   "to": "why-copying-mine-goes-wrong",
+   "beats": [
+    {
+     "section": "intro",
+     "quote": "what I do works for me",
+     "text": "I told you in the first note this was not a tutorial. I am closing on the same line. What I do works for me, and I am not promising it works for you. I am not the one who writes the standards. I read what others do and share what I landed on."
+    },
+    {
+     "section": "why-copying-mine-goes-wrong",
+     "quote": "you won't be able to explain why any",
+     "text": "If you copy my files, you get a setup that sounds like me. Rules for problems you do not have, nothing for the ones you do, and you cannot explain why any of it is there. That is the test from the plan note, failing in advance."
+    },
+    {
+     "section": "why-copying-mine-goes-wrong",
+     "quote": "no two look alike",
+     "text": "When I showed my team what I was doing, I did not hand them a template. Most of the juniors now have their own dashboard, and no two look alike. They each built what fit how they think, and I could not have handed them that."
+    }
+   ],
+   "runes": [
+    {
+     "id": "works-for-me",
+     "section": "intro",
+     "quote": "what I do works for me"
+    },
+    {
+     "id": "no-two",
+     "section": "why-copying-mine-goes-wrong",
+     "quote": "no two look alike"
+    }
+   ],
+   "trial": "Pick one file or habit from this path you were tempted to copy, and write down why it fits you, or does not.",
+   "digest": [
+    "What I do works for me, and I am not promising it works for you.",
+    "Copied files give you rules for problems you do not have.",
+    "My juniors each built their own dashboard and no two look alike."
+   ]
+  },
+  {
+   "title": "What you hold, and changing it",
+   "note": "build-your-own-do-not-copy-mine",
+   "from": "what-you-should-have-by-now",
+   "to": "now-change-it",
+   "beats": [
+    {
+     "section": "what-you-should-have-by-now",
+     "figure": "What you hold at the end of the Harbor",
+     "text": "If you did the turns, you are holding more than you think. A brief, drawings, a plan, checks, a skill, a front door and an inbox, all feeding one loop that builds your portfolio. Read it as things you made, not things you were told."
+    },
+    {
+     "section": "what-you-should-have-by-now",
+     "quote": "you've built the whole kit once",
+     "text": "If one is missing, go back for it. If you have all of them, you have built the whole kit once, which teaches more than reading about it."
+    },
+    {
+     "section": "now-change-it",
+     "quote": "Take one thing from this path and break it on purpose.",
+     "text": "Before you leave the island, take one thing from this path and break it on purpose. Rename the files, cut a rule you never use, add one for something that annoyed you. Change it until it cannot be mistaken for mine, and then show me."
+    }
+   ],
+   "runes": [
+    {
+     "id": "built-the-kit",
+     "section": "what-you-should-have-by-now",
+     "quote": "you've built the whole kit once"
+    },
+    {
+     "id": "break-it",
+     "section": "now-change-it",
+     "quote": "Take one thing from this path and break it on purpose."
+    }
+   ],
+   "trial": "Change one thing from this path until it cannot be mistaken for mine, and write one line in your roadmap about why.",
+   "digest": [
+    "By now you hold a portfolio, a brief, a drawing, a plan, checks, a skill, a front door and an inbox.",
+    "If you are missing one, go back for it.",
+    "Break one thing on purpose, change it until it is yours, then share it."
+   ]
+  },
+  {
+   "title": "The road splits here",
+   "note": "build-your-own-do-not-copy-mine",
+   "from": "the-road-splits-here",
+   "to": "your-turn",
+   "beats": [
+    {
+     "section": "the-road-splits-here",
+     "quote": "The first half is for students and builders.",
+     "text": "Past the Harbor the path is built in two halves. The first half is for students and builders, and it is the practice. Loop Forest and Model Mines. Read those next, in order, and try each idea on your portfolio."
+    },
+    {
+     "section": "the-road-splits-here",
+     "quote": "The second half is written for people who lead teams or work at senior level.",
+     "text": "The second half is written for people who lead teams or work at senior level. Guild Hall, GRAIN Keep and the Summit. It is about getting a team to do this and keeping it honest. Read it early if you are curious, but some of it will not apply to you yet."
+    },
+    {
+     "section": "your-turn",
+     "quote": "I may be wrong about my own advice",
+     "text": "And where I might be wrong. I have worked this way for about six months, so some of what I call fundamentals may look quaint in a year. If you find that out before I do, I would like to hear it."
+    }
+   ],
+   "runes": [
+    {
+     "id": "first-half",
+     "section": "the-road-splits-here",
+     "quote": "The first half is for students and builders."
+    },
+    {
+     "id": "second-half",
+     "section": "the-road-splits-here",
+     "quote": "The second half is written for people who lead teams or work at senior level."
+    }
+   ],
+   "trial": "Decide which half you are walking next, and say why. Then do the change-it step and send me the link.",
+   "digest": [
+    "The first half is for students and builders: Loop Forest and Model Mines.",
+    "The second half is for people who lead teams or work at senior level: Guild Hall, GRAIN Keep and the Summit.",
+    "You do not need permission to skip ahead. The map is a suggestion."
+   ]
+  }
+ ]
+}

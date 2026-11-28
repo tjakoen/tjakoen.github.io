@@ -54,6 +54,23 @@
       "draft": true
     },
     {
+      "id": "small-parts-big-screens",
+      "region": 1,
+      "title": "Small Parts, Big Screens: Atomic Design in Plain Words",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 6,
+      "tags": [
+        "ai",
+        "design",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
       "id": "plan-it-then-build-from-the-plan",
       "region": 1,
       "title": "Plan It, Then Build From the Plan",
@@ -105,6 +122,23 @@
       "draft": true
     },
     {
+      "id": "the-fundamentals-you-still-own",
+      "region": 1,
+      "title": "The Fundamentals You Still Own",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 6,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
       "id": "save-it-as-a-skill",
       "region": 1,
       "title": "The Third Time You Type It, Save It",
@@ -113,6 +147,74 @@
         "learn"
       ],
       "minutes": 5,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "the-words-you-will-hear",
+      "region": 1,
+      "title": "The Words You Will Hear",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 4,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "from-a-chat-window-to-your-first-loop",
+      "region": 1,
+      "title": "From a Chat Window to Your First Loop",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 4,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "catch-the-idea-then-loop-it",
+      "region": 1,
+      "title": "Catch the Idea, Then Loop It",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 4,
+      "tags": [
+        "ai",
+        "workflow",
+        "teaching"
+      ],
+      "sources": [],
+      "draft": true
+    },
+    {
+      "id": "build-your-own-do-not-copy-mine",
+      "region": 1,
+      "title": "Build Your Own, Don't Copy Mine",
+      "level": "intro",
+      "audience": [
+        "learn"
+      ],
+      "minutes": 4,
       "tags": [
         "ai",
         "workflow",

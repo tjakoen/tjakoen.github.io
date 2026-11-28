@@ -6,6 +6,8 @@ subtitle: "Testing often gets skipped in school. It's the least glamorous rule I
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
+series: harbor
+seriesOrder: 7
 date: 2026-11-27
 readingTime: "~3 min"
 tags: [ai, workflow, teaching]

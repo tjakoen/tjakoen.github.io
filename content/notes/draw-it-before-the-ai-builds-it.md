@@ -6,6 +6,8 @@ subtitle: "You don't have to draw it yourself. The AI is good at it. What you ne
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
+series: harbor
+seriesOrder: 3
 date: 2026-11-27
 readingTime: "~6 min"
 tags: [ai, workflow, teaching, design]
@@ -101,7 +103,7 @@ lines between them. The figures are people (or other systems) and the ovals are 
 portfolio: a visitor, maybe a recruiter, reads your roadmap and opens the evidence links. You, the owner,
 add entries. Now you know there are two kinds of user, and that "owner adds entries" is a feature of its
 own. [Lucidchart](https://www.lucidchart.com/pages/tutorial/uml-use-case-diagram) and
-[TU Delft](https://cese.ewi.tudelft.nl/software-systems/part-2/tutorials/uml/use-case.html) have clear
+[Visual Paradigm](https://www.visual-paradigm.com/guide/uml-unified-modeling-language/what-is-use-case-diagram/) have clear
 walkthroughs.
 
 ```mermaid label="Use case diagram for the portfolio: a visitor reads the roadmap and opens an evidence link, and the owner adds an entry."
@@ -164,9 +166,9 @@ someone and watch their face. A prototype is a mockup you can click through.
 differ, and admit people use the words loosely.
 
 **Design system: what are the reusable parts, and what are the rules?** The buttons, inputs and colors,
-named once and used everywhere, so the thousandth screen looks like the first. I built one, GRAIN, which
-gets its own note. The idea underneath it is Brad Frost's
-[atomic design](https://atomicdesign.bradfrost.com): small parts that combine into bigger ones.
+named once and used everywhere, so the thousandth screen looks like the first. I built one, GRAIN. The idea underneath it is Brad Frost's
+[atomic design](https://atomicdesign.bradfrost.com): small parts that combine into bigger ones. The
+next note, [Small Parts, Big Screens](small-parts-big-screens.md), shows it in plain words.
 
 You won't need all six. For your portfolio, a use case diagram and a wireframe are plenty, and an ERD is
 nice once the roadmap grows. Reach for the one that answers the question you can't currently answer, and
