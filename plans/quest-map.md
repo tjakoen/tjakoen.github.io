@@ -85,7 +85,12 @@ Mockups, light and dark, open in a browser: [docs/mockups/quest-map/index.html](
 
 ## Decisions already made
 
-- No Harbor notes. The first stop points out to Claude Academy for the basics. The exact URL is
+- **Two halves, two readers (decided 2026-11-28).** The first half of the path, Harbor, Loop Forest and Model
+  Mines, is for students and builders. The second half, Guild Hall, GRAIN Keep and Summit, is for people who
+  lead teams or work at senior level. It is one map and one set of progress, not two tracks, and a reader may
+  cross over whenever they like. The last Harbor note says so. One known mismatch: Build the Floor sits in
+  Model Mines but is written for leads and builders, and moving it to the Guild Hall is open.
+- Harbor notes (amended 2026-11-27, see [the decision](decisions/2026-11-27-harbor-gets-notes.md)): the Harbor now holds its own short on-ramp notes, listed in regions.json, and the first stop still points out to Claude Academy for the basics. This line used to read No Harbor notes. The exact URL is
   still to confirm before it ships. Harbor is one island of its own off the south-west coast, a port with a pier, because it points
   outside the site. Ferries sail from that pier along the south coast to a harbour at the Guild Hall, on a
   faint dotted route. The first region on the
@@ -239,7 +244,7 @@ First six regions, from the published AI notes (order inside each is a guess to 
 
 | Region | Landmark | Notes |
 |---|---|---|
-| Harbor | an island with a lighthouse and a pier, off the coast | one external stop: Claude Academy |
+| Harbor | an island with a lighthouse and a pier, off the coast | one external stop, Claude Academy, and the thirteen on-ramp notes, in order |
 | Loop Forest | pines | one-loop-every-repo, one-loop-three-harnesses, loop-setup, the-check-that-never-ran |
 | Model Mines | mountain and cave | necessity-and-the-model-layer, plan-big-type-small, how-the-model-layer-works |
 | Guild Hall | hall | show-them-the-board, move-bugs-left, the-reviewer-that-learned-to-be-wrong |

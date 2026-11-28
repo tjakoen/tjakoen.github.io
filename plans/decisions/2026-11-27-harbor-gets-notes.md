@@ -55,3 +55,11 @@ These come from the owner, in conversation, and are recorded as stated.
 
 Also decided: the drawing note is a map of the artifacts (ERD, DFD, use case, wireframe, mockup, design
 system) that links out. The browser story stays in The Browser Grew Up and is linked, not repeated.
+
+## Answers, 2026-11-28
+
+1. Write notes 6 to 9.
+2. Atomic design is its own note, and it should carry a conventional example from Brad Frost.
+3. Write the fundamentals note.
+4. Split testing into its own note if appropriate. It was already split.
+5. One path in two halves: the first half for students, the second for leads and senior readers.

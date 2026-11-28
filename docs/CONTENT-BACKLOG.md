@@ -9,6 +9,24 @@
 > the repo is **public**. The events-platform exit is told **neutrally, no names, lessons-forward**.
 > Company name is **Career Team**. People name-drops = public professional info + LinkedIn only.
 
+## The Harbor on-ramp (drafted 2026-11-27 and 2026-11-28)
+
+Thirteen short notes that form the first island of the learning path, all **DRAFT**, in reading order:
+start-here, ai-teammate-never-asks-questions, draw-it-before-the-ai-builds-it, small-parts-big-screens,
+plan-it-then-build-from-the-plan, make-it-check-its-own-work, a-test-is-a-check-that-runs-itself,
+the-fundamentals-you-still-own, save-it-as-a-skill, the-words-you-will-hear,
+from-a-chat-window-to-your-first-loop, catch-the-idea-then-loop-it and build-your-own-do-not-copy-mine.
+Each ships with a three-stop lesson and a spoken script under content/lessons, and the plan is
+[plans/harbor-curriculum.md](../plans/harbor-curriculum.md). They share the series key harbor, so once
+published they collapse to one card in the feed's All tab.
+
+**Still owed before any of it publishes.** A read-aloud by the author for each note. The 2026-11-28 drafts
+add no personal claim that an older published note does not already make (six months of daily use, the
+juniors who built their own dashboards, Claude, Codex and DeepSeek), and the catch-the-idea and fundamentals
+notes are written as advice and not as a record of how he works, so he should say whether any of that
+should become a first-person story. A look at the drawn figures, which are labelled Mermaid. Recordings for
+the lessons.
+
 ## The vectorless RAG note (published 2026-11-27)
 
 [vectorless-rag-by-accident](../content/notes/vectorless-rag-by-accident.md), with its companion
